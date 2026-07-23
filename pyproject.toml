@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hdi-prediction"
+version = "0.1.0"
+description = "Reliability-Conditioned Herb-Drug Interaction Prediction via Code-Mixed NLP and Graph Neural Networks"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Jiya", email = "jiya@example.com"},
+]
+keywords = [
+    "herb-drug interactions",
+    "graph neural networks",
+    "NLP",
+    "code-mixed",
+    "reliability scoring",
+    "link prediction",
+    "biomedical NLP",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/jiya2000/Reliability-Conditioned-Herb-Drug-Interaction-Prediction"
+Repository = "https://github.com/jiya2000/Reliability-Conditioned-Herb-Drug-Interaction-Prediction"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-v --tb=short"

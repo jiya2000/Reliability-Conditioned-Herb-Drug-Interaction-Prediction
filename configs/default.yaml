@@ -1,0 +1,177 @@
+# =============================================================================
+# Reliability-Conditioned HDI Prediction — Default Configuration
+# =============================================================================
+
+project:
+  name: "hdi-prediction"
+  seed: 42
+  device: "cuda"  # "cuda" or "cpu"
+  log_level: "INFO"
+
+# -----------------------------------------------------------------------------
+# Data
+# -----------------------------------------------------------------------------
+data:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  drugbank_path: "data/raw/drugbank.xml"
+  chembl_db_path: "data/raw/chembl.sqlite"
+  imppat_path: "data/raw/imppat"
+  ddi_corpus_path: "data/raw/ddi_corpus"
+  cadec_path: "data/raw/cadec"
+  psytar_path: "data/raw/psytar"
+  code_mixed_path: "data/raw/code_mixed"
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+  num_workers: 4
+
+# -----------------------------------------------------------------------------
+# NLP Extraction
+# -----------------------------------------------------------------------------
+extraction:
+  formal_model: "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract"
+  informal_model: "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract"
+  code_mixed_model: "ai4bharat/IndicBERTv2-MLM-Sam-TLM"
+  max_seq_length: 512
+  ner_labels: ["Drug", "Herb", "Effect", "Mechanism", "Dosage"]
+  re_labels: ["interacts_with", "inhibits", "induces", "potentiates", "no_relation"]
+  entity_linking:
+    umls_api_key: ""  # Set via environment variable UMLS_API_KEY
+    fuzzy_threshold: 85
+    embedding_sim_threshold: 0.75
+
+# -----------------------------------------------------------------------------
+# Knowledge Graph
+# -----------------------------------------------------------------------------
+graph:
+  node_types: ["drug", "herb", "target", "enzyme", "pathway", "effect"]
+  edge_types:
+    - ["drug", "interacts_with", "drug"]
+    - ["herb", "interacts_with", "drug"]
+    - ["drug", "targets", "target"]
+    - ["herb", "contains", "compound"]
+    - ["drug", "metabolized_by", "enzyme"]
+    - ["target", "in_pathway", "pathway"]
+  use_neo4j: false  # If true, uses Neo4j; otherwise NetworkX + PyG
+  neo4j:
+    uri: "bolt://localhost:7687"
+    user: "neo4j"
+    password: ""
+
+# -----------------------------------------------------------------------------
+# GNN Encoder
+# -----------------------------------------------------------------------------
+gnn:
+  type: "RGCN"  # "RGCN", "HGT", or "HAN"
+  input_dim: 128
+  hidden_dim: 256
+  output_dim: 128
+  num_layers: 3
+  num_heads: 4  # For HGT/HAN
+  dropout: 0.2
+  residual: true
+  layer_norm: true
+
+# -----------------------------------------------------------------------------
+# Text Encoder
+# -----------------------------------------------------------------------------
+text_encoder:
+  model_name: "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract"
+  output_dim: 128
+  freeze_layers: 8  # Freeze first N transformer layers
+  pooling: "cls"  # "cls", "mean", "max"
+
+# -----------------------------------------------------------------------------
+# Reliability Scorer
+# -----------------------------------------------------------------------------
+reliability:
+  metadata_dims:
+    corroboration: 16  # C — number of independent sources confirming
+    temporal: 16       # T — recency score
+    biomedical: 16     # B — journal quality / peer-review status
+    molecular: 16      # M — molecular plausibility (e.g., structural similarity)
+    source_type: 16    # S — source type embedding (clinical, forum, textbook, etc.)
+  hidden_dim: 64
+  output_dim: 1  # scalar R in [0, 1]
+  activation: "sigmoid"
+
+# -----------------------------------------------------------------------------
+# Reliability-Conditioned Cross-Attention (Core Invention)
+# -----------------------------------------------------------------------------
+cross_attention:
+  num_heads: 4
+  hidden_dim: 128
+  dropout: 0.1
+  gating_mode: "multiplicative"  # "multiplicative", "additive", "learned_gate"
+  temperature: 1.0
+
+# -----------------------------------------------------------------------------
+# Link Predictor
+# -----------------------------------------------------------------------------
+link_predictor:
+  hidden_dim: 128
+  num_layers: 2
+  dropout: 0.3
+  output_classes: 1  # Binary: interacts or not
+
+# -----------------------------------------------------------------------------
+# Training
+# -----------------------------------------------------------------------------
+training:
+  epochs: 100
+  batch_size: 64
+  learning_rate: 1.0e-4
+  weight_decay: 1.0e-5
+  scheduler: "cosine"  # "cosine", "step", "plateau"
+  warmup_steps: 500
+  grad_clip: 1.0
+  early_stopping_patience: 10
+  loss: "bce_with_logits"
+  negative_sampling_ratio: 5  # negatives per positive edge
+  checkpoint_dir: "checkpoints"
+  save_every: 5  # Save checkpoint every N epochs
+
+# -----------------------------------------------------------------------------
+# Evaluation
+# -----------------------------------------------------------------------------
+evaluation:
+  metrics: ["auc_roc", "auc_pr", "precision", "recall", "f1", "mrr", "hits@10"]
+  threshold: 0.5
+
+# -----------------------------------------------------------------------------
+# Ablation Study
+# -----------------------------------------------------------------------------
+ablation:
+  variants:
+    - name: "gnn_only"
+      description: "GNN encoder + link predictor, no text, no reliability"
+      use_text: false
+      use_reliability: false
+    - name: "unconditioned"
+      description: "GNN + text cross-attention, R removed (set to 1.0)"
+      use_text: true
+      use_reliability: false
+    - name: "full_model"
+      description: "Full reliability-conditioned cross-attention"
+      use_text: true
+      use_reliability: true
+
+# -----------------------------------------------------------------------------
+# Experiment Tracking
+# -----------------------------------------------------------------------------
+tracking:
+  backend: "wandb"  # "wandb" or "mlflow"
+  project: "hdi-prediction"
+  entity: ""
+  tags: ["herb-drug", "gnn", "reliability", "cross-attention"]
+
+# -----------------------------------------------------------------------------
+# Demo App
+# -----------------------------------------------------------------------------
+app:
+  host: "0.0.0.0"
+  port: 8000
+  streamlit_port: 8501
+  model_checkpoint: "checkpoints/best_model.pt"
+  top_k_results: 10
