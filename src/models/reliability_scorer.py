@@ -11,6 +11,11 @@ through the full pipeline (extraction → R → cross-attention → prediction).
 This is a critical component of the core invention: R dynamically
 gates the cross-attention weights, controlling how much the model
 trusts the textual evidence for each candidate interaction.
+
+★ NOVEL CONTRIBUTION 2: Uncertainty Quantification ★
+Supports Monte Carlo dropout at inference time to produce
+(R_mean, R_uncertainty) — enabling uncertainty-aware gating
+where the system behaves conservatively under high epistemic uncertainty.
 """
 
 from __future__ import annotations
@@ -58,6 +63,8 @@ class ReliabilityScorer(nn.Module):
         max_corroboration: int = 50,
         num_source_types: int = 8,
         dropout: float = 0.1,
+        mc_dropout_rate: float = 0.15,
+        mc_samples: int = 10,
     ):
         super().__init__()
 
@@ -116,11 +123,16 @@ class ReliabilityScorer(nn.Module):
 
         self.max_corroboration = max_corroboration
 
+        # MC Dropout for uncertainty estimation
+        self.mc_dropout = nn.Dropout(mc_dropout_rate)
+        self.mc_samples = mc_samples
+
         logger.info(
             f"ReliabilityScorer: C={corroboration_embed_dim}, "
             f"T={temporal_dim}, B={biomedical_dim}, "
             f"M={molecular_dim}, S={source_type_embed_dim} "
-            f"→ hidden={hidden_dim} → R"
+            f"→ hidden={hidden_dim} → R "
+            f"(MC dropout={mc_dropout_rate}, samples={mc_samples})"
         )
 
     def forward(
@@ -189,3 +201,91 @@ class ReliabilityScorer(nn.Module):
             }
 
         return R, breakdown
+
+    def _embed_metadata(self, metadata: torch.Tensor) -> torch.Tensor:
+        """
+        Shared embedding logic extracted for reuse by MC forward.
+
+        Args:
+            metadata: (batch, 5) tensor with columns [C, T, B, M, S]
+
+        Returns:
+            combined: (batch, total_dim) concatenated embeddings
+        """
+        C = metadata[:, 0].long().clamp(0, self.max_corroboration)
+        T = metadata[:, 1:2]
+        B = metadata[:, 2:3]
+        M = metadata[:, 3:4]
+        S = metadata[:, 4].long().clamp(0, 7)
+
+        c_emb = self.corroboration_embed(C)
+        t_emb = self.temporal_proj(T)
+        b_emb = self.biomedical_proj(B)
+        m_emb = self.molecular_proj(M)
+        s_emb = self.source_type_embed(S)
+
+        return torch.cat([c_emb, t_emb, b_emb, m_emb, s_emb], dim=-1)
+
+    def forward_with_uncertainty(
+        self,
+        metadata: torch.Tensor,
+        n_samples: int | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor, dict | None]:
+        """
+        ★ NOVEL: MC Dropout Uncertainty Estimation ★
+
+        Run multiple stochastic forward passes to estimate:
+        - R_mean: expected reliability score
+        - R_uncertainty: epistemic uncertainty (std dev of MC samples)
+
+        Args:
+            metadata: (batch, 5) tensor with columns [C, T, B, M, S]
+            n_samples: number of MC samples (default: self.mc_samples)
+
+        Returns:
+            R_mean: (batch, 1) mean reliability score
+            R_uncertainty: (batch, 1) uncertainty estimate (std dev)
+            breakdown: dict with per-dimension contributions
+        """
+        n = n_samples or self.mc_samples
+
+        # Embed once (deterministic part)
+        combined = self._embed_metadata(metadata)
+
+        # Collect MC samples — keep dropout active
+        was_training = self.training
+        self.train()  # Enable dropout
+
+        samples = []
+        for _ in range(n):
+            # Apply MC dropout to the combined embedding
+            mc_combined = self.mc_dropout(combined)
+            R_sample = self.mlp(mc_combined)
+            samples.append(R_sample)
+
+        # Restore original mode
+        if not was_training:
+            self.eval()
+
+        # Stack: (n_samples, batch, 1)
+        R_stack = torch.stack(samples, dim=0)
+
+        # Compute mean and std
+        R_mean = R_stack.mean(dim=0)           # (batch, 1)
+        R_uncertainty = R_stack.std(dim=0)      # (batch, 1)
+
+        # Breakdown using the mean embedding
+        dim_weights = torch.softmax(
+            self.dim_attention(combined), dim=-1
+        )
+        breakdown = {
+            "corroboration_weight": dim_weights[:, 0],
+            "temporal_weight": dim_weights[:, 1],
+            "biomedical_weight": dim_weights[:, 2],
+            "molecular_weight": dim_weights[:, 3],
+            "source_type_weight": dim_weights[:, 4],
+            "mc_samples": n,
+            "mean_uncertainty": R_uncertainty.mean().item(),
+        }
+
+        return R_mean, R_uncertainty, breakdown

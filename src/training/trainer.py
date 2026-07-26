@@ -7,6 +7,8 @@ Handles the full training loop including:
 - Checkpointing
 - Experiment tracking (W&B / MLflow)
 - Early stopping
+- ★ Adversarial Reliability Calibration (ARC) loss ★
+- ★ Contrastive reliability regularization ★
 """
 
 from __future__ import annotations
@@ -22,6 +24,8 @@ from torch.utils.data import DataLoader
 from loguru import logger
 
 from src.models.hdi_model import HDIModel
+from src.models.calibration_loss import CalibrationLoss, ExpectedCalibrationError
+from src.training.contrastive_loss import ReliabilityContrastiveRegularizer
 
 
 class HDITrainer:
@@ -55,6 +59,11 @@ class HDITrainer:
         tracking_backend: Optional[str] = None,
         project_name: str = "hdi-prediction",
         device: str = "auto",
+        # ★ Novel loss integration ★
+        lambda_calibration: float = 0.1,
+        lambda_diversity: float = 0.01,
+        lambda_ordering: float = 0.05,
+        lambda_contrastive: float = 0.05,
     ):
         self.model = model
         self.learning_rate = learning_rate
@@ -97,9 +106,21 @@ class HDITrainer:
 
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
+        # ★ Novel loss modules ★
+        self.calibration_loss = CalibrationLoss(
+            lambda_calibration=lambda_calibration,
+            lambda_diversity=lambda_diversity,
+            lambda_ordering=lambda_ordering,
+        )
+        self.contrastive_reg = ReliabilityContrastiveRegularizer(margin=0.2)
+        self.lambda_contrastive = lambda_contrastive
+        self.ece_monitor = ExpectedCalibrationError(n_bins=10)
+
         logger.info(
             f"HDITrainer: lr={learning_rate}, epochs={epochs}, "
-            f"device={self.device}, scheduler={scheduler_type}"
+            f"device={self.device}, scheduler={scheduler_type}, "
+            f"ARC=[λ_cal={lambda_calibration}, λ_div={lambda_diversity}, "
+            f"λ_ord={lambda_ordering}], λ_contrastive={lambda_contrastive}"
         )
 
     def _init_scheduler(self, total_steps: int) -> None:
@@ -307,6 +328,25 @@ class HDITrainer:
             )
 
             loss = output["loss"]
+
+            # ★ Add ARC calibration loss ★
+            if "reliability_scores" in output and output["reliability_scores"] is not None:
+                arc_loss, arc_breakdown = self.calibration_loss(
+                    reliability_scores=output["reliability_scores"],
+                    predictions=output["probabilities"],
+                    labels=labels,
+                    metadata=metadata,
+                )
+                loss = loss + arc_loss
+
+                # ★ Add contrastive regularization ★
+                if "fused_embeddings" in output and output["fused_embeddings"] is not None:
+                    contrastive_loss = self.contrastive_reg(
+                        embeddings=output["fused_embeddings"],
+                        reliability_scores=output["reliability_scores"],
+                        labels=labels,
+                    )
+                    loss = loss + self.lambda_contrastive * contrastive_loss
 
             # Backward pass
             self.optimizer.zero_grad()

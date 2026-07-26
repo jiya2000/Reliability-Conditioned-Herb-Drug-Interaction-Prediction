@@ -210,6 +210,7 @@ class HDIModel(nn.Module):
 
         result["logits"] = logits.squeeze(-1)
         result["probabilities"] = torch.sigmoid(logits).squeeze(-1)
+        result["fused_embeddings"] = fused_source  # For contrastive loss
 
         # Compute loss if labels provided
         if labels is not None:

@@ -19,6 +19,7 @@ Three gating modes are supported:
 1. Multiplicative: attention_weights *= R (default, simplest)
 2. Additive: attention_weights += R * learned_bias
 3. Learned gate: g = σ(W·[R, attention_weights]) → gated_weights
+4. Uncertainty-aware: attention *= R_mean * (1 - α·R_uncertainty) ★ NOVEL ★
 """
 
 from __future__ import annotations
@@ -102,6 +103,11 @@ class ReliabilityConditionedCrossAttention(nn.Module):
                 nn.Linear(num_heads + 1, num_heads),
                 nn.Sigmoid(),
             )
+        elif gating_mode == "uncertainty_aware":
+            # Learnable uncertainty scaling factor α
+            self.uncertainty_alpha = nn.Parameter(torch.tensor(0.5))
+            # Minimum gate value to prevent complete suppression
+            self.min_gate = 0.05
 
         # Layer normalization and dropout
         self.layer_norm = nn.LayerNorm(hidden_dim)
@@ -161,6 +167,43 @@ class ReliabilityConditionedCrossAttention(nn.Module):
             raise ValueError(f"Unknown gating mode: {self.gating_mode}")
 
         return gated
+
+    def _apply_uncertainty_aware_gating(
+        self,
+        attention_weights: torch.Tensor,
+        R_mean: torch.Tensor,
+        R_uncertainty: torch.Tensor,
+    ) -> torch.Tensor:
+        """
+        ★ NOVEL: Uncertainty-aware reliability gating ★
+
+        When uncertainty is high, the model behaves conservatively
+        by reducing the effective reliability gate. This is clinically
+        meaningful: uncertain evidence should not strongly influence
+        predictions.
+
+        Formula: effective_R = R_mean * max(min_gate, 1 - α·R_uncertainty)
+
+        Args:
+            attention_weights: (batch, num_heads, 1, 1)
+            R_mean: (batch, 1) mean reliability score
+            R_uncertainty: (batch, 1) uncertainty (std dev)
+
+        Returns:
+            gated_weights: (batch, num_heads, 1, 1)
+        """
+        # Compute conservative gate
+        alpha = torch.sigmoid(self.uncertainty_alpha)  # Constrain α ∈ [0, 1]
+        conservative_factor = torch.clamp(
+            1.0 - alpha * R_uncertainty,
+            min=self.min_gate,
+        )
+        effective_R = R_mean * conservative_factor  # (batch, 1)
+
+        # Expand for broadcasting
+        effective_R = effective_R.unsqueeze(1).unsqueeze(2)  # (batch, 1, 1, 1)
+
+        return attention_weights * effective_R
 
     def forward(
         self,
@@ -251,3 +294,60 @@ class ReliabilityConditionedCrossAttention(nn.Module):
             molecular_embedding, text_embedding, R_ones
         )
         return fused
+
+    def forward_with_uncertainty(
+        self,
+        molecular_embedding: torch.Tensor,
+        text_embedding: torch.Tensor,
+        R_mean: torch.Tensor,
+        R_uncertainty: torch.Tensor,
+        return_attention: bool = False,
+    ) -> tuple[torch.Tensor, torch.Tensor | None]:
+        """
+        ★ NOVEL: Uncertainty-aware forward pass ★
+
+        Uses R_mean and R_uncertainty to conservatively gate attention.
+        Can be used with any gating mode by overriding the gating step.
+
+        Args:
+            molecular_embedding: (batch, hidden_dim)
+            text_embedding: (batch, hidden_dim)
+            R_mean: (batch, 1) mean reliability
+            R_uncertainty: (batch, 1) uncertainty estimate
+            return_attention: whether to return attention weights
+
+        Returns:
+            fused_embedding: (batch, hidden_dim)
+            attention_weights: Optional
+        """
+        batch_size = molecular_embedding.size(0)
+
+        Q = self.W_q(molecular_embedding)
+        K = self.W_k(text_embedding)
+        V = self.W_v(text_embedding)
+
+        Q = Q.view(batch_size, self.num_heads, 1, self.head_dim)
+        K = K.view(batch_size, self.num_heads, 1, self.head_dim)
+        V = V.view(batch_size, self.num_heads, 1, self.head_dim)
+
+        raw_attention = torch.matmul(Q, K.transpose(-2, -1)) / (
+            self.scale * self.temperature
+        )
+        attention_weights = torch.sigmoid(raw_attention)
+
+        # Apply uncertainty-aware gating regardless of base gating mode
+        gated_attention = self._apply_uncertainty_aware_gating(
+            attention_weights, R_mean, R_uncertainty
+        )
+
+        gated_attention = self.attn_dropout(gated_attention)
+        attended = gated_attention * V
+        attended = attended.view(batch_size, self.hidden_dim)
+
+        output = self.W_o(attended)
+        output = self.dropout(output)
+        fused = self.layer_norm(output + molecular_embedding)
+
+        if return_attention:
+            return fused, gated_attention.squeeze(-1).squeeze(-1)
+        return fused, None

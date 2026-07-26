@@ -244,3 +244,258 @@ class HDIEvaluator:
                 auc += tp
 
         return auc / (total_pos * total_neg)
+
+    # --- ★ NOVEL: Stratified Evaluation ★ ---
+
+    @torch.no_grad()
+    def evaluate_stratified(
+        self,
+        loader,
+        graph_data: dict,
+        n_strata: int = 4,
+    ) -> dict:
+        """
+        ★ Stratified evaluation by reliability score.
+
+        Splits predictions into R-strata and computes metrics per stratum.
+        This is essential for the paper to show how model performance
+        varies with evidence quality.
+
+        Args:
+            loader: DataLoader
+            graph_data: Graph tensors
+            n_strata: Number of reliability strata
+
+        Returns:
+            Dict with per-stratum and overall metrics
+        """
+        self.model.eval()
+
+        node_features = graph_data["node_features"].to(self.device)
+        edge_index = graph_data["edge_index"].to(self.device)
+        edge_type = graph_data["edge_type"].to(self.device)
+
+        all_labels = []
+        all_probs = []
+        all_R = []
+        all_metadata = []
+
+        for batch in loader:
+            source_indices = batch["source_indices"].to(self.device)
+            target_indices = batch["target_indices"].to(self.device)
+            labels = batch["labels"]
+            metadata = batch["metadata"].to(self.device)
+            evidence_texts = batch.get("evidence_texts", None)
+
+            output = self.model(
+                node_features=node_features,
+                edge_index=edge_index,
+                edge_type=edge_type,
+                source_indices=source_indices,
+                target_indices=target_indices,
+                metadata=metadata,
+                evidence_texts=evidence_texts,
+            )
+
+            all_labels.append(labels.numpy())
+            all_probs.append(output["probabilities"].cpu().numpy())
+            all_metadata.append(metadata.cpu().numpy())
+
+            if "reliability_scores" in output and output["reliability_scores"] is not None:
+                all_R.append(output["reliability_scores"].cpu().numpy().squeeze())
+            else:
+                # Use biomedical quality as proxy for R
+                all_R.append(metadata[:, 2].cpu().numpy())
+
+        labels = np.concatenate(all_labels)
+        probs = np.concatenate(all_probs)
+        R_scores = np.concatenate(all_R)
+        metadata_all = np.concatenate(all_metadata)
+
+        # Overall metrics
+        preds = (probs >= self.threshold).astype(int)
+        overall = {
+            "auc_roc": self._auc_roc(labels, probs),
+            "f1": self._f1(labels, preds),
+            "precision": self._precision(labels, preds),
+            "recall": self._recall(labels, preds),
+            "n_samples": len(labels),
+        }
+
+        # Stratified by R
+        boundaries = np.linspace(0, 1, n_strata + 1)
+        strata_results = {}
+
+        for i in range(n_strata):
+            lo, hi = boundaries[i], boundaries[i + 1]
+            mask = (R_scores >= lo) & (R_scores < hi + 1e-6)
+
+            if mask.sum() < 5:
+                strata_results[f"R_{lo:.2f}_{hi:.2f}"] = {
+                    "n_samples": int(mask.sum()),
+                    "note": "insufficient samples",
+                }
+                continue
+
+            s_labels = labels[mask]
+            s_probs = probs[mask]
+            s_preds = (s_probs >= self.threshold).astype(int)
+
+            strata_results[f"R_{lo:.2f}_{hi:.2f}"] = {
+                "auc_roc": self._auc_roc(s_labels, s_probs),
+                "f1": self._f1(s_labels, s_preds),
+                "precision": self._precision(s_labels, s_preds),
+                "recall": self._recall(s_labels, s_preds),
+                "n_samples": int(mask.sum()),
+                "avg_R": float(R_scores[mask].mean()),
+            }
+
+        # Stratified by source type
+        source_types = metadata_all[:, 4].astype(int)
+        source_names = {
+            0: "unknown", 1: "clinical_trial", 2: "peer_reviewed",
+            3: "case_report", 4: "textbook", 5: "health_forum",
+            6: "social_media", 7: "traditional",
+        }
+        source_results = {}
+
+        for st_code, st_name in source_names.items():
+            mask = source_types == st_code
+            if mask.sum() < 3:
+                continue
+
+            s_labels = labels[mask]
+            s_probs = probs[mask]
+            s_preds = (s_probs >= self.threshold).astype(int)
+
+            source_results[st_name] = {
+                "auc_roc": self._auc_roc(s_labels, s_probs),
+                "f1": self._f1(s_labels, s_preds),
+                "n_samples": int(mask.sum()),
+                "avg_R": float(R_scores[mask].mean()),
+            }
+
+        # Log
+        logger.info("Stratified Evaluation Results:")
+        logger.info(f"  Overall: AUC={overall['auc_roc']:.4f}, F1={overall['f1']:.4f}")
+        for name, metrics in strata_results.items():
+            if "auc_roc" in metrics:
+                logger.info(
+                    f"  {name}: AUC={metrics['auc_roc']:.4f}, "
+                    f"F1={metrics['f1']:.4f}, n={metrics['n_samples']}"
+                )
+
+        return {
+            "overall": overall,
+            "by_reliability": strata_results,
+            "by_source": source_results,
+        }
+
+    def get_calibration_data(
+        self,
+        loader,
+        graph_data: dict,
+        n_bins: int = 10,
+    ) -> dict:
+        """
+        Generate data for calibration plots.
+
+        Computes per-bin accuracy vs confidence for reliability
+        calibration diagrams.
+        """
+        self.model.eval()
+
+        node_features = graph_data["node_features"].to(self.device)
+        edge_index = graph_data["edge_index"].to(self.device)
+        edge_type = graph_data["edge_type"].to(self.device)
+
+        all_labels = []
+        all_probs = []
+        all_R = []
+
+        with torch.no_grad():
+            for batch in loader:
+                source_indices = batch["source_indices"].to(self.device)
+                target_indices = batch["target_indices"].to(self.device)
+                labels = batch["labels"]
+                metadata = batch["metadata"].to(self.device)
+                evidence_texts = batch.get("evidence_texts", None)
+
+                output = self.model(
+                    node_features=node_features,
+                    edge_index=edge_index,
+                    edge_type=edge_type,
+                    source_indices=source_indices,
+                    target_indices=target_indices,
+                    metadata=metadata,
+                    evidence_texts=evidence_texts,
+                )
+
+                all_labels.append(labels.numpy())
+                all_probs.append(output["probabilities"].cpu().numpy())
+
+                if "reliability_scores" in output and output["reliability_scores"] is not None:
+                    all_R.append(output["reliability_scores"].cpu().numpy().squeeze())
+
+        labels = np.concatenate(all_labels)
+        probs = np.concatenate(all_probs)
+
+        # Prediction calibration (confidence vs accuracy)
+        pred_bins = []
+        boundaries = np.linspace(0, 1, n_bins + 1)
+        for i in range(n_bins):
+            lo, hi = boundaries[i], boundaries[i + 1]
+            mask = (probs >= lo) & (probs < hi + 1e-6)
+            if mask.sum() == 0:
+                continue
+            pred_bins.append({
+                "confidence_lo": lo,
+                "confidence_hi": hi,
+                "avg_confidence": float(probs[mask].mean()),
+                "accuracy": float(labels[mask].mean()),
+                "count": int(mask.sum()),
+            })
+
+        result = {
+            "prediction_calibration": pred_bins,
+            "ece": self._compute_ece(probs, labels, n_bins),
+        }
+
+        # R calibration (if available)
+        if all_R:
+            R_scores = np.concatenate(all_R)
+            correctness = 1.0 - np.abs(probs - labels)
+            R_bins = []
+            for i in range(n_bins):
+                lo, hi = boundaries[i], boundaries[i + 1]
+                mask = (R_scores >= lo) & (R_scores < hi + 1e-6)
+                if mask.sum() == 0:
+                    continue
+                R_bins.append({
+                    "R_lo": lo,
+                    "R_hi": hi,
+                    "avg_R": float(R_scores[mask].mean()),
+                    "avg_correctness": float(correctness[mask].mean()),
+                    "count": int(mask.sum()),
+                })
+            result["reliability_calibration"] = R_bins
+
+        return result
+
+    @staticmethod
+    def _compute_ece(
+        probs: np.ndarray, labels: np.ndarray, n_bins: int = 10
+    ) -> float:
+        """Compute Expected Calibration Error."""
+        boundaries = np.linspace(0, 1, n_bins + 1)
+        ece = 0.0
+        for i in range(n_bins):
+            lo, hi = boundaries[i], boundaries[i + 1]
+            mask = (probs >= lo) & (probs < hi + 1e-6)
+            if mask.sum() == 0:
+                continue
+            avg_conf = probs[mask].mean()
+            avg_acc = labels[mask].mean()
+            ece += mask.sum() / len(probs) * abs(avg_conf - avg_acc)
+        return float(ece)
+
