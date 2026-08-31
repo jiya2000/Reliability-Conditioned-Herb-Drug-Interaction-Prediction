@@ -23,6 +23,7 @@ from torch.utils.data import DataLoader
 from loguru import logger
 
 from src.data.synthetic_data import SyntheticDataGenerator
+from src.data.real_data import RealDataGenerator
 from src.data.dataset import HDIDataset, HDICollator, create_dataloader
 
 
@@ -164,7 +165,73 @@ class DataPipeline:
 
     def _build_real(self) -> dict:
         """Build pipeline from real data sources."""
-        raise NotImplementedError(
-            "Real data pipeline requires DrugBank/ChEMBL access. "
-            "Use mode='synthetic' for development."
+        if not self.data_dir:
+            self.data_dir = Path("data/processed/drugbank_parsed.json")
+            
+        gen = RealDataGenerator(
+            data_path=str(self.data_dir),
+            feature_dim=self.feature_dim,
+            seed=self.seed,
         )
+        data = gen.generate()
+
+        # Create datasets
+        train_dataset = HDIDataset(
+            positive_edges=data["train_edges"],
+            all_node_ids=data["all_node_ids"],
+            negative_ratio=self.negative_ratio,
+            seed=self.seed,
+        )
+        val_dataset = HDIDataset(
+            positive_edges=data["val_edges"],
+            all_node_ids=data["all_node_ids"],
+            negative_ratio=self.negative_ratio,
+            seed=self.seed + 1,
+        )
+        test_dataset = HDIDataset(
+            positive_edges=data["test_edges"],
+            all_node_ids=data["all_node_ids"],
+            negative_ratio=self.negative_ratio,
+            seed=self.seed + 2,
+        )
+
+        # Create data loaders
+        train_loader = create_dataloader(
+            train_dataset,
+            data["node_to_idx"],
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_workers,
+        )
+        val_loader = create_dataloader(
+            val_dataset,
+            data["node_to_idx"],
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )
+        test_loader = create_dataloader(
+            test_dataset,
+            data["node_to_idx"],
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )
+
+        logger.info(
+            f"Real Pipeline built: "
+            f"train={len(train_dataset)} samples, "
+            f"val={len(val_dataset)} samples, "
+            f"test={len(test_dataset)} samples"
+        )
+
+        return {
+            "train_loader": train_loader,
+            "val_loader": val_loader,
+            "test_loader": test_loader,
+            "graph_data": data["graph_data"],
+            "node_to_idx": data["node_to_idx"],
+            "all_node_ids": data["all_node_ids"],
+            "node_names": data.get("node_names", {}),
+            "num_relations": data["num_relations"],
+        }

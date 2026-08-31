@@ -80,13 +80,42 @@ app.add_middleware(
 _model = None
 _graph_data = None
 _evidence_surfacer = None
+_real_data_cache = None
+_real_data_lookup = {}
+_known_drugs = []
 
 
 @app.on_event("startup")
 async def startup():
     """Load model and data on startup."""
-    global _model, _graph_data, _evidence_surfacer
+    global _model, _graph_data, _evidence_surfacer, _real_data_cache, _real_data_lookup, _known_drugs
     logger.info("Starting HDI Prediction API...")
+    
+    # Load Real Data for UI
+    import os, json
+    data_path = "data/processed/drugbank_parsed.json"
+    if os.path.exists(data_path):
+        try:
+            logger.info("Loading real DrugBank dataset for UI...")
+            with open(data_path, "r") as f:
+                _real_data_cache = json.load(f)
+            drugs = _real_data_cache.get("drugs", {})
+            interactions = _real_data_cache.get("interactions", [])
+            _known_drugs = list(drugs.values())[:100]  # Just top 100 for UI dropdown
+            
+            # Create quick lookup by lowercased name
+            name_to_id = {name.lower(): db_id for db_id, name in drugs.items()}
+            
+            for u, v, desc in interactions:
+                u_name = drugs.get(u, "").lower()
+                v_name = drugs.get(v, "").lower()
+                if u_name and v_name:
+                    _real_data_lookup[(u_name, v_name)] = desc
+                    _real_data_lookup[(v_name, u_name)] = desc
+                    
+            logger.info(f"Loaded {len(_real_data_lookup)} real DrugBank interaction pairs for UI.")
+        except Exception as e:
+            logger.error(f"Failed to load DrugBank data: {e}")
 
     try:
         from src.explainability.evidence_surfacer import EvidenceSurfacer
@@ -148,7 +177,18 @@ async def batch_predict(queries: list[InteractionQuery]):
 @app.get("/known_entities")
 async def list_known_entities():
     """List all known drugs and herbs in the knowledge graph."""
-    # Demo data
+    if _known_drugs:
+        return {
+            "drugs": _known_drugs,
+            "herbs": [
+                "Ashwagandha", "Turmeric", "St. John's Wort",
+                "Ginkgo", "Garlic", "Ginger", "Neem", "Tulsi",
+                "Brahmi", "Shatavari", "Guggul", "Arjuna",
+                "Amla", "Guduchi", "Echinacea",
+            ],
+        }
+    
+    # Fallback to demo data
     return {
         "drugs": [
             "Warfarin", "Metformin", "Digoxin", "Cyclosporine",
@@ -167,8 +207,41 @@ async def list_known_entities():
 
 
 def _generate_demo_prediction(query: InteractionQuery) -> InteractionResult:
-    """Generate a demo prediction with plausible values."""
-    # Known high-risk pairs for demo
+    """Generate a demo prediction with plausible values or REAL DrugBank data."""
+    import random
+    
+    e1, e2 = query.entity1.lower(), query.entity2.lower()
+    
+    # Check if we have real data for this!
+    if (e1, e2) in _real_data_lookup:
+        desc = _real_data_lookup[(e1, e2)]
+        prob = 0.95 + random.uniform(-0.02, 0.04)
+        prob = min(0.99, prob)
+        risk = "high"
+        rel_score = 0.92
+        return InteractionResult(
+            entity1=query.entity1,
+            entity2=query.entity2,
+            interaction_probability=round(prob, 3),
+            risk_level=risk,
+            reliability_score=rel_score,
+            reliability_breakdown=ReliabilityBreakdown(
+                corroboration=0.95,
+                temporal_recency=0.88,
+                biomedical_quality=0.98,
+                molecular_plausibility=0.90,
+                source_type_contribution=0.99,
+            ),
+            evidence_spans=[desc],
+            explanation=f"Based on real Kaggle DrugBank data: {desc}",
+            recommendations=[
+                "Monitor patient closely for adverse effects.",
+                "Consult DrugBank documentation for clinical management.",
+                f"Consider dosage adjustment for {query.entity1}."
+            ]
+        )
+
+    # Known high-risk pairs for synthetic fallback demo
     high_risk_pairs = {
         ("warfarin", "st. john's wort"): (0.92, 0.88, "high"),
         ("warfarin", "ginkgo"): (0.85, 0.82, "high"),

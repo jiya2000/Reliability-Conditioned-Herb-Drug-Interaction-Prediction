@@ -64,6 +64,8 @@ def parse_args():
     ablate_parser.add_argument("--seeds", type=int, nargs="+",
                                default=[42, 123, 456],
                                help="Random seeds for multiple runs")
+    ablate_parser.add_argument("--mode", choices=["synthetic", "real"], default="synthetic",
+                               help="Data source mode")
 
     # Demo command
     demo_parser = subparsers.add_parser("demo", help="Run the demo applications")
@@ -167,13 +169,16 @@ def run_ablate(args):
 
     # Build data
     pipeline = DataPipeline(
-        mode="synthetic",
+        mode=args.mode,
         batch_size=args.batch_size,
     )
     data = pipeline.build()
 
     # Run ablation
-    runner = AblationRunner(epochs=args.epochs)
+    runner = AblationRunner(
+        epochs=args.epochs,
+        num_relations=data["num_relations"],
+    )
 
     logger.info("Running 3-variant comparison:")
     logger.info("  (a) GNN Only — no text, no R")
@@ -191,7 +196,6 @@ def run_ablate(args):
             val_loader=data["val_loader"],
             test_loader=data["test_loader"],
             graph_data=data["graph_data"],
-            num_relations=data["num_relations"],
         )
         all_results.append(result)
 

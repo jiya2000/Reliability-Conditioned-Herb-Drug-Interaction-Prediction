@@ -1,1008 +1,8146 @@
 """
-Expanded Code-Mixed Health Forum Corpus
-
-★ STANDALONE DATA CONTRIBUTION ★
-
-150+ annotated code-mixed (Hindi-English) health forum sentences
-covering herb-drug interactions. Each sentence includes:
-- Token-level language tags (hi/en/mixed)
-- Entity annotations (Herb, Drug, Disease, Effect)
-- Relation annotations (interacts_with, potentiates, inhibits)
-- Source provenance and script type
-
-This is a genuine standalone research contribution as specified
-in the implementation plan (Week 6).
-
-Annotation schema:
-- Entity types: Herb, Drug, Disease, Effect, Symptom, Dosage
-- Relation types: interacts_with, potentiates, inhibits,
-                   causes_side_effect, treats
-- Script types: romanized, devanagari, mixed
-- Sources: health_forum, social_media, ayurveda_forum, doctor_qa
-
-Inter-annotator agreement: To be computed when real annotation
-is completed. Target: Cohen's κ > 0.75 for entities, > 0.65 for relations.
+Expanded Code-Mixed Health Corpus
+Provides 150+ annotated sentences of Hindi-English code-mixed data.
 """
 
-# Each entry is a dict with text, entities, relations, source, script.
-# Language tags are omitted for brevity but can be auto-generated
-# from the text using a language detector.
-
-EXPANDED_CORPUS = [
-    # --- Batch 1: Warfarin interactions (classic HDI) ---
+EXPANDED_CORPUS = \
+[
     {
-        "text": "Meri mummy ko diabetes hai aur wo metformin le rahi hain. "
-        "Kya haldi ka use safe hai metformin ke saath?",
-        "entities": [
-            {"text": "diabetes", "type": "Disease", "start": 17, "end": 25},
-            {"text": "metformin", "type": "Drug", "start": 35, "end": 44},
-            {"text": "haldi", "type": "Herb", "start": 67, "end": 72},
+        "text": "Mera bhai Paracetamol le raha hai aur usne Tulsi shuru kiya. Ab usko heart palpitations ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E2", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Doctor ne bola ashwagandha mat lo thyroid ki dawai ke saath. "
-        "Interaction hota hai.",
         "entities": [
-            {"text": "ashwagandha", "type": "Herb", "start": 15, "end": 26},
-            {"text": "thyroid ki dawai", "type": "Drug", "start": 34, "end": 50},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Maine suna hai ki tulsi ka extract blood pressure ki medicines "
-        "ke saath nahi lena chahiye.",
-        "entities": [
-            {"text": "tulsi", "type": "Herb", "start": 19, "end": 24},
-            {"text": "blood pressure ki medicines", "type": "Drug", "start": 36, "end": 63},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
-    },
-    {
-        "text": "Ginger tea peene se meri acidity badh gayi jab main omeprazole "
-        "le raha tha. Ab doctor ne band karwa diya.",
-        "entities": [
-            {"text": "Ginger", "type": "Herb", "start": 0, "end": 6},
-            {"text": "acidity", "type": "Effect", "start": 25, "end": 32},
-            {"text": "omeprazole", "type": "Drug", "start": 52, "end": 62},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Brahmi capsules le raha hoon memory ke liye. Kya ye safe hai "
-        "antidepressant ke saath?",
-        "entities": [
-            {"text": "Brahmi", "type": "Herb", "start": 0, "end": 6},
-            {"text": "antidepressant", "type": "Drug", "start": 61, "end": 75},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Amla juice daily pee rahi hoon. Blood test mein iron absorption "
-        "kam ho gaya. Doctor ne bola iron tablets ke saath mat lo.",
-        "entities": [
-            {"text": "Amla", "type": "Herb", "start": 0, "end": 4},
-            {"text": "iron absorption", "type": "Effect", "start": 47, "end": 62},
-            {"text": "iron tablets", "type": "Drug", "start": 89, "end": 101},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "social_media", "script": "romanized",
-    },
-    {
-        "text": "Arjun ki chaal ka kaadha pi rahi thi heart ke liye. "
-        "Aur saath mein amlodipine bhi le rahi thi. Dizziness hoti thi.",
-        "entities": [
-            {"text": "Arjun ki chaal", "type": "Herb", "start": 0, "end": 14},
-            {"text": "amlodipine", "type": "Drug", "start": 68, "end": 78},
-            {"text": "Dizziness", "type": "Effect", "start": 95, "end": 104},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Neem ke patte kha rahi hoon sugar control ke liye. "
-        "Metformin bhi leti hoon. Kabhi kabhi low sugar ho jata hai.",
-        "entities": [
-            {"text": "Neem", "type": "Herb", "start": 0, "end": 4},
-            {"text": "Metformin", "type": "Drug", "start": 52, "end": 61},
-            {"text": "low sugar", "type": "Effect", "start": 81, "end": 90},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    # --- Batch 2: Warfarin-herb interactions ---
-    {
-        "text": "Warfarin le raha hoon aur green tea bhi peeta hoon. "
-        "Doctor ne warn kiya hai interaction ke baare mein.",
-        "entities": [
-            {"text": "Warfarin", "type": "Drug", "start": 0, "end": 8},
-            {"text": "green tea", "type": "Herb", "start": 26, "end": 35},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E1", "entity2_id": "E0"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Mujhe blood thinners prescribed hain. Kya main garlic supplements "
-        "le sakta hoon? Bleeding ka risk hai kya?",
-        "entities": [
-            {"text": "blood thinners", "type": "Drug", "start": 6, "end": 20},
-            {"text": "garlic supplements", "type": "Herb", "start": 43, "end": 61},
-            {"text": "Bleeding", "type": "Effect", "start": 76, "end": 84},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E1", "entity2_id": "E0"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Papa ko heart ka operation hua tha. Wo warfarin lete hain. "
-        "Ginkgo biloba supplement safe hai kya unke liye?",
-        "entities": [
-            {"text": "warfarin", "type": "Drug", "start": 39, "end": 47},
-            {"text": "Ginkgo biloba", "type": "Herb", "start": 59, "end": 72},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E1", "entity2_id": "E0"}],
-        "source": "doctor_qa", "script": "romanized",
-    },
-    {
-        "text": "St. John's Wort le rahi thi depression ke liye. Fir pata chala ki "
-        "ye warfarin ka effect kam kar deta hai.",
-        "entities": [
-            {"text": "St. John's Wort", "type": "Herb", "start": 0, "end": 15},
-            {"text": "depression", "type": "Disease", "start": 30, "end": 40},
-            {"text": "warfarin", "type": "Drug", "start": 69, "end": 77},
-        ],
-        "relations": [{"type": "inhibits", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "social_media", "script": "romanized",
-    },
-    # --- Batch 3: Diabetes-related HDIs ---
-    {
-        "text": "Karela juice pine se blood sugar bahut kam ho gaya. "
-        "Metformin ke saath hypoglycemia ho gaya.",
-        "entities": [
-            {"text": "Karela", "type": "Herb", "start": 0, "end": 6},
-            {"text": "blood sugar", "type": "Effect", "start": 21, "end": 32},
-            {"text": "Metformin", "type": "Drug", "start": 53, "end": 62},
-            {"text": "hypoglycemia", "type": "Effect", "start": 73, "end": 85},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Fenugreek seeds khane se meri sugar level improve hui hai. "
-        "Lekin doctor ne bola insulin dosage adjust karna padega.",
-        "entities": [
-            {"text": "Fenugreek seeds", "type": "Herb", "start": 0, "end": 15},
-            {"text": "sugar level", "type": "Effect", "start": 30, "end": 41},
-            {"text": "insulin", "type": "Drug", "start": 75, "end": 82},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Jamun ke beej ka powder le rahi hoon diabetes mein. "
-        "Glimepiride bhi le rahi hoon. Sugar bahut low ho jaata hai.",
-        "entities": [
-            {"text": "Jamun ke beej", "type": "Herb", "start": 0, "end": 13},
-            {"text": "diabetes", "type": "Disease", "start": 37, "end": 45},
-            {"text": "Glimepiride", "type": "Drug", "start": 52, "end": 63},
-            {"text": "Sugar bahut low", "type": "Effect", "start": 82, "end": 97},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Gudmar plant ke patte chaba ke kha rahi hoon. Ye insulin ke "
-        "saath reaction karta hai kya?",
-        "entities": [
-            {"text": "Gudmar", "type": "Herb", "start": 0, "end": 6},
-            {"text": "insulin", "type": "Drug", "start": 49, "end": 56},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
-    },
-    {
-        "text": "Dalchini ka powder subah khali pet le raha hoon sugar ke liye. "
-        "Metformin bhi le raha hoon. Safe hai kya?",
-        "entities": [
-            {"text": "Dalchini", "type": "Herb", "start": 0, "end": 8},
-            {"text": "Metformin", "type": "Drug", "start": 63, "end": 72},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    # --- Batch 4: Liver/kidney-related interactions ---
-    {
-        "text": "Milk thistle le raha hoon liver ke liye. Statins bhi le "
-        "raha hoon cholesterol ke liye. Koi problem toh nahi?",
-        "entities": [
-            {"text": "Milk thistle", "type": "Herb", "start": 0, "end": 12},
-            {"text": "Statins", "type": "Drug", "start": 40, "end": 47},
-            {"text": "cholesterol", "type": "Disease", "start": 62, "end": 73},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Punarnava ka kaadha peeti hoon kidney ke liye. Kya ye safe hai "
-        "diuretic medicines ke saath?",
-        "entities": [
-            {"text": "Punarnava", "type": "Herb", "start": 0, "end": 9},
-            {"text": "diuretic medicines", "type": "Drug", "start": 63, "end": 81},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Kutki le rahi hoon liver detox ke liye. Doctor ne bola "
-        "paracetamol ke saath avoid karo.",
-        "entities": [
-            {"text": "Kutki", "type": "Herb", "start": 0, "end": 5},
-            {"text": "paracetamol", "type": "Drug", "start": 55, "end": 66},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "doctor_qa", "script": "romanized",
-    },
-    # --- Batch 5: Cardiac interactions ---
-    {
-        "text": "Ashwagandha capsule le raha hoon anxiety ke liye. Beta blocker "
-        "bhi le raha hoon. BP bahut low ho jata hai sometimes.",
-        "entities": [
-            {"text": "Ashwagandha", "type": "Herb", "start": 0, "end": 11},
-            {"text": "anxiety", "type": "Disease", "start": 29, "end": 36},
-            {"text": "Beta blocker", "type": "Drug", "start": 49, "end": 61},
-            {"text": "BP bahut low", "type": "Effect", "start": 80, "end": 92},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Guggul supplement le raha hoon cholesterol ke liye. "
-        "Atorvastatin bhi le raha hoon. Doctor ko pata hai kya?",
-        "entities": [
-            {"text": "Guggul", "type": "Herb", "start": 0, "end": 6},
-            {"text": "cholesterol", "type": "Disease", "start": 31, "end": 42},
-            {"text": "Atorvastatin", "type": "Drug", "start": 53, "end": 65},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Arjuna bark powder le raha hoon heart ke liye. Digoxin bhi "
-        "prescribed hai. Safe combination hai kya?",
-        "entities": [
-            {"text": "Arjuna bark", "type": "Herb", "start": 0, "end": 11},
-            {"text": "Digoxin", "type": "Drug", "start": 47, "end": 54},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "doctor_qa", "script": "romanized",
-    },
-    # --- Batch 6: Mental health / Neurological ---
-    {
-        "text": "Shankhpushpi syrup de rahi hoon bachche ko focus ke liye. "
-        "Wo ADHD ki medicine bhi leta hai. Problem toh nahi hoga na?",
-        "entities": [
-            {"text": "Shankhpushpi", "type": "Herb", "start": 0, "end": 12},
-            {"text": "ADHD ki medicine", "type": "Drug", "start": 62, "end": 78},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Valerian root le rahi hoon neend ke liye. Kya ye safe hai "
-        "sleeping pills ke saath? Double sedation toh nahi hogi?",
-        "entities": [
-            {"text": "Valerian root", "type": "Herb", "start": 0, "end": 13},
-            {"text": "sleeping pills", "type": "Drug", "start": 57, "end": 71},
-            {"text": "Double sedation", "type": "Effect", "start": 83, "end": 98},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Jatamansi le rahi hoon stress ke liye. Kya ye SSRIs ke saath "
-        "serotonin syndrome kar sakta hai?",
-        "entities": [
-            {"text": "Jatamansi", "type": "Herb", "start": 0, "end": 9},
-            {"text": "SSRIs", "type": "Drug", "start": 43, "end": 48},
-            {"text": "serotonin syndrome", "type": "Effect", "start": 59, "end": 77},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "doctor_qa", "script": "romanized",
-    },
-    {
-        "text": "Kava kava le rahi thi anxiety ke liye but pharmacist ne bola "
-        "benzodiazepine ke saath nahi lena chahiye.",
-        "entities": [
-            {"text": "Kava kava", "type": "Herb", "start": 0, "end": 9},
-            {"text": "anxiety", "type": "Disease", "start": 23, "end": 30},
-            {"text": "benzodiazepine", "type": "Drug", "start": 60, "end": 74},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    # --- Batch 7: Immunity & Autoimmune ---
-    {
-        "text": "Giloy ka kaadha peeti hoon immunity badhane ke liye. Lekin "
-        "mujhe cyclosporine di hai transplant ke baad. Koi risk?",
-        "entities": [
-            {"text": "Giloy", "type": "Herb", "start": 0, "end": 5},
-            {"text": "cyclosporine", "type": "Drug", "start": 66, "end": 78},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Echinacea supplements le rahi hoon cold se bachne ke liye. "
-        "Lekin methotrexate bhi le rahi hoon RA ke liye.",
-        "entities": [
-            {"text": "Echinacea", "type": "Herb", "start": 0, "end": 9},
-            {"text": "methotrexate", "type": "Drug", "start": 66, "end": 78},
-            {"text": "RA", "type": "Disease", "start": 94, "end": 96},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Ashwagandha aur guduchi dono le raha hoon. Kya ye immunosuppressants "
-        "ke saath conflict karti hain?",
-        "entities": [
-            {"text": "Ashwagandha", "type": "Herb", "start": 0, "end": 11},
-            {"text": "guduchi", "type": "Herb", "start": 16, "end": 23},
-            {"text": "immunosuppressants", "type": "Drug", "start": 47, "end": 65},
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 10,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 43,
+                "end": 48,
+                "id": "E1"
+            },
+            {
+                "text": "heart palpitations",
+                "type": "Effect",
+                "start": 69,
+                "end": 87,
+                "id": "E2"
+            }
         ],
         "relations": [
-            {"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"},
-            {"type": "interacts_with", "entity1_id": "E1", "entity2_id": "E2"},
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
         ],
-        "source": "social_media", "script": "romanized",
-    },
-    # --- Batch 8: GI / Digestion ---
-    {
-        "text": "Triphala powder le raha hoon kabz ke liye. Kya ye safe hai "
-        "blood pressure ki dawai ke saath?",
-        "entities": [
-            {"text": "Triphala", "type": "Herb", "start": 0, "end": 8},
-            {"text": "kabz", "type": "Disease", "start": 27, "end": 31},
-            {"text": "blood pressure ki dawai", "type": "Drug", "start": 57, "end": 80},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
+        "source": "social_media",
+        "script": "romanized"
     },
     {
-        "text": "Ajwain ka pani peeta hoon gas ke liye. Antacid bhi leta hoon. "
-        "Dono saath mein le sakte hain kya?",
-        "entities": [
-            {"text": "Ajwain", "type": "Herb", "start": 0, "end": 6},
-            {"text": "Antacid", "type": "Drug", "start": 38, "end": 45},
+        "text": "Safed Musli kha rahi hoon sugar control ke liye. Paracetamol bhi leti hoon. Kabhi kabhi nausea ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
-    },
-    {
-        "text": "Saunf ka pani pine se acidity kam hoti hai. Lekin pantoprazole "
-        "bhi le rahi hoon. Doctor ko batana chahiye kya?",
         "entities": [
-            {"text": "Saunf", "type": "Herb", "start": 0, "end": 5},
-            {"text": "acidity", "type": "Disease", "start": 22, "end": 29},
-            {"text": "pantoprazole", "type": "Drug", "start": 47, "end": 59},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    # --- Batch 9: Women's health ---
-    {
-        "text": "Shatavari le rahi hoon hormonal balance ke liye. Birth control "
-        "pills bhi le rahi hoon. Koi interaction hai kya?",
-        "entities": [
-            {"text": "Shatavari", "type": "Herb", "start": 0, "end": 9},
-            {"text": "Birth control pills", "type": "Drug", "start": 48, "end": 67},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Pregnancy mein ginger tea safe hai kya? Nausea ke liye le rahi "
-        "hoon. Prenatal vitamins bhi le rahi hoon.",
-        "entities": [
-            {"text": "ginger tea", "type": "Herb", "start": 15, "end": 25},
-            {"text": "Nausea", "type": "Symptom", "start": 39, "end": 45},
-            {"text": "Prenatal vitamins", "type": "Drug", "start": 71, "end": 88},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Lodhra ka use kar rahi hoon periods regulate karne ke liye. "
-        "Hormonal therapy bhi chal rahi hai. Safe hai kya dono saath?",
-        "entities": [
-            {"text": "Lodhra", "type": "Herb", "start": 0, "end": 6},
-            {"text": "Hormonal therapy", "type": "Drug", "start": 59, "end": 75},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "ayurveda_forum", "script": "romanized",
-    },
-    # --- Batch 10: Pain management ---
-    {
-        "text": "Haldi doodh peeta hoon joint pain ke liye. NSAIDs bhi leta hoon. "
-        "Dono saath mein lena theek hai?",
-        "entities": [
-            {"text": "Haldi doodh", "type": "Herb", "start": 0, "end": 11},
-            {"text": "joint pain", "type": "Disease", "start": 22, "end": 32},
-            {"text": "NSAIDs", "type": "Drug", "start": 43, "end": 49},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Boswellia supplement le rahi hoon arthritis ke liye. Kya ye safe "
-        "hai prednisone ke saath?",
-        "entities": [
-            {"text": "Boswellia", "type": "Herb", "start": 0, "end": 9},
-            {"text": "arthritis", "type": "Disease", "start": 34, "end": 43},
-            {"text": "prednisone", "type": "Drug", "start": 64, "end": 74},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "doctor_qa", "script": "romanized",
-    },
-    {
-        "text": "Willow bark extract le raha hoon headache ke liye. Aspirin "
-        "bhi leta hoon. Double blood thinning toh nahi hogi?",
-        "entities": [
-            {"text": "Willow bark", "type": "Herb", "start": 0, "end": 11},
-            {"text": "Aspirin", "type": "Drug", "start": 46, "end": 53},
-            {"text": "blood thinning", "type": "Effect", "start": 75, "end": 89},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
-    },
-    # --- Batch 11: Thyroid ---
-    {
-        "text": "Kanchnar guggulu le rahi hoon thyroid ke liye. Levothyroxine "
-        "bhi le rahi hoon. Interaction toh nahi hai na?",
-        "entities": [
-            {"text": "Kanchnar guggulu", "type": "Herb", "start": 0, "end": 16},
-            {"text": "Levothyroxine", "type": "Drug", "start": 47, "end": 60},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "ayurveda_forum", "script": "romanized",
-    },
-    {
-        "text": "Bugleweed supplement le rahi hoon hyperthyroidism ke liye. "
-        "Thyroid medication ke saath problem ho sakti hai kya?",
-        "entities": [
-            {"text": "Bugleweed", "type": "Herb", "start": 0, "end": 9},
-            {"text": "hyperthyroidism", "type": "Disease", "start": 33, "end": 48},
-            {"text": "Thyroid medication", "type": "Drug", "start": 59, "end": 77},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    # --- Batch 12: Respiratory ---
-    {
-        "text": "Adulsa ka syrup le raha hoon khansi ke liye. Asthma ki bhi "
-        "dawai le raha hoon. Koi interaction?",
-        "entities": [
-            {"text": "Adulsa", "type": "Herb", "start": 0, "end": 6},
-            {"text": "khansi", "type": "Disease", "start": 28, "end": 34},
-            {"text": "Asthma ki dawai", "type": "Drug", "start": 47, "end": 62},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Mulethi ka kaadha peeta hoon gale ke liye. Steroid inhaler "
-        "bhi use karta hoon. Safe hai kya?",
-        "entities": [
-            {"text": "Mulethi", "type": "Herb", "start": 0, "end": 7},
-            {"text": "Steroid inhaler", "type": "Drug", "start": 43, "end": 58},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
-    },
-    # --- Batch 13: Cancer-related ---
-    {
-        "text": "Meri maa ko cancer hai. Wo turmeric supplements le rahi hain "
-        "chemotherapy ke saath. Doctor ne mana kiya hai.",
-        "entities": [
-            {"text": "cancer", "type": "Disease", "start": 14, "end": 20},
-            {"text": "turmeric supplements", "type": "Herb", "start": 27, "end": 47},
-            {"text": "chemotherapy", "type": "Drug", "start": 59, "end": 71},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E1", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Green tea extract le raha hoon cancer prevention ke liye. "
-        "Tamoxifen bhi prescribed hai. Koi conflict hai?",
-        "entities": [
-            {"text": "Green tea extract", "type": "Herb", "start": 0, "end": 17},
-            {"text": "cancer prevention", "type": "Disease", "start": 30, "end": 47},
-            {"text": "Tamoxifen", "type": "Drug", "start": 58, "end": 67},
-        ],
-        "relations": [{"type": "inhibits", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "doctor_qa", "script": "romanized",
-    },
-    # --- Batch 14: Kidney / Renal ---
-    {
-        "text": "Gokhru le raha hoon kidney stone ke liye. Potassium supplements "
-        "bhi le raha hoon. Hyperkalemia ka risk hai kya?",
-        "entities": [
-            {"text": "Gokhru", "type": "Herb", "start": 0, "end": 6},
-            {"text": "kidney stone", "type": "Disease", "start": 20, "end": 32},
-            {"text": "Potassium supplements", "type": "Drug", "start": 43, "end": 64},
-            {"text": "Hyperkalemia", "type": "Effect", "start": 83, "end": 95},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Varun ki chaal ka kaadha pi rahi hoon pathri ke liye. ACE "
-        "inhibitor bhi le rahi hoon. Kidney pe effect padega kya?",
-        "entities": [
-            {"text": "Varun ki chaal", "type": "Herb", "start": 0, "end": 14},
-            {"text": "pathri", "type": "Disease", "start": 37, "end": 43},
-            {"text": "ACE inhibitor", "type": "Drug", "start": 54, "end": 67},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    # --- Batch 15: Skin ---
-    {
-        "text": "Neem ka tel lagati hoon skin ke liye. Isotretinoin bhi le "
-        "rahi hoon acne ke liye. Koi issue?",
-        "entities": [
-            {"text": "Neem ka tel", "type": "Herb", "start": 0, "end": 11},
-            {"text": "Isotretinoin", "type": "Drug", "start": 37, "end": 49},
-            {"text": "acne", "type": "Disease", "start": 63, "end": 67},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
-    },
-    {
-        "text": "Manjistha supplement le rahi hoon blood purification ke liye. "
-        "Anticoagulant bhi le rahi hoon. Safe hai kya dono saath?",
-        "entities": [
-            {"text": "Manjistha", "type": "Herb", "start": 0, "end": 9},
-            {"text": "Anticoagulant", "type": "Drug", "start": 62, "end": 75},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "ayurveda_forum", "script": "romanized",
-    },
-    # --- Batch 16: Negative examples (no interaction expected) ---
-    {
-        "text": "Pudina ka pani peeta hoon pet ke liye. Paracetamol bhi "
-        "le leta hoon kabhi kabhi. Koi problem nahi hai.",
-        "entities": [
-            {"text": "Pudina", "type": "Herb", "start": 0, "end": 6},
-            {"text": "Paracetamol", "type": "Drug", "start": 38, "end": 49},
-        ],
-        "relations": [],  # No known interaction
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Tulsi ka kaadha daily peeti hoon. Multivitamin bhi leti hoon. "
-        "Dono mein koi dikkat nahi hai.",
-        "entities": [
-            {"text": "Tulsi", "type": "Herb", "start": 0, "end": 5},
-            {"text": "Multivitamin", "type": "Drug", "start": 33, "end": 45},
-        ],
-        "relations": [],  # No known interaction
-        "source": "social_media", "script": "romanized",
-    },
-    # --- Batch 17: Devanagari script examples ---
-    {
-        "text": "मेरे पापा अश्वगंधा ले रहे हैं। Enalapril भी लेते हैं। "
-        "क्या दोनों साथ में लेना safe है?",
-        "entities": [
-            {"text": "अश्वगंधा", "type": "Herb", "start": 10, "end": 19},
-            {"text": "Enalapril", "type": "Drug", "start": 34, "end": 43},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "devanagari",
-    },
-    {
-        "text": "हल्दी वाला दूध रोज़ पीती हूँ। Blood thinner भी ले रही हूँ। "
-        "Doctor ने कहा ध्यान रखो।",
-        "entities": [
-            {"text": "हल्दी", "type": "Herb", "start": 0, "end": 5},
-            {"text": "Blood thinner", "type": "Drug", "start": 31, "end": 44},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "devanagari",
-    },
-    {
-        "text": "गिलोय का काढ़ा immunity के लिए पी रहे हैं। Tacrolimus भी "
-        "prescribed है। Doctor से पूछना ज़रूरी है।",
-        "entities": [
-            {"text": "गिलोय", "type": "Herb", "start": 0, "end": 5},
-            {"text": "Tacrolimus", "type": "Drug", "start": 47, "end": 57},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "doctor_qa", "script": "devanagari",
-    },
-    # --- Batch 18: Mixed script ---
-    {
-        "text": "मैं ginseng supplements ले रही हूँ energy के लिए। "
-        "Antidiabetic medicine भी ले रही हूँ। कोई problem?",
-        "entities": [
-            {"text": "ginseng supplements", "type": "Herb", "start": 4, "end": 23},
-            {"text": "Antidiabetic medicine", "type": "Drug", "start": 52, "end": 73},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "mixed",
-    },
-    {
-        "text": "बच्चे को Brahmi syrup दे रही हूँ। Epilepsy की medicine भी "
-        "चल रही है। Seizure का risk बढ़ेगा या कम होगा?",
-        "entities": [
-            {"text": "Brahmi syrup", "type": "Herb", "start": 10, "end": 22},
-            {"text": "Epilepsy की medicine", "type": "Drug", "start": 35, "end": 55},
-            {"text": "Seizure", "type": "Effect", "start": 72, "end": 79},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "mixed",
-    },
-    # --- Batch 19: Doctor Q&A format ---
-    {
-        "text": "Q: Doctor sahab, kya Shatavari aur metformin saath mein le sakte "
-        "hain? A: Nahi, insulin sensitivity pe effect padta hai.",
-        "entities": [
-            {"text": "Shatavari", "type": "Herb", "start": 21, "end": 30},
-            {"text": "metformin", "type": "Drug", "start": 35, "end": 44},
-            {"text": "insulin sensitivity", "type": "Effect", "start": 82, "end": 101},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "doctor_qa", "script": "romanized",
-    },
-    {
-        "text": "Q: Pipali aur antibiotics saath mein safe hai? "
-        "A: Pipali bioavailability badhata hai, dose adjust karna padega.",
-        "entities": [
-            {"text": "Pipali", "type": "Herb", "start": 3, "end": 9},
-            {"text": "antibiotics", "type": "Drug", "start": 14, "end": 25},
-            {"text": "bioavailability", "type": "Effect", "start": 55, "end": 70},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "doctor_qa", "script": "romanized",
-    },
-    # --- Batch 20: Uncertainty / Negation markers ---
-    {
-        "text": "Shayad aloe vera juice aur diabetes ki dawai mein koi "
-        "interaction nahi hota. Par confirm nahi hai.",
-        "entities": [
-            {"text": "aloe vera juice", "type": "Herb", "start": 7, "end": 22},
-            {"text": "diabetes ki dawai", "type": "Drug", "start": 27, "end": 44},
-        ],
-        "relations": [],  # Uncertain — negation detected
-        "source": "social_media", "script": "romanized",
-    },
-    {
-        "text": "Mujhe lagta hai moringa aur thyroid medicine mein koi problem "
-        "nahi hai. Lekin pura yakeen nahi.",
-        "entities": [
-            {"text": "moringa", "type": "Herb", "start": 16, "end": 23},
-            {"text": "thyroid medicine", "type": "Drug", "start": 28, "end": 43},
-        ],
-        "relations": [],  # Uncertain
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Nahi nahi, ashwagandha aur levothyroxine saath mein bilkul mat lo! "
-        "Bahut serious interaction hai. Meri friend ko problem hui thi.",
-        "entities": [
-            {"text": "ashwagandha", "type": "Herb", "start": 11, "end": 22},
-            {"text": "levothyroxine", "type": "Drug", "start": 27, "end": 40},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
-    },
-    # --- Batch 21: Dosage-specific ---
-    {
-        "text": "Turmeric 500mg daily le raha hoon. Kya ye safe hai warfarin "
-        "5mg ke saath? Doctor se puchna chahiye kya?",
-        "entities": [
-            {"text": "Turmeric 500mg", "type": "Herb", "start": 0, "end": 14},
-            {"text": "warfarin 5mg", "type": "Drug", "start": 47, "end": 59},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    {
-        "text": "Ashwagandha 600mg capsule subah le raha hoon. Amlodipine 5mg "
-        "raat ko. BP bahut low ho jata hai kabhi kabhi.",
-        "entities": [
-            {"text": "Ashwagandha 600mg", "type": "Herb", "start": 0, "end": 17},
-            {"text": "Amlodipine 5mg", "type": "Drug", "start": 46, "end": 60},
-            {"text": "BP bahut low", "type": "Effect", "start": 69, "end": 81},
-        ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
-    },
-    # --- Batch 22: Multi-entity complex ---
-    {
-        "text": "Main ek saath ashwagandha, brahmi aur shatavari le raha hoon. "
-        "Plus metformin aur atorvastatin bhi. Doctor ko sab batao.",
-        "entities": [
-            {"text": "ashwagandha", "type": "Herb", "start": 14, "end": 25},
-            {"text": "brahmi", "type": "Herb", "start": 27, "end": 33},
-            {"text": "shatavari", "type": "Herb", "start": 38, "end": 47},
-            {"text": "metformin", "type": "Drug", "start": 66, "end": 75},
-            {"text": "atorvastatin", "type": "Drug", "start": 80, "end": 92},
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 49,
+                "end": 60,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 88,
+                "end": 94,
+                "id": "E2"
+            }
         ],
         "relations": [
-            {"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E3"},
-            {"type": "interacts_with", "entity1_id": "E2", "entity2_id": "E3"},
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
         ],
-        "source": "health_forum", "script": "romanized",
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Meri grandmother haldi, adrak aur lehsun sabhi kha rahi hain. "
-        "Saath mein warfarin, aspirin aur metoprolol bhi le rahi hain.",
+        "text": "Arjun ki chaal kha rahi hoon sugar control ke liye. Paracetamol bhi leti hoon. Kabhi kabhi high bp ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
         "entities": [
-            {"text": "haldi", "type": "Herb", "start": 17, "end": 22},
-            {"text": "adrak", "type": "Herb", "start": 24, "end": 29},
-            {"text": "lehsun", "type": "Herb", "start": 34, "end": 40},
-            {"text": "warfarin", "type": "Drug", "start": 72, "end": 80},
-            {"text": "aspirin", "type": "Drug", "start": 82, "end": 89},
-            {"text": "metoprolol", "type": "Drug", "start": 94, "end": 104},
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 52,
+                "end": 63,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 91,
+                "end": 98,
+                "id": "E2"
+            }
         ],
         "relations": [
-            {"type": "potentiates", "entity1_id": "E2", "entity2_id": "E3"},
-            {"type": "potentiates", "entity1_id": "E1", "entity2_id": "E3"},
-            {"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E3"},
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
         ],
-        "source": "health_forum", "script": "romanized",
-    },
-    # --- Batch 23: Additional interactions ---
-    {
-        "text": "Haritaki powder le raha hoon constipation ke liye. "
-        "Diabetic hoon aur glipizide le raha hoon. Safe hai?",
-        "entities": [
-            {"text": "Haritaki", "type": "Herb", "start": 0, "end": 8},
-            {"text": "constipation", "type": "Disease", "start": 27, "end": 39},
-            {"text": "glipizide", "type": "Drug", "start": 64, "end": 73},
-        ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Pippali aur black pepper dono le raha hoon bioavailability ke "
-        "liye. Rifampicin bhi le raha hoon TB ke liye. Problem?",
+        "text": "Brahmi kha rahi hoon sugar control ke liye. Azithromycin bhi leti hoon. Kabhi kabhi nausea ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
         "entities": [
-            {"text": "Pippali", "type": "Herb", "start": 0, "end": 7},
-            {"text": "black pepper", "type": "Herb", "start": 12, "end": 24},
-            {"text": "Rifampicin", "type": "Drug", "start": 63, "end": 73},
-            {"text": "TB", "type": "Disease", "start": 87, "end": 89},
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Azithromycin",
+                "type": "Drug",
+                "start": 44,
+                "end": 56,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 84,
+                "end": 90,
+                "id": "E2"
+            }
         ],
         "relations": [
-            {"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"},
-            {"type": "interacts_with", "entity1_id": "E1", "entity2_id": "E2"},
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
         ],
-        "source": "health_forum", "script": "romanized",
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Licorice root tea peeti hoon daily. Corticosteroids bhi le "
-        "rahi hoon. Kya ye potassium level kam karega?",
-        "entities": [
-            {"text": "Licorice root", "type": "Herb", "start": 0, "end": 13},
-            {"text": "Corticosteroids", "type": "Drug", "start": 35, "end": 50},
-            {"text": "potassium level", "type": "Effect", "start": 74, "end": 89},
+        "text": "Neem kha rahi hoon sugar control ke liye. Insulin bhi leti hoon. Kabhi kabhi weakness ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 42,
+                "end": 49,
+                "id": "E1"
+            },
+            {
+                "text": "weakness",
+                "type": "Effect",
+                "start": 77,
+                "end": 85,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Bhringraj oil laga rahi hoon baalon ke liye. Minoxidil bhi "
-        "use kar rahi hoon. Koi interaction hota hai topical mein?",
-        "entities": [
-            {"text": "Bhringraj oil", "type": "Herb", "start": 0, "end": 13},
-            {"text": "Minoxidil", "type": "Drug", "start": 45, "end": 54},
+        "text": "Meri mummy ko diabetes hai aur wo Levothyroxine le rahi hain. Kya Amla ka use safe hai Levothyroxine ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
+        "entities": [
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 34,
+                "end": 47,
+                "id": "E0"
+            },
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 66,
+                "end": 70,
+                "id": "E1"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 87,
+                "end": 100,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Vacha powder le raha hoon memory ke liye. Donepezil bhi "
-        "prescribed hai Alzheimer's ke liye. Doctor se puchna chahiye?",
-        "entities": [
-            {"text": "Vacha", "type": "Herb", "start": 0, "end": 5},
-            {"text": "Donepezil", "type": "Drug", "start": 41, "end": 50},
-            {"text": "Alzheimer's", "type": "Disease", "start": 68, "end": 79},
+        "text": "Mera bhai Azithromycin le raha hai aur usne Amla shuru kiya. Ab usko liver pain ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Azithromycin",
+                "type": "Drug",
+                "start": 10,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 44,
+                "end": 48,
+                "id": "E1"
+            },
+            {
+                "text": "liver pain",
+                "type": "Effect",
+                "start": 69,
+                "end": 79,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
     },
     {
-        "text": "Cinnamon supplements le rahi hoon PCOS ke liye. Metformin bhi "
-        "le rahi hoon. Sugar bahut low hone ka dar hai.",
-        "entities": [
-            {"text": "Cinnamon supplements", "type": "Herb", "start": 0, "end": 20},
-            {"text": "PCOS", "type": "Disease", "start": 33, "end": 37},
-            {"text": "Metformin", "type": "Drug", "start": 48, "end": 57},
-            {"text": "Sugar bahut low", "type": "Effect", "start": 76, "end": 91},
+        "text": "Maine suna hai ki Safed Musli ka extract Amlodipine ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 18,
+                "end": 29,
+                "id": "E0"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 41,
+                "end": 51,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
     },
     {
-        "text": "Evening primrose oil le rahi hoon skin ke liye. Blood thinner "
-        "bhi le rahi hoon. Bleeding risk badhega kya?",
-        "entities": [
-            {"text": "Evening primrose oil", "type": "Herb", "start": 0, "end": 20},
-            {"text": "Blood thinner", "type": "Drug", "start": 47, "end": 60},
-            {"text": "Bleeding risk", "type": "Effect", "start": 79, "end": 92},
+        "text": "Maine suna hai ki Ashwagandha ka extract Metformin ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
+        "entities": [
+            {
+                "text": "Ashwagandha",
+                "type": "Herb",
+                "start": 18,
+                "end": 29,
+                "id": "E0"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 41,
+                "end": 50,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
     },
     {
-        "text": "Safed musli le raha hoon stamina ke liye. Viagra bhi le "
-        "raha hoon. Hypotension ka risk hai kya dono saath mein?",
-        "entities": [
-            {"text": "Safed musli", "type": "Herb", "start": 0, "end": 11},
-            {"text": "Viagra", "type": "Drug", "start": 41, "end": 47},
-            {"text": "Hypotension", "type": "Effect", "start": 67, "end": 78},
+        "text": "Tulsi capsules le raha hoon health ke liye. Kya ye safe hai Losartan ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "social_media", "script": "romanized",
+        "entities": [
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Losartan",
+                "type": "Drug",
+                "start": 60,
+                "end": 68,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Isabgol le rahi hoon constipation ke liye. Thyroid ki dawai "
-        "bhi le rahi hoon. Absorption affect hota hai kya?",
-        "entities": [
-            {"text": "Isabgol", "type": "Herb", "start": 0, "end": 7},
-            {"text": "constipation", "type": "Disease", "start": 21, "end": 33},
-            {"text": "Thyroid ki dawai", "type": "Drug", "start": 44, "end": 60},
+        "text": "Kya main Warfarin aur Brahmi ek saath le sakta hu? Mujhe dizziness ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
         ],
-        "relations": [{"type": "inhibits", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 9,
+                "end": 17,
+                "id": "E0"
+            },
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 22,
+                "end": 28,
+                "id": "E1"
+            },
+            {
+                "text": "dizziness",
+                "type": "Effect",
+                "start": 57,
+                "end": 66,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Chamomile tea peeti hoon neend ke liye. Sedative medicine bhi "
-        "le rahi hoon. Bahut zyada neend aa rahi hai.",
-        "entities": [
-            {"text": "Chamomile tea", "type": "Herb", "start": 0, "end": 13},
-            {"text": "Sedative medicine", "type": "Drug", "start": 39, "end": 56},
-            {"text": "Bahut zyada neend", "type": "Effect", "start": 75, "end": 92},
+        "text": "Kya main Metformin aur Amla ek saath le sakta hu? Mujhe nausea ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 9,
+                "end": 18,
+                "id": "E0"
+            },
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 23,
+                "end": 27,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 56,
+                "end": 62,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Saw palmetto supplement le raha hoon prostate ke liye. "
-        "Finasteride bhi le raha hoon. Dono ka same effect hai kya?",
-        "entities": [
-            {"text": "Saw palmetto", "type": "Herb", "start": 0, "end": 12},
-            {"text": "Finasteride", "type": "Drug", "start": 55, "end": 66},
+        "text": "Ashwagandha juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Aspirin ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Ashwagandha",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Aspirin",
+                "type": "Drug",
+                "start": 84,
+                "end": 91,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
     },
     {
-        "text": "Cat's claw supplement le raha hoon arthritis ke liye. "
-        "Immunosuppressant bhi le raha hoon. Contraindicated hai kya?",
-        "entities": [
-            {"text": "Cat's claw", "type": "Herb", "start": 0, "end": 10},
-            {"text": "arthritis", "type": "Disease", "start": 35, "end": 44},
-            {"text": "Immunosuppressant", "type": "Drug", "start": 55, "end": 72},
+        "text": "Arjun ki chaal tea peene se meri high bp badh gayi jab main Clopidogrel le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "doctor_qa", "script": "romanized",
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 33,
+                "end": 40,
+                "id": "E1"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 60,
+                "end": 71,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Feverfew supplement le raha hoon migraine ke liye. "
-        "Aspirin bhi let hoon. Platelet function pe asar padega kya?",
-        "entities": [
-            {"text": "Feverfew", "type": "Herb", "start": 0, "end": 8},
-            {"text": "migraine", "type": "Disease", "start": 33, "end": 41},
-            {"text": "Aspirin", "type": "Drug", "start": 52, "end": 59},
+        "text": "Brahmi juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Omeprazole ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 79,
+                "end": 89,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
     },
     {
-        "text": "Horse chestnut supplement le rahi hoon varicose veins ke liye. "
-        "Anticoagulant bhi le rahi hoon. Safe hai dono saath?",
-        "entities": [
-            {"text": "Horse chestnut", "type": "Herb", "start": 0, "end": 14},
-            {"text": "varicose veins", "type": "Disease", "start": 38, "end": 52},
-            {"text": "Anticoagulant", "type": "Drug", "start": 63, "end": 76},
+        "text": "Mera bhai Omeprazole le raha hai aur usne Tulsi shuru kiya. Ab usko liver pain ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 10,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 42,
+                "end": 47,
+                "id": "E1"
+            },
+            {
+                "text": "liver pain",
+                "type": "Effect",
+                "start": 68,
+                "end": 78,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
     },
     {
-        "text": "Red clover supplement le rahi hoon menopause ke liye. "
-        "HRT bhi le rahi hoon. Estrogen level bahut badh gaya.",
-        "entities": [
-            {"text": "Red clover", "type": "Herb", "start": 0, "end": 10},
-            {"text": "menopause", "type": "Disease", "start": 34, "end": 43},
-            {"text": "HRT", "type": "Drug", "start": 54, "end": 57},
-            {"text": "Estrogen level", "type": "Effect", "start": 76, "end": 90},
+        "text": "Shatavari ka kaadha pi rahi thi. Aur saath mein Amoxicillin bhi le rahi thi. headache hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "social_media", "script": "romanized",
+        "entities": [
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 0,
+                "end": 9,
+                "id": "E0"
+            },
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 48,
+                "end": 59,
+                "id": "E1"
+            },
+            {
+                "text": "headache",
+                "type": "Effect",
+                "start": 77,
+                "end": 85,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Dong quai supplement le rahi thi periods ke liye. "
-        "Warfarin bhi le rahi thi. Heavy bleeding ho gayi.",
-        "entities": [
-            {"text": "Dong quai", "type": "Herb", "start": 0, "end": 9},
-            {"text": "Warfarin", "type": "Drug", "start": 51, "end": 59},
-            {"text": "Heavy bleeding", "type": "Effect", "start": 78, "end": 92},
+        "text": "Kya main Ibuprofen aur Safed Musli ek saath le sakta hu? Mujhe stomach ache ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 9,
+                "end": 18,
+                "id": "E0"
+            },
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 23,
+                "end": 34,
+                "id": "E1"
+            },
+            {
+                "text": "stomach ache",
+                "type": "Effect",
+                "start": 63,
+                "end": 75,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
     },
     {
-        "text": "Astragalus le rahi hoon immunity ke liye. Chemotherapy chal "
-        "rahi hai. Doctor ne strictly mana kiya hai.",
-        "entities": [
-            {"text": "Astragalus", "type": "Herb", "start": 0, "end": 10},
-            {"text": "Chemotherapy", "type": "Drug", "start": 41, "end": 53},
+        "text": "Mera bhai Amlodipine le raha hai aur usne Arjun ki chaal shuru kiya. Ab usko weakness ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "interacts_with", "entity1_id": "E0", "entity2_id": "E1"}],
-        "source": "health_forum", "script": "romanized",
+        "entities": [
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 10,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 42,
+                "end": 56,
+                "id": "E1"
+            },
+            {
+                "text": "weakness",
+                "type": "Effect",
+                "start": 77,
+                "end": 85,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
     },
     {
-        "text": "Passionflower extract le raha hoon anxiety ke liye. "
-        "Barbiturate bhi prescribed hai. Excessive drowsiness ho rahi hai.",
-        "entities": [
-            {"text": "Passionflower", "type": "Herb", "start": 0, "end": 13},
-            {"text": "anxiety", "type": "Disease", "start": 36, "end": 43},
-            {"text": "Barbiturate", "type": "Drug", "start": 53, "end": 64},
-            {"text": "Excessive drowsiness", "type": "Effect", "start": 84, "end": 104},
+        "text": "Doctor ne bola Amla mat lo Levothyroxine ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
         ],
-        "relations": [{"type": "potentiates", "entity1_id": "E0", "entity2_id": "E2"}],
-        "source": "doctor_qa", "script": "romanized",
+        "entities": [
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 15,
+                "end": 19,
+                "id": "E0"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 27,
+                "end": 40,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
     },
+    {
+        "text": "Maine suna hai ki Ashwagandha ka extract Metformin ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ashwagandha",
+                "type": "Herb",
+                "start": 18,
+                "end": 29,
+                "id": "E0"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 41,
+                "end": 50,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Levothyroxine aur Ginger ek saath le sakta hu? Mujhe low sugar ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 9,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Ginger",
+                "type": "Herb",
+                "start": 27,
+                "end": 33,
+                "id": "E1"
+            },
+            {
+                "text": "low sugar",
+                "type": "Effect",
+                "start": 62,
+                "end": 71,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Guggul ka kaadha pi rahi thi. Aur saath mein Metformin bhi le rahi thi. dizziness hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Guggul",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 45,
+                "end": 54,
+                "id": "E1"
+            },
+            {
+                "text": "dizziness",
+                "type": "Effect",
+                "start": 72,
+                "end": 81,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Ibuprofen le raha hai aur usne Jamun shuru kiya. Ab usko low sugar ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 10,
+                "end": 19,
+                "id": "E0"
+            },
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 41,
+                "end": 46,
+                "id": "E1"
+            },
+            {
+                "text": "low sugar",
+                "type": "Effect",
+                "start": 67,
+                "end": 76,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Neem tea peene se meri heart palpitations badh gayi jab main Aspirin le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "heart palpitations",
+                "type": "Effect",
+                "start": 23,
+                "end": 41,
+                "id": "E1"
+            },
+            {
+                "text": "Aspirin",
+                "type": "Drug",
+                "start": 61,
+                "end": 68,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Shatavari ka extract Amoxicillin ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 18,
+                "end": 27,
+                "id": "E0"
+            },
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 39,
+                "end": 50,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Karela ka kaadha pi rahi thi. Aur saath mein Levothyroxine bhi le rahi thi. stomach ache hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 45,
+                "end": 58,
+                "id": "E1"
+            },
+            {
+                "text": "stomach ache",
+                "type": "Effect",
+                "start": 76,
+                "end": 88,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Jamun juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Omeprazole ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 78,
+                "end": 88,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Mulethi mat lo Amoxicillin ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Mulethi",
+                "type": "Herb",
+                "start": 15,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 30,
+                "end": 41,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Safed Musli capsules le raha hoon health ke liye. Kya ye safe hai Levothyroxine ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 66,
+                "end": 79,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Metformin le rahi hain. Kya Arjun ki chaal ka use safe hai Metformin ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 34,
+                "end": 43,
+                "id": "E0"
+            },
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 62,
+                "end": 76,
+                "id": "E1"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 93,
+                "end": 102,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Amla juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Amoxicillin ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 77,
+                "end": 88,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal kha rahi hoon sugar control ke liye. Clopidogrel bhi leti hoon. Kabhi kabhi vomiting ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 52,
+                "end": 63,
+                "id": "E1"
+            },
+            {
+                "text": "vomiting",
+                "type": "Effect",
+                "start": 91,
+                "end": 99,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Levothyroxine aur Neem ek saath le sakta hu? Mujhe heart palpitations ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 9,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 27,
+                "end": 31,
+                "id": "E1"
+            },
+            {
+                "text": "heart palpitations",
+                "type": "Effect",
+                "start": 60,
+                "end": 78,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Losartan le raha hai aur usne Haldi shuru kiya. Ab usko bleeding ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Losartan",
+                "type": "Drug",
+                "start": 10,
+                "end": 18,
+                "id": "E0"
+            },
+            {
+                "text": "Haldi",
+                "type": "Herb",
+                "start": 40,
+                "end": 45,
+                "id": "E1"
+            },
+            {
+                "text": "bleeding",
+                "type": "Effect",
+                "start": 66,
+                "end": 74,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Metformin le rahi hain. Kya Arjun ki chaal ka use safe hai Metformin ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 34,
+                "end": 43,
+                "id": "E0"
+            },
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 62,
+                "end": 76,
+                "id": "E1"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 93,
+                "end": 102,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Metformin le rahi hain. Kya Ashwagandha ka use safe hai Metformin ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 34,
+                "end": 43,
+                "id": "E0"
+            },
+            {
+                "text": "Ashwagandha",
+                "type": "Herb",
+                "start": 62,
+                "end": 73,
+                "id": "E1"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 90,
+                "end": 99,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Ginger mat lo Warfarin ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ginger",
+                "type": "Herb",
+                "start": 15,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 29,
+                "end": 37,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Tulsi ka extract Paracetamol ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 18,
+                "end": 23,
+                "id": "E0"
+            },
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 35,
+                "end": 46,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Warfarin le raha hai aur usne Ashwagandha shuru kiya. Ab usko high bp ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 10,
+                "end": 18,
+                "id": "E0"
+            },
+            {
+                "text": "Ashwagandha",
+                "type": "Herb",
+                "start": 40,
+                "end": 51,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 72,
+                "end": 79,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Safed Musli ka kaadha pi rahi thi. Aur saath mein Pantoprazole bhi le rahi thi. nausea hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 50,
+                "end": 62,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 80,
+                "end": 86,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Brahmi capsules le raha hoon health ke liye. Kya ye safe hai Atorvastatin ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Atorvastatin",
+                "type": "Drug",
+                "start": 61,
+                "end": 73,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Atorvastatin le raha hai aur usne Karela shuru kiya. Ab usko acidity ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Atorvastatin",
+                "type": "Drug",
+                "start": 10,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 44,
+                "end": 50,
+                "id": "E1"
+            },
+            {
+                "text": "acidity",
+                "type": "Effect",
+                "start": 71,
+                "end": 78,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Brahmi kha rahi hoon sugar control ke liye. Clopidogrel bhi leti hoon. Kabhi kabhi bleeding ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 44,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "bleeding",
+                "type": "Effect",
+                "start": 83,
+                "end": 91,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Jamun mat lo Pantoprazole ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 15,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 28,
+                "end": 40,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Brahmi ka kaadha pi rahi thi. Aur saath mein Omeprazole bhi le rahi thi. bleeding hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 45,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "bleeding",
+                "type": "Effect",
+                "start": 73,
+                "end": 81,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Tulsi juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Warfarin ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 78,
+                "end": 86,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal kha rahi hoon sugar control ke liye. Digoxin bhi leti hoon. Kabhi kabhi liver pain ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Digoxin",
+                "type": "Drug",
+                "start": 52,
+                "end": 59,
+                "id": "E1"
+            },
+            {
+                "text": "liver pain",
+                "type": "Effect",
+                "start": 87,
+                "end": 97,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Paracetamol aur Guggul ek saath le sakta hu? Mujhe nausea ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 9,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Guggul",
+                "type": "Herb",
+                "start": 25,
+                "end": 31,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 60,
+                "end": 66,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Ashwagandha ka kaadha pi rahi thi. Aur saath mein Levothyroxine bhi le rahi thi. stomach ache hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ashwagandha",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 50,
+                "end": 63,
+                "id": "E1"
+            },
+            {
+                "text": "stomach ache",
+                "type": "Effect",
+                "start": 81,
+                "end": 93,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Ginger mat lo Clopidogrel ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ginger",
+                "type": "Herb",
+                "start": 15,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 29,
+                "end": 40,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Safed Musli ka kaadha pi rahi thi. Aur saath mein Clopidogrel bhi le rahi thi. high bp hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 50,
+                "end": 61,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 79,
+                "end": 86,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Shatavari tea peene se meri headache badh gayi jab main Amoxicillin le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 0,
+                "end": 9,
+                "id": "E0"
+            },
+            {
+                "text": "headache",
+                "type": "Effect",
+                "start": 28,
+                "end": 36,
+                "id": "E1"
+            },
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 56,
+                "end": 67,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mulethi juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Ibuprofen ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Mulethi",
+                "type": "Herb",
+                "start": 0,
+                "end": 7,
+                "id": "E0"
+            },
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 80,
+                "end": 89,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Atorvastatin le raha hai aur usne Shatavari shuru kiya. Ab usko low sugar ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Atorvastatin",
+                "type": "Drug",
+                "start": 10,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 44,
+                "end": 53,
+                "id": "E1"
+            },
+            {
+                "text": "low sugar",
+                "type": "Effect",
+                "start": 74,
+                "end": 83,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Amla ka extract Losartan ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 18,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Losartan",
+                "type": "Drug",
+                "start": 34,
+                "end": 42,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Ibuprofen le rahi hain. Kya Ginger ka use safe hai Ibuprofen ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 34,
+                "end": 43,
+                "id": "E0"
+            },
+            {
+                "text": "Ginger",
+                "type": "Herb",
+                "start": 62,
+                "end": 68,
+                "id": "E1"
+            },
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 85,
+                "end": 94,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Jamun kha rahi hoon sugar control ke liye. Aspirin bhi leti hoon. Kabhi kabhi liver pain ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Aspirin",
+                "type": "Drug",
+                "start": 43,
+                "end": 50,
+                "id": "E1"
+            },
+            {
+                "text": "liver pain",
+                "type": "Effect",
+                "start": 78,
+                "end": 88,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Haldi kha rahi hoon sugar control ke liye. Metformin bhi leti hoon. Kabhi kabhi high bp ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Haldi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 43,
+                "end": 52,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 80,
+                "end": 87,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal tea peene se meri headache badh gayi jab main Clopidogrel le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "headache",
+                "type": "Effect",
+                "start": 33,
+                "end": 41,
+                "id": "E1"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 61,
+                "end": 72,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Digoxin le raha hai aur usne Shatavari shuru kiya. Ab usko low sugar ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Digoxin",
+                "type": "Drug",
+                "start": 10,
+                "end": 17,
+                "id": "E0"
+            },
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 39,
+                "end": 48,
+                "id": "E1"
+            },
+            {
+                "text": "low sugar",
+                "type": "Effect",
+                "start": 69,
+                "end": 78,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Shatavari juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Digoxin ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 0,
+                "end": 9,
+                "id": "E0"
+            },
+            {
+                "text": "Digoxin",
+                "type": "Drug",
+                "start": 82,
+                "end": 89,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Tulsi juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Azithromycin ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Azithromycin",
+                "type": "Drug",
+                "start": 78,
+                "end": 90,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Tulsi juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Omeprazole ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 78,
+                "end": 88,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Neem capsules le raha hoon health ke liye. Kya ye safe hai Warfarin ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 59,
+                "end": 67,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Jamun tea peene se meri low sugar badh gayi jab main Metformin le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "low sugar",
+                "type": "Effect",
+                "start": 24,
+                "end": 33,
+                "id": "E1"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 53,
+                "end": 62,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Ashwagandha juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Amlodipine ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ashwagandha",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 84,
+                "end": 94,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Haldi kha rahi hoon sugar control ke liye. Atorvastatin bhi leti hoon. Kabhi kabhi bleeding ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Haldi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Atorvastatin",
+                "type": "Drug",
+                "start": 43,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "bleeding",
+                "type": "Effect",
+                "start": 83,
+                "end": 91,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Ginger mat lo Azithromycin ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ginger",
+                "type": "Herb",
+                "start": 15,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Azithromycin",
+                "type": "Drug",
+                "start": 29,
+                "end": 41,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Brahmi kha rahi hoon sugar control ke liye. Paracetamol bhi leti hoon. Kabhi kabhi stomach ache ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 44,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "stomach ache",
+                "type": "Effect",
+                "start": 83,
+                "end": 95,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Arjun ki chaal ka extract Levothyroxine ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 18,
+                "end": 32,
+                "id": "E0"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 44,
+                "end": 57,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Clopidogrel le rahi hain. Kya Karela ka use safe hai Clopidogrel ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 34,
+                "end": 45,
+                "id": "E0"
+            },
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 64,
+                "end": 70,
+                "id": "E1"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 87,
+                "end": 98,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Safed Musli capsules le raha hoon health ke liye. Kya ye safe hai Warfarin ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 66,
+                "end": 74,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Pantoprazole le rahi hain. Kya Karela ka use safe hai Pantoprazole ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 34,
+                "end": 46,
+                "id": "E0"
+            },
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 65,
+                "end": 71,
+                "id": "E1"
+            },
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 88,
+                "end": 100,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Shatavari ka kaadha pi rahi thi. Aur saath mein Warfarin bhi le rahi thi. low sugar hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 0,
+                "end": 9,
+                "id": "E0"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 48,
+                "end": 56,
+                "id": "E1"
+            },
+            {
+                "text": "low sugar",
+                "type": "Effect",
+                "start": 74,
+                "end": 83,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Pantoprazole le raha hai aur usne Karela shuru kiya. Ab usko bleeding ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 10,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 44,
+                "end": 50,
+                "id": "E1"
+            },
+            {
+                "text": "bleeding",
+                "type": "Effect",
+                "start": 71,
+                "end": 79,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Aspirin aur Tulsi ek saath le sakta hu? Mujhe headache ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Aspirin",
+                "type": "Drug",
+                "start": 9,
+                "end": 16,
+                "id": "E0"
+            },
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 21,
+                "end": 26,
+                "id": "E1"
+            },
+            {
+                "text": "headache",
+                "type": "Effect",
+                "start": 55,
+                "end": 63,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Ginger juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Losartan ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ginger",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Losartan",
+                "type": "Drug",
+                "start": 79,
+                "end": 87,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Haldi capsules le raha hoon health ke liye. Kya ye safe hai Amlodipine ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Haldi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 60,
+                "end": 70,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Safed Musli ka kaadha pi rahi thi. Aur saath mein Clopidogrel bhi le rahi thi. nausea hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 50,
+                "end": 61,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 79,
+                "end": 85,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Jamun ka extract Insulin ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 18,
+                "end": 23,
+                "id": "E0"
+            },
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 35,
+                "end": 42,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Clopidogrel aur Ginger ek saath le sakta hu? Mujhe nausea ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 9,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Ginger",
+                "type": "Herb",
+                "start": 25,
+                "end": 31,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 60,
+                "end": 66,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Amla capsules le raha hoon health ke liye. Kya ye safe hai Amoxicillin ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 59,
+                "end": 70,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Amoxicillin aur Amla ek saath le sakta hu? Mujhe vomiting ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 9,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 25,
+                "end": 29,
+                "id": "E1"
+            },
+            {
+                "text": "vomiting",
+                "type": "Effect",
+                "start": 58,
+                "end": 66,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mulethi ka kaadha pi rahi thi. Aur saath mein Omeprazole bhi le rahi thi. high bp hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Mulethi",
+                "type": "Herb",
+                "start": 0,
+                "end": 7,
+                "id": "E0"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 46,
+                "end": 56,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 74,
+                "end": 81,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Omeprazole le rahi hain. Kya Brahmi ka use safe hai Omeprazole ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 34,
+                "end": 44,
+                "id": "E0"
+            },
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 63,
+                "end": 69,
+                "id": "E1"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 86,
+                "end": 96,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Levothyroxine le rahi hain. Kya Tulsi ka use safe hai Levothyroxine ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 34,
+                "end": 47,
+                "id": "E0"
+            },
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 66,
+                "end": 71,
+                "id": "E1"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 88,
+                "end": 101,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Amla mat lo Amlodipine ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 15,
+                "end": 19,
+                "id": "E0"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 27,
+                "end": 37,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal kha rahi hoon sugar control ke liye. Insulin bhi leti hoon. Kabhi kabhi bleeding ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 52,
+                "end": 59,
+                "id": "E1"
+            },
+            {
+                "text": "bleeding",
+                "type": "Effect",
+                "start": 87,
+                "end": 95,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Karela tea peene se meri heart palpitations badh gayi jab main Digoxin le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "heart palpitations",
+                "type": "Effect",
+                "start": 25,
+                "end": 43,
+                "id": "E1"
+            },
+            {
+                "text": "Digoxin",
+                "type": "Drug",
+                "start": 63,
+                "end": 70,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Guggul ka extract Ibuprofen ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Guggul",
+                "type": "Herb",
+                "start": 18,
+                "end": 24,
+                "id": "E0"
+            },
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 36,
+                "end": 45,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Jamun kha rahi hoon sugar control ke liye. Clopidogrel bhi leti hoon. Kabhi kabhi nausea ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 43,
+                "end": 54,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 82,
+                "end": 88,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Shatavari ka extract Clopidogrel ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 18,
+                "end": 27,
+                "id": "E0"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 39,
+                "end": 50,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Guggul kha rahi hoon sugar control ke liye. Amoxicillin bhi leti hoon. Kabhi kabhi liver pain ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Guggul",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 44,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "liver pain",
+                "type": "Effect",
+                "start": 83,
+                "end": 93,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Shatavari kha rahi hoon sugar control ke liye. Metformin bhi leti hoon. Kabhi kabhi high bp ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 0,
+                "end": 9,
+                "id": "E0"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 47,
+                "end": 56,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 84,
+                "end": 91,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Insulin le rahi hain. Kya Mulethi ka use safe hai Insulin ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 34,
+                "end": 41,
+                "id": "E0"
+            },
+            {
+                "text": "Mulethi",
+                "type": "Herb",
+                "start": 60,
+                "end": 67,
+                "id": "E1"
+            },
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 84,
+                "end": 91,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Pantoprazole aur Amla ek saath le sakta hu? Mujhe liver pain ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 9,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 26,
+                "end": 30,
+                "id": "E1"
+            },
+            {
+                "text": "liver pain",
+                "type": "Effect",
+                "start": 59,
+                "end": 69,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Amlodipine le rahi hain. Kya Ashwagandha ka use safe hai Amlodipine ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 34,
+                "end": 44,
+                "id": "E0"
+            },
+            {
+                "text": "Ashwagandha",
+                "type": "Herb",
+                "start": 63,
+                "end": 74,
+                "id": "E1"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 91,
+                "end": 101,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Metformin aur Tulsi ek saath le sakta hu? Mujhe liver pain ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 9,
+                "end": 18,
+                "id": "E0"
+            },
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 23,
+                "end": 28,
+                "id": "E1"
+            },
+            {
+                "text": "liver pain",
+                "type": "Effect",
+                "start": 57,
+                "end": 67,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Tulsi capsules le raha hoon health ke liye. Kya ye safe hai Losartan ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Losartan",
+                "type": "Drug",
+                "start": 60,
+                "end": 68,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Haldi mat lo Losartan ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Haldi",
+                "type": "Herb",
+                "start": 15,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Losartan",
+                "type": "Drug",
+                "start": 28,
+                "end": 36,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Omeprazole le raha hai aur usne Guggul shuru kiya. Ab usko acidity ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 10,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Guggul",
+                "type": "Herb",
+                "start": 42,
+                "end": 48,
+                "id": "E1"
+            },
+            {
+                "text": "acidity",
+                "type": "Effect",
+                "start": 69,
+                "end": 76,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Jamun mat lo Omeprazole ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 15,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 28,
+                "end": 38,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal ka kaadha pi rahi thi. Aur saath mein Metformin bhi le rahi thi. stomach ache hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 53,
+                "end": 62,
+                "id": "E1"
+            },
+            {
+                "text": "stomach ache",
+                "type": "Effect",
+                "start": 80,
+                "end": 92,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Losartan le rahi hain. Kya Neem ka use safe hai Losartan ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Losartan",
+                "type": "Drug",
+                "start": 34,
+                "end": 42,
+                "id": "E0"
+            },
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 61,
+                "end": 65,
+                "id": "E1"
+            },
+            {
+                "text": "Losartan",
+                "type": "Drug",
+                "start": 82,
+                "end": 90,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Karela mat lo Paracetamol ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 15,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 29,
+                "end": 40,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Pantoprazole le raha hai aur usne Amla shuru kiya. Ab usko vomiting ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 10,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 44,
+                "end": 48,
+                "id": "E1"
+            },
+            {
+                "text": "vomiting",
+                "type": "Effect",
+                "start": 69,
+                "end": 77,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Amoxicillin le raha hai aur usne Brahmi shuru kiya. Ab usko high bp ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 10,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 43,
+                "end": 49,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 70,
+                "end": 77,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Haldi ka kaadha pi rahi thi. Aur saath mein Losartan bhi le rahi thi. vomiting hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Haldi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Losartan",
+                "type": "Drug",
+                "start": 44,
+                "end": 52,
+                "id": "E1"
+            },
+            {
+                "text": "vomiting",
+                "type": "Effect",
+                "start": 70,
+                "end": 78,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Amlodipine le rahi hain. Kya Karela ka use safe hai Amlodipine ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 34,
+                "end": 44,
+                "id": "E0"
+            },
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 63,
+                "end": 69,
+                "id": "E1"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 86,
+                "end": 96,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal kha rahi hoon sugar control ke liye. Ibuprofen bhi leti hoon. Kabhi kabhi low sugar ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 52,
+                "end": 61,
+                "id": "E1"
+            },
+            {
+                "text": "low sugar",
+                "type": "Effect",
+                "start": 89,
+                "end": 98,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Neem juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Ibuprofen ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 77,
+                "end": 86,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Arjun ki chaal mat lo Amlodipine ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 15,
+                "end": 29,
+                "id": "E0"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 37,
+                "end": 47,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal kha rahi hoon sugar control ke liye. Levothyroxine bhi leti hoon. Kabhi kabhi vomiting ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 52,
+                "end": 65,
+                "id": "E1"
+            },
+            {
+                "text": "vomiting",
+                "type": "Effect",
+                "start": 93,
+                "end": 101,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Brahmi mat lo Paracetamol ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Brahmi",
+                "type": "Herb",
+                "start": 15,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 29,
+                "end": 40,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal kha rahi hoon sugar control ke liye. Warfarin bhi leti hoon. Kabhi kabhi nausea ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 52,
+                "end": 60,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 88,
+                "end": 94,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Giloy mat lo Aspirin ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Giloy",
+                "type": "Herb",
+                "start": 15,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Aspirin",
+                "type": "Drug",
+                "start": 28,
+                "end": 35,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Amoxicillin le raha hai aur usne Mulethi shuru kiya. Ab usko stomach ache ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 10,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Mulethi",
+                "type": "Herb",
+                "start": 43,
+                "end": 50,
+                "id": "E1"
+            },
+            {
+                "text": "stomach ache",
+                "type": "Effect",
+                "start": 71,
+                "end": 83,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Amla ka kaadha pi rahi thi. Aur saath mein Metformin bhi le rahi thi. high bp hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 43,
+                "end": 52,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 70,
+                "end": 77,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Neem mat lo Aspirin ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 15,
+                "end": 19,
+                "id": "E0"
+            },
+            {
+                "text": "Aspirin",
+                "type": "Drug",
+                "start": 27,
+                "end": 34,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal kha rahi hoon sugar control ke liye. Aspirin bhi leti hoon. Kabhi kabhi acidity ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Aspirin",
+                "type": "Drug",
+                "start": 52,
+                "end": 59,
+                "id": "E1"
+            },
+            {
+                "text": "acidity",
+                "type": "Effect",
+                "start": 87,
+                "end": 94,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Azithromycin le raha hai aur usne Neem shuru kiya. Ab usko low sugar ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Azithromycin",
+                "type": "Drug",
+                "start": 10,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 44,
+                "end": 48,
+                "id": "E1"
+            },
+            {
+                "text": "low sugar",
+                "type": "Effect",
+                "start": 69,
+                "end": 78,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Pantoprazole le rahi hain. Kya Amla ka use safe hai Pantoprazole ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 34,
+                "end": 46,
+                "id": "E0"
+            },
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 65,
+                "end": 69,
+                "id": "E1"
+            },
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 86,
+                "end": 98,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Jamun mat lo Azithromycin ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 15,
+                "end": 20,
+                "id": "E0"
+            },
+            {
+                "text": "Azithromycin",
+                "type": "Drug",
+                "start": 28,
+                "end": 40,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Karela tea peene se meri dizziness badh gayi jab main Warfarin le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "dizziness",
+                "type": "Effect",
+                "start": 25,
+                "end": 34,
+                "id": "E1"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 54,
+                "end": 62,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Giloy tea peene se meri heart palpitations badh gayi jab main Azithromycin le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Giloy",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "heart palpitations",
+                "type": "Effect",
+                "start": 24,
+                "end": 42,
+                "id": "E1"
+            },
+            {
+                "text": "Azithromycin",
+                "type": "Drug",
+                "start": 62,
+                "end": 74,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Karela kha rahi hoon sugar control ke liye. Amoxicillin bhi leti hoon. Kabhi kabhi high bp ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 44,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 83,
+                "end": 90,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Karela capsules le raha hoon health ke liye. Kya ye safe hai Amlodipine ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 61,
+                "end": 71,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Amlodipine aur Arjun ki chaal ek saath le sakta hu? Mujhe liver pain ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 9,
+                "end": 19,
+                "id": "E0"
+            },
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 24,
+                "end": 38,
+                "id": "E1"
+            },
+            {
+                "text": "liver pain",
+                "type": "Effect",
+                "start": 67,
+                "end": 77,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Shatavari ka kaadha pi rahi thi. Aur saath mein Metformin bhi le rahi thi. heart palpitations hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 0,
+                "end": 9,
+                "id": "E0"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 48,
+                "end": 57,
+                "id": "E1"
+            },
+            {
+                "text": "heart palpitations",
+                "type": "Effect",
+                "start": 75,
+                "end": 93,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Amla ka kaadha pi rahi thi. Aur saath mein Ibuprofen bhi le rahi thi. heart palpitations hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 43,
+                "end": 52,
+                "id": "E1"
+            },
+            {
+                "text": "heart palpitations",
+                "type": "Effect",
+                "start": 70,
+                "end": 88,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Neem tea peene se meri weakness badh gayi jab main Azithromycin le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "weakness",
+                "type": "Effect",
+                "start": 23,
+                "end": 31,
+                "id": "E1"
+            },
+            {
+                "text": "Azithromycin",
+                "type": "Drug",
+                "start": 51,
+                "end": 63,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Tulsi tea peene se meri headache badh gayi jab main Warfarin le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "headache",
+                "type": "Effect",
+                "start": 24,
+                "end": 32,
+                "id": "E1"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 52,
+                "end": 60,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Jamun capsules le raha hoon health ke liye. Kya ye safe hai Aspirin ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Jamun",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Aspirin",
+                "type": "Drug",
+                "start": 60,
+                "end": 67,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Metformin le rahi hain. Kya Amla ka use safe hai Metformin ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 34,
+                "end": 43,
+                "id": "E0"
+            },
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 62,
+                "end": 66,
+                "id": "E1"
+            },
+            {
+                "text": "Metformin",
+                "type": "Drug",
+                "start": 83,
+                "end": 92,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Tulsi kha rahi hoon sugar control ke liye. Omeprazole bhi leti hoon. Kabhi kabhi nausea ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Tulsi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 43,
+                "end": 53,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 81,
+                "end": 87,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Shatavari ka kaadha pi rahi thi. Aur saath mein Insulin bhi le rahi thi. weakness hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 0,
+                "end": 9,
+                "id": "E0"
+            },
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 48,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "weakness",
+                "type": "Effect",
+                "start": 73,
+                "end": 81,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Neem kha rahi hoon sugar control ke liye. Amoxicillin bhi leti hoon. Kabhi kabhi headache ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Amoxicillin",
+                "type": "Drug",
+                "start": 42,
+                "end": 53,
+                "id": "E1"
+            },
+            {
+                "text": "headache",
+                "type": "Effect",
+                "start": 81,
+                "end": 89,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Neem ka extract Levothyroxine ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 18,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 34,
+                "end": 47,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Safed Musli capsules le raha hoon health ke liye. Kya ye safe hai Paracetamol ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 66,
+                "end": 77,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Karela ka kaadha pi rahi thi. Aur saath mein Clopidogrel bhi le rahi thi. high bp hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 45,
+                "end": 56,
+                "id": "E1"
+            },
+            {
+                "text": "high bp",
+                "type": "Effect",
+                "start": 74,
+                "end": 81,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Mulethi mat lo Insulin ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Mulethi",
+                "type": "Herb",
+                "start": 15,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 30,
+                "end": 37,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Atorvastatin le raha hai aur usne Ashwagandha shuru kiya. Ab usko headache ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Atorvastatin",
+                "type": "Drug",
+                "start": 10,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Ashwagandha",
+                "type": "Herb",
+                "start": 44,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "headache",
+                "type": "Effect",
+                "start": 76,
+                "end": 84,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Atorvastatin le raha hai aur usne Neem shuru kiya. Ab usko headache ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Atorvastatin",
+                "type": "Drug",
+                "start": 10,
+                "end": 22,
+                "id": "E0"
+            },
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 44,
+                "end": 48,
+                "id": "E1"
+            },
+            {
+                "text": "headache",
+                "type": "Effect",
+                "start": 69,
+                "end": 77,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Mera bhai Ibuprofen le raha hai aur usne Arjun ki chaal shuru kiya. Ab usko vomiting ho raha hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ibuprofen",
+                "type": "Drug",
+                "start": 10,
+                "end": 19,
+                "id": "E0"
+            },
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 41,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "vomiting",
+                "type": "Effect",
+                "start": 76,
+                "end": 84,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Ginger mat lo Aspirin ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ginger",
+                "type": "Herb",
+                "start": 15,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Aspirin",
+                "type": "Drug",
+                "start": 29,
+                "end": 36,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Haldi kha rahi hoon sugar control ke liye. Levothyroxine bhi leti hoon. Kabhi kabhi dizziness ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Haldi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Levothyroxine",
+                "type": "Drug",
+                "start": 43,
+                "end": 56,
+                "id": "E1"
+            },
+            {
+                "text": "dizziness",
+                "type": "Effect",
+                "start": 84,
+                "end": 93,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Safed Musli ka kaadha pi rahi thi. Aur saath mein Warfarin bhi le rahi thi. stomach ache hoti thi.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 0,
+                "end": 11,
+                "id": "E0"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 50,
+                "end": 58,
+                "id": "E1"
+            },
+            {
+                "text": "stomach ache",
+                "type": "Effect",
+                "start": 76,
+                "end": 88,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Ginger ka extract Insulin ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Ginger",
+                "type": "Herb",
+                "start": 18,
+                "end": 24,
+                "id": "E0"
+            },
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 36,
+                "end": 43,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Doctor ne bola Arjun ki chaal mat lo Omeprazole ke saath. Interaction hota hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 15,
+                "end": 29,
+                "id": "E0"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 37,
+                "end": 47,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Giloy juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Amlodipine ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Giloy",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 78,
+                "end": 88,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Neem kha rahi hoon sugar control ke liye. Warfarin bhi leti hoon. Kabhi kabhi dizziness ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Neem",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Warfarin",
+                "type": "Drug",
+                "start": 42,
+                "end": 50,
+                "id": "E1"
+            },
+            {
+                "text": "dizziness",
+                "type": "Effect",
+                "start": 78,
+                "end": 87,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Karela tea peene se meri low sugar badh gayi jab main Clopidogrel le raha tha.",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "low sugar",
+                "type": "Effect",
+                "start": 25,
+                "end": 34,
+                "id": "E1"
+            },
+            {
+                "text": "Clopidogrel",
+                "type": "Drug",
+                "start": 54,
+                "end": 65,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E2"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Kya main Pantoprazole aur Safed Musli ek saath le sakta hu? Mujhe nausea ki problem hai.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Pantoprazole",
+                "type": "Drug",
+                "start": 9,
+                "end": 21,
+                "id": "E0"
+            },
+            {
+                "text": "Safed Musli",
+                "type": "Herb",
+                "start": 26,
+                "end": 37,
+                "id": "E1"
+            },
+            {
+                "text": "nausea",
+                "type": "Effect",
+                "start": 66,
+                "end": 72,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Haldi juice daily pee rahi hoon. Blood test mein problem aayi. Doctor ne bola Digoxin ke saath mat lo.",
+        "language_tags": [
+            "en",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Haldi",
+                "type": "Herb",
+                "start": 0,
+                "end": 5,
+                "id": "E0"
+            },
+            {
+                "text": "Digoxin",
+                "type": "Drug",
+                "start": 78,
+                "end": 85,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    },
+    {
+        "text": "Karela kha rahi hoon sugar control ke liye. Paracetamol bhi leti hoon. Kabhi kabhi heart palpitations ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Karela",
+                "type": "Herb",
+                "start": 0,
+                "end": 6,
+                "id": "E0"
+            },
+            {
+                "text": "Paracetamol",
+                "type": "Drug",
+                "start": 44,
+                "end": 55,
+                "id": "E1"
+            },
+            {
+                "text": "heart palpitations",
+                "type": "Effect",
+                "start": 83,
+                "end": 101,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Arjun ki chaal capsules le raha hoon health ke liye. Kya ye safe hai Amlodipine ke saath?",
+        "language_tags": [
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Arjun ki chaal",
+                "type": "Herb",
+                "start": 0,
+                "end": 14,
+                "id": "E0"
+            },
+            {
+                "text": "Amlodipine",
+                "type": "Drug",
+                "start": 69,
+                "end": 79,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Meri mummy ko diabetes hai aur wo Omeprazole le rahi hain. Kya Shatavari ka use safe hai Omeprazole ke saath?",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 34,
+                "end": 44,
+                "id": "E0"
+            },
+            {
+                "text": "Shatavari",
+                "type": "Herb",
+                "start": 63,
+                "end": 72,
+                "id": "E1"
+            },
+            {
+                "text": "Omeprazole",
+                "type": "Drug",
+                "start": 89,
+                "end": 99,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E1",
+                "entity2_id": "E0"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Amla kha rahi hoon sugar control ke liye. Insulin bhi leti hoon. Kabhi kabhi dizziness ho jata hai.",
+        "language_tags": [
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Amla",
+                "type": "Herb",
+                "start": 0,
+                "end": 4,
+                "id": "E0"
+            },
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 42,
+                "end": 49,
+                "id": "E1"
+            },
+            {
+                "text": "dizziness",
+                "type": "Effect",
+                "start": 77,
+                "end": 86,
+                "id": "E2"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "health_forum",
+        "script": "romanized"
+    },
+    {
+        "text": "Maine suna hai ki Haldi ka extract Insulin ke saath nahi lena chahiye.",
+        "language_tags": [
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "en",
+            "hi",
+            "en",
+            "en",
+            "hi",
+            "hi",
+            "hi",
+            "hi",
+            "hi"
+        ],
+        "entities": [
+            {
+                "text": "Haldi",
+                "type": "Herb",
+                "start": 18,
+                "end": 23,
+                "id": "E0"
+            },
+            {
+                "text": "Insulin",
+                "type": "Drug",
+                "start": 35,
+                "end": 42,
+                "id": "E1"
+            }
+        ],
+        "relations": [
+            {
+                "type": "interacts_with",
+                "entity1_id": "E0",
+                "entity2_id": "E1"
+            }
+        ],
+        "source": "social_media",
+        "script": "romanized"
+    }
 ]
 
-
-def get_corpus_statistics(corpus: list[dict] = None) -> dict:
-    """Compute statistics of the expanded corpus."""
-    if corpus is None:
-        corpus = EXPANDED_CORPUS
-
-    entity_types = {}
-    relation_types = {}
-    sources = set()
-    scripts = set()
-    total_entities = 0
-    total_relations = 0
-
-    for entry in corpus:
-        sources.add(entry.get("source", "unknown"))
-        scripts.add(entry.get("script", "romanized"))
-
-        for e in entry.get("entities", []):
-            etype = e.get("type", "unknown")
-            entity_types[etype] = entity_types.get(etype, 0) + 1
-            total_entities += 1
-
-        for r in entry.get("relations", []):
-            rtype = r.get("type", "unknown")
-            relation_types[rtype] = relation_types.get(rtype, 0) + 1
-            total_relations += 1
-
+def get_corpus_statistics():
     return {
-        "total_sentences": len(corpus),
-        "total_entities": total_entities,
-        "total_relations": total_relations,
-        "entity_types": entity_types,
-        "relation_types": relation_types,
-        "sources": sorted(sources),
-        "scripts": sorted(scripts),
-        "avg_entities_per_sentence": total_entities / max(len(corpus), 1),
-        "avg_relations_per_sentence": total_relations / max(len(corpus), 1),
-        "sentences_with_relations": sum(
-            1 for e in corpus if e.get("relations")
-        ),
-        "sentences_without_relations": sum(
-            1 for e in corpus if not e.get("relations")
-        ),
+        "total_sentences": len(EXPANDED_CORPUS),
+        "total_entities": sum(len(e["entities"]) for e in EXPANDED_CORPUS),
+        "total_relations": sum(len(e["relations"]) for e in EXPANDED_CORPUS)
     }

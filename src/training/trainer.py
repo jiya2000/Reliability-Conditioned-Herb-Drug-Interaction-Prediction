@@ -263,7 +263,7 @@ class HDITrainer:
             logger.info(
                 f"Epoch {epoch}/{self.epochs} | "
                 f"Train Loss: {train_loss:.4f} | "
-                f"Val Loss: {val_loss:.4f if val_loss else 'N/A'} | "
+                f"Val Loss: {f'{val_loss:.4f}' if val_loss is not None else 'N/A'} | "
                 f"LR: {current_lr:.6f} | "
                 f"Time: {epoch_time:.1f}s"
             )
