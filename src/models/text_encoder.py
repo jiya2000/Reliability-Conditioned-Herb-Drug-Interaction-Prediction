@@ -68,20 +68,24 @@ class TextEncoder(nn.Module):
             return
 
         try:
+            # Capture the target device from the dummy projection before overwriting it
+            # so we can move the newly loaded modules to the correct device (e.g. cuda)
+            device = next(self.projection.parameters()).device
+
             from transformers import AutoModel, AutoTokenizer
 
             logger.info(f"Loading text encoder: {self.model_name}")
             self._tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-            self._encoder = AutoModel.from_pretrained(self.model_name)
+            self._encoder = AutoModel.from_pretrained(self.model_name).to(device)
             self._hidden_size = self._encoder.config.hidden_size
 
-            # Rebuild projection with correct hidden size
+            # Rebuild projection with correct hidden size and move to device
             self.projection = nn.Sequential(
                 nn.Linear(self._hidden_size, self.output_dim),
                 nn.GELU(),
                 nn.Dropout(0.1),
                 nn.Linear(self.output_dim, self.output_dim),
-            )
+            ).to(device)
 
             # Freeze early layers
             if self._freeze_layers > 0 and hasattr(self._encoder, "encoder"):
