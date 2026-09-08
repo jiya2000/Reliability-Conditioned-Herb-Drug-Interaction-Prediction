@@ -168,35 +168,39 @@ class CalibrationLoss(nn.Module):
         source_types = metadata[:, 4].long()
         R = reliability_scores.squeeze()
 
-        total_loss = torch.tensor(0.0, device=R.device)
-        num_pairs = 0
+        if len(R) < 2:
+            return torch.tensor(0.0, device=R.device)
 
-        # Create pairwise ordering constraints
-        for i in range(len(R)):
-            for j in range(i + 1, min(i + 5, len(R))):  # Limit pairs for efficiency
-                st_i = source_types[i].item()
-                st_j = source_types[j].item()
+        # Fetch expected quality scores using a fast CPU list comprehension,
+        # then move back to device
+        source_types_cpu = source_types.cpu().tolist()
+        expected = torch.tensor(
+            [self.quality_ordering.get(st, 0.3) for st in source_types_cpu],
+            device=R.device,
+            dtype=torch.float32
+        )
 
-                expected_i = self.quality_ordering.get(st_i, 0.3)
-                expected_j = self.quality_ordering.get(st_j, 0.3)
+        # Pairwise differences (j, i)
+        # expected_diff[j, i] = expected[i] - expected[j]
+        expected_diff = expected.unsqueeze(0) - expected.unsqueeze(1)
+        
+        # We want to find pairs where expected[i] > expected[j] + 0.1
+        mask = expected_diff > 0.1
 
-                if expected_i > expected_j + 0.1:
-                    # i should have higher R than j
-                    violation = F.relu(
-                        R[j] - R[i] + self.ordering_margin
-                    )
-                    total_loss = total_loss + violation
-                    num_pairs += 1
-                elif expected_j > expected_i + 0.1:
-                    # j should have higher R than i
-                    violation = F.relu(
-                        R[i] - R[j] + self.ordering_margin
-                    )
-                    total_loss = total_loss + violation
-                    num_pairs += 1
+        if not mask.any():
+            return torch.tensor(0.0, device=R.device)
 
-        if num_pairs > 0:
-            total_loss = total_loss / num_pairs
+        # R_diff[j, i] = R[j] - R[i]
+        R_diff = R.unsqueeze(1) - R.unsqueeze(0)
+
+        # For valid pairs (where expected_i > expected_j + 0.1),
+        # penalize if R[i] is not sufficiently greater than R[j]
+        # violation = max(0, R[j] - R[i] + margin)
+        violations = F.relu(R_diff + self.ordering_margin)
+        
+        # Mask and average
+        valid_violations = violations[mask]
+        total_loss = valid_violations.mean()
 
         return total_loss
 
