@@ -71,11 +71,14 @@ def parse_args():
         help="Random seeds for multiple runs",
     )
     parser.add_argument(
-        "--gating-mode", default="multiplicative",
-        choices=["multiplicative", "additive", "learned_gate", "uncertainty_aware"],
+        "--gating-mode",
+        choices=["multiplicative", "additive", "none"],
+        default="multiplicative",
     )
     parser.add_argument("--skip-figures", action="store_true")
+    parser.add_argument("--resume", action="store_true", help="Skip training for completed variants")
     parser.add_argument("--device", default="auto")
+
     return parser.parse_args()
 
 
@@ -136,25 +139,34 @@ def train_variant(variant_name, variant_config, data, args, seed):
 
     # Create trainer
     checkpoint_dir = str(CHECKPOINTS_DIR / f"{variant_name}_seed{seed}")
-    trainer = HDITrainer(
-        model=model,
-        learning_rate=args.lr,
-        epochs=args.epochs,
-        checkpoint_dir=checkpoint_dir,
-        device=args.device,
-        lambda_calibration=0.1 if variant_config["use_reliability"] else 0.0,
-        lambda_contrastive=0.05 if variant_config["use_reliability"] else 0.0,
-    )
+    best_model_path = os.path.join(checkpoint_dir, "best_model.pt")
 
-    # Train
-    start_time = time.time()
-    history = trainer.train(
-        train_loader=data["train_loader"],
-        val_loader=data["val_loader"],
-        graph_data=data["graph_data"],
-    )
-    train_time = time.time() - start_time
-    logger.info(f"  Training complete in {train_time:.1f}s")
+    if getattr(args, "resume", False) and os.path.exists(best_model_path):
+        logger.info(f"  [RESUME] Found existing checkpoint at {best_model_path}. Skipping training!")
+        model.load_state_dict(torch.load(best_model_path, map_location=args.device))
+        model.to(args.device)
+        history = {"train_loss": [], "val_loss": []}
+        train_time = 0.0
+    else:
+        trainer = HDITrainer(
+            model=model,
+            learning_rate=args.lr,
+            epochs=args.epochs,
+            checkpoint_dir=checkpoint_dir,
+            device=args.device,
+            lambda_calibration=0.1 if variant_config["use_reliability"] else 0.0,
+            lambda_contrastive=0.05 if variant_config["use_reliability"] else 0.0,
+        )
+
+        # Train
+        start_time = time.time()
+        history = trainer.train(
+            train_loader=data["train_loader"],
+            val_loader=data["val_loader"],
+            graph_data=data["graph_data"],
+        )
+        train_time = time.time() - start_time
+        logger.info(f"  Training complete in {train_time:.1f}s")
 
     # Evaluate on test set
     evaluator = HDIEvaluator(model=model, device=args.device)
