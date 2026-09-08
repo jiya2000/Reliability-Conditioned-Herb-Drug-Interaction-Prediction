@@ -135,12 +135,22 @@ class HDIDataset(Dataset):
             )
 
         # Negative samples (random non-interacting pairs)
+        # ★ FIX: To prevent label leakage, negatives inherit metadata and
+        # evidence text from their donor positive edge. This ensures the
+        # reliability scorer and text encoder cannot distinguish pos/neg
+        # by metadata patterns alone — the model must learn from graph
+        # structure and semantic relevance.
         for edge in self.positive_edges:
             for _ in range(self.negative_ratio):
                 neg_target = self.rng.choice(self.all_node_ids)
                 # Ensure it's actually negative
                 while (edge["source_id"], neg_target) in self._positive_set:
                     neg_target = self.rng.choice(self.all_node_ids)
+
+                # Sample metadata from a random positive edge (not the
+                # donor) to decorrelate metadata from the specific edge
+                # while preserving the overall metadata distribution.
+                donor = self.rng.choice(self.positive_edges)
 
                 samples.append(
                     HDISample(
@@ -151,11 +161,18 @@ class HDIDataset(Dataset):
                         target_name="",
                         target_type="drug",
                         label=0.0,
-                        corroboration_count=0,
-                        temporal_recency=0.0,
-                        biomedical_quality=0.0,
-                        molecular_plausibility=0.0,
-                        source_type_code=0,
+                        # Inherit metadata from a random positive edge
+                        evidence_texts=donor.get("evidence_texts", []),
+                        evidence_sources=donor.get("evidence_sources", []),
+                        corroboration_count=donor.get("corroboration_count", 1),
+                        temporal_recency=donor.get("temporal_recency", 0.5),
+                        biomedical_quality=donor.get("biomedical_quality", 0.5),
+                        molecular_plausibility=donor.get(
+                            "molecular_plausibility", 0.5
+                        ),
+                        source_type_code=self.SOURCE_TYPE_MAP.get(
+                            donor.get("evidence_source_type", "unknown"), 0
+                        ),
                     )
                 )
 

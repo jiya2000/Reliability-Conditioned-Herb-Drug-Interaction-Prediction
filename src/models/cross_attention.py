@@ -1,25 +1,32 @@
 """
-Reliability-Conditioned Cross-Attention
+Reliability-Gated Fusion
 
 ★ CORE INVENTION ★
 
 This module implements the central innovation of the system: using
-the learned reliability score R as a dynamic gate on the cross-attention
-weights that fuse heterogeneous textual embeddings with molecular
-graph embeddings.
+the learned reliability score R as a dynamic gate on the bilinear
+fusion weights that combine heterogeneous textual embeddings with
+molecular graph embeddings.
 
 The key insight: R is NOT a post-hoc filter (like NeuroGRIP), NOT a
 voting weight in closed-set fusion (like BELIEF), and NOT an intra-modal
 alignment signal (like DDI-AttendNet). It is a direct, dynamic gate on
-the cross-attention weights themselves, resolving the multimodal
-alignment problem between fixed-dimension molecular representations
-and noisy, variable-length, code-mixed textual representations.
+the fusion weights themselves, resolving the multimodal alignment
+problem between fixed-dimension molecular representations and noisy
+textual representations.
+
+Architecture note: With both molecular and text inputs pooled to single
+vectors (seq_len=1), the Q·K^T operation produces a scalar per head,
+and sigmoid (not softmax) is applied — making this functionally a
+multi-head reliability-gated bilinear fusion rather than traditional
+cross-attention over a sequence. This is a valid and effective technique
+for instance-level modality fusion.
 
 Three gating modes are supported:
-1. Multiplicative: attention_weights *= R (default, simplest)
-2. Additive: attention_weights += R * learned_bias
-3. Learned gate: g = σ(W·[R, attention_weights]) → gated_weights
-4. Uncertainty-aware: attention *= R_mean * (1 - α·R_uncertainty) ★ NOVEL ★
+1. Multiplicative: fusion_weights *= R (default, simplest)
+2. Additive: fusion_weights += R * learned_bias
+3. Learned gate: g = σ(W·[R, fusion_weights]) → gated_weights
+4. Uncertainty-aware: fusion *= R_mean * (1 - α·R_uncertainty) ★ NOVEL ★
 """
 
 from __future__ import annotations
@@ -33,30 +40,28 @@ import torch.nn.functional as F
 from loguru import logger
 
 
-class ReliabilityConditionedCrossAttention(nn.Module):
+class ReliabilityGatedFusion(nn.Module):
     """
-    Cross-attention layer where the reliability score R dynamically
-    gates the text-to-molecule attention weights.
+    Multi-head reliability-gated bilinear fusion layer.
 
-    This resolves a specific technical problem: fusing a fixed-dimension
-    molecular graph embedding with a noisy, variable-length, code-mixed
-    textual embedding, where the relative trust in the textual signal
-    varies per-instance and must be learned.
+    The reliability score R dynamically gates the text-to-molecule
+    fusion weights, controlling how much the model trusts textual
+    evidence for each instance.
 
     Architecture:
         Q = W_q · molecular_embedding  (from GNN)
         K = W_k · text_embedding       (from text encoder)
         V = W_v · text_embedding
 
-        raw_attention = softmax(Q · K^T / √d)
-        gated_attention = R ⊙ raw_attention     ← Core gating step
-        output = gated_attention · V
+        raw_weight = sigmoid(Q · K^T / √d)   ← scalar per head (seq_len=1)
+        gated_weight = R ⊙ raw_weight         ← Core gating step
+        output = gated_weight · V
 
     Usage:
-        cross_attn = ReliabilityConditionedCrossAttention(
+        fusion = ReliabilityGatedFusion(
             hidden_dim=128, num_heads=4
         )
-        fused = cross_attn(
+        fused = fusion(
             molecular_embedding,  # (batch, mol_dim)
             text_embedding,       # (batch, text_dim)
             reliability_score,    # (batch, 1)
@@ -115,7 +120,7 @@ class ReliabilityConditionedCrossAttention(nn.Module):
         self.attn_dropout = nn.Dropout(dropout)
 
         logger.info(
-            f"ReliabilityConditionedCrossAttention: "
+            f"ReliabilityGatedFusion: "
             f"dim={hidden_dim}, heads={num_heads}, "
             f"gating={gating_mode}, temp={temperature}"
         )

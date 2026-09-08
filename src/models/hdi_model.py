@@ -21,7 +21,7 @@ from loguru import logger
 from src.models.gnn_encoder import HeterogeneousGNNEncoder
 from src.models.text_encoder import TextEncoder
 from src.models.reliability_scorer import ReliabilityScorer
-from src.models.cross_attention import ReliabilityConditionedCrossAttention
+from src.models.cross_attention import ReliabilityGatedFusion
 from src.models.link_predictor import LinkPredictor
 
 
@@ -52,7 +52,7 @@ class HDIModel(nn.Module):
         gnn_input_dim: int = 128,
         gnn_hidden_dim: int = 256,
         gnn_output_dim: int = 128,
-        num_relations: int = 6,
+        num_relations: int = 3,
         gnn_layers: int = 3,
         text_model_name: str = "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract",
         text_output_dim: int = 128,
@@ -98,7 +98,7 @@ class HDIModel(nn.Module):
 
         # 4. Cross-Attention (used when text is enabled)
         if use_text:
-            self.cross_attention = ReliabilityConditionedCrossAttention(
+            self.cross_attention = ReliabilityGatedFusion(
                 hidden_dim=gnn_output_dim,
                 num_heads=cross_attention_heads,
                 dropout=cross_attention_dropout,
@@ -165,7 +165,10 @@ class HDIModel(nn.Module):
         if self.use_text and self.text_encoder is not None and evidence_texts is not None:
             # Encode text evidence
             # Filter empty texts
-            non_empty = [t if t else "no evidence" for t in evidence_texts]
+            # ★ FIX: Use empty string instead of "no evidence" literal.
+            # The old constant string was a label-leak vector: every negative
+            # got exactly "no evidence" while positives got real text.
+            non_empty = [t if t else "" for t in evidence_texts]
             text_emb = self.text_encoder(text_list=non_empty)
             # (batch, hidden_dim)
 

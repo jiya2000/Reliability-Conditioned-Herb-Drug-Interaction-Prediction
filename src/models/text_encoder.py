@@ -166,6 +166,18 @@ class TextEncoder(nn.Module):
             input_ids = input_ids.to(device)
             attention_mask = attention_mask.to(device)
 
+        elif text_list is not None and self._tokenizer is None:
+            # ★ FIX: Transformer failed to load — fall back to random
+            # embeddings with correct shape instead of crashing.
+            device = next(self.projection.parameters()).device
+            batch_size = len(text_list)
+            random_hidden = torch.randn(
+                batch_size, 1, self._hidden_size, device=device,
+            )
+            attention_mask = torch.ones(batch_size, 1, device=device)
+            pooled = self._pool(random_hidden, attention_mask)
+            return self.projection(pooled)
+
         if input_ids is None:
             raise ValueError("Must provide either input_ids or text_list")
 

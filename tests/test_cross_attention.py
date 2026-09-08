@@ -1,11 +1,11 @@
 """
-Tests for the core Reliability-Conditioned Cross-Attention
+Tests for the core Reliability-Gated Fusion
 """
 
 import pytest
 import torch
 
-from src.models.cross_attention import ReliabilityConditionedCrossAttention
+from src.models.cross_attention import ReliabilityGatedFusion
 
 
 def test_cross_attention_multiplicative():
@@ -14,7 +14,7 @@ def test_cross_attention_multiplicative():
     hidden_dim = 16
     heads = 2
     
-    layer = ReliabilityConditionedCrossAttention(
+    layer = ReliabilityGatedFusion(
         hidden_dim=hidden_dim, 
         num_heads=heads, 
         gating_mode="multiplicative"
@@ -45,7 +45,7 @@ def test_cross_attention_unconditioned():
     batch_size = 2
     hidden_dim = 16
     
-    layer = ReliabilityConditionedCrossAttention(hidden_dim=hidden_dim)
+    layer = ReliabilityGatedFusion(hidden_dim=hidden_dim)
     mol_emb = torch.randn(batch_size, hidden_dim)
     text_emb = torch.randn(batch_size, hidden_dim)
     

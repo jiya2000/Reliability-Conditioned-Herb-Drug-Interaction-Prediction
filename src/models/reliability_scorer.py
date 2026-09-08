@@ -252,9 +252,16 @@ class ReliabilityScorer(nn.Module):
         # Embed once (deterministic part)
         combined = self._embed_metadata(metadata)
 
-        # Collect MC samples — keep dropout active
-        was_training = self.training
-        self.train()  # Enable dropout
+        # ★ FIX: Save per-module training states instead of calling
+        # self.train() which would enable dropout on ALL submodules
+        # (including self.mlp's internal Dropout layers), creating
+        # uncontrolled double-stochastic behavior.
+        module_states = {
+            name: mod.training for name, mod in self.named_modules()
+        }
+
+        # Only enable the MC dropout layer
+        self.mc_dropout.train()
 
         samples = []
         for _ in range(n):
@@ -263,9 +270,10 @@ class ReliabilityScorer(nn.Module):
             R_sample = self.mlp(mc_combined)
             samples.append(R_sample)
 
-        # Restore original mode
-        if not was_training:
-            self.eval()
+        # Restore original training state for each module
+        for name, mod in self.named_modules():
+            if name in module_states:
+                mod.train(module_states[name])
 
         # Stack: (n_samples, batch, 1)
         R_stack = torch.stack(samples, dim=0)
