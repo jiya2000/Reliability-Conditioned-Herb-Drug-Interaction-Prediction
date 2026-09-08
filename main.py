@@ -6,6 +6,8 @@ Provides CLI commands for:
 - train: Train the model with full pipeline
 - ablate: Run the 3-variant ablation study
 - demo: Launch the Streamlit and FastAPI demo
+- results: Display experiment results
+- figures: Generate paper figures from saved results
 """
 
 import argparse
@@ -56,6 +58,8 @@ def parse_args():
     train_parser.add_argument("--lambda-contrastive", type=float, default=0.05,
                               help="Contrastive regularization weight")
     train_parser.add_argument("--device", default="auto")
+    train_parser.add_argument("--data-mode", choices=["synthetic", "real"],
+                              default="synthetic", help="Data source mode")
 
     # Ablate command
     ablate_parser = subparsers.add_parser("ablate", help="Run ablation study")
@@ -71,6 +75,20 @@ def parse_args():
     demo_parser = subparsers.add_parser("demo", help="Run the demo applications")
     demo_parser.add_argument("--backend-only", action="store_true")
     demo_parser.add_argument("--frontend-only", action="store_true")
+
+    # Results command
+    results_parser = subparsers.add_parser("results", help="Display experiment results")
+    results_parser.add_argument(
+        "--file", default="results/paper_tables.md",
+        help="Path to results file",
+    )
+
+    # Figures command
+    figures_parser = subparsers.add_parser("figures", help="Generate paper figures")
+    figures_parser.add_argument(
+        "--results-file", default="results/full_results.json",
+        help="Path to full results JSON",
+    )
 
     return parser.parse_args()
 
@@ -118,7 +136,7 @@ def run_train(args):
 
     # Build data
     pipeline = DataPipeline(
-        mode="synthetic",
+        mode=args.data_mode,
         batch_size=args.batch_size,
         feature_dim=args.hidden_dim,
     )
@@ -255,6 +273,57 @@ def run_demo(args):
             frontend_proc.terminate()
 
 
+def run_results(args):
+    """Display experiment results."""
+    results_file = Path(args.file)
+    if not results_file.exists():
+        logger.error(f"Results file not found: {results_file}")
+        logger.info("Run experiments first: python run_experiments.py")
+        sys.exit(1)
+
+    with open(results_file, "r") as f:
+        content = f.read()
+
+    print(content)
+
+    # Also check for JSON results
+    json_path = Path("results/ablation_results.json")
+    if json_path.exists():
+        import json
+        with open(json_path) as f:
+            data = json.load(f)
+        meta = data.get("metadata", {})
+        logger.info(f"\nExperiment metadata:")
+        logger.info(f"  Timestamp: {meta.get('timestamp', 'unknown')}")
+        logger.info(f"  Data mode: {meta.get('data_mode', 'unknown')}")
+        logger.info(f"  Epochs: {meta.get('epochs', 'unknown')}")
+        logger.info(f"  Seeds: {meta.get('seeds', 'unknown')}")
+
+
+def run_figures(args):
+    """Generate paper figures from saved results."""
+    import json
+
+    results_file = Path(args.results_file)
+    if not results_file.exists():
+        logger.error(f"Results file not found: {results_file}")
+        logger.info("Run experiments first: python run_experiments.py")
+        sys.exit(1)
+
+    with open(results_file, "r") as f:
+        full_results = json.load(f)
+
+    logger.info("Generating paper figures from saved results...")
+
+    try:
+        from src.visualization.paper_figures import generate_all_figures
+        generate_all_figures(full_results)
+        logger.info("✓ Figures generated in results/figures/")
+    except ImportError:
+        logger.warning("paper_figures module not available, using run_experiments figures")
+        logger.info("Run: python run_experiments.py (figures are generated automatically)")
+
+
 def main():
     args = parse_args()
 
@@ -266,9 +335,19 @@ def main():
         run_ablate(args)
     elif args.command == "demo":
         run_demo(args)
+    elif args.command == "results":
+        run_results(args)
+    elif args.command == "figures":
+        run_figures(args)
     else:
-        print("Please specify a command: data, train, ablate, demo")
-        print("Example: python main.py train --epochs 50 --lr 1e-4")
+        print("Please specify a command: data, train, ablate, demo, results, figures")
+        print()
+        print("Quick start:")
+        print("  python run_experiments.py          # Run full experiment pipeline")
+        print("  python main.py train --epochs 50   # Train single model")
+        print("  python main.py ablate              # Run ablation study")
+        print("  python main.py demo                # Launch demo")
+        print("  python main.py results             # Show results")
         sys.exit(1)
 
 

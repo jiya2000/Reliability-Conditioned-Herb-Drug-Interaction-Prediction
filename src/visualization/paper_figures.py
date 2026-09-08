@@ -255,3 +255,84 @@ class PaperFigureGenerator:
 
         logger.info(f"Generated {len(paths)} figures in {self.output_dir}")
         return paths
+
+
+def generate_all_figures(full_results: dict, output_dir: str = "results/figures"):
+    """
+    Standalone entry point for generating all paper figures from saved results.
+
+    Called by:
+        - main.py figures --results-file results/full_results.json
+        - run_experiments.py (after training completes)
+
+    Args:
+        full_results: Dict loaded from results/full_results.json
+        output_dir: Directory to save figures
+    """
+    gen = PaperFigureGenerator(output_dir=output_dir)
+
+    per_run = full_results.get("per_run", {})
+
+    # 1. Ablation bar chart from evaluation metrics
+    ablation_data = {}
+    for vname, vdata in per_run.items():
+        runs = vdata.get("runs", [])
+        if runs and runs[0].get("evaluation"):
+            ablation_data[vname] = runs[0]["evaluation"]
+
+    if ablation_data:
+        gen.plot_ablation_bars(ablation_data)
+
+    # 2. Calibration plots from full model
+    full_runs = per_run.get("full_model", {}).get("runs", [])
+    if full_runs:
+        calibration = full_runs[0].get("calibration")
+        if calibration:
+            gen.plot_calibration(calibration)
+
+    # 3. Loss curves
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+        colors = {"gnn_only": "#FF7043", "unconditioned": "#42A5F5", "full_model": "#66BB6A"}
+        labels = {"gnn_only": "(a) GNN-only", "unconditioned": "(b) Unconditioned", "full_model": "(c) Full (Ours)"}
+
+        for vname, vdata in per_run.items():
+            runs = vdata.get("runs", [])
+            if not runs:
+                continue
+            run = runs[0]
+            color = colors.get(vname, "gray")
+            label = labels.get(vname, vname)
+
+            train_loss = run.get("train_loss_history", [])
+            val_loss = run.get("val_loss_history", [])
+
+            if train_loss:
+                axes[0].plot(range(1, len(train_loss) + 1), train_loss,
+                             label=label, color=color, linewidth=1.5)
+            if val_loss:
+                axes[1].plot(range(1, len(val_loss) + 1), val_loss,
+                             label=label, color=color, linewidth=1.5)
+
+        for ax, title in zip(axes, ["Training Loss", "Validation Loss"]):
+            ax.set_xlabel("Epoch")
+            ax.set_ylabel("Loss")
+            ax.set_title(title)
+            ax.legend()
+            ax.grid(alpha=0.3)
+
+        fig.tight_layout()
+        out_path = Path(output_dir)
+        fig.savefig(out_path / "loss_curves.png", dpi=300, bbox_inches="tight")
+        fig.savefig(out_path / "loss_curves.svg", bbox_inches="tight")
+        plt.close(fig)
+        logger.info("Generated loss_curves.png/svg")
+
+    except Exception as e:
+        logger.warning(f"Could not generate loss curves: {e}")
+
+    logger.info(f"All figures generated in {output_dir}")
