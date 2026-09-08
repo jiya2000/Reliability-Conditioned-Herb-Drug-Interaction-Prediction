@@ -139,42 +139,33 @@ class ReliabilityAwareContrastiveLoss(nn.Module):
         # Modulate similarity with reliability weights
         weighted_sim = sim_matrix + torch.log(R_weights + 1e-8)
 
-        # InfoNCE loss: for each sample, pull positives, push negatives
-        loss = torch.tensor(0.0, device=embeddings.device)
-        n_valid = 0
+        # Vectorized InfoNCE loss
+        neg_sims_matrix = weighted_sim.clone()
+        neg_sims_matrix[~neg_mask] = -1e9  # Mask out positives
 
-        for i in range(batch_size):
-            pos_indices = pos_mask[i].nonzero(as_tuple=True)[0]
-            neg_indices = neg_mask[i].nonzero(as_tuple=True)[0]
+        # Base negative logsumexp for the denominator
+        neg_lse = torch.logsumexp(neg_sims_matrix, dim=1)  # (batch,)
 
-            if len(pos_indices) == 0 or len(neg_indices) == 0:
-                continue
+        if self.hard_negative_weight > 0:
+            # Estimate k based on mean negative count
+            k = max(1, int(neg_mask.float().sum(dim=1).mean().item()) // 4)
+            if k > 0 and k < neg_sims_matrix.size(1):
+                hard_negs, _ = torch.topk(neg_sims_matrix, k, dim=1)
+                hard_negs = hard_negs * self.hard_negative_weight
+                hard_neg_lse = torch.logsumexp(hard_negs, dim=1)
+                neg_lse = torch.logaddexp(neg_lse, hard_neg_lse)
 
-            # Positive similarities
-            pos_sims = weighted_sim[i, pos_indices]
+        # Total log denominator: log(exp(pos) + sum(exp(negs)))
+        neg_lse_exp = neg_lse.unsqueeze(1).expand_as(weighted_sim)
+        log_denom = torch.logaddexp(weighted_sim, neg_lse_exp)
 
-            # Negative similarities (including hard negative mining)
-            neg_sims = weighted_sim[i, neg_indices]
-
-            # Hard negatives: negatives with high similarity (most confusing)
-            if self.hard_negative_weight > 0 and len(neg_indices) > 1:
-                hard_neg_k = max(1, len(neg_indices) // 4)
-                hard_neg_sims, _ = neg_sims.topk(hard_neg_k)
-                neg_sims = torch.cat([
-                    neg_sims,
-                    hard_neg_sims * self.hard_negative_weight,
-                ])
-
-            # InfoNCE for this anchor
-            for pos_sim in pos_sims:
-                logits = torch.cat([pos_sim.unsqueeze(0), neg_sims])
-                target = torch.zeros(1, dtype=torch.long, device=embeddings.device)
-                sample_loss = F.cross_entropy(logits.unsqueeze(0), target)
-                loss = loss + sample_loss
-                n_valid += 1
-
-        if n_valid > 0:
-            loss = loss / n_valid
+        # InfoNCE = -log(exp(pos) / denom) = -pos + log(denom)
+        pair_losses = -(weighted_sim - log_denom)
+        
+        # We only want the loss for valid positive pairs
+        valid_pos_count = max(1, pos_mask.sum().item())
+        loss = (pair_losses * pos_mask).sum() / valid_pos_count
+        n_valid = valid_pos_count
 
         # Reliability consistency penalty
         R_penalty = self._reliability_consistency_penalty(z, R)
