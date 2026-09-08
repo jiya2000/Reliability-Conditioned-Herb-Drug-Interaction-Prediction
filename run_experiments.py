@@ -143,9 +143,13 @@ def train_variant(variant_name, variant_config, data, args, seed):
 
     if getattr(args, "resume", False) and os.path.exists(best_model_path):
         logger.info(f"  [RESUME] Found existing checkpoint at {best_model_path}. Skipping training!")
-        model.load_state_dict(torch.load(best_model_path, map_location=args.device))
+        checkpoint = torch.load(best_model_path, map_location=args.device)
+        model.load_state_dict(checkpoint["model_state_dict"])
         model.to(args.device)
-        history = {"train_loss": [], "val_loss": []}
+        history = {
+            "train_loss": [checkpoint.get("train_loss", 0.0)], 
+            "val_loss": [checkpoint.get("val_loss", 0.0)]
+        }
         train_time = 0.0
     else:
         trainer = HDITrainer(
