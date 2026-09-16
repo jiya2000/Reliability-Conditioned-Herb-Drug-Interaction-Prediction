@@ -76,6 +76,7 @@ class HDIEvaluator:
         all_labels = []
         all_probs = []
         all_logits = []
+        all_source_indices = []
 
         for batch in loader:
             source_indices = batch["source_indices"].to(self.device)
@@ -97,10 +98,12 @@ class HDIEvaluator:
             all_labels.append(labels.numpy())
             all_probs.append(output["probabilities"].cpu().numpy())
             all_logits.append(output["logits"].cpu().numpy())
+            all_source_indices.append(batch["source_indices"].numpy())
 
         labels = np.concatenate(all_labels)
         probs = np.concatenate(all_probs)
         logits = np.concatenate(all_logits)
+        source_indices = np.concatenate(all_source_indices)
         preds = (probs >= self.threshold).astype(int)
 
         # Compute metrics
@@ -110,10 +113,10 @@ class HDIEvaluator:
             "precision": self._precision(labels, preds),
             "recall": self._recall(labels, preds),
             "f1": self._f1(labels, preds),
-            "mrr": self._mrr(labels, probs),
-            "hits@10": self._hits_at_k(labels, probs, k=10),
-            "hits@5": self._hits_at_k(labels, probs, k=5),
-            "hits@1": self._hits_at_k(labels, probs, k=1),
+            "mrr": self._mrr_per_query(labels, probs, source_indices),
+            "hits@10": self._hits_at_k_per_query(labels, probs, source_indices, k=10),
+            "hits@5": self._hits_at_k_per_query(labels, probs, source_indices, k=5),
+            "hits@1": self._hits_at_k_per_query(labels, probs, source_indices, k=1),
             "num_samples": len(labels),
             "num_positives": int(labels.sum()),
             "num_negatives": int((1 - labels).sum()),
@@ -182,44 +185,85 @@ class HDIEvaluator:
         return 2 * p * r / (p + r) if (p + r) > 0 else 0.0
 
     @staticmethod
-    def _mrr(labels: np.ndarray, probs: np.ndarray) -> float:
-        """
-        Compute Mean Reciprocal Rank.
-
-        For each positive, rank all candidates by probability.
-        MRR = 1/|Q| * Σ 1/rank_i
-        """
-        positive_mask = labels == 1
-        if not positive_mask.any():
-            return 0.0
-
-        # Sort by probability descending
-        sorted_indices = np.argsort(-probs)
-        ranks = np.zeros_like(sorted_indices)
-        ranks[sorted_indices] = np.arange(1, len(sorted_indices) + 1)
-
-        positive_ranks = ranks[positive_mask]
-        reciprocal_ranks = 1.0 / positive_ranks
-
-        return float(reciprocal_ranks.mean())
-
-    @staticmethod
-    def _hits_at_k(
-        labels: np.ndarray, probs: np.ndarray, k: int = 10
+    def _mrr_per_query(
+        labels: np.ndarray,
+        probs: np.ndarray,
+        source_indices: np.ndarray,
     ) -> float:
         """
-        Compute Hits@K.
+        Compute Mean Reciprocal Rank (per-query).
 
-        Fraction of positive edges ranked in top K by probability.
+        For each source (query) node, rank all its candidates by probability
+        and find the rank of the first true positive.
+        MRR = 1/|Q| * Σ 1/rank_i
+
+        This is the standard link prediction MRR — ranking is done within
+        each query's candidate set, not globally across all samples.
         """
-        if labels.sum() == 0:
+        unique_sources = np.unique(source_indices)
+        reciprocal_ranks = []
+
+        for src in unique_sources:
+            mask = source_indices == src
+            src_labels = labels[mask]
+            src_probs = probs[mask]
+
+            if src_labels.sum() == 0:
+                continue  # No positives for this query
+
+            # Rank candidates for this query by probability (descending)
+            sorted_idx = np.argsort(-src_probs)
+            sorted_labels = src_labels[sorted_idx]
+
+            # Find rank of first positive
+            positive_positions = np.where(sorted_labels == 1)[0]
+            if len(positive_positions) > 0:
+                # Rank is 1-indexed
+                first_rank = positive_positions[0] + 1
+                reciprocal_ranks.append(1.0 / first_rank)
+
+        if not reciprocal_ranks:
             return 0.0
 
-        top_k_indices = np.argsort(-probs)[:k]
-        hits = labels[top_k_indices].sum()
-        total_positives = labels.sum()
+        return float(np.mean(reciprocal_ranks))
 
-        return float(hits / total_positives)
+    @staticmethod
+    def _hits_at_k_per_query(
+        labels: np.ndarray,
+        probs: np.ndarray,
+        source_indices: np.ndarray,
+        k: int = 10,
+    ) -> float:
+        """
+        Compute Hits@K (per-query).
+
+        For each source (query) node, check if any true positive is
+        ranked in the top K candidates. Returns the fraction of queries
+        where at least one positive appears in the top K.
+        """
+        unique_sources = np.unique(source_indices)
+        hits = 0
+        queries_with_positives = 0
+
+        for src in unique_sources:
+            mask = source_indices == src
+            src_labels = labels[mask]
+            src_probs = probs[mask]
+
+            if src_labels.sum() == 0:
+                continue  # No positives for this query
+
+            queries_with_positives += 1
+
+            # Top K candidates for this query
+            top_k_idx = np.argsort(-src_probs)[:k]
+            if src_labels[top_k_idx].sum() > 0:
+                hits += 1
+
+        if queries_with_positives == 0:
+            return 0.0
+
+        return float(hits / queries_with_positives)
 
     @staticmethod
     def _manual_auc(labels: np.ndarray, probs: np.ndarray) -> float:

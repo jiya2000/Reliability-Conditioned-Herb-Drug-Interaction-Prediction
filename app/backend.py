@@ -83,6 +83,8 @@ _real_data_lookup = {}
 _known_drugs = []
 _checkpoint_path = ""
 _device = None
+_node_to_idx = {}      # DrugBank ID → node index
+_drug_name_to_id = {}  # Lowercase drug name → DrugBank ID
 
 
 # ---------- Lifespan ----------
@@ -92,7 +94,7 @@ async def lifespan(app: FastAPI):
     """Load model and data on startup, clean up on shutdown."""
     global _model, _graph_data, _data_pipeline, _evidence_surfacer
     global _real_data_cache, _real_data_lookup, _known_drugs
-    global _checkpoint_path, _device
+    global _checkpoint_path, _device, _node_to_idx, _drug_name_to_id
 
     logger.info("Starting HDI Prediction API...")
 
@@ -117,17 +119,25 @@ async def lifespan(app: FastAPI):
                     _real_data_lookup[(u_name, v_name)] = desc
                     _real_data_lookup[(v_name, u_name)] = desc
 
-            logger.info(f"Loaded {len(_real_data_lookup)} real DrugBank interaction pairs.")
+            # Build name → ID mapping
+            for drug_id, drug_name in drugs.items():
+                _drug_name_to_id[drug_name.lower()] = drug_id
+
+            logger.info(f"Loaded {len(_real_data_lookup)} real DrugBank interaction pairs, "
+                        f"{len(_drug_name_to_id)} drug name mappings.")
         except Exception as e:
             logger.error(f"Failed to load DrugBank data: {e}")
 
     # --- Try to Load Trained Model ---
+    # Order: full model (best) → unconditioned → gnn_only (baseline)
     checkpoint_candidates = [
-        "checkpoints/best_model.pt",
-        "checkpoints/ablation/full_model_seed42/best_model.pt",
+        ("checkpoints/best_model.pt", True, True),
+        ("checkpoints/ablation/full_model_seed42/best_model.pt", True, True),
+        ("checkpoints/ablation/unconditioned_seed42/best_model.pt", True, False),
+        ("checkpoints/ablation/gnn_only_seed42/best_model.pt", False, False),
     ]
 
-    for cp_path in checkpoint_candidates:
+    for cp_path, use_text, use_reliability in checkpoint_candidates:
         if os.path.exists(cp_path):
             try:
                 logger.info(f"Loading model checkpoint: {cp_path}")
@@ -138,9 +148,9 @@ async def lifespan(app: FastAPI):
                     gnn_input_dim=128,
                     gnn_hidden_dim=256,
                     gnn_output_dim=128,
-                    num_relations=6,
-                    use_text=True,
-                    use_reliability=True,
+                    num_relations=3,  # DrugBank: metabolic, PK, PD
+                    use_text=use_text,
+                    use_reliability=use_reliability,
                 )
                 _model.load_state_dict(checkpoint["model_state_dict"])
                 _model = _model.to(_device)
@@ -149,12 +159,15 @@ async def lifespan(app: FastAPI):
 
                 logger.info(f"Model loaded from {cp_path} (epoch {checkpoint.get('epoch', '?')})")
 
-                # Load corresponding graph data
+                # Load real data pipeline for inference (matches training)
                 from src.data.data_pipeline import DataPipeline
-                _data_pipeline = DataPipeline(mode="synthetic", feature_dim=128)
+                data_mode = "real" if os.path.exists("data/processed/drugbank_parsed.json") else "synthetic"
+                _data_pipeline = DataPipeline(mode=data_mode, feature_dim=128)
                 pipeline_data = _data_pipeline.build()
                 _graph_data = pipeline_data["graph_data"]
-                logger.info("Graph data loaded for inference")
+                _node_to_idx = pipeline_data.get("node_to_idx", {})
+                logger.info(f"Graph data loaded for inference (mode={data_mode}, "
+                            f"{len(_node_to_idx)} nodes)")
 
                 break
             except Exception as e:
@@ -305,23 +318,31 @@ async def model_info():
 @torch.no_grad()
 def _run_model_inference(query: InteractionQuery) -> InteractionResult:
     """Run actual model inference using the loaded checkpoint."""
-    # For real inference, we need to find the node indices
-    # Currently using synthetic graph, so we map by name similarity
-    from src.data.synthetic_data import DRUG_NAMES, HERB_NAMES
-
-    # Find closest matching nodes
     e1_lower = query.entity1.lower()
     e2_lower = query.entity2.lower()
 
-    # Simple lookup in synthetic node names
     node_features = _graph_data["node_features"].to(_device)
     edge_index = _graph_data["edge_index"].to(_device)
     edge_type = _graph_data["edge_type"].to(_device)
     num_nodes = node_features.shape[0]
 
-    # Use hash-based index assignment for demo purposes
-    src_idx = hash(e1_lower) % num_nodes
-    tgt_idx = hash(e2_lower) % num_nodes
+    # Look up real node indices via drug name → DrugBank ID → node index
+    e1_id = _drug_name_to_id.get(e1_lower)
+    e2_id = _drug_name_to_id.get(e2_lower)
+
+    if e1_id and e1_id in _node_to_idx:
+        src_idx = _node_to_idx[e1_id]
+    else:
+        # Fallback: deterministic hash for unknown entities
+        import hashlib
+        src_idx = int(hashlib.sha256(e1_lower.encode()).hexdigest(), 16) % num_nodes
+
+    if e2_id and e2_id in _node_to_idx:
+        tgt_idx = _node_to_idx[e2_id]
+    else:
+        import hashlib
+        tgt_idx = int(hashlib.sha256(e2_lower.encode()).hexdigest(), 16) % num_nodes
+
     if src_idx == tgt_idx:
         tgt_idx = (tgt_idx + 1) % num_nodes
 

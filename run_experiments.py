@@ -61,13 +61,13 @@ def parse_args():
         "--mode", choices=["synthetic", "real"], default="synthetic",
         help="Data source: synthetic (fast) or real (DrugBank)",
     )
-    parser.add_argument("--epochs", type=int, default=30)
+    parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--hidden-dim", type=int, default=128)
     parser.add_argument("--num-heads", type=int, default=4)
     parser.add_argument(
-        "--seeds", type=int, nargs="+", default=[42, 123, 456],
+        "--seeds", type=int, nargs="+", default=[42, 123],
         help="Random seeds for multiple runs",
     )
     parser.add_argument(

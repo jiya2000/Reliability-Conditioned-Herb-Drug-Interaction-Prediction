@@ -335,4 +335,189 @@ def generate_all_figures(full_results: dict, output_dir: str = "results/figures"
     except Exception as e:
         logger.warning(f"Could not generate loss curves: {e}")
 
+    # 4. R-score distribution (if full model has stratified data)
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        full_runs = per_run.get("full_model", {}).get("runs", [])
+        if full_runs:
+            stratified = full_runs[0].get("stratified", {})
+            by_r = stratified.get("by_reliability", {})
+
+            if by_r:
+                fig, ax = plt.subplots(figsize=(8, 5))
+                strata = []
+                n_samples = []
+                auc_vals = []
+
+                for sname, sdata in sorted(by_r.items()):
+                    if isinstance(sdata, dict) and "auc_roc" in sdata:
+                        strata.append(sname.replace("R_", "").replace("_", "–"))
+                        n_samples.append(sdata.get("n_samples", 0))
+                        auc_vals.append(sdata.get("auc_roc", 0))
+
+                if strata:
+                    x = np.arange(len(strata))
+                    ax2 = ax.twinx()
+
+                    bars = ax.bar(x, n_samples, alpha=0.6, color="#90CAF9",
+                                  label="Sample count")
+                    line = ax2.plot(x, auc_vals, "o-", color="#E53935",
+                                   linewidth=2, markersize=8,
+                                   label="AUC-ROC")
+
+                    ax.set_xlabel("Reliability Score Range", fontsize=12)
+                    ax.set_ylabel("Number of Samples", fontsize=12)
+                    ax2.set_ylabel("AUC-ROC", fontsize=12)
+                    ax.set_xticks(x)
+                    ax.set_xticklabels(strata)
+                    ax.set_title("Performance by Reliability Stratum", fontsize=14)
+
+                    lines1, labels1 = ax.get_legend_handles_labels()
+                    lines2, labels2 = ax2.get_legend_handles_labels()
+                    ax.legend(lines1 + lines2, labels1 + labels2, loc="lower right")
+
+                    fig.tight_layout()
+                    out_path = Path(output_dir)
+                    fig.savefig(out_path / "r_score_distribution.png",
+                                dpi=300, bbox_inches="tight")
+                    plt.close(fig)
+                    logger.info("Generated r_score_distribution.png")
+
+    except Exception as e:
+        logger.warning(f"Could not generate R-score distribution: {e}")
+
+    # 5. Source-type performance comparison
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        # Compare source-type performance across variants
+        fig, ax = plt.subplots(figsize=(12, 6))
+        colors = {"gnn_only": "#FF7043", "unconditioned": "#42A5F5",
+                  "full_model": "#66BB6A"}
+        labels_map = {"gnn_only": "(a) GNN-only",
+                      "unconditioned": "(b) Unconditioned",
+                      "full_model": "(c) Full (Ours)"}
+
+        all_sources = set()
+        variant_source_data = {}
+
+        for vname, vdata in per_run.items():
+            runs = vdata.get("runs", [])
+            if not runs:
+                continue
+            by_source = runs[0].get("stratified", {}).get("by_source", {})
+            variant_source_data[vname] = by_source
+            all_sources.update(by_source.keys())
+
+        source_names = sorted(all_sources)
+        if source_names:
+            x = np.arange(len(source_names))
+            width = 0.25
+
+            for i, (vname, by_source) in enumerate(variant_source_data.items()):
+                vals = [by_source.get(s, {}).get("auc_roc", 0) for s in source_names]
+                ax.bar(x + i * width, vals, width,
+                       label=labels_map.get(vname, vname),
+                       color=colors.get(vname, "gray"), alpha=0.85)
+
+            ax.set_xlabel("Evidence Source Type", fontsize=12)
+            ax.set_ylabel("AUC-ROC", fontsize=12)
+            ax.set_title("Performance by Evidence Source Type", fontsize=14)
+            ax.set_xticks(x + width)
+            ax.set_xticklabels([s.replace("_", " ").title() for s in source_names],
+                               rotation=45, ha="right")
+            ax.legend()
+            ax.set_ylim(0, 1.1)
+            ax.grid(axis="y", alpha=0.3)
+
+            fig.tight_layout()
+            out_path = Path(output_dir)
+            fig.savefig(out_path / "source_type_performance.png",
+                        dpi=300, bbox_inches="tight")
+            fig.savefig(out_path / "source_type_performance.svg",
+                        bbox_inches="tight")
+            plt.close(fig)
+            logger.info("Generated source_type_performance.png/svg")
+
+    except Exception as e:
+        logger.warning(f"Could not generate source-type comparison: {e}")
+
+    # 6. KG statistics summary
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        metadata = full_results.get("metadata", {})
+        aggregated = full_results.get("aggregated", {})
+
+        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+        # Parameter counts
+        param_counts = {}
+        for vname, vdata in aggregated.items():
+            total = vdata.get("metrics", {}).get("total_parameters", 0)
+            if total > 0:
+                param_counts[labels_map.get(vname, vname)] = total
+
+        if param_counts:
+            ax = axes[0]
+            bars = ax.barh(list(param_counts.keys()), list(param_counts.values()),
+                           color=["#FF7043", "#42A5F5", "#66BB6A"])
+            ax.set_xlabel("Parameters")
+            ax.set_title("Model Size Comparison")
+            for bar, val in zip(bars, param_counts.values()):
+                ax.text(bar.get_width() + 1000, bar.get_y() + bar.get_height()/2,
+                        f"{val:,}", va="center", fontsize=9)
+
+        # Training time comparison
+        time_data = {}
+        for vname, vdata in aggregated.items():
+            t = vdata.get("metrics", {}).get("training_time_mean", 0)
+            if t > 0:
+                time_data[labels_map.get(vname, vname)] = t
+
+        if time_data:
+            ax = axes[1]
+            ax.barh(list(time_data.keys()), list(time_data.values()),
+                    color=["#FF7043", "#42A5F5", "#66BB6A"])
+            ax.set_xlabel("Training Time (s)")
+            ax.set_title("Training Time Comparison")
+
+        # AUC-ROC comparison (main result)
+        auc_data = {}
+        auc_std = {}
+        for vname, vdata in aggregated.items():
+            m = vdata.get("metrics", {}).get("auc_roc", {})
+            if isinstance(m, dict):
+                auc_data[labels_map.get(vname, vname)] = m.get("mean", 0)
+                auc_std[labels_map.get(vname, vname)] = m.get("std", 0)
+
+        if auc_data:
+            ax = axes[2]
+            names = list(auc_data.keys())
+            vals = list(auc_data.values())
+            errs = [auc_std.get(n, 0) for n in names]
+            bars = ax.barh(names, vals, xerr=errs, capsize=5,
+                           color=["#FF7043", "#42A5F5", "#66BB6A"], alpha=0.85)
+            ax.set_xlabel("AUC-ROC")
+            ax.set_title("AUC-ROC (mean ± std)")
+            ax.set_xlim(0, 1)
+
+        fig.tight_layout()
+        out_path = Path(output_dir)
+        fig.savefig(out_path / "model_comparison.png",
+                    dpi=300, bbox_inches="tight")
+        plt.close(fig)
+        logger.info("Generated model_comparison.png")
+
+    except Exception as e:
+        logger.warning(f"Could not generate model comparison: {e}")
+
     logger.info(f"All figures generated in {output_dir}")
+

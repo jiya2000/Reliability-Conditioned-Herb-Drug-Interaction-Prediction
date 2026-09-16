@@ -25,6 +25,8 @@ The reliability score **R** — computed from source metadata (corroboration cou
 - vs. **NeuroGRIP**: Post-hoc reliability filter on homogeneous graphs — no cross-modal fusion
 - vs. **DDI-AttendNet**: Intra-modal molecular substructure attention — no text-molecule bridging
 
+> **Note on Experimental Data:** While this architecture is designed for Herb-Drug Interaction (HDI) prediction, the current end-to-end experiment pipeline (`run_experiments.py`) uses **DrugBank** to evaluate performance on Drug-Drug Interaction (DDI) prediction as a foundational benchmark. Integration of IMPPAT/ChEMBL herb data is provided in the codebase but remains future work for the unified training pipeline.
+
 ## Project Structure
 
 ```
