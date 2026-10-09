@@ -13,7 +13,7 @@ DrugBank XML schema reference: https://go.drugbank.com/docs/drugbank-xml
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import pandas as pd
 from loguru import logger
@@ -76,7 +76,7 @@ class DrugBankLoader:
         targets_df = loader.load_targets()
     """
 
-    def __init__(self, xml_path: str | Path):
+    def __init__(self, xml_path: Union[str, Path]):
         self.xml_path = Path(xml_path)
         self._drugs: list[DrugEntity] = []
         self._interactions: list[DrugInteraction] = []

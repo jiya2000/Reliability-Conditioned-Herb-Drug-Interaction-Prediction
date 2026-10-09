@@ -10,7 +10,7 @@ Data source: https://cb.imsc.res.in/imppat/
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import pandas as pd
 from loguru import logger
@@ -67,7 +67,7 @@ class IMPPATLoader:
         herb_compound_edges = loader.load_herb_compound_edges()
     """
 
-    def __init__(self, data_dir: Optional[str | Path] = None):
+    def __init__(self, data_dir: Optional[Union[str, Path]] = None):
         self.data_dir = Path(data_dir) if data_dir else None
         self._herbs: list[HerbEntity] = []
         self._phytochemicals: list[Phytochemical] = []

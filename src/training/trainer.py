@@ -16,7 +16,7 @@ from __future__ import annotations
 import os
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import torch
 import torch.nn as nn
@@ -424,7 +424,7 @@ class HDITrainer:
         torch.save(checkpoint, path)
         logger.info(f"Saved checkpoint: {path}")
 
-    def load_checkpoint(self, path: str | Path) -> dict:
+    def load_checkpoint(self, path: Union[str, Path]) -> dict:
         """Load model from checkpoint."""
         checkpoint = torch.load(path, map_location=self.device)
         self.model.load_state_dict(checkpoint["model_state_dict"])

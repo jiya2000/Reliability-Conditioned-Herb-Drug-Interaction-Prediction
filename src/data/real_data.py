@@ -113,8 +113,19 @@ class RealDataGenerator:
         with open(self.data_path, "r") as f:
             data = json.load(f)
 
-        drugs = data["drugs"]
-        interactions = data["interactions"]
+        if isinstance(data, list):
+            drugs = {}
+            interactions = []
+            for item in data:
+                d1 = item["drug_1"]
+                d2 = item["drug_2"]
+                drugs[d1] = d1
+                drugs[d2] = d2
+                desc = item.get("evidence_texts", [""])[0] if item.get("evidence_texts") else ""
+                interactions.append((d1, d2, desc))
+        else:
+            drugs = data["drugs"]
+            interactions = data["interactions"]
 
         # Sort for determinism
         drug_ids = sorted(list(drugs.keys()))

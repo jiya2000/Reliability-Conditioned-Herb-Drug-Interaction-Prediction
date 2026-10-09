@@ -9,7 +9,7 @@ Loads annotated text corpora for NER/RE training:
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import pandas as pd
 from loguru import logger
@@ -57,9 +57,9 @@ class CorpusLoader:
 
     def __init__(
         self,
-        ddi_path: Optional[str | Path] = None,
-        cadec_path: Optional[str | Path] = None,
-        psytar_path: Optional[str | Path] = None,
+        ddi_path: Optional[Union[str, Path]] = None,
+        cadec_path: Optional[Union[str, Path]] = None,
+        psytar_path: Optional[Union[str, Path]] = None,
     ):
         self.ddi_path = Path(ddi_path) if ddi_path else None
         self.cadec_path = Path(cadec_path) if cadec_path else None

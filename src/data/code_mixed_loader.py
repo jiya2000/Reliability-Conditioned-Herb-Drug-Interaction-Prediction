@@ -13,7 +13,7 @@ Handles:
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import pandas as pd
 from loguru import logger
@@ -51,7 +51,7 @@ class CodeMixedLoader:
         df = loader.to_dataframe()
     """
 
-    def __init__(self, data_dir: Optional[str | Path] = None):
+    def __init__(self, data_dir: Optional[Union[str, Path]] = None):
         self.data_dir = Path(data_dir) if data_dir else None
         self._sentences: list[CodeMixedSentence] = []
         self._parsed = False

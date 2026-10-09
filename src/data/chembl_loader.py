@@ -9,7 +9,7 @@ Data source: https://www.ebi.ac.uk/chembl/
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import pandas as pd
 from loguru import logger
@@ -71,7 +71,7 @@ class ChEMBLLoader:
         targets_df = loader.load_targets()
     """
 
-    def __init__(self, db_path: Optional[str | Path] = None):
+    def __init__(self, db_path: Optional[Union[str, Path]] = None):
         self.db_path = Path(db_path) if db_path else None
         self._compounds: list[ChEMBLCompound] = []
         self._activities: list[ChEMBLActivity] = []
