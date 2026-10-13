@@ -25,7 +25,10 @@ jobs:
         pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
         pip install -r requirements_core.txt
         pip install pytest pytest-cov
+        pip install -e .
 
     - name: Run unit test suite
+      env:
+        PYTHONPATH: .
       run: |
         pytest tests/ -v
