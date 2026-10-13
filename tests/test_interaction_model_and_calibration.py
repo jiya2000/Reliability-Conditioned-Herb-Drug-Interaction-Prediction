@@ -1,0 +1,155 @@
+"""
+Unit tests for ReliabilityConditionedInteractionModel, ablations, calibration, and leakage-safe splits.
+"""
+
+import pytest
+import torch
+import numpy as np
+import pandas as pd
+
+from src.models.interaction_model import (
+    ReliabilityConditionedInteractionModel,
+    CalibratedDecision,
+)
+from src.training.calibration import (
+    TemperatureScaler,
+    compute_calibration_metrics,
+    evaluate_abstention,
+)
+from src.training.evaluation import (
+    LeakageSafeSplitter,
+    compute_comprehensive_metrics,
+    format_ablation_markdown_table,
+)
+
+
+def test_interaction_model_ablation_modes():
+    batch_size = 4
+    graph_dim = 32
+    evidence_dim = 32
+    fused_dim = 32
+
+    herb_emb = torch.randn(batch_size, graph_dim)
+    drug_emb = torch.randn(batch_size, graph_dim)
+    evidence_feat = torch.randn(batch_size, evidence_dim)
+    # 8D lineage metadata: [pos, neg, echo, qual, context, conflict, margin, missing]
+    metadata_8d = torch.tensor([
+        [2.0, 0.0, 0.2, 0.9, 0.9, 0.0, 2.0, 0.1],
+        [0.0, 2.0, 0.1, 0.8, 0.8, 0.0, -2.0, 0.2],
+        [1.5, 1.5, 0.3, 0.8, 0.8, 0.9, 0.0, 0.1],  # conflicting
+        [0.1, 0.1, 0.0, 0.2, 0.3, 0.1, 0.0, 0.8],  # missing/uncertain
+    ], dtype=torch.float32)
+
+    modes = [
+        "graph_only",
+        "graph_plus_naive_evidence",
+        "standard_fusion",
+        "reliability_conditioned",
+        "no_study_dependence",
+        "no_context_conflict",
+    ]
+
+    for mode in modes:
+        model = ReliabilityConditionedInteractionModel(
+            graph_dim=graph_dim,
+            evidence_dim=evidence_dim,
+            fused_dim=fused_dim,
+            hidden_dim=32,
+            mode=mode,
+        )
+        out = model(
+            herb_emb=herb_emb,
+            drug_emb=drug_emb,
+            evidence_features=evidence_feat,
+            metadata=metadata_8d,
+            return_details=True,
+        )
+        assert "logits" in out
+        assert "probs" in out
+        assert out["probs"].shape == (batch_size, 1)
+        assert (out["probs"] >= 0.0).all() and (out["probs"] <= 1.0).all()
+
+
+def test_calibrated_decision_and_abstention():
+    graph_dim = 16
+    model = ReliabilityConditionedInteractionModel(
+        graph_dim=graph_dim,
+        evidence_dim=16,
+        fused_dim=16,
+        hidden_dim=16,
+        mode="reliability_conditioned",
+        abstain_uncertainty_threshold=0.25,
+        abstain_conflict_threshold=0.50,
+    )
+
+    herb_emb = torch.randn(2, graph_dim)
+    drug_emb = torch.randn(2, graph_dim)
+    evidence_feat = torch.randn(2, 16)
+    # Row 0: high conflict (0.95), Row 1: clear positive (conflict 0.0)
+    metadata_8d = torch.tensor([
+        [1.0, 1.0, 0.1, 0.8, 0.8, 0.95, 0.0, 0.1],
+        [3.0, 0.0, 0.0, 0.9, 0.9, 0.0, 3.0, 0.0],
+    ], dtype=torch.float32)
+
+    decisions = model.predict_with_decision(
+        herb_emb=herb_emb,
+        drug_emb=drug_emb,
+        evidence_features=evidence_feat,
+        metadata=metadata_8d,
+    )
+
+    assert len(decisions) == 2
+    assert isinstance(decisions[0], CalibratedDecision)
+    # The high-conflict pair with equivocal probability should trigger abstention
+    assert decisions[0].abstain is True
+    assert decisions[0].predicted_label == -1
+    assert decisions[0].abstention_reason == "active_scientific_conflict"
+
+
+def test_temperature_scaling_and_calibration():
+    scaler = TemperatureScaler()
+    logits = np.array([-2.5, -1.0, 0.5, 1.2, 3.0])
+    labels = np.array([0, 0, 1, 1, 1])
+
+    t = scaler.fit(logits, labels, max_iter=20)
+    assert t > 0.0
+
+    probs = torch.sigmoid(scaler(torch.tensor(logits, dtype=torch.float32))).detach().numpy()
+    cal_metrics = compute_calibration_metrics(probs, labels)
+    assert 0.0 <= cal_metrics.expected_calibration_error <= 1.0
+    assert 0.0 <= cal_metrics.brier_score <= 1.0
+
+
+def test_leakage_safe_splits():
+    splitter = LeakageSafeSplitter(seed=42)
+    data = []
+    for h_idx in range(10):
+        for d_idx in range(5):
+            data.append({
+                "herb_id": f"HERB_{h_idx:02d}",
+                "drug_id": f"DRUG_{d_idx:02d}",
+                "publication_date": f"{2010 + (h_idx % 12)}-01-01",
+                "outcome": "positive",
+            })
+    df = pd.DataFrame(data)
+
+    # 1. Herb-disjoint split
+    tr_h, val_h, te_h = splitter.split_herb_disjoint(df)
+    train_herbs = set(tr_h["herb_id"])
+    test_herbs = set(te_h["herb_id"])
+    assert len(train_herbs & test_herbs) == 0, "Herb-disjoint split leaked herbs across train and test!"
+
+    # 2. Drug-disjoint split
+    tr_d, val_d, te_d = splitter.split_drug_disjoint(df)
+    train_drugs = set(tr_d["drug_id"])
+    test_drugs = set(te_d["drug_id"])
+    assert len(train_drugs & test_drugs) == 0, "Drug-disjoint split leaked drugs across train and test!"
+
+    # 3. Temporal split
+    tr_t, val_t, te_t = splitter.split_temporal(df, cutoff_year=2018)
+    assert len(tr_t) > 0
+    assert len(te_t) > 0
+    for d in tr_t["publication_date"]:
+        assert int(d[:4]) < 2016
+    for d in te_t["publication_date"]:
+        assert int(d[:4]) >= 2018

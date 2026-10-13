@@ -1,0 +1,108 @@
+"""
+Unit tests for canonical evidence schema and data validation.
+"""
+
+import pytest
+import pandas as pd
+from src.data.evidence_schema import (
+    EvidenceRecord,
+    EvidenceOutcome,
+    EvidenceType,
+    validate_dataframe,
+    export_canonical_table,
+    load_canonical_table,
+)
+
+
+def test_valid_evidence_record():
+    rec = EvidenceRecord(
+        herb_id="HERB_001",
+        drug_id="DRUG_001",
+        outcome="positive",
+        evidence_type="clinical",
+        source_id="PUBMED_10534248",
+        study_id="STUDY_001",
+        cited_study_ids=["STUDY_OLD"],
+        dose="900 mg/day",
+        preparation="extract",
+        route="oral",
+        species="human",
+        extraction_confidence=0.95,
+        source_url_or_doi="https://doi.org/10.1016/sample",
+    )
+    is_valid, errors = rec.validate()
+    assert is_valid
+    assert len(errors) == 0
+    assert rec.outcome == "positive"
+    assert rec.cited_study_ids == ["STUDY_OLD"]
+
+
+def test_invalid_outcome_rejection():
+    rec = EvidenceRecord(
+        herb_id="HERB_001",
+        drug_id="DRUG_001",
+        outcome="alleged_interaction",  # not in allowed outcomes
+        evidence_type="clinical",
+        source_id="SOURCE_01",
+        study_id="STUDY_01",
+    )
+    is_valid, errors = rec.validate()
+    assert not is_valid
+    assert any("outcome" in err for err in errors)
+
+
+def test_unknown_is_not_negative():
+    """Verify that unknown is represented distinctly from negative."""
+    rec_unk = EvidenceRecord(
+        herb_id="HERB_001",
+        drug_id="DRUG_001",
+        outcome="unknown",
+        evidence_type="inconclusive",
+        source_id="SOURCE_UNK",
+        study_id="STUDY_UNK",
+    )
+    rec_neg = EvidenceRecord(
+        herb_id="HERB_001",
+        drug_id="DRUG_001",
+        outcome="negative",
+        evidence_type="clinical",
+        source_id="SOURCE_NEG",
+        study_id="STUDY_NEG",
+    )
+    assert rec_unk.outcome != rec_neg.outcome
+    assert rec_unk.outcome == EvidenceOutcome.UNKNOWN.value
+    assert rec_neg.outcome == EvidenceOutcome.NEGATIVE.value
+
+
+def test_dataframe_validation_and_roundtrip(tmp_path):
+    records = [
+        {
+            "herb_id": "H1",
+            "drug_id": "D1",
+            "outcome": "positive",
+            "evidence_type": "clinical",
+            "source_id": "S1",
+            "study_id": "ST1",
+            "cited_study_ids": ["ST0"],
+        },
+        {
+            "herb_id": "H2",
+            "drug_id": "D2",
+            "outcome": "negative",
+            "evidence_type": "animal",
+            "source_id": "S2",
+            "study_id": "ST2",
+            "cited_study_ids": [],
+        },
+    ]
+    df = pd.DataFrame(records)
+    cleaned_df, errors = validate_dataframe(df)
+    assert len(errors) == 0
+    assert len(cleaned_df) == 2
+
+    # Test export and reload
+    csv_file = str(tmp_path / "test_evidence.csv")
+    export_canonical_table(cleaned_df, csv_file)
+    reloaded_df = load_canonical_table(csv_file)
+    assert len(reloaded_df) == 2
+    assert reloaded_df.iloc[0]["cited_study_ids"] == ["ST0"]

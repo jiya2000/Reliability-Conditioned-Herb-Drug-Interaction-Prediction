@@ -118,6 +118,14 @@ class ReliabilityScorer(nn.Module):
             nn.Sigmoid(),  # R ∈ [0, 1]
         )
 
+        # Lineage-aware projection for 8D evidence lineage features:
+        # [indep_pos, indep_neg, echo_ratio, source_quality, context_compat, contradiction, net_margin, missingness]
+        self.lineage_proj = nn.Sequential(
+            nn.Linear(8, total_dim),
+            nn.GELU(),
+        )
+        self.lineage_dim_attention = nn.Linear(total_dim, 8)
+
         # Dimension-wise attention for interpretable breakdown
         self.dim_attention = nn.Linear(total_dim, 5)
 
@@ -131,9 +139,10 @@ class ReliabilityScorer(nn.Module):
             f"ReliabilityScorer: C={corroboration_embed_dim}, "
             f"T={temporal_dim}, B={biomedical_dim}, "
             f"M={molecular_dim}, S={source_type_embed_dim} "
-            f"→ hidden={hidden_dim} → R "
+            f"→ hidden={hidden_dim} → R (supports 5D legacy & 8D evidence lineage) "
             f"(MC dropout={mc_dropout_rate}, samples={mc_samples})"
         )
+
 
     def forward(
         self,
@@ -144,74 +153,77 @@ class ReliabilityScorer(nn.Module):
         Compute reliability score from metadata.
 
         Args:
-            metadata: (batch, 5) tensor with columns [C, T, B, M, S]
-                C: int (corroboration count)
-                T: float (temporal recency)
-                B: float (biomedical quality)
-                M: float (molecular plausibility)
-                S: int (source type code)
+            metadata: Tensor of shape (batch, 5) or (batch, 8).
+                If (batch, 5) [Legacy]:
+                    [C, T, B, M, S]
+                If (batch, 8) [Evidence Lineage]:
+                    [indep_pos, indep_neg, echo_ratio, source_quality,
+                     context_compat, contradiction, net_margin, missingness]
             return_breakdown: If True, return per-dimension contributions
 
         Returns:
             R: (batch, 1) reliability score
             breakdown: Optional dict with per-dimension contributions
         """
-        batch_size = metadata.size(0)
-
-        # Extract individual dimensions
-        C = metadata[:, 0].long().clamp(0, self.max_corroboration)  # int
-        T = metadata[:, 1:2]  # (batch, 1) float
-        B = metadata[:, 2:3]  # (batch, 1) float
-        M = metadata[:, 3:4]  # (batch, 1) float
-        S = metadata[:, 4].long().clamp(0, 7)  # int
-
-        # Embed/project each dimension
-        c_emb = self.corroboration_embed(C)  # (batch, c_dim)
-        t_emb = self.temporal_proj(T)  # (batch, t_dim)
-        b_emb = self.biomedical_proj(B)  # (batch, b_dim)
-        m_emb = self.molecular_proj(M)  # (batch, m_dim)
-        s_emb = self.source_type_embed(S)  # (batch, s_dim)
-
-        # Concatenate all dimension embeddings
-        combined = torch.cat([c_emb, t_emb, b_emb, m_emb, s_emb], dim=-1)
-
-        # Compute R
+        combined = self._embed_metadata(metadata)
         R = self.mlp(combined)  # (batch, 1)
+
+        # In lineage mode, explicit conflict reduces gating trust
+        if metadata.size(-1) == 8:
+            contradiction = metadata[:, 5:6]  # (batch, 1) in [0, 1]
+            R = R * (1.0 - 0.4 * contradiction)
 
         breakdown = None
         if return_breakdown:
-            # Compute attention over dimensions for interpretability
-            dim_weights = torch.softmax(
-                self.dim_attention(combined), dim=-1
-            )  # (batch, 5)
-
-            breakdown = {
-                "corroboration_weight": dim_weights[:, 0],
-                "temporal_weight": dim_weights[:, 1],
-                "biomedical_weight": dim_weights[:, 2],
-                "molecular_weight": dim_weights[:, 3],
-                "source_type_weight": dim_weights[:, 4],
-                "raw_values": {
-                    "C": metadata[:, 0],
-                    "T": metadata[:, 1],
-                    "B": metadata[:, 2],
-                    "M": metadata[:, 3],
-                    "S": metadata[:, 4],
-                },
-            }
+            if metadata.size(-1) == 8:
+                dim_weights = torch.softmax(self.lineage_dim_attention(combined), dim=-1)
+                breakdown = {
+                    "indep_pos_weight": dim_weights[:, 0],
+                    "indep_neg_weight": dim_weights[:, 1],
+                    "echo_ratio_weight": dim_weights[:, 2],
+                    "source_quality_weight": dim_weights[:, 3],
+                    "context_compat_weight": dim_weights[:, 4],
+                    "contradiction_weight": dim_weights[:, 5],
+                    "net_margin_weight": dim_weights[:, 6],
+                    "missingness_weight": dim_weights[:, 7],
+                    "raw_values": {
+                        "indep_pos": metadata[:, 0],
+                        "indep_neg": metadata[:, 1],
+                        "echo_ratio": metadata[:, 2],
+                        "source_quality": metadata[:, 3],
+                        "context_compat": metadata[:, 4],
+                        "contradiction": metadata[:, 5],
+                        "net_margin": metadata[:, 6],
+                        "missingness": metadata[:, 7],
+                    },
+                }
+            else:
+                dim_weights = torch.softmax(self.dim_attention(combined), dim=-1)
+                breakdown = {
+                    "corroboration_weight": dim_weights[:, 0],
+                    "temporal_weight": dim_weights[:, 1],
+                    "biomedical_weight": dim_weights[:, 2],
+                    "molecular_weight": dim_weights[:, 3],
+                    "source_type_weight": dim_weights[:, 4],
+                    "raw_values": {
+                        "C": metadata[:, 0],
+                        "T": metadata[:, 1],
+                        "B": metadata[:, 2],
+                        "M": metadata[:, 3],
+                        "S": metadata[:, 4],
+                    },
+                }
 
         return R, breakdown
 
     def _embed_metadata(self, metadata: torch.Tensor) -> torch.Tensor:
         """
-        Shared embedding logic extracted for reuse by MC forward.
-
-        Args:
-            metadata: (batch, 5) tensor with columns [C, T, B, M, S]
-
-        Returns:
-            combined: (batch, total_dim) concatenated embeddings
+        Shared embedding logic supporting both 8D evidence lineage and 5D legacy metadata.
         """
+        if metadata.size(-1) == 8:
+            return self.lineage_proj(metadata.float())
+
+        # Legacy 5D embedding
         C = metadata[:, 0].long().clamp(0, self.max_corroboration)
         T = metadata[:, 1:2]
         B = metadata[:, 2:3]
@@ -225,6 +237,7 @@ class ReliabilityScorer(nn.Module):
         s_emb = self.source_type_embed(S)
 
         return torch.cat([c_emb, t_emb, b_emb, m_emb, s_emb], dim=-1)
+
 
     def forward_with_uncertainty(
         self,
@@ -283,17 +296,33 @@ class ReliabilityScorer(nn.Module):
         R_uncertainty = R_stack.std(dim=0)      # (batch, 1)
 
         # Breakdown using the mean embedding
-        dim_weights = torch.softmax(
-            self.dim_attention(combined), dim=-1
-        )
-        breakdown = {
-            "corroboration_weight": dim_weights[:, 0],
-            "temporal_weight": dim_weights[:, 1],
-            "biomedical_weight": dim_weights[:, 2],
-            "molecular_weight": dim_weights[:, 3],
-            "source_type_weight": dim_weights[:, 4],
-            "mc_samples": n,
-            "mean_uncertainty": R_uncertainty.mean().item(),
-        }
+        if metadata.size(-1) == 8:
+            dim_weights = torch.softmax(self.lineage_dim_attention(combined), dim=-1)
+            # Epistemic uncertainty is also elevated when literature conflict is present
+            contradiction = metadata[:, 5:6]
+            R_uncertainty = R_uncertainty + 0.25 * contradiction
+            breakdown = {
+                "indep_pos_weight": dim_weights[:, 0],
+                "indep_neg_weight": dim_weights[:, 1],
+                "echo_ratio_weight": dim_weights[:, 2],
+                "source_quality_weight": dim_weights[:, 3],
+                "context_compat_weight": dim_weights[:, 4],
+                "contradiction_weight": dim_weights[:, 5],
+                "net_margin_weight": dim_weights[:, 6],
+                "missingness_weight": dim_weights[:, 7],
+                "mc_samples": n,
+                "mean_uncertainty": R_uncertainty.mean().item(),
+            }
+        else:
+            dim_weights = torch.softmax(self.dim_attention(combined), dim=-1)
+            breakdown = {
+                "corroboration_weight": dim_weights[:, 0],
+                "temporal_weight": dim_weights[:, 1],
+                "biomedical_weight": dim_weights[:, 2],
+                "molecular_weight": dim_weights[:, 3],
+                "source_type_weight": dim_weights[:, 4],
+                "mc_samples": n,
+                "mean_uncertainty": R_uncertainty.mean().item(),
+            }
 
         return R_mean, R_uncertainty, breakdown

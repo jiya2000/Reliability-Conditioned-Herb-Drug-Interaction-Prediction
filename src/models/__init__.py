@@ -16,6 +16,7 @@ from src.models.reliability_scorer import ReliabilityScorer
 from src.models.cross_attention import ReliabilityGatedFusion
 from src.models.link_predictor import LinkPredictor
 from src.models.hdi_model import HDIModel
+from src.models.interaction_model import ReliabilityConditionedInteractionModel, CalibratedDecision
 
 __all__ = [
     "HeterogeneousGNNEncoder",
@@ -24,4 +25,7 @@ __all__ = [
     "ReliabilityGatedFusion",
     "LinkPredictor",
     "HDIModel",
+    "ReliabilityConditionedInteractionModel",
+    "CalibratedDecision",
 ]
+
