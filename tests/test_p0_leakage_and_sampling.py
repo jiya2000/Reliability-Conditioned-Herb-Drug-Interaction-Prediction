@@ -83,3 +83,35 @@ def test_negative_sampling_global_exclusion():
             assert sample.evidence_texts == []
             assert sample.corroboration_count == 0
             assert sample.biomedical_quality == 0.0
+
+
+def test_synthetic_data_no_graph_leakage():
+    """Verify that synthetic message-passing edge_index excludes val and test edges."""
+    from src.data.synthetic_data import SyntheticDataGenerator
+
+    generator = SyntheticDataGenerator(feature_dim=64, seed=42)
+    data = generator.generate()
+
+    edge_index = data["graph_data"]["edge_index"]
+    node_to_idx = data["node_to_idx"]
+
+    graph_edges = set()
+    for col in range(edge_index.shape[1]):
+        u = edge_index[0, col].item()
+        v = edge_index[1, col].item()
+        graph_edges.add((u, v))
+
+    # Assert NO val edges in graph
+    for edge in data["val_edges"]:
+        u = node_to_idx[edge["source_id"]]
+        v = node_to_idx[edge["target_id"]]
+        assert (u, v) not in graph_edges, f"Synthetic val edge ({u}, {v}) leaked into graph!"
+        assert (v, u) not in graph_edges, f"Synthetic reverse val edge ({v}, {u}) leaked into graph!"
+
+    # Assert NO test edges in graph
+    for edge in data["test_edges"]:
+        u = node_to_idx[edge["source_id"]]
+        v = node_to_idx[edge["target_id"]]
+        assert (u, v) not in graph_edges, f"Synthetic test edge ({u}, {v}) leaked into graph!"
+        assert (v, u) not in graph_edges, f"Synthetic reverse test edge ({v}, {u}) leaked into graph!"
+

@@ -277,15 +277,6 @@ class SyntheticDataGenerator:
                     break
 
         for d1, d2 in ddi_pairs:
-            src_idx = node_to_idx[d1]
-            tgt_idx = node_to_idx[d2]
-            edge_src.extend([src_idx, tgt_idx])
-            edge_tgt.extend([tgt_idx, src_idx])
-            edge_types.extend([
-                EDGE_TYPE_MAP["drug_interacts_drug"],
-                EDGE_TYPE_MAP["drug_interacts_drug"],
-            ])
-
             # Generate metadata for this DDI
             source_type = self.rng.choices(
                 SOURCE_TYPES,
@@ -315,6 +306,7 @@ class SyntheticDataGenerator:
                 "biomedical_quality": quality,
                 "molecular_plausibility": plausibility,
                 "edge_kind": "ddi",
+                "edge_type": EDGE_TYPE_MAP["drug_interacts_drug"],
             })
 
         # --- Herb-Drug Interactions (the prediction targets) ---
@@ -328,15 +320,6 @@ class SyntheticDataGenerator:
                     break
 
         for h, d in hdi_pairs:
-            src_idx = node_to_idx[h]
-            tgt_idx = node_to_idx[d]
-            edge_src.extend([src_idx, tgt_idx])
-            edge_tgt.extend([tgt_idx, src_idx])
-            edge_types.extend([
-                EDGE_TYPE_MAP["herb_interacts_drug"],
-                EDGE_TYPE_MAP["herb_interacts_drug"],
-            ])
-
             # HDIs come from more diverse (and noisier) sources
             source_type = self.rng.choices(
                 SOURCE_TYPES,
@@ -366,24 +349,22 @@ class SyntheticDataGenerator:
                 "biomedical_quality": quality,
                 "molecular_plausibility": plausibility,
                 "edge_kind": "hdi",
+                "edge_type": EDGE_TYPE_MAP["herb_interacts_drug"],
             })
 
-        # --- Drug-Target Interactions (structural) ---
+        # --- Drug-Target Interactions (structural background edges) ---
+        structural_src, structural_tgt, structural_types = [], [], []
         for _ in range(self.num_dti_edges):
             d = self.rng.choice(drug_ids)
             t = self.rng.choice(target_ids)
             src_idx = node_to_idx[d]
             tgt_idx = node_to_idx[t]
-            edge_src.extend([src_idx, tgt_idx])
-            edge_tgt.extend([tgt_idx, src_idx])
-            edge_types.extend([
+            structural_src.extend([src_idx, tgt_idx])
+            structural_tgt.extend([tgt_idx, src_idx])
+            structural_types.extend([
                 EDGE_TYPE_MAP["drug_targets_target"],
                 EDGE_TYPE_MAP["drug_targets_target"],
             ])
-
-        # Build tensors
-        edge_index = torch.tensor([edge_src, edge_tgt], dtype=torch.long)
-        edge_type = torch.tensor(edge_types, dtype=torch.long)
 
         # --- Train / Val / Test Split ---
         self.rng.shuffle(all_positive_edges)
@@ -394,6 +375,23 @@ class SyntheticDataGenerator:
         train_edges = all_positive_edges[:n_train]
         val_edges = all_positive_edges[n_train:n_train + n_val]
         test_edges = all_positive_edges[n_train + n_val:]
+
+        # Build message-passing graph from structural edges + TRAIN edges only.
+        # Validation and test interaction edges are strictly excluded from message passing.
+        edge_src = list(structural_src)
+        edge_tgt = list(structural_tgt)
+        edge_types = list(structural_types)
+
+        for edge in train_edges:
+            u_idx = node_to_idx[edge["source_id"]]
+            v_idx = node_to_idx[edge["target_id"]]
+            etype = edge["edge_type"]
+            edge_src.extend([u_idx, v_idx])
+            edge_tgt.extend([v_idx, u_idx])
+            edge_types.extend([etype, etype])
+
+        edge_index = torch.tensor([edge_src, edge_tgt], dtype=torch.long)
+        edge_type = torch.tensor(edge_types, dtype=torch.long)
 
         logger.info(
             f"Synthetic data generated: "
