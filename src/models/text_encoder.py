@@ -95,10 +95,14 @@ class TextEncoder(nn.Module):
                             param.requires_grad = False
 
         except Exception as e:
-            logger.warning(
-                f"Could not load transformer: {e}. "
-                "Using random projections for development."
+            logger.error(
+                f"Failed to load transformer model '{self.model_name}': {e}. "
+                "Failing explicitly to prevent silent un-pretrained fallback."
             )
+            raise RuntimeError(
+                f"TextEncoder failed to load pretrained model '{self.model_name}'. "
+                f"Ensure transformers/torch are installed and network or cache is accessible. Error: {e}"
+            ) from e
 
         self._initialized = True
 

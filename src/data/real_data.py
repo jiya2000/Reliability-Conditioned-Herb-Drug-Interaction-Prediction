@@ -198,11 +198,9 @@ class RealDataGenerator:
                 "biomedical_quality": 0.85,  # DrugBank is curated
                 "temporal_recency": 0.70,    # DrugBank is maintained
                 "molecular_plausibility": mol_plausibility,
+                "edge_type": etype,
             }
             all_positive_edges.append(edge_data)
-
-        edge_index = torch.tensor([edge_src, edge_tgt], dtype=torch.long)
-        edge_type = torch.tensor(edge_types, dtype=torch.long)
 
         # Splits
         self.rng.shuffle(all_positive_edges)
@@ -214,8 +212,28 @@ class RealDataGenerator:
         val_edges = all_positive_edges[n_train:n_train + n_val]
         test_edges = all_positive_edges[n_train + n_val:]
 
+        # Build the message-passing graph from TRAIN edges only. Validation
+        # and test positives must not be visible to the encoder, in either
+        # direction. Node features remain available for all known nodes.
+        train_src, train_tgt, train_types = [], [], []
+        for edge in train_edges:
+            u_idx = node_to_idx[edge["source_id"]]
+            v_idx = node_to_idx[edge["target_id"]]
+            etype = int(edge["edge_type"])
+            train_src.extend([u_idx, v_idx])
+            train_tgt.extend([v_idx, u_idx])
+            train_types.extend([etype, etype])
+
+        if train_src:
+            edge_index = torch.tensor([train_src, train_tgt], dtype=torch.long)
+            edge_type = torch.tensor(train_types, dtype=torch.long)
+        else:
+            edge_index = torch.empty((2, 0), dtype=torch.long)
+            edge_type = torch.empty((0,), dtype=torch.long)
+
         logger.info(
-            f"Real data loaded: {num_nodes} nodes, {edge_index.shape[1]} edges "
+            f"Real data loaded: {num_nodes} nodes, "
+            f"{edge_index.shape[1]} train-graph edges "
             f"({NUM_EDGE_TYPES} edge types). "
             f"Train={len(train_edges)}, Val={len(val_edges)}, Test={len(test_edges)}"
         )

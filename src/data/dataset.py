@@ -75,6 +75,7 @@ class HDIDataset(Dataset):
         all_node_ids: list[str],
         negative_ratio: int = 5,
         seed: int = 42,
+        known_positive_edges: Optional[list[dict]] = None,
     ):
         """
         Args:
@@ -84,6 +85,9 @@ class HDIDataset(Dataset):
             all_node_ids: All node IDs in the graph (for negative sampling)
             negative_ratio: Number of negative samples per positive edge
             seed: Random seed for reproducibility
+            known_positive_edges: All known positives across every split.
+                Used to prevent validation/test positives being sampled as
+                training negatives.
         """
         super().__init__()
         self.positive_edges = positive_edges
@@ -91,9 +95,11 @@ class HDIDataset(Dataset):
         self.negative_ratio = negative_ratio
         self.rng = random.Random(seed)
 
-        # Build positive edge set for fast negative validation
+        # Exclude every known positive from negative sampling, not merely
+        # positives belonging to this split. Treat pairs as undirected.
         self._positive_set = set()
-        for edge in positive_edges:
+        for edge in (known_positive_edges if known_positive_edges is not None
+                     else positive_edges):
             pair = (edge["source_id"], edge["target_id"])
             self._positive_set.add(pair)
             self._positive_set.add((pair[1], pair[0]))  # Symmetric
@@ -134,45 +140,42 @@ class HDIDataset(Dataset):
                 )
             )
 
-        # Negative samples (random non-interacting pairs)
-        # ★ FIX: To prevent label leakage, negatives inherit metadata and
-        # evidence text from their donor positive edge. This ensures the
-        # reliability scorer and text encoder cannot distinguish pos/neg
-        # by metadata patterns alone — the model must learn from graph
-        # structure and semantic relevance.
+        # Negative samples are unobserved candidate pairs, not confirmed
+        # biological negatives. Do not copy another edge's evidence onto a
+        # candidate pair: that evidence does not support the sampled pair.
         for edge in self.positive_edges:
-            for _ in range(self.negative_ratio):
-                neg_target = self.rng.choice(self.all_node_ids)
-                # Ensure it's actually negative
-                while (edge["source_id"], neg_target) in self._positive_set:
-                    neg_target = self.rng.choice(self.all_node_ids)
+            source_id = edge["source_id"]
+            candidates = [
+                node_id for node_id in self.all_node_ids
+                if node_id != source_id
+                and (source_id, node_id) not in self._positive_set
+            ]
+            if not candidates:
+                logger.warning(
+                    f"No eligible negative candidates for source {source_id}; skipping "
+                    "negative samples for this positive edge."
+                )
+                continue
 
-                # Sample metadata from a random positive edge (not the
-                # donor) to decorrelate metadata from the specific edge
-                # while preserving the overall metadata distribution.
-                donor = self.rng.choice(self.positive_edges)
+            for _ in range(self.negative_ratio):
+                neg_target = self.rng.choice(candidates)
 
                 samples.append(
                     HDISample(
-                        source_id=edge["source_id"],
+                        source_id=source_id,
                         source_name=edge.get("source_name", ""),
                         source_type=edge.get("source_type", "drug"),
                         target_id=neg_target,
                         target_name="",
-                        target_type="drug",
+                        target_type=edge.get("target_type", "drug"),
                         label=0.0,
-                        # Inherit metadata from a random positive edge
-                        evidence_texts=donor.get("evidence_texts", []),
-                        evidence_sources=donor.get("evidence_sources", []),
-                        corroboration_count=donor.get("corroboration_count", 1),
-                        temporal_recency=donor.get("temporal_recency", 0.5),
-                        biomedical_quality=donor.get("biomedical_quality", 0.5),
-                        molecular_plausibility=donor.get(
-                            "molecular_plausibility", 0.5
-                        ),
-                        source_type_code=self.SOURCE_TYPE_MAP.get(
-                            donor.get("evidence_source_type", "unknown"), 0
-                        ),
+                        evidence_texts=[],
+                        evidence_sources=[],
+                        corroboration_count=0,
+                        temporal_recency=0.0,
+                        biomedical_quality=0.0,
+                        molecular_plausibility=0.0,
+                        source_type_code=0,
                     )
                 )
 

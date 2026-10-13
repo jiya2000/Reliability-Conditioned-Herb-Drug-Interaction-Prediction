@@ -108,18 +108,21 @@ class DataPipeline:
             all_node_ids=data["all_node_ids"],
             negative_ratio=self.negative_ratio,
             seed=self.seed,
+            known_positive_edges=data["positive_edges"],
         )
         val_dataset = HDIDataset(
             positive_edges=data["val_edges"],
             all_node_ids=data["all_node_ids"],
             negative_ratio=self.negative_ratio,
             seed=self.seed + 1,
+            known_positive_edges=data["positive_edges"],
         )
         test_dataset = HDIDataset(
             positive_edges=data["test_edges"],
             all_node_ids=data["all_node_ids"],
             negative_ratio=self.negative_ratio,
             seed=self.seed + 2,
+            known_positive_edges=data["positive_edges"],
         )
 
         # Create data loaders
@@ -181,18 +184,21 @@ class DataPipeline:
             all_node_ids=data["all_node_ids"],
             negative_ratio=self.negative_ratio,
             seed=self.seed,
+            known_positive_edges=data["positive_edges"],
         )
         val_dataset = HDIDataset(
             positive_edges=data["val_edges"],
             all_node_ids=data["all_node_ids"],
             negative_ratio=self.negative_ratio,
             seed=self.seed + 1,
+            known_positive_edges=data["positive_edges"],
         )
         test_dataset = HDIDataset(
             positive_edges=data["test_edges"],
             all_node_ids=data["all_node_ids"],
             negative_ratio=self.negative_ratio,
             seed=self.seed + 2,
+            known_positive_edges=data["positive_edges"],
         )
 
         # Create data loaders
