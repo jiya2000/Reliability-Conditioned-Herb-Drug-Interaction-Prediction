@@ -27,11 +27,14 @@ from src.data.evidence_schema import EvidenceRecord, EvidenceOutcome, EvidenceTy
 
 # Evidence type base reliability prior (source quality proxy prior)
 EVIDENCE_TYPE_WEIGHTS: Dict[str, float] = {
-    EvidenceType.CLINICAL.value: 1.00,
-    EvidenceType.CASE_REPORT.value: 0.75,
-    EvidenceType.ANIMAL.value: 0.60,
-    EvidenceType.IN_VITRO.value: 0.40,
-    EvidenceType.MECHANISTIC.value: 0.35,
+    EvidenceType.META_ANALYSIS.value: 1.00,
+    EvidenceType.RCT.value: 0.95,
+    EvidenceType.CLINICAL.value: 0.90,
+    EvidenceType.OBSERVATIONAL.value: 0.80,
+    EvidenceType.CASE_REPORT.value: 0.70,
+    EvidenceType.ANIMAL.value: 0.50,
+    EvidenceType.IN_VITRO.value: 0.30,
+    EvidenceType.MECHANISTIC.value: 0.25,
     EvidenceType.IN_SILICO.value: 0.15,
     EvidenceType.INCONCLUSIVE.value: 0.10,
 }
@@ -336,8 +339,14 @@ class EvidenceLineageAnalyzer:
                 audit_sources=[],
             )
 
-        pos_recs = [r for r in records if r.outcome == EvidenceOutcome.POSITIVE.value]
-        neg_recs = [r for r in records if r.outcome == EvidenceOutcome.NEGATIVE.value]
+        pos_recs = [
+            r for r in records
+            if r.outcome in {EvidenceOutcome.POSITIVE.value, EvidenceOutcome.INTERACTION_PRESENT.value}
+        ]
+        neg_recs = [
+            r for r in records
+            if r.outcome in {EvidenceOutcome.NEGATIVE.value, EvidenceOutcome.NO_INTERACTION_OBSERVED.value}
+        ]
         conf_recs = [r for r in records if r.outcome == EvidenceOutcome.CONFLICTING.value]
         unk_recs = [r for r in records if r.outcome == EvidenceOutcome.UNKNOWN.value]
 

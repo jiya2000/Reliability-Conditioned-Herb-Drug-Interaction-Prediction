@@ -62,6 +62,7 @@ class ReliabilityConditionedInteractionModel(nn.Module):
         super().__init__()
         valid_modes = {
             "graph_only",
+            "evidence_only",
             "graph_plus_naive_evidence",
             "standard_fusion",
             "reliability_conditioned",
@@ -161,6 +162,17 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             # Baseline (a): Only graph topology
             z_fused = z_graph
             R = torch.zeros(batch_size, 1, device=herb_emb.device)
+
+        elif self.mode == "evidence_only":
+            # Baseline: Only literature evidence text / features (zero graph priors)
+            if evidence_features is not None:
+                if evidence_features.dim() == 3:
+                    z_fused = self.evidence_proj(evidence_features).mean(dim=1)
+                else:
+                    z_fused = self.evidence_proj(evidence_features)
+            else:
+                z_fused = torch.zeros(batch_size, self.fused_dim, device=herb_emb.device)
+            R = torch.ones(batch_size, 1, device=herb_emb.device)
 
         elif self.mode == "graph_plus_naive_evidence":
             # Baseline (b): Unweighted additive combination without lineage-based reliability gating

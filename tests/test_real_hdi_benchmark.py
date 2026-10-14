@@ -19,31 +19,34 @@ from benchmarks.run_verified_hdi_benchmark import run_benchmark
 def test_verified_hdi_benchmark_execution():
     """
     Execute verified benchmark on real clinical/pharmacokinetic botanical literature.
-    Verifies that all 12 literature references resolve to real PMIDs/DOIs,
-    study-disjoint partitioning has zero study leakage, and all 4 ablation variants run.
+    Verifies that all literature references resolve to real PMIDs/DOIs in the audited registry,
+    study-disjoint partitioning has zero study leakage, and all 6 baseline variants run.
     """
     res = run_benchmark("data/benchmark/verified_botanical_hdi.csv")
 
     assert res["status"] == "success"
-    assert res["num_records"] == 12
-    # 100% of references verified against audited literature registry
-    assert res["verified_references"] == 12
+    assert res["num_records"] >= 30
+    # 100% of references verified against audited literature registry with require_registered=True
+    assert res["verified_references"] == res["num_records"]
+    assert res["outcome_verified_references"] >= 30
 
     # Verified labels contain both positive and negative clinical outcomes
     labels = res["label_counts"]
-    assert labels.get("positive", 0) > 0
-    assert labels.get("negative", 0) > 0
+    assert (labels.get("interaction_present", 0) + labels.get("positive", 0)) > 0
+    assert (labels.get("no_interaction_observed", 0) + labels.get("negative", 0)) > 0
 
-    # 4 model variants evaluated
+    # 6 model variants evaluated
     reports = res["reports"]
-    assert len(reports) == 4
+    assert len(reports) == 6
     variants = [r["model_variant"] for r in reports]
     assert "reliability_conditioned" in variants
+    assert "standard_fusion" in variants
+    assert "graph_only" in variants
+    assert "evidence_only" in variants
     assert "no_study_dependence" in variants
     assert "no_context_conflict" in variants
-    assert "graph_only" in variants
 
-    # Markdown table generated
+    # Markdown table generated with confidence intervals
     assert "| Model Variant |" in res["markdown_table"]
 
 

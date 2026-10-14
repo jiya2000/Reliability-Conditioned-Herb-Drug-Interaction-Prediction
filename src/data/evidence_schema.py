@@ -20,16 +20,43 @@ from loguru import logger
 
 
 class EvidenceOutcome(str, Enum):
-    """Permitted canonical outcome labels."""
-    POSITIVE = "positive"          # Source confirms an interaction exists
-    NEGATIVE = "negative"          # Source explicitly evaluated and found NO significant interaction
-    CONFLICTING = "conflicting"    # Single source reports equivocal or mixed results
-    UNKNOWN = "unknown"            # Absence of sufficient evidence / unverified candidate
+    """
+    Permitted canonical outcome labels separating interaction presence from exposure direction.
+    """
+    INTERACTION_PRESENT = "interaction_present"      # Interaction verified (exposure increased, decreased, or toxicity altered)
+    NO_INTERACTION_OBSERVED = "no_interaction_observed"  # Rigorously evaluated; confirmed NO interaction
+    POSITIVE = "positive"                            # Standard alias for INTERACTION_PRESENT
+    NEGATIVE = "negative"                            # Standard alias for NO_INTERACTION_OBSERVED
+    CONFLICTING = "conflicting"                      # Conflicting or equivocal findings
+    UNKNOWN = "unknown"                              # Insufficient or absent evidence
+
+
+class EffectDirection(str, Enum):
+    """Specific directional and pharmacological mechanism of interaction."""
+    DECREASED_EXPOSURE = "decreased_exposure"        # e.g., CYP/P-gp induction lowering drug exposure
+    INCREASED_EXPOSURE = "increased_exposure"        # e.g., CYP/P-gp inhibition increasing drug exposure
+    INCREASED_TOXICITY = "increased_toxicity"        # e.g., additive bleeding, adverse event
+    DECREASED_EFFECT = "decreased_effect"            # e.g., antagonistic pharmacodynamic outcome
+    NO_EFFECT = "no_effect"                          # True negative control finding
+    CONTRADICTORY = "contradictory"
+    UNSPECIFIED = "unspecified"
+
+
+class ClinicalSignificance(str, Enum):
+    """Clinical severity and impact level of the observed interaction."""
+    MAJOR = "major"              # Critical risk (organ rejection, hemorrhage, hospitalization, life-threatening)
+    MODERATE = "moderate"        # Clinically meaningful change requiring dose adjustment or close monitoring
+    MINOR = "minor"              # Statistically detectable change without major clinical consequence
+    NONE = "none"                # No interaction / negative clinical trial
+    UNCERTAIN = "uncertain"      # Equivocal or uncharacterized
 
 
 class EvidenceType(str, Enum):
     """Hierarchy of biological / clinical evidence types."""
-    CLINICAL = "clinical"              # Randomized controlled trial, human cohort, clinical pharmacokinetic study
+    META_ANALYSIS = "meta_analysis"    # Systematic review and meta-analysis of clinical trials
+    RCT = "rct"                        # Randomized controlled trial in humans
+    CLINICAL = "clinical"              # Clinical cohort, pharmacokinetic trial, controlled human study
+    OBSERVATIONAL = "observational"    # Observational study, registry, pharmacoepidemiology
     CASE_REPORT = "case_report"        # Documented human clinical case report
     ANIMAL = "animal"                  # In vivo rodent / mammalian pharmacokinetic or pharmacodynamic study
     IN_VITRO = "in_vitro"              # In vitro CYP inhibition, Caco-2 permeability, transporter assay
@@ -39,6 +66,8 @@ class EvidenceType(str, Enum):
 
 
 VALID_OUTCOMES: Set[str] = {e.value for e in EvidenceOutcome}
+VALID_EFFECT_DIRECTIONS: Set[str] = {e.value for e in EffectDirection}
+VALID_CLINICAL_SIGNIFICANCES: Set[str] = {e.value for e in ClinicalSignificance}
 VALID_EVIDENCE_TYPES: Set[str] = {e.value for e in EvidenceType}
 
 
@@ -75,6 +104,8 @@ class EvidenceRecord:
     original_text: Optional[str] = None
     extraction_method: str = "manual_curation"
     raw_label: Optional[str] = None
+    effect_direction: str = EffectDirection.UNSPECIFIED.value
+    clinical_significance: Optional[str] = None
 
     def __post_init__(self):
         # Normalize and validate string values against null/nan leakage
@@ -84,7 +115,22 @@ class EvidenceRecord:
         cleaned_drug = _clean_str(self.drug_id)
         self.drug_id = cleaned_drug if cleaned_drug is not None else ""
 
-        self.outcome = str(self.outcome).strip().lower() if self.outcome else ""
+        raw_out = str(self.outcome).strip().lower() if self.outcome else ""
+        if raw_out in {"interaction_present", "positive", "no_interaction_observed", "negative", "conflicting", "unknown"}:
+            self.outcome = raw_out
+        elif raw_out == "no_effect":
+            self.outcome = EvidenceOutcome.NO_INTERACTION_OBSERVED.value
+        elif raw_out == "contradictory":
+            self.outcome = EvidenceOutcome.CONFLICTING.value
+        elif raw_out == "inconclusive":
+            self.outcome = EvidenceOutcome.UNKNOWN.value
+        else:
+            self.outcome = raw_out
+
+        raw_eff = str(self.effect_direction).strip().lower() if self.effect_direction else "unspecified"
+        self.effect_direction = raw_eff if raw_eff in VALID_EFFECT_DIRECTIONS else EffectDirection.UNSPECIFIED.value
+        self.clinical_significance = _clean_str(self.clinical_significance)
+
         self.evidence_type = str(self.evidence_type).strip().lower() if self.evidence_type else ""
 
         cleaned_source = _clean_str(self.source_id)
@@ -122,6 +168,15 @@ class EvidenceRecord:
         self.publication_date = _clean_str(self.publication_date)
         self.source_url_or_doi = _clean_str(self.source_url_or_doi)
         self.original_text = _clean_str(self.original_text)
+
+    @property
+    def is_interaction(self) -> Optional[bool]:
+        """Binary classification ground truth: True for interaction, False for no interaction, None for uncertain."""
+        if self.outcome in {EvidenceOutcome.INTERACTION_PRESENT.value, EvidenceOutcome.POSITIVE.value}:
+            return True
+        elif self.outcome in {EvidenceOutcome.NO_INTERACTION_OBSERVED.value, EvidenceOutcome.NEGATIVE.value}:
+            return False
+        return None
 
     def validate(
         self,
@@ -232,6 +287,8 @@ def validate_dataframe(
                 original_text=row.get("original_text"),
                 extraction_method=str(row.get("extraction_method", "manual_curation")),
                 raw_label=row.get("raw_label"),
+                effect_direction=row.get("effect_direction", EffectDirection.UNSPECIFIED.value),
+                clinical_significance=row.get("clinical_significance"),
             )
             is_valid, rec_errors = rec.validate(
                 strict_traceability=strict_traceability,

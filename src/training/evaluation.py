@@ -355,7 +355,7 @@ def compute_comprehensive_metrics(
 
     # Bootstrap Confidence Intervals (95% CI)
     ci_dict: Dict[str, Tuple[float, float]] = {}
-    if compute_bootstrap_ci and len(y_true_arr) >= 20 and len(np.unique(y_true_arr)) > 1:
+    if compute_bootstrap_ci and len(y_true_arr) >= 6 and len(np.unique(y_true_arr)) > 1:
         np.random.seed(42)
         n_samples = len(y_true_arr)
         boot_rocs, boot_prs, boot_f1s = [], [], []
@@ -399,7 +399,7 @@ def format_ablation_markdown_table(reports: List[ComprehensiveEvaluationReport])
     headers = [
         "Model Variant",
         "Split",
-        "ROC-AUC",
+        "ROC-AUC (95% CI)",
         "PR-AUC",
         "F1",
         "ECE (Calibration)",
@@ -414,10 +414,14 @@ def format_ablation_markdown_table(reports: List[ComprehensiveEvaluationReport])
     for r in reports:
         cov = f"{r.abstention_results.coverage:.3f}" if r.abstention_results else "1.000"
         sel_acc = f"{r.abstention_results.selective_accuracy:.3f}" if r.abstention_results else f"{r.accuracy:.3f}"
+        roc_str = f"{r.roc_auc:.4f}"
+        if "roc_auc" in r.confidence_intervals:
+            lo, hi = r.confidence_intervals["roc_auc"]
+            roc_str += f" [{lo:.2f}, {hi:.2f}]"
         row = [
             f"`{r.model_variant}`",
             r.split_name,
-            f"{r.roc_auc:.4f}",
+            roc_str,
             f"{r.pr_auc:.4f}",
             f"{r.f1:.4f}",
             f"{r.ece:.4f}",
