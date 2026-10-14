@@ -151,43 +151,63 @@ class ReliabilityConditionedInteractionModel(nn.Module):
         uncertainty = torch.zeros(batch_size, 1, device=herb_emb.device)
         breakdown = None
 
-        # 2. Mode-specific computation
+        # 2. Evidence Contextualization & Fusion
+        # Supports two explicitly documented pathways:
+        # A) Token-/Report-Level Multihead Cross-Attention when evidence_features is 3D: (batch, seq_len, dim)
+        # B) Reliability-Gated Representation Fusion when evidence_features is 2D: (batch, dim)
+        attn_weights = None
+
         if self.mode == "graph_only" or evidence_features is None:
             # Baseline (a): Only graph topology
             z_fused = z_graph
             R = torch.zeros(batch_size, 1, device=herb_emb.device)
 
         elif self.mode == "graph_plus_naive_evidence":
-            # Baseline (b): Simple addition without lineage-based reliability gating
-            z_ev = self.evidence_proj(evidence_features)
+            # Baseline (b): Unweighted additive combination without lineage-based reliability gating
+            if evidence_features.dim() == 3:
+                z_ev = self.evidence_proj(evidence_features).mean(dim=1)
+            else:
+                z_ev = self.evidence_proj(evidence_features)
             z_fused = 0.5 * z_graph + 0.5 * z_ev
             R = torch.full((batch_size, 1), 0.5, device=herb_emb.device)
 
         elif self.mode == "standard_fusion":
             # Baseline (c): Cross-attention with fixed unconditioned gating R = 1.0
-            z_ev = self.evidence_proj(evidence_features).unsqueeze(1)  # (batch, 1, fused_dim)
-            q = z_graph.unsqueeze(1)
-            attn_out, _ = self.cross_attn(q, z_ev, z_ev)  # (batch, 1, fused_dim)
-            z_fused = 0.5 * z_graph + 0.5 * attn_out.squeeze(1)
+            if evidence_features.dim() == 3:
+                kv = self.evidence_proj(evidence_features)
+                q = z_graph.unsqueeze(1)
+                attn_out, attn_weights = self.cross_attn(q, kv, kv)
+                z_ev = attn_out.squeeze(1)
+            else:
+                z_ev = self.evidence_proj(evidence_features)
+            z_fused = 0.5 * z_graph + 0.5 * z_ev
             R = torch.ones(batch_size, 1, device=herb_emb.device)
 
         else:
             # Proposed Reliability-Conditioned Architecture (or targeted ablations)
-            z_ev = self.evidence_proj(evidence_features).unsqueeze(1)
-            q = z_graph.unsqueeze(1)
-            attn_out, _ = self.cross_attn(q, z_ev, z_ev)
-            z_contextual = attn_out.squeeze(1)  # (batch, fused_dim)
+            if evidence_features.dim() == 3:
+                # Genuine multi-token evidence cross-attention across sequence of reports/tokens
+                kv = self.evidence_proj(evidence_features)  # (batch, seq_len, fused_dim)
+                q = z_graph.unsqueeze(1)                    # (batch, 1, fused_dim)
+                attn_out, attn_weights = self.cross_attn(q, kv, kv)
+                z_contextual = attn_out.squeeze(1)          # (batch, fused_dim)
+            else:
+                # Reliability-gated representation fusion on pre-aggregated evidence vector
+                z_contextual = self.evidence_proj(evidence_features)
 
             if metadata is not None:
-                # Prepare metadata according to ablation mode
                 meta_input = metadata.clone()
                 if self.mode == "no_study_dependence" and meta_input.size(-1) == 8:
-                    # Wipe echo ratio discount and set independent count to raw count
-                    meta_input[:, 2] = 0.0  # zero echo ratio
+                    # Ablation: Restore un-discounted raw positive strength, zero echo ratio, and use raw margin
+                    echo = meta_input[:, 2:3].clamp(0.0, 0.85)
+                    meta_input[:, 0:1] = meta_input[:, 0:1] / (1.0 - echo + 1e-5)
+                    meta_input[:, 2:3] = 0.0
+                    meta_input[:, 6:7] = meta_input[:, 0:1] - meta_input[:, 1:2]
                 elif self.mode == "no_context_conflict" and meta_input.size(-1) == 8:
-                    # Wipe context compatibility and contradiction penalty
-                    meta_input[:, 4] = 1.0  # perfect context
-                    meta_input[:, 5] = 0.0  # zero conflict
+                    # Ablation: Neutralize context to 1.0, zero contradiction, and remove conflict subtraction from margin
+                    meta_input[:, 4:5] = 1.0
+                    meta_input[:, 5:6] = 0.0
+                    meta_input[:, 6:7] = meta_input[:, 0:1]  # positive evidence only; no conflict subtraction
 
                 # Compute reliability and epistemic uncertainty
                 R, uncertainty, breakdown = self.reliability_scorer.forward_with_uncertainty(meta_input)
@@ -195,7 +215,7 @@ class ReliabilityConditionedInteractionModel(nn.Module):
                 R = torch.full((batch_size, 1), 0.5, device=herb_emb.device)
                 uncertainty = torch.full((batch_size, 1), 0.2, device=herb_emb.device)
 
-            # R-conditioned gating:
+            # Reliability-conditioned gating:
             # When evidence reliability R is high, contextual literature modulates the prediction.
             # When R is low or absent, the model retreats safely to biological graph priors.
             z_fused = (1.0 - R) * z_graph + R * z_contextual
@@ -203,6 +223,7 @@ class ReliabilityConditionedInteractionModel(nn.Module):
         # 3. Predict interaction probability
         logits = self.link_predictor(z_fused)  # (batch, 1)
         probs = torch.sigmoid(logits)          # (batch, 1)
+
 
         result: Dict[str, Any] = {
             "logits": logits,
@@ -215,6 +236,7 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             result["z_fused"] = z_fused
             result["z_graph"] = z_graph
             result["breakdown"] = breakdown
+            result["attn_weights"] = attn_weights
 
         return result
 

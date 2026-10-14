@@ -175,25 +175,99 @@ class LeakageSafeSplitter:
         Train on evidence published strictly before cutoff_year - 2.
         Val on evidence published between cutoff_year - 2 and cutoff_year.
         Test on evidence published on or after cutoff_year.
-        Prevents future literature and citation leakage.
+
+        CRITICAL FIX: Undated records are NOT given a fabricated default date.
+        They are quarantined and excluded from chronological evaluation to prevent future leakage.
         """
-        def extract_year(date_val):
+        def extract_year(date_val) -> Optional[int]:
             if pd.isna(date_val):
-                return 2015
+                return None
             s = str(date_val).strip()
             for token in s.replace("-", " ").replace("/", " ").split():
                 if token.isdigit() and len(token) == 4:
-                    return int(token)
-            return 2015
+                    y = int(token)
+                    if 1900 <= y <= 2030:
+                        return y
+            return None
 
         years = df["publication_date"].apply(extract_year)
-        val_cutoff = cutoff_year - 2
+        valid_date_mask = years.notna()
+        dated_df = df[valid_date_mask].copy()
+        valid_years = years[valid_date_mask].astype(int)
 
-        train_df = df[years < val_cutoff].copy()
-        val_df = df[(years >= val_cutoff) & (years < cutoff_year)].copy()
-        test_df = df[years >= cutoff_year].copy()
+        undated_count = len(df) - len(dated_df)
+        if undated_count > 0:
+            logger.info(f"Temporal split quarantined {undated_count} undated records to prevent chronological leakage.")
+
+        val_cutoff = cutoff_year - 2
+        train_df = dated_df[valid_years < val_cutoff].copy()
+        val_df = dated_df[(valid_years >= val_cutoff) & (valid_years < cutoff_year)].copy()
+        test_df = dated_df[valid_years >= cutoff_year].copy()
 
         return train_df, val_df, test_df
+
+    def split_study_disjoint(
+        self,
+        df: pd.DataFrame,
+        train_ratio: float = 0.7,
+        val_ratio: float = 0.15,
+    ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+        """
+        Study- and Citation-Cluster-Disjoint Split:
+        Clusters records by shared primary study and citation dependencies.
+        Guarantees that no study_id or derivative citation report appears across multiple splits.
+        """
+        import networkx as nx
+
+        np.random.seed(self.seed)
+        G = nx.Graph()
+
+        # Build citation dependency graph across all records
+        for _, row in df.iterrows():
+            s_id = str(row["study_id"]).strip()
+            G.add_node(s_id)
+            cited_list = row.get("cited_study_ids", [])
+            if isinstance(cited_list, str):
+                import json
+                try:
+                    cited_list = json.loads(cited_list)
+                except Exception:
+                    cited_list = [c.strip() for c in cited_list.split(",") if c.strip()]
+            if isinstance(cited_list, (list, tuple, set)):
+                for c_id in cited_list:
+                    c_str = str(c_id).strip()
+                    if c_str and c_str != s_id:
+                        G.add_node(c_str)
+                        G.add_edge(s_id, c_str)
+
+        clusters = list(nx.connected_components(G))
+        np.random.shuffle(clusters)
+
+        n_clusters = len(clusters)
+        n_train = max(1, int(n_clusters * train_ratio))
+        n_val = max(1, int(n_clusters * val_ratio))
+
+        train_study_set = set().union(*clusters[:n_train])
+        val_study_set = set().union(*clusters[n_train : n_train + n_val])
+        test_study_set = set().union(*clusters[n_train + n_val :])
+
+        train_df = df[df["study_id"].astype(str).isin(train_study_set)].copy()
+        val_df = df[df["study_id"].astype(str).isin(val_study_set)].copy()
+        test_df = df[df["study_id"].astype(str).isin(test_study_set)].copy()
+
+        # Strict assertion against cross-split study leakage
+        train_studies = set(train_df["study_id"].astype(str))
+        test_studies = set(test_df["study_id"].astype(str))
+        leakage = train_studies & test_studies
+        if leakage:
+            raise RuntimeError(f"Study-disjoint split failure: leaked studies across train and test: {leakage}")
+
+        logger.info(
+            f"Study-disjoint split: {len(train_df)} train, {len(val_df)} val, {len(test_df)} test records "
+            f"across {n_clusters} independent study clusters (zero study leakage)."
+        )
+        return train_df, val_df, test_df
+
 
 
 def compute_comprehensive_metrics(

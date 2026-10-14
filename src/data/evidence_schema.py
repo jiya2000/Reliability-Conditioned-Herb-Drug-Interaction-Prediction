@@ -42,6 +42,16 @@ VALID_OUTCOMES: Set[str] = {e.value for e in EvidenceOutcome}
 VALID_EVIDENCE_TYPES: Set[str] = {e.value for e in EvidenceType}
 
 
+def _clean_str(val: Any) -> Optional[str]:
+    """Helper to detect and eliminate null, NaN, None, or empty string representations."""
+    if val is None or pd.isna(val):
+        return None
+    s = str(val).strip()
+    if s.lower() in {"", "nan", "none", "null", "undefined", "."}:
+        return None
+    return s
+
+
 @dataclass
 class EvidenceRecord:
     """
@@ -67,25 +77,32 @@ class EvidenceRecord:
     raw_label: Optional[str] = None
 
     def __post_init__(self):
-        # Normalize string values
-        self.herb_id = str(self.herb_id).strip()
-        self.drug_id = str(self.drug_id).strip()
-        self.outcome = str(self.outcome).strip().lower()
-        self.evidence_type = str(self.evidence_type).strip().lower()
-        self.source_id = str(self.source_id).strip()
-        self.study_id = str(self.study_id).strip() if self.study_id else self.source_id
+        # Normalize and validate string values against null/nan leakage
+        cleaned_herb = _clean_str(self.herb_id)
+        self.herb_id = cleaned_herb if cleaned_herb is not None else ""
+
+        cleaned_drug = _clean_str(self.drug_id)
+        self.drug_id = cleaned_drug if cleaned_drug is not None else ""
+
+        self.outcome = str(self.outcome).strip().lower() if self.outcome else ""
+        self.evidence_type = str(self.evidence_type).strip().lower() if self.evidence_type else ""
+
+        cleaned_source = _clean_str(self.source_id)
+        self.source_id = cleaned_source if cleaned_source is not None else ""
+
+        cleaned_study = _clean_str(self.study_id)
+        self.study_id = cleaned_study if cleaned_study is not None else self.source_id
 
         # Normalize cited_study_ids
         if isinstance(self.cited_study_ids, str):
             try:
                 parsed = json.loads(self.cited_study_ids)
-                self.cited_study_ids = [str(x).strip() for x in parsed if str(x).strip()]
+                self.cited_study_ids = [s for x in parsed if (s := _clean_str(x))]
             except Exception:
-                # Comma or semicolon separated
                 parts = [p.strip() for p in self.cited_study_ids.replace(";", ",").split(",")]
-                self.cited_study_ids = [p for p in parts if p]
+                self.cited_study_ids = [s for p in parts if (s := _clean_str(p))]
         elif isinstance(self.cited_study_ids, (list, tuple, set)):
-            self.cited_study_ids = [str(x).strip() for x in self.cited_study_ids if str(x).strip()]
+            self.cited_study_ids = [s for x in self.cited_study_ids if (s := _clean_str(x))]
         else:
             self.cited_study_ids = []
 
@@ -96,14 +113,24 @@ class EvidenceRecord:
         except (ValueError, TypeError):
             self.extraction_confidence = 0.5
 
+        # Clean optional strings
+        self.dose = _clean_str(self.dose)
+        self.preparation = _clean_str(self.preparation)
+        self.route = _clean_str(self.route)
+        self.species = _clean_str(self.species)
+        self.population = _clean_str(self.population)
+        self.publication_date = _clean_str(self.publication_date)
+        self.source_url_or_doi = _clean_str(self.source_url_or_doi)
+        self.original_text = _clean_str(self.original_text)
+
     def validate(self) -> Tuple[bool, List[str]]:
         """Validate instance fields according to the canonical evidence contract."""
         errors: List[str] = []
 
         if not self.herb_id:
-            errors.append("herb_id cannot be empty")
+            errors.append("herb_id cannot be null, empty, or 'NaN'")
         if not self.drug_id:
-            errors.append("drug_id cannot be empty")
+            errors.append("drug_id cannot be null, empty, or 'NaN'")
 
         if self.outcome not in VALID_OUTCOMES:
             errors.append(
@@ -116,10 +143,10 @@ class EvidenceRecord:
             )
 
         if not self.source_id:
-            errors.append("source_id cannot be empty (traceability requirement)")
+            errors.append("source_id cannot be empty or null (traceability requirement)")
 
         if not self.study_id:
-            errors.append("study_id cannot be empty (lineage tracking requirement)")
+            errors.append("study_id cannot be empty or null (lineage tracking requirement)")
 
         return len(errors) == 0, errors
 
@@ -133,8 +160,8 @@ def validate_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
     """
     Validate a DataFrame of evidence records.
 
-    Ensures all required columns exist, types and value constraints are met,
-    and returns a cleaned DataFrame alongside validation error messages.
+    Ensures all required columns exist, null/nan values are caught before conversion,
+    and returns a cleaned DataFrame alongside validation error messages for rejected rows.
     """
     required_cols = [
         "herb_id",
@@ -153,34 +180,40 @@ def validate_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
 
     cleaned_records: List[EvidenceRecord] = []
     for idx, row in df.iterrows():
+        # Check required fields for explicit nulls before construction
+        null_fields = [c for c in required_cols if _clean_str(row.get(c)) is None]
+        if null_fields:
+            errors.append(f"Row {idx} rejected: mandatory fields contain null/NaN values: {null_fields}")
+            continue
+
         try:
             rec = EvidenceRecord(
-                herb_id=str(row["herb_id"]),
-                drug_id=str(row["drug_id"]),
-                outcome=str(row["outcome"]),
-                evidence_type=str(row["evidence_type"]),
-                source_id=str(row["source_id"]),
-                study_id=str(row.get("study_id", row["source_id"])),
+                herb_id=row["herb_id"],
+                drug_id=row["drug_id"],
+                outcome=row["outcome"],
+                evidence_type=row["evidence_type"],
+                source_id=row["source_id"],
+                study_id=row.get("study_id", row["source_id"]),
                 cited_study_ids=row.get("cited_study_ids", []),
-                dose=row.get("dose") if pd.notna(row.get("dose")) else None,
-                preparation=row.get("preparation") if pd.notna(row.get("preparation")) else None,
-                route=row.get("route") if pd.notna(row.get("route")) else None,
-                species=row.get("species") if pd.notna(row.get("species")) else None,
-                population=row.get("population") if pd.notna(row.get("population")) else None,
-                publication_date=str(row["publication_date"]) if pd.notna(row.get("publication_date")) else None,
+                dose=row.get("dose"),
+                preparation=row.get("preparation"),
+                route=row.get("route"),
+                species=row.get("species"),
+                population=row.get("population"),
+                publication_date=row.get("publication_date"),
                 extraction_confidence=row.get("extraction_confidence", 1.0),
-                source_url_or_doi=str(row["source_url_or_doi"]) if pd.notna(row.get("source_url_or_doi")) else None,
-                original_text=str(row["original_text"]) if pd.notna(row.get("original_text")) else None,
+                source_url_or_doi=row.get("source_url_or_doi"),
+                original_text=row.get("original_text"),
                 extraction_method=str(row.get("extraction_method", "manual_curation")),
-                raw_label=str(row.get("raw_label", "")) if pd.notna(row.get("raw_label")) else None,
+                raw_label=row.get("raw_label"),
             )
             is_valid, rec_errors = rec.validate()
             if not is_valid:
-                errors.append(f"Row {idx} validation failure: {rec_errors}")
+                errors.append(f"Row {idx} rejected: {rec_errors}")
             else:
                 cleaned_records.append(rec)
         except Exception as e:
-            errors.append(f"Row {idx} exception during parsing: {e}")
+            errors.append(f"Row {idx} rejected with exception during parsing: {e}")
 
     if not cleaned_records:
         cleaned_df = pd.DataFrame(columns=required_cols)

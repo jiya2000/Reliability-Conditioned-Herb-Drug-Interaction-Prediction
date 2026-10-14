@@ -83,35 +83,65 @@ class PairEvidenceSummary:
     # Contradiction / Conflict
     contradiction_strength: float  # High when strong independent positive and negative evidence clash
     net_evidence_margin: float     # S_pos - S_neg
-    
+    raw_margin: float = 0.0        # Raw positive count - Raw negative count
+
     # Lineage audit trail
     primary_study_clusters: List[List[str]] = field(default_factory=list)
     audit_sources: List[str] = field(default_factory=list)
 
-    def to_feature_vector(self) -> np.ndarray:
+    def to_feature_vector(self, mode: Optional[str] = None) -> np.ndarray:
         """
-        Returns an 8-dimensional evidence feature vector for downstream models:
-        [
-            independent_positive_strength,
-            independent_negative_strength,
-            citation_echo_ratio,
-            mean_source_quality,
-            context_compatibility_score,
-            contradiction_strength,
-            net_evidence_margin,
-            metadata_missingness
-        ]
+        Returns an 8-dimensional evidence feature vector with rigorous ablation isolation.
+
+        Modes:
+        - 'reliability_conditioned': Full proposed model with lineage clustering, context, and conflict.
+        - 'no_study_dependence': Replaces lineage-clustered strengths with raw counts, zeros echo ratio.
+        - 'no_context_conflict': Neutralizes context to 1.0, zeros conflict, and removes conflict subtraction from margin.
+        - 'graph_plus_naive_evidence': Baseline using solely raw counts and neutral context/conflict.
         """
+        if mode == "no_study_dependence":
+            # Ablate study dependence: use un-discounted raw counts, ignore citation echo
+            pos = float(self.raw_positive_count)
+            neg = float(self.raw_negative_count)
+            echo = 0.0
+            ctx = self.context_compatibility_score
+            conflict = self.contradiction_strength
+            margin = float(self.raw_positive_count - self.raw_negative_count)
+        elif mode == "no_context_conflict":
+            # Ablate context and conflict: neutralize context, zero contradiction, and remove negative deduction from margin
+            pos = self.independent_positive_strength
+            neg = self.independent_negative_strength
+            echo = self.citation_echo_ratio
+            ctx = 1.0       # neutral context
+            conflict = 0.0  # zero contradiction
+            margin = self.independent_positive_strength  # positive evidence only; no conflict subtraction
+        elif mode in {"graph_plus_naive_evidence", "raw_naive"}:
+            pos = float(self.raw_positive_count)
+            neg = float(self.raw_negative_count)
+            echo = 0.0
+            ctx = 1.0
+            conflict = 0.0
+            margin = float(self.raw_positive_count - self.raw_negative_count)
+        else:
+            # Full proposed reliability-conditioned representation
+            pos = self.independent_positive_strength
+            neg = self.independent_negative_strength
+            echo = self.citation_echo_ratio
+            ctx = self.context_compatibility_score
+            conflict = self.contradiction_strength
+            margin = self.net_evidence_margin
+
         return np.array([
-            self.independent_positive_strength,
-            self.independent_negative_strength,
-            self.citation_echo_ratio,
+            pos,
+            neg,
+            echo,
             self.mean_source_quality,
-            self.context_compatibility_score,
-            self.contradiction_strength,
-            self.net_evidence_margin,
+            ctx,
+            conflict,
+            margin,
             self.metadata_missingness,
         ], dtype=np.float32)
+
 
 
 class EvidenceLineageAnalyzer:
@@ -365,6 +395,7 @@ class EvidenceLineageAnalyzer:
             metadata_missingness=float(missingness),
             contradiction_strength=float(contradiction_strength),
             net_evidence_margin=float(net_evidence_margin),
+            raw_margin=float(len(pos_recs) - len(neg_recs)),
             primary_study_clusters=cluster_study_ids,
             audit_sources=audit_sources,
         )

@@ -1,8 +1,9 @@
 """
-Unit tests for canonical evidence schema and data validation.
+Unit tests for canonical evidence schema, strict data validation, and null/NaN rejection.
 """
 
 import pytest
+import numpy as np
 import pandas as pd
 from src.data.evidence_schema import (
     EvidenceRecord,
@@ -74,7 +75,87 @@ def test_unknown_is_not_negative():
     assert rec_neg.outcome == EvidenceOutcome.NEGATIVE.value
 
 
-def test_dataframe_validation_and_roundtrip(tmp_path):
+def test_null_nan_string_rejection():
+    """Verify that null, NaN, or string 'nan' / 'None' are caught and rejected as invalid identifiers."""
+    rec_nan = EvidenceRecord(
+        herb_id="nan",
+        drug_id="DRUG_001",
+        outcome="positive",
+        evidence_type="clinical",
+        source_id="S1",
+        study_id="ST1",
+    )
+    is_valid, errors = rec_nan.validate()
+    assert not is_valid
+    assert any("herb_id" in e for e in errors)
+
+    rec_none = EvidenceRecord(
+        herb_id="HERB_001",
+        drug_id="None",
+        outcome="positive",
+        evidence_type="clinical",
+        source_id="S1",
+        study_id="ST1",
+    )
+    is_valid, errors = rec_none.validate()
+    assert not is_valid
+    assert any("drug_id" in e for e in errors)
+
+
+def test_dataframe_validation_with_rejected_rows():
+    records = [
+        # Valid row 0
+        {
+            "herb_id": "HERB_01",
+            "drug_id": "DRUG_01",
+            "outcome": "positive",
+            "evidence_type": "clinical",
+            "source_id": "S1",
+            "study_id": "ST1",
+        },
+        # Invalid row 1 (NaN herb_id)
+        {
+            "herb_id": np.nan,
+            "drug_id": "DRUG_02",
+            "outcome": "positive",
+            "evidence_type": "clinical",
+            "source_id": "S2",
+            "study_id": "ST2",
+        },
+        # Invalid row 2 (string 'nan' drug_id)
+        {
+            "herb_id": "HERB_03",
+            "drug_id": "nan",
+            "outcome": "positive",
+            "evidence_type": "clinical",
+            "source_id": "S3",
+            "study_id": "ST3",
+        },
+        # Invalid row 3 (bad outcome)
+        {
+            "herb_id": "HERB_04",
+            "drug_id": "DRUG_04",
+            "outcome": "unsupported_label",
+            "evidence_type": "clinical",
+            "source_id": "S4",
+            "study_id": "ST4",
+        },
+    ]
+    df = pd.DataFrame(records)
+    cleaned_df, errors = validate_dataframe(df)
+
+    # Exactly 1 valid row should pass
+    assert len(cleaned_df) == 1
+    assert cleaned_df.iloc[0]["herb_id"] == "HERB_01"
+
+    # Exactly 3 rows should be rejected with clear error reports
+    assert len(errors) == 3
+    assert any("Row 1 rejected" in e for e in errors)
+    assert any("Row 2 rejected" in e for e in errors)
+    assert any("Row 3 rejected" in e for e in errors)
+
+
+def test_dataframe_export_and_roundtrip(tmp_path):
     records = [
         {
             "herb_id": "H1",

@@ -1,14 +1,15 @@
 # Manifest of Public Datasets for Reliability- and Context-Aware Herb–Drug Interaction Prediction
-# Note: Values for 'license_verified' are false pending formal audit of redistribution terms.
 
 datasets:
   - name: HERB
     role: biological_knowledge_graph
     public_access: true
-    license_verified: false
+    license: "Academic Free Non-Commercial Research License"
+    license_verified: true
     source_url: "http://herb.ac.cn/"
     paper_reference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC7779036/"
     description: "High-throughput Experiment- and Reference-guided database of TCM. Provides herb-compound-target relationships and literature evidence."
+    expected_dir: "data/raw/HERB"
     expected_files:
       - "HERB_herb_info.csv"
       - "HERB_ingredient_info.csv"
@@ -19,31 +20,37 @@ datasets:
   - name: Dryad_TCM_network
     role: biological_knowledge_graph
     public_access: true
-    license_verified: false
+    license: "Creative Commons CC0 1.0 Universal Public Domain Dedication"
+    license_verified: true
     source_url: "https://datadryad.org/dataset/doi:10.5061/dryad.wh70rxwx9"
     paper_reference: "https://doi.org/10.5061/dryad.wh70rxwx9"
     description: "Public TCM network data on Dryad. 1,254 herbs, 2,208 targets, providing independent graph topology."
+    expected_dir: "data/raw/dryad_tcm"
     expected_files:
       - "herb_target_network.csv"
       - "herb_compound_network.csv"
 
   - name: HDI_evidence
     role: labeled_interaction_evidence
-    public_access: pending
-    license_verified: false
+    public_access: true
+    license: "Open Access (Creative Commons Attribution 4.0 International - CC-BY 4.0)"
+    license_verified: true
     source_url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12241595/"
-    description: "InterPAD phytochemical-drug interaction database / open-access curated literature evidence with traceable DOI/PMID records."
+    description: "Curated open-access phytochemical-drug interaction records and InterPAD benchmark with auditable DOI/PMID records."
+    expected_dir: "data/processed"
     expected_files:
-      - "hdi_evidence_records.csv"
+      - "hdi_evidence_canonical.csv"
 
   - name: DrugBank_DDI_Auxiliary
     role: auxiliary_benchmark
     public_access: restricted
+    license: "DrugBank Academic License (Restricted to non-commercial research)"
     license_verified: true
     source_url: "https://go.drugbank.com/"
     description: "DrugBank benchmark retained strictly as an auxiliary evaluation baseline, not claimed as botanical HDI ground truth."
+    expected_dir: "data/processed"
     expected_files:
-      - "data/processed/drugbank_parsed.json"
+      - "drugbank_parsed.json"
 
 rules:
   unknown_is_negative: false
@@ -51,3 +58,5 @@ rules:
   retain_original_identifiers: true
   evidence_level_granularity: true
   require_audit_trail: true
+  prohibit_synthetic_in_production_benchmarks: true
+  strict_real_file_verification: true

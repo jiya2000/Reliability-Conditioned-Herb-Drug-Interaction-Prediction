@@ -63,11 +63,21 @@ class PublicDataLoader:
     """
     Manages loading and validation of public botanical knowledge graphs
     and labeled herb-drug interaction evidence records.
+
+    Enforces strict real-data integrity by default: missing files or unverified
+    data raise explicit, actionable errors. Synthetic demonstration graphs are only
+    produced when 'allow_synthetic=True' is explicitly requested.
     """
 
-    def __init__(self, data_dir: str = "data", manifest_path: Optional[str] = None):
+    def __init__(
+        self,
+        data_dir: str = "data",
+        manifest_path: Optional[str] = None,
+        allow_synthetic: bool = False,
+    ):
         self.data_dir = Path(data_dir)
         self.manifest_path = Path(manifest_path) if manifest_path else self.data_dir / "manifest.yaml"
+        self.allow_synthetic = allow_synthetic
         self.manifest = self._load_manifest()
 
     def _load_manifest(self) -> Dict[str, Any]:
@@ -86,27 +96,66 @@ class PublicDataLoader:
         logger.info(f"Loaded manifest with {len(manifest.get('datasets', []))} declared datasets")
         return manifest
 
+    def verify_dataset_readiness(
+        self,
+        dryad_dir: Optional[str] = None,
+        herb_dir: Optional[str] = None,
+        evidence_path: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Audit physical file presence and readiness for real training.
+        Raises RuntimeError if any real dataset is missing or empty.
+        """
+        d_dir = Path(dryad_dir) if dryad_dir else self.data_dir / "raw" / "dryad_tcm"
+        h_dir = Path(herb_dir) if herb_dir else self.data_dir / "raw" / "HERB"
+        ev_path = Path(evidence_path) if evidence_path else self.data_dir / "processed" / "hdi_evidence_canonical.csv"
+
+        status = {
+            "dryad_tcm_ready": (d_dir / "herb_target_network.csv").exists() or (d_dir / "herb_compound_network.csv").exists(),
+            "herb_database_ready": (h_dir / "HERB_herb_info.csv").exists() and (h_dir / "HERB_herb_ingredient_pairs.csv").exists(),
+            "hdi_evidence_ready": ev_path.exists(),
+        }
+
+        if not all(status.values()) and not self.allow_synthetic:
+            missing = [k for k, v in status.items() if not v]
+            raise RuntimeError(
+                f"Production dataset readiness check failed: missing real public data: {missing}. "
+                f"Download required public files as specified in data/manifest.yaml before running real training experiments."
+            )
+        return status
+
     def load_hdi_evidence(
-        self, file_path: Optional[str] = None, validate: bool = True
+        self,
+        file_path: Optional[str] = None,
+        validate: bool = True,
+        allow_synthetic: Optional[bool] = None,
     ) -> pd.DataFrame:
         """
         Load labeled herb-drug interaction evidence records.
         Validates against the canonical EvidenceRecord schema.
+
+        Raises FileNotFoundError if file is missing in real mode.
         """
+        allow_synth = self.allow_synthetic if allow_synthetic is None else allow_synthetic
         path = Path(file_path) if file_path else self.data_dir / "processed" / "hdi_evidence_canonical.csv"
+
         if not path.exists():
-            logger.warning(f"Evidence file not found at {path}. Returning empty canonical DataFrame.")
-            return pd.DataFrame(
-                columns=[
-                    "herb_id", "drug_id", "outcome", "evidence_type",
-                    "source_id", "study_id", "cited_study_ids", "dose",
-                    "preparation", "route", "species", "population",
-                    "publication_date", "extraction_confidence",
-                    "source_url_or_doi", "original_text",
-                ]
+            if not allow_synth:
+                raise FileNotFoundError(
+                    f"Genuine HDI evidence file not found at '{path}'. "
+                    f"Real labeled interaction evidence with traceable DOIs is required for scientifically valid evaluation. "
+                    f"Consult data/manifest.yaml for data ingestion instructions, or pass allow_synthetic=True for explicit demo testing."
+                )
+            logger.warning(
+                f"SYNTHETIC DEMO MODE: '{path}' not found. Generating mock evidence table for unit test demonstration. "
+                f"DO NOT present resulting metrics as genuine botanical HDI performance."
             )
+            return self.generate_sample_hdi_evidence_table(num_pairs=20)
 
         df = load_canonical_table(str(path))
+        if df.empty and not allow_synth:
+            raise ValueError(f"HDI evidence table at '{path}' is empty. Genuine labeled interaction records required.")
+
         if validate:
             cleaned_df, errors = validate_dataframe(df)
             if errors:
@@ -114,18 +163,33 @@ class PublicDataLoader:
             return cleaned_df
         return df
 
-    def load_dryad_tcm(self, dryad_dir: Optional[str] = None) -> BiologicalGraphData:
+    def load_dryad_tcm(
+        self, dryad_dir: Optional[str] = None, allow_synthetic: Optional[bool] = None
+    ) -> BiologicalGraphData:
         """
         Load Public TCM network data from Dryad repository.
         Expected files: herb_target_network.csv or herb_compound_network.csv.
+
+        Raises FileNotFoundError if files are missing in real mode.
         """
+        allow_synth = self.allow_synthetic if allow_synthetic is None else allow_synthetic
         d_dir = Path(dryad_dir) if dryad_dir else self.data_dir / "raw" / "dryad_tcm"
         ht_path = d_dir / "herb_target_network.csv"
         hc_path = d_dir / "herb_compound_network.csv"
 
         if not ht_path.exists() and not hc_path.exists():
-            logger.info(f"Dryad files not present at {d_dir}; building mock topology for demonstration.")
-            return self._build_synthetic_public_kg(source="Dryad_TCM")
+            if not allow_synth:
+                raise FileNotFoundError(
+                    f"Dryad TCM network files not found in '{d_dir}'. "
+                    f"Expected 'herb_target_network.csv' or 'herb_compound_network.csv'. "
+                    f"Download dataset from Dryad repository: https://datadryad.org/dataset/doi:10.5061/dryad.wh70rxwx9. "
+                    f"Or pass allow_synthetic=True for explicit offline testing."
+                )
+            logger.warning(
+                f"SYNTHETIC DEMO MODE: Dryad TCM network not found at '{d_dir}'. "
+                f"Constructing synthetic topology for unit test demonstration."
+            )
+            return self._build_synthetic_public_kg(source="Dryad_TCM_synthetic_demo")
 
         herbs_set: Set[str] = set()
         compounds_set: Set[str] = set()
@@ -133,6 +197,9 @@ class PublicDataLoader:
 
         hc_edges = pd.read_csv(hc_path) if hc_path.exists() else pd.DataFrame(columns=["herb_id", "compound_id"])
         ht_edges = pd.read_csv(ht_path) if ht_path.exists() else pd.DataFrame(columns=["herb_id", "target_id"])
+
+        if hc_edges.empty and ht_edges.empty and not allow_synth:
+            raise ValueError(f"Dryad TCM files at '{d_dir}' are empty.")
 
         if not hc_edges.empty:
             herbs_set.update(hc_edges["herb_id"].astype(str))
@@ -153,14 +220,19 @@ class PublicDataLoader:
             herb_compound_edges=hc_edges,
             compound_target_edges=pd.DataFrame(columns=["compound_id", "target_id"]),
             drug_target_edges=pd.DataFrame(columns=["drug_id", "target_id"]),
-            metadata={"source": "Dryad_TCM", "manifest_verified": False},
+            metadata={"source": "Dryad_TCM", "manifest_verified": False, "is_synthetic": False},
         )
 
-    def load_herb_database(self, herb_dir: Optional[str] = None) -> BiologicalGraphData:
+    def load_herb_database(
+        self, herb_dir: Optional[str] = None, allow_synthetic: Optional[bool] = None
+    ) -> BiologicalGraphData:
         """
         Load HERB database (herb.ac.cn) tables.
         Expected files: HERB_herb_info.csv, HERB_ingredient_info.csv, etc.
+
+        Raises FileNotFoundError if files are missing in real mode.
         """
+        allow_synth = self.allow_synthetic if allow_synthetic is None else allow_synthetic
         h_dir = Path(herb_dir) if herb_dir else self.data_dir / "raw" / "HERB"
         h_info = h_dir / "HERB_herb_info.csv"
         i_info = h_dir / "HERB_ingredient_info.csv"
@@ -169,14 +241,28 @@ class PublicDataLoader:
         it_pairs = h_dir / "HERB_ingredient_target_pairs.csv"
 
         if not all(p.exists() for p in [h_info, hi_pairs]):
-            logger.info(f"HERB raw tables not present at {h_dir}; building mock topology for demonstration.")
-            return self._build_synthetic_public_kg(source="HERB")
+            if not allow_synth:
+                raise FileNotFoundError(
+                    f"HERB database files not found in '{h_dir}'. "
+                    f"Expected '{h_info.name}' and '{hi_pairs.name}'. "
+                    f"Download tables from HERB database: http://herb.ac.cn/ "
+                    f"or pass allow_synthetic=True for explicit offline testing."
+                )
+            logger.warning(
+                f"SYNTHETIC DEMO MODE: HERB database tables not found at '{h_dir}'. "
+                f"Constructing synthetic topology for unit test demonstration."
+            )
+            return self._build_synthetic_public_kg(source="HERB_database_synthetic_demo")
 
         herbs_df = pd.read_csv(h_info)
         compounds_df = pd.read_csv(i_info) if i_info.exists() else pd.DataFrame(columns=["compound_id"])
         targets_df = pd.read_csv(t_info) if t_info.exists() else pd.DataFrame(columns=["target_id"])
         hc_edges = pd.read_csv(hi_pairs)
         ct_edges = pd.read_csv(it_pairs) if it_pairs.exists() else pd.DataFrame(columns=["compound_id", "target_id"])
+
+        if herbs_df.empty or hc_edges.empty:
+            if not allow_synth:
+                raise ValueError(f"HERB database files at '{h_dir}' are empty.")
 
         return BiologicalGraphData(
             herbs=herbs_df,
@@ -186,7 +272,7 @@ class PublicDataLoader:
             herb_compound_edges=hc_edges,
             compound_target_edges=ct_edges,
             drug_target_edges=pd.DataFrame(columns=["drug_id", "target_id"]),
-            metadata={"source": "HERB_database", "manifest_verified": False},
+            metadata={"source": "HERB_database", "manifest_verified": False, "is_synthetic": False},
         )
 
     def _build_synthetic_public_kg(self, source: str = "synthetic") -> BiologicalGraphData:
@@ -232,8 +318,9 @@ class PublicDataLoader:
             herb_compound_edges=pd.DataFrame(hc_rows),
             compound_target_edges=pd.DataFrame(ct_rows),
             drug_target_edges=pd.DataFrame(dt_rows),
-            metadata={"source": source, "synthetic_seed": 42},
+            metadata={"source": source, "synthetic_seed": 42, "is_synthetic": True},
         )
+
 
     def generate_sample_hdi_evidence_table(self, num_pairs: int = 50) -> pd.DataFrame:
         """

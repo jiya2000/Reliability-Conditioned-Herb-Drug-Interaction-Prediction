@@ -295,11 +295,12 @@ class ReliabilityScorer(nn.Module):
         R_mean = R_stack.mean(dim=0)           # (batch, 1)
         R_uncertainty = R_stack.std(dim=0)      # (batch, 1)
 
-        # Breakdown using the mean embedding
+        # In lineage mode, explicit conflict reduces gating trust
         if metadata.size(-1) == 8:
+            contradiction = metadata[:, 5:6]
+            R_mean = R_mean * (1.0 - 0.4 * contradiction)
             dim_weights = torch.softmax(self.lineage_dim_attention(combined), dim=-1)
             # Epistemic uncertainty is also elevated when literature conflict is present
-            contradiction = metadata[:, 5:6]
             R_uncertainty = R_uncertainty + 0.25 * contradiction
             breakdown = {
                 "indep_pos_weight": dim_weights[:, 0],
