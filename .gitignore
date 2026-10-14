@@ -28,6 +28,7 @@ data/processed/
 *.sqlite
 *.db
 *.csv
+!data/benchmark/*.csv
 *.tsv
 *.jsonl
 

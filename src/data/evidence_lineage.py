@@ -142,6 +142,27 @@ class PairEvidenceSummary:
             self.metadata_missingness,
         ], dtype=np.float32)
 
+    def to_full_metadata_vector(self) -> np.ndarray:
+        """
+        Returns a 10-dimensional metadata vector containing BOTH lineage-adjusted
+        and explicit raw positive and negative counts:
+        [0: indep_pos, 1: indep_neg, 2: echo_ratio, 3: source_quality,
+         4: context_compat, 5: contradiction, 6: net_margin, 7: missingness,
+         8: raw_positive_count, 9: raw_negative_count]
+        """
+        return np.array([
+            self.independent_positive_strength,
+            self.independent_negative_strength,
+            self.citation_echo_ratio,
+            self.mean_source_quality,
+            self.context_compatibility_score,
+            self.contradiction_strength,
+            self.net_evidence_margin,
+            self.metadata_missingness,
+            float(self.raw_positive_count),
+            float(self.raw_negative_count),
+        ], dtype=np.float32)
+
 
 
 class EvidenceLineageAnalyzer:
@@ -399,6 +420,10 @@ class EvidenceLineageAnalyzer:
             primary_study_clusters=cluster_study_ids,
             audit_sources=audit_sources,
         )
+
+    def analyze_dataset(self, df: pd.DataFrame) -> Dict[Tuple[str, str], PairEvidenceSummary]:
+        """Aggregate evidence records across all pairs in a dataset."""
+        return build_pair_summaries_from_dataframe(df)
 
 
 def build_pair_summaries_from_dataframe(df: pd.DataFrame) -> Dict[Tuple[str, str], PairEvidenceSummary]:

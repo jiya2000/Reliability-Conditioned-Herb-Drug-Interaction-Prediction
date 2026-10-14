@@ -122,13 +122,15 @@ def test_real_data_smoke_test_with_source_reporting(tmp_path):
     assert "H001" in loaded_ev["herb_id"].values
 
 
-def test_end_to_end_training_and_validation_exclusive_calibration():
+def test_synthetic_pipeline_integration_and_validation_exclusive_calibration():
     """
-    End-to-end training and evaluation pipeline:
-    1. Study-disjoint splitting.
-    2. Model training on train partition.
-    3. Temperature scaling fitted EXCLUSIVELY on validation partition (zero test contamination).
-    4. Post-calibration evaluation on held-out test partition.
+    SYNTHETIC INTEGRATION TEST:
+    Verifies computational wiring, multi-epoch training, study-disjoint partitioning,
+    and validation-exclusive temperature calibration on mock tensor inputs.
+    
+    CRITICAL DISTINCTION: This test validates software execution integrity only.
+    It does NOT evaluate or establish genuine botanical HDI prediction, clinical
+    generalization, or real-world calibration quality (which requires verified real benchmarks).
     """
     np.random.seed(42)
     torch.manual_seed(42)

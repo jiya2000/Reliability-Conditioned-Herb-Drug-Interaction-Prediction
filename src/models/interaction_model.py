@@ -196,18 +196,51 @@ class ReliabilityConditionedInteractionModel(nn.Module):
                 z_contextual = self.evidence_proj(evidence_features)
 
             if metadata is not None:
-                meta_input = metadata.clone()
-                if self.mode == "no_study_dependence" and meta_input.size(-1) == 8:
-                    # Ablation: Restore un-discounted raw positive strength, zero echo ratio, and use raw margin
-                    echo = meta_input[:, 2:3].clamp(0.0, 0.85)
-                    meta_input[:, 0:1] = meta_input[:, 0:1] / (1.0 - echo + 1e-5)
-                    meta_input[:, 2:3] = 0.0
-                    meta_input[:, 6:7] = meta_input[:, 0:1] - meta_input[:, 1:2]
-                elif self.mode == "no_context_conflict" and meta_input.size(-1) == 8:
-                    # Ablation: Neutralize context to 1.0, zero contradiction, and remove conflict subtraction from margin
-                    meta_input[:, 4:5] = 1.0
-                    meta_input[:, 5:6] = 0.0
-                    meta_input[:, 6:7] = meta_input[:, 0:1]  # positive evidence only; no conflict subtraction
+                if metadata.size(-1) >= 10:
+                    # 10D metadata provides explicit raw and lineage-adjusted counts:
+                    # [indep_pos, indep_neg, echo, qual, ctx, conflict, margin, missing, raw_pos, raw_neg]
+                    indep_pos = metadata[:, 0:1]
+                    indep_neg = metadata[:, 1:2]
+                    echo = metadata[:, 2:3]
+                    qual = metadata[:, 3:4]
+                    ctx = metadata[:, 4:5]
+                    conflict = metadata[:, 5:6]
+                    margin = metadata[:, 6:7]
+                    missing = metadata[:, 7:8]
+                    raw_pos = metadata[:, 8:9]
+                    raw_neg = metadata[:, 9:10]
+
+                    if self.mode == "no_study_dependence":
+                        # Strictly use separate raw positive and raw negative counts; zero out echo
+                        meta_input = torch.cat([
+                            raw_pos, raw_neg, torch.zeros_like(echo),
+                            qual, ctx, conflict, raw_pos - raw_neg, missing
+                        ], dim=-1)
+                    elif self.mode == "no_context_conflict":
+                        # Strictly neutralize context to 1.0, zero contradiction, and remove conflict subtraction from margin
+                        meta_input = torch.cat([
+                            indep_pos, indep_neg, echo,
+                            qual, torch.ones_like(ctx), torch.zeros_like(conflict), indep_pos, missing
+                        ], dim=-1)
+                    elif self.mode in {"graph_plus_naive_evidence", "raw_naive"}:
+                        meta_input = torch.cat([
+                            raw_pos, raw_neg, torch.zeros_like(echo),
+                            qual, torch.ones_like(ctx), torch.zeros_like(conflict), raw_pos - raw_neg, missing
+                        ], dim=-1)
+                    else:
+                        meta_input = metadata[:, :8]
+
+                elif metadata.size(-1) == 8:
+                    meta_input = metadata.clone()
+                    if self.mode == "no_study_dependence":
+                        # In 8D mode without explicit raw fields, zero out echo ratio
+                        meta_input[:, 2:3] = 0.0
+                    elif self.mode == "no_context_conflict":
+                        meta_input[:, 4:5] = 1.0
+                        meta_input[:, 5:6] = 0.0
+                        meta_input[:, 6:7] = meta_input[:, 0:1]
+                else:
+                    meta_input = metadata
 
                 # Compute reliability and epistemic uncertainty
                 R, uncertainty, breakdown = self.reliability_scorer.forward_with_uncertainty(meta_input)

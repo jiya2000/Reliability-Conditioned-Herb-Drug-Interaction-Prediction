@@ -123,8 +123,15 @@ class EvidenceRecord:
         self.source_url_or_doi = _clean_str(self.source_url_or_doi)
         self.original_text = _clean_str(self.original_text)
 
-    def validate(self) -> Tuple[bool, List[str]]:
-        """Validate instance fields according to the canonical evidence contract."""
+    def validate(
+        self,
+        strict_traceability: bool = False,
+        require_registered: bool = False,
+    ) -> Tuple[bool, List[str]]:
+        """
+        Validate instance fields according to the canonical evidence contract.
+        If strict_traceability=True, requires a valid, resolvable DOI, PubMed URL, or PMID.
+        """
         errors: List[str] = []
 
         if not self.herb_id:
@@ -148,6 +155,17 @@ class EvidenceRecord:
         if not self.study_id:
             errors.append("study_id cannot be empty or null (lineage tracking requirement)")
 
+        if strict_traceability:
+            if not self.source_url_or_doi:
+                errors.append("source_url_or_doi cannot be empty under strict traceability mode")
+            else:
+                from src.data.source_registry import DEFAULT_SOURCE_REGISTRY
+                is_valid_ref, reason = DEFAULT_SOURCE_REGISTRY.verify_reference(
+                    self.source_id, self.source_url_or_doi, require_registered=require_registered
+                )
+                if not is_valid_ref:
+                    errors.append(f"Unverifiable source reference: {reason}")
+
         return len(errors) == 0, errors
 
     def to_dict(self) -> Dict[str, Any]:
@@ -156,11 +174,16 @@ class EvidenceRecord:
         return data
 
 
-def validate_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
+def validate_dataframe(
+    df: pd.DataFrame,
+    strict_traceability: bool = False,
+    require_registered: bool = False,
+) -> Tuple[pd.DataFrame, List[str]]:
     """
     Validate a DataFrame of evidence records.
 
     Ensures all required columns exist, null/nan values are caught before conversion,
+    validates traceable references when strict_traceability=True,
     and returns a cleaned DataFrame alongside validation error messages for rejected rows.
     """
     required_cols = [
@@ -171,12 +194,15 @@ def validate_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
         "source_id",
         "study_id",
     ]
+    if strict_traceability:
+        required_cols.append("source_url_or_doi")
+
     errors: List[str] = []
 
     missing = [c for c in required_cols if c not in df.columns]
     if missing:
         errors.append(f"Missing mandatory columns: {missing}")
-        return df, errors
+        return pd.DataFrame(columns=required_cols), errors
 
     cleaned_records: List[EvidenceRecord] = []
     for idx, row in df.iterrows():
@@ -207,7 +233,10 @@ def validate_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
                 extraction_method=str(row.get("extraction_method", "manual_curation")),
                 raw_label=row.get("raw_label"),
             )
-            is_valid, rec_errors = rec.validate()
+            is_valid, rec_errors = rec.validate(
+                strict_traceability=strict_traceability,
+                require_registered=require_registered,
+            )
             if not is_valid:
                 errors.append(f"Row {idx} rejected: {rec_errors}")
             else:

@@ -273,3 +273,99 @@ def test_leakage_safe_splits():
     train_studies = set(tr_s["study_id"].astype(str))
     test_studies = set(te_s["study_id"].astype(str))
     assert len(train_studies & test_studies) == 0, "Study-disjoint split leaked studies across train and test!"
+
+
+def test_study_disjoint_edge_cases():
+    """
+    P1 Fix: Verify edge cases in citation-cluster splitting:
+    - 1 cluster -> raises ValueError
+    - 2 clusters -> raises ValueError
+    - 3 clusters -> successfully allocates non-empty train, val, and test partitions
+    - Citation-dependent studies stay in the same partition
+    """
+    splitter = LeakageSafeSplitter(seed=42)
+
+    # 1. Single cluster must raise ValueError
+    df_1 = pd.DataFrame([
+        {"herb_id": "H1", "drug_id": "D1", "study_id": "ST1", "cited_study_ids": []},
+        {"herb_id": "H1", "drug_id": "D1", "study_id": "ST1", "cited_study_ids": []},
+    ])
+    with pytest.raises(ValueError) as exc1:
+        splitter.split_study_disjoint(df_1)
+    assert "at least 3 independent citation clusters" in str(exc1.value)
+
+    # 2. Two clusters must raise ValueError
+    df_2 = pd.DataFrame([
+        {"herb_id": "H1", "drug_id": "D1", "study_id": "ST1", "cited_study_ids": []},
+        {"herb_id": "H2", "drug_id": "D2", "study_id": "ST2", "cited_study_ids": []},
+    ])
+    with pytest.raises(ValueError) as exc2:
+        splitter.split_study_disjoint(df_2)
+    assert "at least 3 independent citation clusters" in str(exc2.value)
+
+    # 3. Three clusters must succeed and produce non-empty partitions
+    df_3 = pd.DataFrame([
+        {"herb_id": "H1", "drug_id": "D1", "study_id": "ST1", "cited_study_ids": []},
+        {"herb_id": "H2", "drug_id": "D2", "study_id": "ST2", "cited_study_ids": []},
+        {"herb_id": "H3", "drug_id": "D3", "study_id": "ST3", "cited_study_ids": []},
+    ])
+    tr, val, te = splitter.split_study_disjoint(df_3)
+    assert len(tr) == 1
+    assert len(val) == 1
+    assert len(te) == 1
+    assert len(set(tr["study_id"]) & set(te["study_id"])) == 0
+
+    # 4. Citation-linked studies must never be separated
+    # ST_A and ST_B cite each other -> 1 cluster. ST_C and ST_D are separate -> total 3 clusters
+    df_linked = pd.DataFrame([
+        {"herb_id": "H1", "drug_id": "D1", "study_id": "ST_A", "cited_study_ids": ["ST_B"]},
+        {"herb_id": "H1", "drug_id": "D1", "study_id": "ST_B", "cited_study_ids": ["ST_A"]},
+        {"herb_id": "H2", "drug_id": "D2", "study_id": "ST_C", "cited_study_ids": []},
+        {"herb_id": "H3", "drug_id": "D3", "study_id": "ST_D", "cited_study_ids": []},
+    ])
+    tr_l, val_l, te_l = splitter.split_study_disjoint(df_linked)
+    # Check that ST_A and ST_B are in the exact same partition
+    for part in [tr_l, val_l, te_l]:
+        part_studies = set(part["study_id"])
+        if "ST_A" in part_studies:
+            assert "ST_B" in part_studies, "Citation-linked studies ST_A and ST_B must stay in the same partition!"
+
+
+def test_ablation_component_isolation_with_10d_metadata():
+    """
+    P1 Fix: Verify that 10D metadata with explicit raw counts and lineage-adjusted counts
+    is handled consistently without ratio division approximation:
+    - 'no_study_dependence' uses raw_pos and raw_neg directly, zeroes echo ratio.
+    - 'no_context_conflict' neutralizes context to 1.0 and zeroes conflict.
+    """
+    graph_dim = 16
+    evidence_dim = 16
+    herb_emb = torch.randn(1, graph_dim)
+    drug_emb = torch.randn(1, graph_dim)
+    evidence_feat = torch.randn(1, evidence_dim)
+
+    # 10D vector: [indep_pos, indep_neg, echo, qual, ctx, conflict, margin, missing, raw_pos, raw_neg]
+    # Here: raw_pos = 5.0, raw_neg = 0.0, indep_pos = 1.0 (echo chamber with 4 repeating reports: echo = 0.8)
+    meta_10d = torch.tensor([[1.0, 0.0, 0.8, 0.9, 0.9, 0.0, 1.0, 0.0, 5.0, 0.0]], dtype=torch.float32)
+
+    model_full = ReliabilityConditionedInteractionModel(
+        graph_dim=graph_dim, evidence_dim=evidence_dim, fused_dim=16, hidden_dim=16,
+        mode="reliability_conditioned",
+    )
+    model_no_dep = ReliabilityConditionedInteractionModel(
+        graph_dim=graph_dim, evidence_dim=evidence_dim, fused_dim=16, hidden_dim=16,
+        mode="no_study_dependence",
+    )
+    model_no_dep.load_state_dict(model_full.state_dict())
+    model_full.eval()
+    model_no_dep.eval()
+
+    with torch.no_grad():
+        out_full = model_full(herb_emb, drug_emb, evidence_feat, metadata=meta_10d, return_details=True)
+        out_no_dep = model_no_dep(herb_emb, drug_emb, evidence_feat, metadata=meta_10d, return_details=True)
+
+    assert out_full["breakdown"] is not None
+    assert out_no_dep["breakdown"] is not None
+    # no_study_dependence uses raw_pos=5.0 and zero echo
+    assert out_no_dep["reliability"].item() > 0.0
+

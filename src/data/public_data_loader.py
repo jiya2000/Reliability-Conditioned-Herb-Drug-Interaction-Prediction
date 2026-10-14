@@ -157,9 +157,16 @@ class PublicDataLoader:
             raise ValueError(f"HDI evidence table at '{path}' is empty. Genuine labeled interaction records required.")
 
         if validate:
-            cleaned_df, errors = validate_dataframe(df)
+            strict_trace = not allow_synth
+            cleaned_df, errors = validate_dataframe(df, strict_traceability=strict_trace)
             if errors:
                 logger.warning(f"Evidence validation encountered {len(errors)} issues: {errors[:5]}")
+            if cleaned_df.empty and not allow_synth:
+                raise ValueError(
+                    f"Evidence validation rejected ALL {len(df)} records in '{path}'. "
+                    f"In real-data mode, a non-empty, valid evidence dataset with traceable literature DOIs/PMIDs is mandatory. "
+                    f"Rejection errors: {errors[:10]}"
+                )
             return cleaned_df
         return df
 

@@ -187,3 +187,66 @@ def test_dataframe_export_and_roundtrip(tmp_path):
     reloaded_df = load_canonical_table(csv_file)
     assert len(reloaded_df) == 2
     assert reloaded_df.iloc[0]["cited_study_ids"] == ["ST0"]
+
+
+def test_strict_traceability_and_source_reference_validation():
+    """
+    P1 Fix: Verify that strict traceability rejects missing or malformed DOIs/PMIDs.
+    """
+    # 1. Missing source_url_or_doi
+    rec_no_doi = EvidenceRecord(
+        herb_id="HERB_001",
+        drug_id="DRUG_001",
+        outcome="positive",
+        evidence_type="clinical",
+        source_id="PUBMED_10534248",
+        study_id="STUDY_001",
+        source_url_or_doi=None,
+    )
+    is_valid, errors = rec_no_doi.validate(strict_traceability=True)
+    assert not is_valid
+    assert any("source_url_or_doi cannot be empty" in e for e in errors)
+
+    # 2. Malformed non-traceable string
+    rec_bad_doi = EvidenceRecord(
+        herb_id="HERB_001",
+        drug_id="DRUG_001",
+        outcome="positive",
+        evidence_type="clinical",
+        source_id="LOCAL_SOURCE",
+        study_id="STUDY_001",
+        source_url_or_doi="arbitrary_fake_reference",
+    )
+    is_valid, errors = rec_bad_doi.validate(strict_traceability=True)
+    assert not is_valid
+    assert any("Unverifiable source reference" in e for e in errors)
+
+    # 3. Valid traceable DOI
+    rec_valid_doi = EvidenceRecord(
+        herb_id="HERB_001",
+        drug_id="DRUG_001",
+        outcome="positive",
+        evidence_type="clinical",
+        source_id="PUBMED_10534248",
+        study_id="STUDY_001",
+        source_url_or_doi="https://doi.org/10.1016/s0140-6736(99)05018-9",
+    )
+    is_valid, errors = rec_valid_doi.validate(strict_traceability=True)
+    assert is_valid
+    assert len(errors) == 0
+
+
+def test_validate_dataframe_all_invalid():
+    """
+    Verify that when all rows are invalid, validate_dataframe cleanly returns
+    an empty DataFrame and captures row-by-row error logs.
+    """
+    records = [
+        {"herb_id": "H1", "drug_id": "D1", "outcome": "bad_label", "evidence_type": "clinical", "source_id": "S1", "study_id": "ST1"},
+        {"herb_id": "H2", "drug_id": "D2", "outcome": "positive", "evidence_type": "bad_type", "source_id": "S2", "study_id": "ST2"},
+    ]
+    df = pd.DataFrame(records)
+    cleaned_df, errors = validate_dataframe(df)
+    assert cleaned_df.empty
+    assert len(errors) == 2
+

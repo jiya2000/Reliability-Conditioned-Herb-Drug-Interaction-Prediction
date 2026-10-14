@@ -240,12 +240,43 @@ class LeakageSafeSplitter:
                         G.add_node(c_str)
                         G.add_edge(s_id, c_str)
 
+        # Validate split ratios
+        if not (0.0 < train_ratio < 1.0) or not (0.0 < val_ratio < 1.0) or (train_ratio + val_ratio >= 1.0):
+            raise ValueError(
+                f"Invalid split ratios: train_ratio={train_ratio}, val_ratio={val_ratio}. "
+                f"Must satisfy train_ratio > 0, val_ratio > 0, and train_ratio + val_ratio < 1.0"
+            )
+
         clusters = list(nx.connected_components(G))
         np.random.shuffle(clusters)
 
         n_clusters = len(clusters)
-        n_train = max(1, int(n_clusters * train_ratio))
-        n_val = max(1, int(n_clusters * val_ratio))
+        if n_clusters < 3:
+            raise ValueError(
+                f"Study-disjoint splitting requires at least 3 independent citation clusters to form "
+                f"non-empty train, validation, and test partitions, but only found {n_clusters} cluster(s). "
+                f"Add more independent study literature or use pair-disjoint splitting for small subsets."
+            )
+
+        # Proportional allocation guaranteeing >= 1 cluster per partition
+        n_train = int(round(n_clusters * train_ratio))
+        n_val = int(round(n_clusters * val_ratio))
+        n_train = max(1, n_train)
+        n_val = max(1, n_val)
+        n_test = n_clusters - n_train - n_val
+
+        while n_test < 1 and n_train > 1:
+            n_train -= 1
+            n_test += 1
+        while n_test < 1 and n_val > 1:
+            n_val -= 1
+            n_test += 1
+
+        if n_test < 1:
+            raise ValueError(
+                f"Cannot allocate non-empty train/val/test partitions for {n_clusters} clusters with ratios "
+                f"train={train_ratio}, val={val_ratio}."
+            )
 
         train_study_set = set().union(*clusters[:n_train])
         val_study_set = set().union(*clusters[n_train : n_train + n_val])
@@ -255,12 +286,21 @@ class LeakageSafeSplitter:
         val_df = df[df["study_id"].astype(str).isin(val_study_set)].copy()
         test_df = df[df["study_id"].astype(str).isin(test_study_set)].copy()
 
+        # Explicitly verify all 3 partitions contain usable records
+        if train_df.empty or val_df.empty or test_df.empty:
+            raise RuntimeError(
+                f"Study-disjoint split produced an empty partition: "
+                f"train={len(train_df)}, val={len(val_df)}, test={len(test_df)}. "
+                f"Ensure study_id values in evidence DataFrame map to the citation graph."
+            )
+
         # Strict assertion against cross-split study leakage
         train_studies = set(train_df["study_id"].astype(str))
+        val_studies = set(val_df["study_id"].astype(str))
         test_studies = set(test_df["study_id"].astype(str))
-        leakage = train_studies & test_studies
+        leakage = (train_studies & test_studies) | (train_studies & val_studies) | (val_studies & test_studies)
         if leakage:
-            raise RuntimeError(f"Study-disjoint split failure: leaked studies across train and test: {leakage}")
+            raise RuntimeError(f"Study-disjoint split failure: leaked studies across partitions: {leakage}")
 
         logger.info(
             f"Study-disjoint split: {len(train_df)} train, {len(val_df)} val, {len(test_df)} test records "
