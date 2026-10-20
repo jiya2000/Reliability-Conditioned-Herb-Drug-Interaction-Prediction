@@ -1,0 +1,63 @@
+# Experiment Configuration for Reliability-Conditioned Herb-Drug Interaction Prediction
+# Framework: PyTorch 2.x with Heterogeneous Graph Attention Network and BiomedBERT
+# Evaluation: Study-Disjoint Partitioning with Temperature Scaling and 95% Bootstrap CIs
+
+experiment:
+  name: "verified_botanical_hdi_study_disjoint"
+  seed: 42
+  device: "auto"  # auto selects mps, cuda, or cpu
+  benchmark_csv: "data/benchmark/verified_botanical_hdi.csv"
+  require_registered_sources: true
+
+dataset:
+  train_ratio: 0.60
+  val_ratio: 0.20
+  test_ratio: 0.20
+  split_strategy: "study_disjoint"  # cluster-connected-component partitioned (zero study overlap)
+  echo_discount_factor: 0.15        # attenuation for redundant citation echo reports
+
+encoders:
+  biological_graph:
+    type: "heterogeneous_gat"       # options: "profile_lookup", "heterogeneous_gat"
+    hidden_dim: 16
+    num_heads: 2
+    dropout: 0.10
+  evidence_text:
+    type: "biomedbert"              # options: "tfidf_svd", "biomedbert"
+    model_name: "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract"
+    embedding_dim: 16
+    max_length: 64
+
+model:
+  fused_dim: 16
+  hidden_dim: 16
+  dropout: 0.15
+  mc_dropout_samples: 10
+  mc_dropout_rate: 0.15
+  abstain_conflict_threshold: 0.50
+  abstain_uncertainty_threshold: 0.25
+
+training:
+  epochs: 35
+  learning_rate: 0.008
+  weight_decay: 0.0001
+  batch_size: 32
+  optimizer: "adamw"
+  loss: "bce_with_logits"
+
+calibration:
+  method: "temperature_scaling"
+  fitted_split: "validation_only"   # strict zero-test-contamination guarantee
+  max_iterations: 30
+
+evaluation:
+  bootstrap_replicates: 500
+  confidence_interval: 0.95
+  metrics:
+    - "roc_auc"
+    - "pr_auc"
+    - "f1_score"
+    - "ece_calibration"
+    - "brier_score"
+    - "selective_accuracy"
+    - "coverage"

@@ -35,9 +35,9 @@ def test_verified_hdi_benchmark_execution():
     assert (labels.get("interaction_present", 0) + labels.get("positive", 0)) > 0
     assert (labels.get("no_interaction_observed", 0) + labels.get("negative", 0)) > 0
 
-    # 6 model variants evaluated
+    # Model variants evaluated
     reports = res["reports"]
-    assert len(reports) == 6
+    assert len(reports) >= 6
     variants = [r["model_variant"] for r in reports]
     assert "reliability_conditioned" in variants
     assert "standard_fusion" in variants
@@ -45,6 +45,7 @@ def test_verified_hdi_benchmark_execution():
     assert "evidence_only" in variants
     assert "no_study_dependence" in variants
     assert "no_context_conflict" in variants
+    assert "graph_plus_naive_evidence" in variants
 
     # Markdown table generated with confidence intervals
     assert "| Model Variant |" in res["markdown_table"]

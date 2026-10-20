@@ -117,6 +117,23 @@ HERB_BIOLOGICAL_PROFILES: Dict[str, Dict[str, float]] = {
     },
     "HERB_ECHINACEA": {
         "CYP3A4": 0.3,    # Route-dependent: intestinal inhibition vs hepatic induction
+        "CYP1A2": -0.6,   # In vivo CYP1A2 inhibition
+    },
+    "HERB_PEPPERMINT": {
+        "CYP3A4": -0.8,   # Intestinal CYP3A4 inhibition by menthol/peppermint oil
+        "ABCB1": -0.6,    # Intestinal P-gp modulation
+    },
+    "HERB_CRANBERRY": {
+        "CYP2C9": -0.3,   # Mild in vitro flavonoid modulation (controversial in vivo)
+    },
+    "HERB_CHAMOMILE": {
+        "CYP1A2": -0.7,   # In vitro and clinical CYP1A2 inhibition
+        "CYP2C9": -0.5,   # Coumarin-mediated CYP2C9 modulation
+        "PTGS1": -0.4,    # Mild antiplatelet action
+    },
+    "HERB_GRAPEFRUIT": {
+        "CYP3A4": -1.0,   # Irreversible mechanism-based intestinal CYP3A4 inactivation
+        "ABCB1": -0.5,    # Intestinal P-gp inhibition
     },
 }
 
@@ -183,6 +200,84 @@ DRUG_BIOLOGICAL_PROFILES: Dict[str, Dict[str, float]] = {
     },
     "DRUG_DOCETAXEL": {
         "CYP3A4": 1.0,    # Chemotherapeutic substrate of CYP3A4
+    },
+    "DRUG_ETHINYLESTRADIOL": {
+        "CYP3A4": 0.9,    # Oral contraceptive steroid metabolized by CYP3A4
+    },
+    "DRUG_OMEPRAZOLE": {
+        "CYP2C19": 1.0,   # Primary clearance via CYP2C19
+        "CYP3A4": 0.5,    # Secondary clearance via CYP3A4
+    },
+    "DRUG_DEXTROMETHORPHAN": {
+        "CYP2D6": 1.0,    # Gold standard FDA probe for CYP2D6
+    },
+    "DRUG_ATORVASTATIN": {
+        "CYP3A4": 1.0,    # CYP3A4 substrate
+        "SLCO1B1": 0.9,   # OATP1B1 substrate
+    },
+    "DRUG_METHADONE": {
+        "CYP3A4": 0.9,    # CYP3A4 substrate
+        "CYP2B6": 0.7,
+    },
+    "DRUG_OXYCODONE": {
+        "CYP3A4": 1.0,    # CYP3A4 substrate
+        "CYP2D6": 0.4,
+    },
+    "DRUG_FEXOFENADINE": {
+        "ABCB1": 1.0,     # Intestinal P-gp substrate
+        "SLCO1A2": 0.8,   # OATP1A2 substrate
+    },
+    "DRUG_VERAPAMIL": {
+        "CYP3A4": 1.0,    # CYP3A4 substrate
+        "ABCB1": 0.9,     # P-gp substrate
+    },
+    "DRUG_IRINOTECAN": {
+        "CYP3A4": 0.9,    # CYP3A4 clearance
+        "ABCB1": 0.7,     # P-gp transport
+    },
+    "DRUG_TOLBUTAMIDE": {
+        "CYP2C9": 1.0,    # Gold standard FDA clinical probe for CYP2C9
+    },
+    "DRUG_NIFEDIPINE": {
+        "CYP3A4": 1.0,    # Sensitive CYP3A4 substrate
+    },
+    "DRUG_METFORMIN": {
+        "ABCB1": 0.3,
+    },
+    "DRUG_PHENELZINE": {
+        "CYP2D6": 0.5,
+    },
+    "DRUG_CHLORZOXAZONE": {
+        "CYP2E1": 1.0,    # Gold standard clinical probe for CYP2E1
+    },
+    "DRUG_TALINOLOL": {
+        "ABCB1": 1.0,     # P-glycoprotein transport probe
+    },
+    "DRUG_PACLITAXEL": {
+        "CYP3A4": 0.9,    # CYP3A4 substrate
+        "ABCB1": 0.9,     # P-gp substrate
+    },
+    "DRUG_BORTEZOMIB": {
+        "CYP3A4": 0.6,
+    },
+    "DRUG_CAFFEINE": {
+        "CYP1A2": 1.0,    # Gold standard FDA probe for CYP1A2
+    },
+    "DRUG_SPIRONOLACTONE": {
+        "HSD11B2": 0.8,
+    },
+    "DRUG_FINASTERIDE": {
+        "CYP3A4": 0.7,
+    },
+    "DRUG_FELODIPINE": {
+        "CYP3A4": 1.0,    # Sensitive CYP3A4 substrate probe
+    },
+    "DRUG_LEVODOPA": {
+        "GABRA1": 0.2,
+    },
+    "DRUG_ACETAMINOPHEN": {
+        "CYP2E1": 0.8,
+        "CYP1A2": 0.3,
     },
 }
 

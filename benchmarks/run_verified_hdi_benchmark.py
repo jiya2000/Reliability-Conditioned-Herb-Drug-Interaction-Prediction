@@ -40,6 +40,8 @@ def run_benchmark(
     seed: int = 42,
     embedding_dim: int = 16,
     require_registered: bool = True,
+    text_encoder_type: str = "tfidf",
+    graph_encoder_type: str = "profile",
 ) -> Dict[str, Any]:
     """
     Execute full verified botanical HDI benchmark across model variants.
@@ -110,23 +112,43 @@ def run_benchmark(
     test_summaries = analyzer.analyze_dataset(test_df)
 
     # 4. Extract Real Biological & Evidence Features (Zero torch.randn)
-    bio_extractor = BiologicalProfileExtractor(feature_dim=embedding_dim)
+    if graph_encoder_type == "gat":
+        from src.features.biological_graph_encoder import HeterogeneousBiologicalGraphEncoder
+        bio_graph_encoder = HeterogeneousBiologicalGraphEncoder(hidden_dim=embedding_dim)
+        bio_extractor = None
+    else:
+        bio_extractor = BiologicalProfileExtractor(feature_dim=embedding_dim)
+        bio_graph_encoder = None
 
     # Fit text feature extractor STRICTLY on training split texts
     train_texts = [str(t) for t in train_df["original_text"] if pd.notna(t)]
-    text_extractor = EvidenceTextFeatureExtractor(embedding_dim=embedding_dim, min_df=1)
-    text_extractor.fit(train_texts)
+    if text_encoder_type == "biomedbert":
+        from src.features.biomedbert_encoder import BiomedBERTEvidenceEncoder
+        text_extractor = BiomedBERTEvidenceEncoder(embedding_dim=embedding_dim)
+        text_extractor.fit_projection(train_texts)
+    else:
+        text_extractor = EvidenceTextFeatureExtractor(embedding_dim=embedding_dim, min_df=1)
+        text_extractor.fit(train_texts)
 
     def prepare_tensors(summary_map: Dict[Any, Any], partition_df: pd.DataFrame):
         h_tensors, d_tensors, meta_10d_list, labels_list, texts_list = [], [], [], [], []
+        herb_ids = partition_df["herb_id"].tolist()
+        drug_ids = partition_df["drug_id"].tolist()
+
+        if bio_graph_encoder is not None:
+            batch_h, batch_d = bio_graph_encoder.encode_entities(herb_ids, drug_ids)
+            h_tensors = [h for h in batch_h]
+            d_tensors = [d for d in batch_d]
+        else:
+            for h_id, d_id in zip(herb_ids, drug_ids):
+                h_vec = bio_extractor.get_herb_representation(h_id)
+                d_vec = bio_extractor.get_drug_representation(d_id)
+                h_tensors.append(torch.tensor(h_vec, dtype=torch.float32))
+                d_tensors.append(torch.tensor(d_vec, dtype=torch.float32))
+
         for _, row in partition_df.iterrows():
             h_id = row["herb_id"]
             d_id = row["drug_id"]
-            h_vec = bio_extractor.get_herb_representation(h_id)
-            d_vec = bio_extractor.get_drug_representation(d_id)
-            h_tensors.append(torch.tensor(h_vec, dtype=torch.float32))
-            d_tensors.append(torch.tensor(d_vec, dtype=torch.float32))
-
             texts_list.append(str(row.get("original_text", "")))
 
             summary = summary_map.get((h_id, d_id))
@@ -168,6 +190,7 @@ def run_benchmark(
         "standard_fusion",
         "graph_only",
         "evidence_only",
+        "graph_plus_naive_evidence",
         "no_study_dependence",
         "no_context_conflict",
     ]
@@ -243,6 +266,14 @@ if __name__ == "__main__":
     parser.add_argument("--csv", default="data/benchmark/verified_botanical_hdi.csv", help="Benchmark CSV path")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--embedding_dim", type=int, default=16, help="Biological embedding dimension")
+    parser.add_argument("--text_encoder", default="tfidf", choices=["tfidf", "biomedbert"], help="Text encoder")
+    parser.add_argument("--graph_encoder", default="profile", choices=["profile", "gat"], help="Graph encoder")
     args = parser.parse_args()
 
-    run_benchmark(benchmark_csv=args.csv, seed=args.seed, embedding_dim=args.embedding_dim)
+    run_benchmark(
+        benchmark_csv=args.csv,
+        seed=args.seed,
+        embedding_dim=args.embedding_dim,
+        text_encoder_type=args.text_encoder,
+        graph_encoder_type=args.graph_encoder,
+    )
