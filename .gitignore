@@ -39,6 +39,21 @@ outputs/
 runs/
 wandb/
 mlruns/
+*.pt
+*.zip
+trained_model_checkpoints/
+results_50_epochs/
+results_25_epochs/
+data/*.tab
+data/*.txt
+sample.txt
+tdc_head.txt
+run_mps_test*.py
+run_contrastive_test.py
+test_hf.py
+test_tdc.py
+parse_tdc.py
+evaluate_50.py
 
 # Jupyter
 .ipynb_checkpoints/
@@ -50,3 +65,4 @@ Thumbs.db
 # Environment
 .env
 *.log
+

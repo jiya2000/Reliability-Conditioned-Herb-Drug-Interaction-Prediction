@@ -28,6 +28,8 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import torch
+import networkx as nx
+import plotly.graph_objects as go
 
 # Internal modules from src
 from src.data.evidence_lineage import (
@@ -256,6 +258,100 @@ DRUG_DISPLAY_NAMES = {
     "DRUG_TOLBUTAMIDE": "Tolbutamide (Sulfonylurea / CYP2C9 Probe)",
     "DRUG_VERAPAMIL": "Verapamil (Calcium Channel Blocker / ABCB1)",
 }
+
+
+def render_interactive_kg_plotly(herb_id: str, drug_id: str, herb_name: str, drug_name: str, show_full_network: bool = False):
+    """Renders an interactive 2D Plotly network graph of the biological knowledge graph."""
+    G = nx.Graph()
+    if show_full_network:
+        for hid in list(HERB_BIOLOGICAL_PROFILES.keys())[:10]:
+            hname = hid.replace("HERB_", "").title()
+            G.add_node(hname, node_type="herb", color="#10b981", size=22)
+            for t, val in HERB_BIOLOGICAL_PROFILES[hid].items():
+                if abs(val) > 0.05 and t in CANONICAL_TARGETS:
+                    G.add_node(t, node_type="target", color="#f59e0b", size=16)
+                    G.add_edge(hname, t, val=val, color="#10b981", role=f"Herb Effect ({val:+.2f})")
+        for did in list(DRUG_BIOLOGICAL_PROFILES.keys())[:10]:
+            dname = did.replace("DRUG_", "").title()
+            G.add_node(dname, node_type="drug", color="#3b82f6", size=22)
+            for t, val in DRUG_BIOLOGICAL_PROFILES[did].items():
+                if abs(val) > 0.05 and t in CANONICAL_TARGETS:
+                    G.add_node(t, node_type="target", color="#f59e0b", size=16)
+                    G.add_edge(dname, t, val=val, color="#3b82f6", role=f"Drug Clearance ({val:+.2f})")
+    else:
+        G.add_node(herb_name, node_type="herb", color="#10b981", size=28)
+        G.add_node(drug_name, node_type="drug", color="#3b82f6", size=28)
+        h_prof = HERB_BIOLOGICAL_PROFILES.get(herb_id, {})
+        d_prof = DRUG_BIOLOGICAL_PROFILES.get(drug_id, {})
+        
+        for t in CANONICAL_TARGETS:
+            h_val = h_prof.get(t, 0.0)
+            d_val = d_prof.get(t, 0.0)
+            if abs(h_val) > 0.01 or abs(d_val) > 0.01:
+                is_overlap = (abs(h_val) > 0.01 and abs(d_val) > 0.01)
+                t_color = "#ef4444" if (h_val * d_val < -0.2) else ("#f59e0b" if is_overlap else "#64748b")
+                G.add_node(t, node_type="target", color=t_color, size=20)
+                if abs(h_val) > 0.01:
+                    role = "Induction" if h_val > 0 else "Inhibition"
+                    G.add_edge(herb_name, t, val=h_val, color="#10b981", role=f"Herb {role} ({h_val:+.2f})")
+                if abs(d_val) > 0.01:
+                    G.add_edge(drug_name, t, val=d_val, color="#3b82f6", role=f"Drug Clearance ({d_val:+.2f})")
+
+    pos = nx.spring_layout(G, seed=42, k=0.55, iterations=60)
+    
+    edge_x, edge_y = [], []
+    for u, v in G.edges():
+        x0, y0 = pos[u]
+        x1, y1 = pos[v]
+        edge_x.extend([x0, x1, None])
+        edge_y.extend([y0, y1, None])
+        
+    edge_trace = go.Scatter(
+        x=edge_x, y=edge_y,
+        line=dict(width=2.0, color="rgba(148, 163, 184, 0.35)"),
+        hoverinfo="none",
+        mode="lines"
+    )
+    
+    nx_list, ny_list, ncolors, nsizes, ntexts, nhover = [], [], [], [], [], []
+    for n, data in G.nodes(data=True):
+        x, y = pos[n]
+        nx_list.append(x)
+        ny_list.append(y)
+        ncolors.append(data.get("color", "#94a3b8"))
+        nsizes.append(data.get("size", 20))
+        ntexts.append(n)
+        connected = [f"{v}: {G[n][v].get('role', '')}" for v in G.neighbors(n)]
+        conn_preview = "<br>• ".join(connected[:6])
+        nhover.append(f"<b>{n}</b> [{data.get('node_type', '').upper()}]<br>Connected:<br>• {conn_preview}")
+        
+    node_trace = go.Scatter(
+        x=nx_list, y=ny_list,
+        mode="markers+text",
+        text=ntexts,
+        textposition="top center",
+        textfont=dict(color="#f8fafc", size=10, family="sans-serif"),
+        hovertext=nhover,
+        hoverinfo="text",
+        marker=dict(
+            color=ncolors,
+            size=nsizes,
+            line=dict(width=2, color="#ffffff")
+        )
+    )
+    
+    fig = go.Figure(data=[edge_trace, node_trace])
+    fig.update_layout(
+        showlegend=False,
+        template="plotly_dark",
+        paper_bgcolor="#0b1329",
+        plot_bgcolor="#0b1329",
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        margin=dict(l=10, r=10, t=10, b=10),
+        height=380,
+    )
+    return fig
 
 
 # ---------- Cached Core System Setup ----------
@@ -514,8 +610,8 @@ with tab_interactive:
     contradiction_index = meta_vector[5]
 
     # Tri-State Decision Rule
-    # Abstain if epistemic uncertainty > 0.25 OR (contradiction > 0.50 and |p - 0.5| < 0.35)
-    is_abstain = (epistemic_uncertainty > 0.25) or (contradiction_index > 0.50 and abs(calibrated_prob - 0.50) < 0.35)
+    # Abstain if epistemic uncertainty > 0.25 OR (contradiction >= 0.35 and |p - 0.5| < 0.35)
+    is_abstain = (epistemic_uncertainty > 0.25) or (contradiction_index >= 0.35 and abs(calibrated_prob - 0.50) < 0.35)
     if is_abstain:
         decision_state = "ABSTAIN"
     elif calibrated_prob >= 0.50:
@@ -643,10 +739,21 @@ with tab_interactive:
                     "Interaction Potential": f"{interaction_potential:.2f}",
                 })
 
-        if overlap_data:
-            st.dataframe(pd.DataFrame(overlap_data), use_container_width=True, hide_index=True)
-        else:
-            st.info("No primary CYP/P-gp target interactions documented for this specific pair; model falls back to secondary graph topology.")
+        tab_kg, tab_tbl = st.tabs(["🕸️ Interactive Knowledge Graph", "📋 Target Overlap Table"])
+
+        with tab_kg:
+            show_all = st.checkbox("Explore Full Multi-Entity Biological Knowledge Graph (35 Entities)", value=False, key="kg_show_all")
+            herb_clean = HERB_DISPLAY_NAMES.get(selected_herb, selected_herb).split(" (")[0]
+            drug_clean = DRUG_DISPLAY_NAMES.get(selected_drug, selected_drug).split(" (")[0]
+            kg_fig = render_interactive_kg_plotly(selected_herb, selected_drug, herb_clean, drug_clean, show_full_network=show_all)
+            st.plotly_chart(kg_fig, use_container_width=True)
+            st.caption("🟢 Green: Botanical Entities | 🟠 Amber/Red: Pharmacokinetic CYP & Transporter Targets | 🔵 Blue: Prescription Drugs")
+
+        with tab_tbl:
+            if overlap_data:
+                st.dataframe(pd.DataFrame(overlap_data), use_container_width=True, hide_index=True)
+            else:
+                st.info("No primary CYP/P-gp target interactions documented for this specific pair; model falls back to secondary graph topology.")
 
         st.markdown(
             f"""

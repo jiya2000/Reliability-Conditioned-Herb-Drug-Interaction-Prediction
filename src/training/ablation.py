@@ -45,18 +45,39 @@ class AblationRunner:
             "description": "GNN encoder + link predictor, no text, no reliability",
             "use_text": False,
             "use_reliability": False,
+            "enable_echo_attenuation": False,
+            "enable_pk_context": False,
         },
         "unconditioned": {
             "description": "GNN + text cross-attention, R fixed to 1.0",
             "use_text": True,
             "use_reliability": False,
+            "enable_echo_attenuation": False,
+            "enable_pk_context": False,
         },
         "full_model": {
-            "description": "Full reliability-conditioned cross-attention",
+            "description": "Full reliability-conditioned model with CDA + PCC + CTAE",
             "use_text": True,
             "use_reliability": True,
+            "enable_echo_attenuation": True,
+            "enable_pk_context": True,
+        },
+        "ablation_no_cda": {
+            "description": "Ablation without Citation DAG Echo Attenuation (naive citations)",
+            "use_text": True,
+            "use_reliability": True,
+            "enable_echo_attenuation": False,
+            "enable_pk_context": True,
+        },
+        "ablation_no_pcc": {
+            "description": "Ablation without Pharmacokinetic Context Compatibility",
+            "use_text": True,
+            "use_reliability": True,
+            "enable_echo_attenuation": True,
+            "enable_pk_context": False,
         },
     }
+
 
     def __init__(
         self,
@@ -119,6 +140,8 @@ class AblationRunner:
             model = HDIModel(
                 use_text=variant_config["use_text"],
                 use_reliability=variant_config["use_reliability"],
+                enable_echo_attenuation=variant_config.get("enable_echo_attenuation", True),
+                enable_pk_context=variant_config.get("enable_pk_context", True),
                 **self.model_kwargs,
             )
 
@@ -141,17 +164,35 @@ class AblationRunner:
             history = trainer.train(train_loader, val_loader, graph_data)
             train_time = time.time() - start_time
 
+            # Conformal calibration (if reliability enabled and val_loader available)
+            conformal_summary = None
+            if val_loader is not None and variant_config["use_reliability"]:
+                try:
+                    q_hat, conf_metrics = trainer.calibrate_conformal(val_loader, graph_data)
+                    conformal_summary = {
+                        "q_hat": q_hat,
+                        "empirical_coverage": conf_metrics.empirical_coverage,
+                        "abstention_rate": conf_metrics.abstention_rate,
+                        "retained_accuracy": conf_metrics.retained_accuracy,
+                    }
+                except Exception as e:
+                    logger.warning(f"Conformal calibration skipped for {variant_name}: {e}")
+
             # Evaluate
             evaluator = HDIEvaluator(model=model, device=self.device)
             eval_results = evaluator.evaluate(
                 test_loader, graph_data, return_predictions=False
             )
+            if conformal_summary is not None:
+                eval_results["conformal_summary"] = conformal_summary
 
             # Store results
             self.results[variant_name] = {
                 "description": variant_config["description"],
                 "parameters": param_count,
                 "training_time": train_time,
+                "conformal": conformal_summary,
+
                 "training_history": {
                     "final_train_loss": history["train_loss"][-1]
                     if history["train_loss"] else None,

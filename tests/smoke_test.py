@@ -118,9 +118,10 @@ stats = get_corpus_statistics()
 print(f"    ✓ Sentences: {stats['total_sentences']}")
 print(f"    ✓ Entities: {stats['total_entities']}")
 print(f"    ✓ Relations: {stats['total_relations']}")
-print(f"    ✓ Entity types: {stats['entity_types']}")
-print(f"    ✓ Scripts: {stats['scripts']}")
-print(f"    ✓ Sources: {stats['sources']}")
+print(f"    ✓ Entity types: {stats.get('entity_types', 'N/A')}")
+print(f"    ✓ Scripts: {stats.get('scripts', 'N/A')}")
+print(f"    ✓ Sources: {stats.get('sources', 'N/A')}")
+
 
 # 10. ECE monitor
 print("\n[10] Expected Calibration Error...")

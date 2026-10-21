@@ -14,15 +14,21 @@ from __future__ import annotations
 
 from typing import Optional
 
+import numpy as np
 import torch
 import torch.nn as nn
 from loguru import logger
+
 
 from src.models.gnn_encoder import HeterogeneousGNNEncoder
 from src.models.text_encoder import TextEncoder
 from src.models.reliability_scorer import ReliabilityScorer
 from src.models.cross_attention import ReliabilityGatedFusion
 from src.models.link_predictor import LinkPredictor
+from src.models.citation_dag import CitationDAGEchoAttenuator
+from src.models.context_compatibility import ContextCompatibilityScorer
+from src.models.conformal_abstention import ConformalTriStateEngine, ConformalDecision, ClinicalDecision
+
 
 
 class HDIModel(nn.Module):
@@ -64,6 +70,9 @@ class HDIModel(nn.Module):
         use_text: bool = True,
         use_reliability: bool = True,
         dropout: float = 0.2,
+        conformal_epsilon: float = 0.10,
+        enable_echo_attenuation: bool = True,
+        enable_pk_context: bool = True,
     ):
         super().__init__()
 
@@ -96,6 +105,19 @@ class HDIModel(nn.Module):
         else:
             self.reliability_scorer = None
 
+        # Novel Contribution 1: Citation DAG Echo Attenuator
+        self.echo_attenuator = (
+            CitationDAGEchoAttenuator() if enable_echo_attenuation else None
+        )
+
+        # Novel Contribution 2: Pharmacokinetic Context Compatibility Scorer
+        self.context_scorer = (
+            ContextCompatibilityScorer() if enable_pk_context else None
+        )
+
+        # Novel Contribution 3: Conformal Tri-State Abstention Engine
+        self.conformal_engine = ConformalTriStateEngine(epsilon=conformal_epsilon)
+
         # 4. Cross-Attention (used when text is enabled)
         if use_text:
             self.cross_attention = ReliabilityGatedFusion(
@@ -120,7 +142,8 @@ class HDIModel(nn.Module):
         mode = "full" if (use_text and use_reliability) else (
             "unconditioned" if use_text else "gnn_only"
         )
-        logger.info(f"HDIModel initialized in '{mode}' mode")
+        logger.info(f"HDIModel initialized in '{mode}' mode (with CDA, PCC, and CTAE)")
+
 
     def forward(
         self,
@@ -174,8 +197,20 @@ class HDIModel(nn.Module):
 
             # 3. Compute reliability score (if enabled)
             if self.use_reliability and self.reliability_scorer is not None and metadata is not None:
+                meta_in = metadata.clone().float()
+                # Apply Novelty 1 (CDA) & Novelty 2 (PCC) if multi-dimensional lineage metadata
+                if meta_in.size(-1) >= 8:
+                    if self.echo_attenuator is not None:
+                        att_pos, damp = self.echo_attenuator(meta_in[:, 0:1], meta_in[:, 2:3])
+                        meta_in[:, 0:1] = att_pos
+                        result["echo_damping_factor"] = damp
+                    if self.context_scorer is not None:
+                        ctx_score = self.context_scorer(meta_in[:, 4:5])
+                        meta_in[:, 4:5] = ctx_score.view(-1, 1)
+                        result["context_compatibility_refined"] = ctx_score
+
                 R, breakdown = self.reliability_scorer(
-                    metadata, return_breakdown=True
+                    meta_in, return_breakdown=True
                 )
                 result["reliability_scores"] = R
                 result["reliability_breakdown"] = breakdown
@@ -185,6 +220,7 @@ class HDIModel(nn.Module):
                     source_emb.size(0), 1, device=source_emb.device
                 )
                 result["reliability_scores"] = R
+
 
             # 4. Cross-attention fusion
             fused_source, attn_weights = self.cross_attention(
@@ -202,9 +238,30 @@ class HDIModel(nn.Module):
                 reliability_score=R,
             )
         else:
-            # GNN-only mode: no text fusion
+            # GNN-only or text-free mode: no text fusion
             fused_source = source_emb
             fused_target = target_emb
+
+            # Compute reliability score if metadata provided
+            if self.use_reliability and self.reliability_scorer is not None and metadata is not None:
+                meta_in = metadata.clone().float()
+                if meta_in.size(-1) >= 8:
+                    if self.echo_attenuator is not None:
+                        att_pos, damp = self.echo_attenuator(meta_in[:, 0:1], meta_in[:, 2:3])
+                        meta_in[:, 0:1] = att_pos
+                        result["echo_damping_factor"] = damp
+                    if self.context_scorer is not None:
+                        ctx_score = self.context_scorer(meta_in[:, 4:5])
+                        meta_in[:, 4:5] = ctx_score.view(-1, 1)
+                        result["context_compatibility_refined"] = ctx_score
+
+
+                R, breakdown = self.reliability_scorer(
+                    meta_in, return_breakdown=True
+                )
+                result["reliability_scores"] = R
+                result["reliability_breakdown"] = breakdown
+
 
         # 5. Link prediction
         logits = self.link_predictor(
@@ -222,6 +279,101 @@ class HDIModel(nn.Module):
             )
 
         return result
+
+    def calibrate_conformal(
+        self,
+        cal_probabilities: Union[torch.Tensor, Any],
+        cal_labels: Union[torch.Tensor, Any],
+        epsilon: Optional[float] = None,
+    ) -> float:
+        """
+        Calibrate the internal conformal tri-state engine on a held-out set.
+
+        Args:
+            cal_probabilities: Predicted probabilities on calibration set
+            cal_labels: True ground-truth binary labels (0 or 1)
+            epsilon: Optional significance level override (e.g. 0.10 for 90% coverage)
+
+        Returns:
+            Calibrated quantile threshold q_hat.
+        """
+        if epsilon is not None:
+            self.conformal_engine.epsilon = epsilon
+        return self.conformal_engine.calibrate(cal_probabilities, cal_labels)
+
+    def predict_with_conformal_abstention(
+        self,
+        node_features: torch.Tensor,
+        edge_index: torch.Tensor,
+        edge_type: torch.Tensor,
+        source_indices: torch.Tensor,
+        target_indices: torch.Tensor,
+        metadata: Optional[torch.Tensor] = None,
+        evidence_texts: Optional[list[str]] = None,
+    ) -> dict[str, Any]:
+        """
+        Runs full forward pass and applies conformal tri-state abstention routing (Novelty 3).
+
+        Produces three clinically safe decisions:
+        - INTERACTION_PRESENT (1): High confidence interaction
+        - NO_INTERACTION (0): High confidence benign combination
+        - ABSTAIN_CLINICAL_REVIEW (-1): Routed to human expert due to uncertainty or conflict
+
+        Returns dict containing:
+        - 'logits', 'probabilities', 'reliability_scores'
+        - 'conformal_decisions': List of ConformalDecision dataclasses
+        - 'predicted_labels': Tensor of shape (batch,) with values in {-1, 0, 1}
+        - 'abstention_mask': Boolean tensor where True indicates clinical referral
+        - 'abstention_rate': Float fraction of cohort routed to specialists
+        """
+        self.eval()
+        with torch.no_grad():
+            output = self.forward(
+                node_features=node_features,
+                edge_index=edge_index,
+                edge_type=edge_type,
+                source_indices=source_indices,
+                target_indices=target_indices,
+                metadata=metadata,
+                evidence_texts=evidence_texts,
+            )
+
+        probs = output["probabilities"].detach().cpu().numpy()
+        if probs.ndim == 0:
+            probs = np.array([float(probs)])
+
+        conflicts = np.zeros_like(probs)
+        reliabilities = np.full_like(probs, 0.5)
+
+        if "reliability_scores" in output:
+            reliabilities = output["reliability_scores"].detach().cpu().numpy().flatten()
+
+        if metadata is not None and metadata.size(-1) >= 8:
+            conflicts = metadata[:, 5].detach().cpu().numpy().flatten()
+
+        decisions = self.conformal_engine.predict_batch(
+            probabilities=probs,
+            contradictions=conflicts,
+            reliabilities=reliabilities,
+        )
+
+        pred_labels = torch.tensor(
+            [d.predicted_label for d in decisions],
+            dtype=torch.long,
+            device=source_indices.device,
+        )
+        abstain_mask = torch.tensor(
+            [d.abstain for d in decisions],
+            dtype=torch.bool,
+            device=source_indices.device,
+        )
+
+        output["conformal_decisions"] = decisions
+        output["predicted_labels"] = pred_labels
+        output["abstention_mask"] = abstain_mask
+        output["abstention_rate"] = float(abstain_mask.float().mean().item())
+
+        return output
 
     @classmethod
     def gnn_only(cls, **kwargs) -> "HDIModel":
@@ -264,5 +416,16 @@ class HDIModel(nn.Module):
                 p.numel() for p in self.cross_attention.parameters() if p.requires_grad
             )
 
+        if self.echo_attenuator is not None:
+            counts["echo_attenuator"] = sum(
+                p.numel() for p in self.echo_attenuator.parameters() if p.requires_grad
+            )
+
+        if self.context_scorer is not None:
+            counts["context_scorer"] = sum(
+                p.numel() for p in self.context_scorer.parameters() if p.requires_grad
+            )
+
         counts["total"] = sum(counts.values())
         return counts
+

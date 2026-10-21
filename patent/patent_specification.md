@@ -254,6 +254,27 @@ with clinical safety parameters $\tau_u = 0.25$, $\tau_c = 0.50$, and $\tau_{\te
 
 12. **The non-transitory computer-readable storage medium of Claim 11,** wherein said operations further comprise generating an electronic alert control signal that triggers an automated prescription interlock in an electronic health record system when an interaction is predicted, and routing the order to an asynchronous clinical review queue while displaying a non-intrusive advisory flag when an Abstain state is triggered.
 
+13. **The method of Claim 1,** wherein said tri-state classification decision rule is governed by a split conformal prediction engine establishing a distribution-free finite-sample coverage guarantee:
+    $$P(Y \in \mathcal{C}(X)) \ge 1 - \epsilon$$
+    at significance level $\epsilon \in (0, 0.5)$, wherein a calibration threshold $\hat{q}$ is computed on a held-out calibration partition of $n$ samples as:
+    $$\hat{q} = \text{Quantile}\left(\{1 - \hat{P}(Y = y_i \mid X_i)\}_{i=1}^n, \frac{\lceil(n+1)(1-\epsilon)\rceil}{n}\right)$$
+    and a conformal prediction set $\mathcal{C}(X) \subseteq \{0, 1\}$ is constructed as:
+    $$\mathcal{C}(X) = \{y \in \{0, 1\} \mid 1 - \hat{P}(Y = y \mid X) \le \hat{q}\}$$
+    wherein the candidate pair is classified as Interaction Present when $\mathcal{C}(X) = \{1\}$, classified as No Interaction when $\mathcal{C}(X) = \{0\}$, and selectively assigned to the Abstain state when $|\mathcal{C}(X)| \neq 1$ or when said scientific contradiction index exceeds a predetermined contradiction threshold $\tau_c$.
+
+14. **The method of Claim 1,** wherein said citation DAG echo attenuation is performed by a differentiable neural layer configured to compute an attenuated corroboration signal:
+    $$C_{\text{attenuated}} = C \cdot \max\left(0.05, 1.0 - \sigma(\beta) \cdot \text{CEI}\right)$$
+    wherein $C$ is a raw corroboration feature, $\sigma(\beta) \in (0, 1)$ is a learnable or calibrated dampening parameter, and $\text{CEI} \in [0, 1]$ is a citation echo chamber index defined by:
+    $$\text{CEI} = 1.0 - \frac{E_{\text{eff}}}{N_{\text{total}}}$$
+    wherein $E_{\text{eff}} = \sum_{\text{roots}} 1.0 + \sum_{\text{derivatives}} (1 - \alpha)^d$, where $d$ is the topological graph depth from an empirical index root and $\alpha \in [0.05, 0.25]$.
+
+15. **The method of Claim 1,** wherein calculating said pharmacokinetic context compatibility score comprises executing a differentiable neural layer computing:
+    $$W_{\text{context}} = \left( \text{clamp}(w_s^{\text{prior}} + \Delta_s, 0.05, 1.0) \times \text{clamp}(w_p^{\text{prior}} + \Delta_p, 0.05, 1.0) \times \text{clamp}(w_r^{\text{prior}} + \Delta_r, 0.05, 1.0) \times w_{\text{conc}} \right)^{1/3}$$
+    wherein $\Delta_s, \Delta_p, \Delta_r$ are learnable parameter vectors refining physiological priors for species, preparation, and administration route, and $w_{\text{conc}}$ applies an in vitro artifact suppression penalty of substantially $0.25$ when an in vitro experiment reports an active phytochemical concentration exceeding $50\,\mu\text{M}$.
+
+16. **The system of Claim 7,** wherein said calibrated tri-state decision engine comprises a conformal prediction processor that evaluates non-conformity scores against a finite-sample threshold $\hat{q}$, outputs conformal $p$-values for interaction and non-interaction hypotheses, and executes an automated EHR routing action that maps singleton sets to real-time clinical alerts and non-singleton or contradictory sets to an asynchronous clinical pharmacist review queue.
+
+
 ---
 
 ## ABSTRACT OF THE DISCLOSURE
