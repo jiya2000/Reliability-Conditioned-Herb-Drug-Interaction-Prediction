@@ -550,6 +550,20 @@ tab_interactive, tab_benchmark, tab_dossier = st.tabs([
 # ==============================================================================
 # TAB 1: INTERACTIVE CLINICAL PREDICTOR
 # ==============================================================================
+from src.models.conformal_abstention import ConformalTriStateEngine, ClinicalDecision
+
+# Global conformal engine instance (calibrated at startup)
+_conformal_engine = None
+
+def _get_conformal_engine():
+    """Lazy initialization of the conformal tri-state engine."""
+    global _conformal_engine
+    if _conformal_engine is None:
+        _conformal_engine = ConformalTriStateEngine(epsilon=0.10)
+        # Use conservative default if not calibrated with real data
+        if not _conformal_engine.is_calibrated:
+            _conformal_engine.q_hat = 0.85  # Conservative threshold
+    return _conformal_engine
 with tab_interactive:
     # 1. Prepare Feature Vectors for the chosen pair
     herb_vec = bio_extractor.get_herb_representation(selected_herb)
@@ -609,15 +623,20 @@ with tab_interactive:
     # Contradiction Index
     contradiction_index = meta_vector[5]
 
-    # Tri-State Decision Rule
-    # Abstain if epistemic uncertainty > 0.25 OR (contradiction >= 0.35 and |p - 0.5| < 0.35)
-    is_abstain = (epistemic_uncertainty > 0.25) or (contradiction_index >= 0.35 and abs(calibrated_prob - 0.50) < 0.35)
-    if is_abstain:
+    # Tri-State Decision using Conformal Prediction Engine
+    engine = _get_conformal_engine()
+    dec = engine.predict_single(
+        probability=calibrated_prob,
+        contradiction_score=contradiction_index,
+        reliability_score=reliability,
+    )
+    is_abstain = dec.abstain
+    # Map ClinicalDecision enum to banner strings
+    if dec.decision == ClinicalDecision.ABSTAIN_CLINICAL_REVIEW:
         decision_state = "ABSTAIN"
-    elif calibrated_prob >= 0.50:
-        decision_state = "INTERACTION PRESENT"
     else:
-        decision_state = "NO INTERACTION"
+        decision_state = dec.decision.value  # "INTERACTION_PRESENT" or "NO_INTERACTION"
+    routing = dec.routing_destination
 
     # ---------- Clinical Decision Banner ----------
     if decision_state == "INTERACTION PRESENT":
