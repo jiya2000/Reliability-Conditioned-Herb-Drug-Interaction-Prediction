@@ -57,8 +57,9 @@ class TemperatureScaler(nn.Module):
 
     def forward(self, logits: torch.Tensor) -> torch.Tensor:
         """Scale logits by temperature T."""
-        t = torch.clamp(self.temperature, min=1e-3, max=10.0)
-        return logits / t
+        # Use softplus to ensure T > 0 with smooth gradients everywhere
+        T = torch.nn.functional.softplus(self.temperature) + 1e-3
+        return logits / T
 
     def fit(
         self,
