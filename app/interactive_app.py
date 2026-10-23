@@ -47,6 +47,7 @@ from src.features.biological_features import (
     CANONICAL_TARGETS,
 )
 from src.models.interaction_model import ReliabilityConditionedInteractionModel
+from src.models.calibration_loss import CalibrationLoss
 from src.training.calibration import TemperatureScaler
 from src.training.evaluation import LeakageSafeSplitter
 
@@ -423,12 +424,23 @@ def load_hdi_system():
         abstain_conflict_threshold=0.50,
     )
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-    criterion = torch.nn.BCEWithLogitsLoss()
+    # Initialize ARC loss to prevent R collapse and ensure reliability correlates with accuracy
+    arc_loss_fn = CalibrationLoss(lambda_calibration=0.1, lambda_diversity=0.01, lambda_ordering=0.05)
     model.train()
     for _ in range(25):
         optimizer.zero_grad()
         out = model(tr_h, tr_d, tr_ev, metadata=tr_meta)
-        loss = criterion(out["logits"], tr_y)
+        # Standard link prediction loss
+        bce_loss = torch.nn.BCEWithLogitsLoss()(out["logits"], tr_y)
+        # ARC loss: prevents R from collapsing and ensures reliability correlates with accuracy
+        arc_total, arc_breakdown = arc_loss_fn(
+            out.get("reliability", torch.ones_like(out["logits"])),
+            torch.sigmoid(out["logits"]),
+            tr_y,
+            tr_meta,
+        )
+        # Combine losses
+        loss = bce_loss + 0.1 * arc_total
         loss.backward()
         optimizer.step()
 

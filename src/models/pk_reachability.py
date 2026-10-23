@@ -186,7 +186,7 @@ class PKReachabilityScreen:
     DEFAULT_THRESHOLDS: Dict[str, float] = {
         "cyp_reversible_inhibition": 0.1,      # [I]u/IC50 >= 0.1
         "cyp_tdi": 0.02,                       # [I]u/(kinact/KI) >= 0.02
-        "cyp_induction": 1.0,                  # [I]u/EC50 >= 1.0 (simplified)
+        "cyp_induction": 0.05,                 # [I]u/EC50 >= 0.05 (FDA in vitro induction threshold)
         "transporter_intestinal": 10.0,        # [I]gut/IC50 >= 10
         "transporter_hepatic": 0.1,            # [I]u/IC50 >= 0.1
         "pgp_inhibition": 0.1,                 # [I]u/IC50 >= 0.1
@@ -227,7 +227,7 @@ class PKReachabilityScreen:
         else:
             ratio = 0.0
         
-        is_reachable = ratio >= threshold
+        is_reachable = (ratio >= threshold) or abs(ratio - threshold) < 1e-5
         
         # Confidence based on data availability
         confidence = self._assess_confidence(finding, cu_max)

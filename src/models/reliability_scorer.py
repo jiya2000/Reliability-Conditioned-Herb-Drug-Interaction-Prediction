@@ -169,13 +169,13 @@ class ReliabilityScorer(nn.Module):
         R = self.mlp(combined)  # (batch, 1)
 
         # In lineage mode, explicit conflict reduces gating trust
-        if metadata.size(-1) == 8:
+        if metadata.size(-1) >= 8:
             contradiction = metadata[:, 5:6]  # (batch, 1) in [0, 1]
             R = R * (1.0 - 0.4 * contradiction)
 
         breakdown = None
         if return_breakdown:
-            if metadata.size(-1) == 8:
+            if metadata.size(-1) >= 8:
                 dim_weights = torch.softmax(self.lineage_dim_attention(combined), dim=-1)
                 breakdown = {
                     "indep_pos_weight": dim_weights[:, 0],
@@ -220,8 +220,8 @@ class ReliabilityScorer(nn.Module):
         """
         Shared embedding logic supporting both 8D evidence lineage and 5D legacy metadata.
         """
-        if metadata.size(-1) == 8:
-            return self.lineage_proj(metadata.float())
+        if metadata.size(-1) >= 8:
+            return self.lineage_proj(metadata[:, :8].float())
 
         # Legacy 5D embedding
         C = metadata[:, 0].long().clamp(0, self.max_corroboration)

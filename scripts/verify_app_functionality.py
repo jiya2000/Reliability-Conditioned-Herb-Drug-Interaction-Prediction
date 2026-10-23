@@ -20,6 +20,7 @@ from src.training.evaluation import LeakageSafeSplitter
 from src.data.evidence_lineage import EvidenceLineageAnalyzer
 from src.features.biological_features import BiologicalProfileExtractor, EvidenceTextFeatureExtractor
 from src.models.interaction_model import ReliabilityConditionedInteractionModel
+from src.models.calibration_loss import CalibrationLoss
 from src.training.calibration import TemperatureScaler
 
 
@@ -95,15 +96,23 @@ def verify_all_features():
     )
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.01, weight_decay=1e-4)
     loss_fn = torch.nn.BCEWithLogitsLoss()
+    arc_loss_fn = CalibrationLoss(lambda_calibration=0.1, lambda_diversity=0.01, lambda_ordering=0.05)
 
     model.train()
     for _ in range(30):
         optimizer.zero_grad()
         out = model(tr_h, tr_d, tr_t, metadata=tr_m)
-        loss = loss_fn(out["logits"], tr_y)
+        bce_loss = loss_fn(out["logits"], tr_y)
+        arc_total, _ = arc_loss_fn(
+            out.get("reliability", torch.ones_like(out["logits"])),
+            torch.sigmoid(out["logits"]),
+            tr_y,
+            tr_m,
+        )
+        loss = bce_loss + 0.1 * arc_total
         loss.backward()
         optimizer.step()
-    print("✓ Model trained successfully across 30 epochs")
+    print("✓ Model trained successfully across 30 epochs (BCE + ARC Loss)")
 
     # 5. Fit Temperature Scaler
     model.eval()

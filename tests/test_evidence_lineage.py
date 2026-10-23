@@ -23,6 +23,7 @@ from src.models.citation_dag import (
     CitationEchoAnalyzer,
     PaperNode,
 )
+from src.models.conformal_abstention import ClinicalDecision
 
 
 def test_evidence_lineage_features_zeros():
@@ -90,9 +91,10 @@ def test_echo_attenuation_in_features():
     """Echo discounting should reduce effective count below raw count."""
     records = []
     for i in range(5):
+        cites = [f"PMID_{i+99}"] if i > 0 else []
         records.append({
             "id": f"PMID_{i+100}", "year": 2015 + i, "study_type": "review",
-            "citations": [], "sentiment": "positive", "quality": 1.0,
+            "citations": cites, "sentiment": "positive", "quality": 1.0,
             "species": "human", "preparation": "standardized_extract", "route": "oral",
         })
     
@@ -175,6 +177,7 @@ def test_evidence_lineage_encoder():
 def test_evidence_lineage_encoder_deterministic():
     """Encoder produces deterministic output (same input = same output)."""
     encoder = EvidenceLineageEncoder(output_dim=128)
+    encoder.eval()
     test_features = torch.tensor([
         0.75, 0.25, 3.0, 5.0, 0.80, 0.10, 0.70, 0.60, 2.0, 3.0,
     ])
@@ -344,12 +347,12 @@ def test_10d_vector_bounds():
 
 def test_penalty_factor_integration():
     """Verify PK reachability penalty integrates with evidence lineage."""
-    from src.models.pk_reachability import PKReachabilityScreen
+    from src.models.pk_reachability import PKReachabilityScreen, InVitroFinding
     
     screen = PKReachabilityScreen()
     
     # Supra-physiological concentration -> penalty 0.25
-    finding_high = __import__("src.models.pk_reachability").InVitroFinding(
+    finding_high = InVitroFinding(
         herb_constituent="berberine",
         enzyme_transporter="CYP3A4",
         interaction_type="inhibition",
@@ -361,7 +364,7 @@ def test_penalty_factor_integration():
     assert result.penalty_factor == 0.25, f"Expected penalty 0.25, got {result.penalty_factor}"
     
     # Reachable finding (hyperforin induction, EC50=0.1 uM, human Cu,max ~0.005 uM)
-    finding_reach = __import__("src.models.pk_reachability").InVitroFinding(
+    finding_reach = InVitroFinding(
         herb_constituent="hyperforin",
         enzyme_transporter="CYP3A4",
         interaction_type="induction",
@@ -393,7 +396,7 @@ def test_evidence_schema():
     
     # to_tensor should give 10 elements
     t = f.to_tensor()
-    assert t.shape[0] == 10, f"to_tensor should have 10 elements, got {t.shape[0]}"
+    assert t.shape[1] == 10, f"to_tensor should have 10 elements, got {t.shape[1]}"
     
     # Zeros should give zero tensor
     z = EvidenceLineageFeatures.zeros()

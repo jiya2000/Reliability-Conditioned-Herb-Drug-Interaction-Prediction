@@ -204,17 +204,25 @@ class EvidenceSurfacer:
         # Reliability breakdown
         lines.append("**Reliability Score Breakdown:**")
         if breakdown:
+            # Support both legacy 5D keys (C, T, B, M, S) and new 8D/10D lineage keys
+            # (indep_pos, indep_neg, echo_ratio, context_compat, contradiction, net_margin, missingness)
             dimensions = [
+                # Legacy 5D keys
                 ("Corroboration", "corroboration_weight", "C"),
                 ("Temporal Recency", "temporal_weight", "T"),
                 ("Biomedical Quality", "biomedical_weight", "B"),
                 ("Molecular Plausibility", "molecular_weight", "M"),
                 ("Source Type", "source_type_weight", "S"),
+                # New 8D/10D lineage keys
+                ("Independence Pos", "indep_pos_weight", "indep_pos"),
+                ("Independence Neg", "indep_neg_weight", "indep_neg"),
+                ("Echo Ratio", "echo_ratio_weight", "echo_ratio"),
+                ("Context Compatibility", "context_compat_weight", "context_compat"),
+                ("Contradiction", "contradiction_weight", "contradiction"),
             ]
             for dim_name, weight_key, meta_key in dimensions:
-                weight = breakdown.get(weight_key, 0)
-                raw_value = metadata.get(meta_key, "N/A")
-
+                weight = breakdown.get(weight_key, breakdown.get(weight_key.replace("_weight", ""), 0))
+                raw_value = metadata.get(meta_key, breakdown.get(meta_key, "N/A"))
                 if isinstance(weight, (int, float)):
                     bar = "█" * int(weight * 10) + "░" * (10 - int(weight * 10))
                     lines.append(

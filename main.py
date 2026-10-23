@@ -251,10 +251,10 @@ def run_demo(args):
             time.sleep(3)
 
         if not args.backend_only:
-            logger.info("Starting Streamlit frontend (port 8501)...")
+            logger.info("Starting Streamlit flagship prototype (port 8501)...")
             frontend_proc = subprocess.Popen(
                 [sys.executable, "-m", "streamlit",
-                 "run", "app/frontend.py"]
+                 "run", "app/interactive_app.py"]
             )
 
         logger.info("Demo running. Press Ctrl+C to stop.")

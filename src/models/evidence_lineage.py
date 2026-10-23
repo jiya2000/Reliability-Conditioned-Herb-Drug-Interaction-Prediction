@@ -71,9 +71,20 @@ class EvidenceLineageFeatures:
         ).unsqueeze(0)  # (1, 10)
 
     @classmethod
-    def zeros(cls, device: Optional[torch.device] = None) -> torch.Tensor:
-        """Return zero 10D tensor for missing evidence."""
-        return torch.zeros(1, 10, dtype=torch.float32, device=device)
+    def zeros(cls, device: Optional[torch.device] = None) -> "EvidenceLineageFeatures":
+        """Return zero 10D EvidenceLineageFeatures for missing evidence."""
+        return cls()
+
+    @staticmethod
+    def _compute_contradiction_index(S_pos: float, S_neg: float) -> float:
+        """
+        Compute scientific contradiction index C_h,d (Eq. 4 in patent).
+        C = 2 * min(S_pos, S_neg) / (S_pos + S_neg + epsilon)
+        """
+        epsilon = 1e-6
+        if S_pos + S_neg < epsilon:
+            return 0.0
+        return (2.0 * min(S_pos, S_neg)) / (S_pos + S_neg + epsilon)
 
 
 class EvidenceLineageExtractor:
