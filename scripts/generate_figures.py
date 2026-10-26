@@ -76,7 +76,7 @@ def generate_all_figures():
             d_l.append(torch.tensor(bio_extractor.get_drug_representation(d_id), dtype=torch.float32))
             txt_l.append(str(row.get("original_text", "")))
             summ = summary_map.get((h_id, d_id))
-            meta_l.append(summ.to_full_metadata_vector() if summ else np.zeros(10, dtype=np.float32))
+            meta_l.append(summ.to_full_metadata_vector() if summ else np.zeros(12, dtype=np.float32))
             out = str(row["outcome"]).lower()
             y_l.append(1.0 if out in {"interaction_present", "positive"} else 0.0)
         ev_arr = text_extractor.transform(txt_l)

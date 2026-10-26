@@ -63,7 +63,7 @@ def verify_all_features():
             d_tensors.append(torch.tensor(bio_extractor.get_drug_representation(d_id), dtype=torch.float32))
             texts_list.append(str(row.get("original_text", "")))
             summary = summary_map.get((h_id, d_id))
-            meta_10d_list.append(summary.to_full_metadata_vector() if summary else np.zeros(10, dtype=np.float32))
+            meta_10d_list.append(summary.to_full_metadata_vector() if summary else np.zeros(12, dtype=np.float32))
             out = str(row["outcome"]).lower()
             if out in {"interaction_present", "positive"}:
                 y = 1.0
@@ -135,10 +135,10 @@ def verify_all_features():
             ev_texts = pair_records["original_text"].tolist()
             text_emb = text_extractor.transform(ev_texts)
             text_tensor = torch.tensor(text_emb, dtype=torch.float32).mean(dim=0, keepdim=True)
-            meta_vector = pair_summary.to_full_metadata_vector() if pair_summary else np.zeros(10, dtype=np.float32)
+            meta_vector = pair_summary.to_full_metadata_vector() if pair_summary else np.zeros(12, dtype=np.float32)
         else:
             text_tensor = torch.zeros((1, 16), dtype=torch.float32)
-            meta_vector = np.zeros(10, dtype=np.float32)
+            meta_vector = np.zeros(12, dtype=np.float32)
             meta_vector[7] = 1.0  # missingness
 
         context_mult = species_mult * prep_mult * route_mult

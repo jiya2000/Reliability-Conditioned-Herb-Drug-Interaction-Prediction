@@ -147,12 +147,21 @@ class PairEvidenceSummary:
 
     def to_full_metadata_vector(self) -> np.ndarray:
         """
-        Returns a 10-dimensional metadata vector containing BOTH lineage-adjusted
-        and explicit raw positive and negative counts:
+        Returns a 12-dimensional metadata vector containing lineage-adjusted
+        features and PK reachability parameters:
         [0: indep_pos, 1: indep_neg, 2: echo_ratio, 3: source_quality,
          4: context_compat, 5: contradiction, 6: net_margin, 7: missingness,
-         8: raw_positive_count, 9: raw_negative_count]
+         8: raw_positive_count, 9: raw_negative_count,
+         10: rho_reach, 11: f_m_CYP]
         """
+        # Physiological reachability ratio: ratio of in vitro to in vivo exposure
+        # Default value since specific PK data varies by constituent
+        rho_reach = 0.5  # Default: moderate reachability
+        
+        # Fraction of drug clearance mediated by the modulated CYP enzyme
+        # Default value since specific CYP data varies by constituent
+        f_m_CYP = 0.5  # Default: moderate metabolic clearance
+        
         return np.array([
             self.independent_positive_strength,
             self.independent_negative_strength,
@@ -164,6 +173,8 @@ class PairEvidenceSummary:
             self.metadata_missingness,
             float(self.raw_positive_count),
             float(self.raw_negative_count),
+            rho_reach,
+            f_m_CYP,
         ], dtype=np.float32)
 
 

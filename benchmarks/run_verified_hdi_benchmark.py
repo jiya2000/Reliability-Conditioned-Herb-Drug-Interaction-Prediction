@@ -154,8 +154,16 @@ def run_benchmark(
             summary = summary_map.get((h_id, d_id))
             if summary:
                 meta_vec = summary.to_full_metadata_vector()
+                # Ensure 12-dimensional metadata vector (new dimensions at end:
+                # index 10: rho_reach, index 11: f_m_CYP)
+                if meta_vec.shape[0] == 10:
+                    # Migrate old 10D metadata to 12D by appending defaults
+                    meta_vec = np.append(meta_vec, [0.5, 0.5])  # rho_reach=0.5, f_m_CYP=0.5
+                elif meta_vec.shape[0] < 12:
+                    # Pad with defaults to reach 12D
+                    meta_vec = np.pad(meta_vec, (0, 12 - meta_vec.shape[0]), mode='constant', constant_values=(0.5, 0.5))
             else:
-                meta_vec = np.zeros(10, dtype=np.float32)
+                meta_vec = np.zeros(12, dtype=np.float32)
             meta_10d_list.append(meta_vec)
 
             # Ground truth: interaction_present / positive = 1.0, no_interaction_observed / negative = 0.0
