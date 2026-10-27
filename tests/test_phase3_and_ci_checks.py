@@ -276,7 +276,7 @@ def test_feature_switch_blocks_unverified_curation(benchmark_df):
         curation_path="data/curation/mechanistic_features.csv",
         seed=42,
     )
-    with pytest.raises(UnverifiedCurationError, match="contains 522 UNVERIFIED entries"):
+    with pytest.raises(UnverifiedCurationError, match="contains 722 UNVERIFIED entries"):
         benchmark.run_cv(benchmark_df, split_mode="pair_disjoint", n_splits=5)
 
 
@@ -297,3 +297,38 @@ def test_feature_switch_runs_on_legacy_profiles(benchmark_df):
     assert "gradient_boosted_trees" in results["models"]
     assert "small_gat" in results["models"]
     assert results["models"]["logistic_regression"]["mean_auc"] > 0.80
+
+def test_permanent_g_curation_density_check(benchmark_df):
+    """
+    Assert that every herb in the curation CSV has all PK targets filled
+    (status = measured or tested_no_effect). Fails if any herb has fewer
+    than all 9 targets marked as verified.
+    """
+    from src.data.mechanistic_curation import load_mechanistic_curation, is_curation_verified
+
+    curation_df = load_mechanistic_curation()
+    verified, n_ver, n_unver = is_curation_verified(curation_df)
+
+    # Group by entity and count targets with status != "not_tested"
+    entity_target_counts = {}
+    for _, row in curation_df.iterrows():
+        ent = str(row["entity"]).strip()
+        tgt = str(row["target"]).strip()
+        status = str(row["status"]).strip()
+        if status != "not_tested":
+            if ent not in entity_target_counts:
+                entity_target_counts[ent] = 0
+            entity_target_counts[ent] += 1
+
+    # Check each herb has all 9 PK targets filled
+    from src.features.biological_features import CANONICAL_TARGETS, TARGET_TO_IDX
+    n_pk_targets = len(CANONICAL_TARGETS)  # 9
+
+    for entity in entity_target_counts:
+        count = entity_target_counts[entity]
+        if count < n_pk_targets:
+            raise AssertionError(
+                f"Curation density check failed: {entity} has {count}/{n_pk_targets} "
+                f"targets marked as verified. All 9 PK targets must be filled "
+                f"(status = measured or tested_no_effect) before model execution."
+            )

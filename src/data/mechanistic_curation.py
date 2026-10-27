@@ -30,9 +30,15 @@ CANONICAL_TARGETS = [
 CURATION_COLUMNS = [
     "entity",
     "target",
-    "value",
+    "status",
+    "value_ic50_uM",
+    "value_ki_uM",
+    "value_fold_induction",
+    "value_fm",
+    "value_substrate_flag",
+    "exposure_conc_uM",
+    "exposure_source",
     "assay_or_unit",
-    "source",
     "citation",
     "retrieval_date",
     "notes",
@@ -85,10 +91,40 @@ def is_curation_verified(df: pd.DataFrame) -> Tuple[bool, int, int]:
 
     is_unverified_source = df["source"].astype(str).str.upper().str.strip() == "UNVERIFIED"
     is_unverified_cite = df["citation"].astype(str).str.upper().str.strip() == "UNVERIFIED"
-    has_empty_value = df["value"].isna() | (df["value"].astype(str).str.strip() == "")
-
-    unverified_mask = is_unverified_source | is_unverified_cite | has_empty_value
-
+    
+    # Check that rows with status=measured have at least one value column filled
+    has_value_ic50 = df["value_ic50_uM"].apply(
+        lambda x: str(x).strip() != "" if pd.notna(x) else False
+    )
+    has_value_ki = df["value_ki_uM"].apply(
+        lambda x: str(x).strip() != "" if pd.notna(x) else False
+    )
+    has_value_fold = df["value_fold_induction"].apply(
+        lambda x: str(x).strip() != "" if pd.notna(x) else False
+    )
+    has_value_fm = df["value_fm"].apply(
+        lambda x: str(x).strip() != "" if pd.notna(x) else False
+    )
+    # value_substrate_flag: verified if not empty and not "0" (0 means not a substrate, 
+    # which is a valid measured result)
+    has_value_substrate = df["value_substrate_flag"].apply(
+        lambda x: str(x).strip() not in ["", "0"] if pd.notna(x) else False
+    )
+    
+    # Any row with status=measured must have at least one value column filled
+    status_measured = df["status"].astype(str).str.strip() == "measured"
+    has_any_value = has_value_ic50 | has_value_ki | has_value_fold | has_value_fm | has_value_substrate
+    # A measured row with no values is empty if ALL value columns are empty
+    empty_measured_rows = status_measured & (~has_any_value)
+    has_empty_measured = len(empty_measured_rows) > 0 and empty_measured_rows.any()
+    
+    # Unverified: source or citation is UNVERIFIED
+    unverified_mask = is_unverified_source | is_unverified_cite
+    
+    # Additional check: measured rows without values
+    if has_empty_measured:
+        unverified_mask = unverified_mask | empty_measured_rows.index[empty_measured_rows]
+    
     unverified_count = int(unverified_mask.sum())
     verified_count = int((~unverified_mask).sum())
     is_verified = (unverified_count == 0 and verified_count > 0)

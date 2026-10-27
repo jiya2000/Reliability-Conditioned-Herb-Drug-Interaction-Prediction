@@ -149,6 +149,36 @@ This log tracks every architectural change, feature provenance audit, schema dec
 - **Test Suite Status:** 149 passed, 0 failures, 19 warnings (in 24.72s).
 - **STOP Point:** Standing by for user-supplied consensus labels before touching Phase 4 or Phase 5.
 
+
+
+## Retraction Notes (Phase 0 & Earlier)
+
+### Phase 0 Claims Retraction
+
+The following Phase 0 claims have been re-evaluated and reformulated based on updated quantitative evidence:
+
+1. **Claim: "6D biological overlap features maintain AUC of 0.840 ± 0.098 on completely unseen botanicals (herb-disjoint), proving pharmacokinetic overlap is not merely a botanical entity shortcut."**
+   - **Retraction:** The correct interpretation is that overlap features maintain substantial signal (0.840 AUC) but the confidence interval is wide ([~0.65, ~1.0] depending on bootstrap method), and the result is consistent with both pharmacokinetic generalization and residual curation density effects. The claim that this "proves" pharmacokinetic isolation overstates the evidence; the data are consistent with a combined mechanistic+curation signal.
+
+2. **Claim: "Mathematical independence of interaction_vec: strictly the Hadamard product h_i · d_i between independent single-entity vectors, with no pair-level empirical lookup table or outcome column leakage."**
+   - **Retraction:** Verified mathematically: interaction_vec = h_i · d_i is the element-wise product of independent herb and drug profile vectors. This is a deterministic computation, not an empirical lookup. The claim is reaffirmed but qualified: independence holds because herb and drug profiles are sourced from disjoint data collection pipelines, not because the Hadamard product itself guarantees generalization.
+
+3. **Claim: "Herb one-hot identity collapses to exactly 0.500 ± 0.000 under herb-disjoint splitting, verifying strict partition integrity."**
+   - **Retraction:** The value 0.500 is consistent with chance-level performance under strict partition integrity, but the exact value depends on the test split construction. The claim is reaffirmed with the qualification that the 0.500 collapse is a necessary (not sufficient) condition for verifying split integrity.
+
+4. **Permutation test p = 0.000000 entry**
+   - **Retraction:** The empirical p-value of 0.000000 (0/1000 null draws reached true AUC) is re-expressed as p < 1/(n_perm + 1) = p < 0.001. The "0.000000" literal should not be interpreted as an exact zero p-value; it represents the convention of reporting the empirical p-value as the proportion of null draws meeting or exceeding the true AUC, bounded by 1/(n_perm + 1). The permutation test correctly rejects the null hypothesis of no interaction signal (p < 0.001), but the exact numeric representation "0.000000" in prior reports is replaced with the statistically correct notation p < 0.001.
+
+### Wording Replacement
+
+The following phrasings have been updated to reflect what the numbers actually support (not overclaiming):
+
+- **"proving ... eliminated"** → **"the signal is substantially reduced when ... is removed"** (the numbers show reduction, not elimination)
+- **"does not depend on"** → **"the data are consistent with ... being independent of"** (agnostic phrasing)
+- **"cleanly differentiates"** → **"the model achieves separation between"** (descriptive, not prescriptive)
+
+These changes are logged in accordance with the principle of not fabricating certainty beyond what the quantitative evidence supports.
+
 ## CI Workflow Diagnostic & Fix (October 28, 2026)
 - **Failure Analysis:** GitHub Actions CI Run #15 on commit `c85753f` failed on the `Run unit test suite` step (144 passed, 5 failed). The failed tests were `test_dag_audit_file_integrity`, `test_external_validation_schema_and_loader`, `test_external_validation_execution`, `test_overlap_diagnostics_computation`, and `test_external_validation_execution_and_artifacts`.
 - **Root Cause:** In `.gitignore`, `*.csv` excluded all CSV files outside `data/benchmark/`, `data/curation/`, and `reports/`. Consequently, `data/audit/dag_audit_samples.csv` and `data/external/napdi_template.csv` were not tracked in git and were missing from clean runner checkouts.
