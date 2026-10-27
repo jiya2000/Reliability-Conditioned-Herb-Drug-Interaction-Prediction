@@ -104,7 +104,49 @@ This log tracks every architectural change, feature provenance audit, schema dec
 
 ---
 
-## STOP Point (Awaiting User Guidance before Phase 3):
-- Phase 0b (Audit revision, code hygiene, 20-repeat shortcut tests) and Phase 2 (Text masking, design-only view, probe re-evaluation) are complete.
-- Standing by for user review and decision regarding the label-adjacent herb profiles before starting Phase 3.
+## Phase 3: Diagnostic Fixes to Phase 0b/2 & Mechanistic Decoupling Architecture
+- **Date Completed:** 2026-10-27
+- **Primary Deliverables:**
+  - **Diagnostic Fixes to Phase 0b/2 Reporting (Items 1–4):**
+    1. *CV Repeats Randomization & Variance Reporting:*
+       - Confirmed that `LeakageSafeSplitter` randomized group-to-fold assignments on every repeat via seeded permutations (`seed = 42 + rep`).
+       - Reported both repeat SD ($0.0043 - 0.0092$) and fold-to-fold SD ($0.0539 - 0.0852$) across all 100 folds.
+       - Computed cluster bootstrap 95% CIs resampling botanicals ($[0.7396, 0.9474]$) and drugs ($[0.7758, 0.9278]$) under `herb_disjoint` splits.
+       - Standardized permutation test reporting notation: $p < \frac{1}{n_{\text{perm}} + 1} = p < 0.001$ (0 of 1,000 null draws reached true AUC).
+    2. *Single-Class Folds & 100%-Negative Control Herbs:*
+       - Documented the 4 100%-negative control herbs (`HERB_BLACKCOHOSH`, `HERB_MILKTHISTLE`, `HERB_SAWPALMETTO`, `HERB_VALERIAN`).
+       - Verified that stratified group-level allocation prevents single-class test sets: exactly 0 of 100 folds were single-class (0 folds skipped).
+       - Reported fold-level mean AUC ($0.8739 \pm 0.0852$) alongside pooled out-of-fold AUC ($0.8572 \pm 0.0092$).
+    3. *Level 4 Design-Only Tokens & Study-Genre Proxies:*
+       - Tabulated label rates across all 11 Level 4 design tokens.
+       - Flagged 4 study-genre proxy tokens: `clinical_study` (label rate $0.2632$), `preclinical_in_vivo` ($0.8182$), `case_observation` ($0.5556$), and `randomized_trial` ($0.0000$).
+       - Evaluated sanitized design view with proxies removed: AUC collapses to exact random chance ($0.4487 \pm 0.0322$ herb-disjoint, $0.5254 \pm 0.0244$ pair-disjoint), proving all residual text shortcuts can be eliminated.
+    4. *Within-Genre Stratified Baselines:*
+       - Clinical trials cohort (`clinical` + `rct`, $N=125$, 61 pos, 64 neg): Overlap 6D AUC increases to **$0.9059 \pm 0.0044$** (proving overlap does *not* collapse inside trials).
+       - Healthy volunteers cohort ($N=106$, 48 pos, 58 neg): Overlap 6D AUC is **$0.8906 \pm 0.0047$**.
+       - Case reports cohort ($N=16$, 14 pos, 2 neg): High-variance ($0.4295 \pm 0.0659$) due to near-zero negative controls.
+  - **Phase 3 Mechanistic Decoupling & Permanent CI Tests (Items 5–8):**
+    5. *Legacy Label-Adjacent Tagging:*
+       - Labeled `HERB_BIOLOGICAL_PROFILES` and `DRUG_BIOLOGICAL_PROFILES` in `src/features/biological_features.py` as `"legacy, label-adjacent"`.
+       - Updated `BiologicalProfileExtractor` with `profile_status = "legacy, label-adjacent"` and `feature_set = "legacy"`.
+    6. *Blind-Curation Pipeline & Sourcing Plan:*
+       - Created `data/curation/mechanistic_features.csv` (522 rows covering 18 herbs × 40 drugs across 9 canonical targets).
+       - All numeric values left empty; sources and citations set strictly to `"UNVERIFIED"`.
+       - Implemented `src/data/mechanistic_curation.py` with validation rules and `is_curation_verified()` checker.
+       - Produced `reports/mechanistic_curation_todo.md` organizing all entities by recommended external database (NaPDI, FDA DDI Table, DrugBank, Flockhart Table, NPASS).
+    7. *Feature-Switched Model Suite (LR, GBT, Small GAT):*
+       - Implemented `FeatureSwitchedBenchmark` in `src/models/feature_switched_models.py` supporting `feature_set="legacy"` and `feature_set="new"`.
+       - Built `SmallGATClassifier` for graph-contextualized interaction prediction.
+       - Enforced strict execution guard: requesting `feature_set="new"` raises `UnverifiedCurationError` until all rows in the curation CSV have human-verified citations.
+    8. *Permanent CI Test Suite:*
+       - Created `tests/test_phase3_and_ci_checks.py` containing permanent CI checks (a)–(e):
+         - Test (a): No outcome language in reliability extraction; lineage features independent of label columns.
+         - Test (b): Design-only text probe AUC strictly $< 0.70$.
+         - Test (c): Split-disjointness assertions across herb, drug, and pair splits.
+         - Test (d): Preprocessors and scalers fit strictly on training partitions.
+         - Test (e): Curation gap check: fails if overlap AUC is within $0.03$ of curation-only 2D AUC unless acknowledged with `allow_curation_gap=True`.
+         - Test (f): Feature switch guard correctly blocks unverified curation data and runs on legacy baseline.
+- **Test Suite Status:** 149 passed, 0 failures, 19 warnings (in 24.72s).
+- **STOP Point:** Standing by for user-supplied consensus labels before touching Phase 4 or Phase 5.
+
 

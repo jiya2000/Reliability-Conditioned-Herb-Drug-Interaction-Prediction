@@ -529,9 +529,9 @@ def build_pair_summaries_from_dataframe(
                 EvidenceRecord(
                     herb_id=str(row["herb_id"]),
                     drug_id=str(row["drug_id"]),
-                    outcome=str(row["outcome"]),
-                    evidence_type=str(row["evidence_type"]),
-                    source_id=str(row["source_id"]),
+                    outcome=str(row.get("outcome", "unknown")),
+                    evidence_type=str(row.get("evidence_type", "clinical")),
+                    source_id=str(row.get("source_id", "source_unknown")),
                     study_id=str(row.get("study_id", row["source_id"])),
                     cited_study_ids=row.get("cited_study_ids", []),
                     dose=row.get("dose") if pd.notna(row.get("dose")) else None,

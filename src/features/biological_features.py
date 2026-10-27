@@ -40,8 +40,11 @@ CANONICAL_TARGETS = [
 TARGET_TO_IDX = {t: i for i, t in enumerate(CANONICAL_TARGETS)}
 FEATURE_DIM = len(CANONICAL_TARGETS)  # 16
 
+PROFILE_STATUS: str = "legacy, label-adjacent"
+PROFILE_VERSION: str = "legacy, label-adjacent"
 
-# Curated biological knowledge profiles for botanical entities
+# Legacy curated biological knowledge profiles for botanical entities.
+# CLASSIFICATION: "legacy, label-adjacent" (pending per-value external DOI/PMID citation).
 # Values represent modulatory effect: +1.0 = strong induction/activation, -1.0 = strong inhibition,
 # +0.5 = mild induction, -0.5 = mild inhibition/antagonism, 0.0 = neutral.
 HERB_BIOLOGICAL_PROFILES: Dict[str, Dict[str, float]] = {
@@ -142,7 +145,8 @@ HERB_BIOLOGICAL_PROFILES: Dict[str, Dict[str, float]] = {
     },
 }
 
-# Curated biological pharmacokinetic profiles for drug entities
+# Legacy curated biological pharmacokinetic profiles for prescription drug entities.
+# CLASSIFICATION: "legacy, label-adjacent" (selection of 40 drugs was label-adjacent).
 # Values represent substrate sensitivity / dependency: 1.0 = primary substrate, 0.5 = secondary substrate,
 # 0.0 = not dependent. Negative values represent target receptor site.
 DRUG_BIOLOGICAL_PROFILES: Dict[str, Dict[str, float]] = {
@@ -291,10 +295,15 @@ class BiologicalProfileExtractor:
     """
     Constructs deterministic biological profile tensors for herbs and drugs
     based on human target / enzyme / transporter profiles.
+
+    NOTE: Preserved strictly as a baseline labeled 'legacy, label-adjacent'.
     """
 
-    def __init__(self, feature_dim: int = FEATURE_DIM):
+    profile_status: str = "legacy, label-adjacent"
+
+    def __init__(self, feature_dim: int = FEATURE_DIM, feature_set: str = "legacy"):
         self.feature_dim = feature_dim
+        self.feature_set = feature_set
 
     def get_herb_representation(self, herb_id: str) -> np.ndarray:
         """Construct 16D biological mechanism vector for a given herb."""

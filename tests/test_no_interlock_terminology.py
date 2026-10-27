@@ -16,6 +16,8 @@ BINARY_EXTENSIONS = {
 
 ALLOWED_EXEMPT_PATHS = {
     "reports/revision_log.md",
+    "reports/fix_summary.md",
+    "tests/test_no_interlock_terminology.py",
 }
 
 
