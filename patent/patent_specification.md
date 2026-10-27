@@ -70,7 +70,7 @@ Aditi Sharma
 - (j) computing a reliability-gated multimodal representation $\mathbf{z}_{\text{fused}} = (1 - R)\mathbf{z}_{\text{graph}} + R\mathbf{z}_{\text{contextual}}$;
 - (k) scaling raw interaction logits using a validation-calibrated temperature parameter $T^* > 0$ learned exclusively on a study-disjoint validation partition;
 - (l) evaluating said scaled logits under a tri-state decision rule that classifies the candidate pair into an Interaction Present state, a No Interaction state, or an Abstain state based on epistemic predictive variance computed via Monte Carlo dropout and said contradiction index; and
-- (m) generating an electronic clinical decision support control signal that triggers an automated prescription interlock when an interaction is predicted, and routes the transaction to an asynchronous clinical review queue while displaying a non-intrusive advisory flag when the Abstain state is triggered.
+- (m) generating an electronic clinical decision support control signal that triggers a Clinical Decision Support (CDS) advisory alert or high-priority pharmacist review routing when an interaction is predicted, and routes the transaction to an asynchronous clinical review queue while displaying a non-intrusive advisory flag when the Abstain state is triggered.
 
 ---
 
@@ -100,7 +100,7 @@ where $q(s) \in [0, 1]$ is a study extraction quality score, and $\alpha$ is an 
 [0021] Each evidence record $e_i$ is evaluated by a context scoring engine to yield a context compatibility multiplier $\mathcal{K}(e_i) \in [0, 1]$ according to Equation (2):
 $$\mathcal{K}(e_i) = w_{\text{species}}(e_i) \cdot w_{\text{prep}}(e_i) \cdot w_{\text{route}}(e_i) \quad \text{(2)}$$
 [0022] Reflecting the regulatory principles articulated in FDA *Guidance for Industry: Botanical Drug Development* and EMA *Guideline on the Investigation of Drug Interactions* (that biological species differences, extract standardization, and physiological absorption routes fundamentally alter systemic exposure), the contextual multipliers operate within the following empirical sensitivity ranges:
-- **Species Translation Weight ($w_{\text{species}}$):** Human clinical trials or controlled in vivo pharmacokinetic investigations are assigned $w_{\text{species}} \in [0.90, 1.00]$ (nominal $1.00$); in vivo non-human mammalian models (rodent, canine, porcine) are assigned $w_{\text{species}} \in [0.50, 0.75]$ (nominal $0.65$); and in vitro experimental systems (human liver microsomes, recombinant CYP enzymes, cell lines) are assigned $w_{\text{species}} \in [0.20, 0.40]$ (nominal $0.30$).
+- **Species Translation Weight ($w_{\text{species}}$):** Human clinical trials or controlled in vivo pharmacokinetic investigations are assigned $w_{\text{species}} \in [0.90, 1.00]$ (nominal $1.00$); in vivo non-human mammalian models (rodent, canine, porcine) are assigned $w_{\text{species}} \in [0.40, 0.65]$ (nominal $0.50$); and in vitro experimental systems (human liver microsomes, recombinant CYP enzymes, cell lines) are assigned $w_{\text{species}} \in [0.15, 0.35]$ (nominal $0.20$).
 - **Botanical Preparation Weight ($w_{\text{prep}}$):** Standardized botanical extracts conforming to established pharmacopeial monographs (e.g., St. John's wort LI 160, Ginkgo EGb 761) are assigned $w_{\text{prep}} \in [0.90, 1.00]$ (nominal $1.00$); crude whole-herb extracts, teas, decoctions, or non-standardized tinctures are assigned $w_{\text{prep}} \in [0.75, 0.90]$ (nominal $0.85$); and isolated single phytochemical aglycones tested in isolation are assigned $w_{\text{prep}} \in [0.60, 0.75]$ (nominal $0.70$).
 - **Administration Route Weight ($w_{\text{route}}$):** Oral co-administration is assigned $w_{\text{route}} \in [0.90, 1.00]$ (nominal $1.00$); and parenteral routes (intravenous, intraperitoneal) are assigned $w_{\text{route}} \in [0.65, 0.85]$ (nominal $0.75$).
 
@@ -138,7 +138,7 @@ $$\hat{Y}(h, d) = \begin{cases}
 \end{cases} \quad \text{(8)}$$
 with clinical safety parameters $\tau_u = 0.25$, $\tau_c = 0.50$, and $\tau_{\text{margin}} = 0.35$.
 
-[0030] **Electronic Decision Support Interlock with Clinical Safety:** When an interaction is predicted, the system generates an electronic alert control signal that triggers an automated prescription interlock in an Electronic Health Record (EHR) system. When the Abstain state is triggered, the system does not produce dangerous silence; rather, it automatically routes the order to an **asynchronous clinical pharmacist review queue** and displays a **non-intrusive advisory flag** detailing the conflicting primary studies, thereby eliminating clinical alert fatigue while preserving patient safety.
+[0030] **Electronic Decision Support Advisory Alert with Clinical Safety:** When an interaction is predicted, the system generates an electronic alert control signal that communicates a Clinical Decision Support (CDS) advisory alert or high-priority pharmacist review routing in an Electronic Health Record (EHR) system. When the Abstain state is triggered, the system does not produce dangerous silence; rather, it automatically routes the order to an **asynchronous clinical pharmacist review queue** and displays a **non-intrusive advisory flag** detailing the conflicting primary studies, thereby eliminating clinical alert fatigue while preserving patient safety.
 
 ---
 
@@ -150,30 +150,25 @@ with clinical safety parameters $\tau_u = 0.25$, $\tau_c = 0.50$, and $\tau_{\te
 **Table 1: Empirical Evaluation on Study-Disjoint Test Splits (26 Test Records)**
 | Architecture | Input Representations | ROC-AUC (95% CI) | PR-AUC | F1-Score | Brier Score | Test Accuracy (Wilson 95% CI) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Present Invention** | **Biological Graph + Lineage + Text** | **0.9762 [0.910, 1.000]** | **0.9707** | **0.9167** | **0.0846** | **92.31% (24/26) [75.9%, 97.9%]** |
-| Standard Multimodal Fusion | Biological Graph + Text (Fixed $R=1$) | 0.8274 [0.650, 0.960] | 0.8481 | 0.6364 | 0.1640 | 69.23% (18/26) [50.0%, 83.5%] |
-| Re-implemented DeepDDI (Ryu et al.) | Target Profile Fingerprints | 0.8155 [0.660, 0.960] | 0.8242 | 0.6957 | 0.1851 | 73.08% (19/26) [53.9%, 86.3%] |
-| Re-implemented KGNN (Wang et al.) | Target Knowledge Graph | 0.8036 [0.640, 0.960] | 0.7854 | 0.6667 | 0.2266 | 69.23% (18/26) [50.0%, 83.5%] |
-| Re-implemented CompGCN (Vashishth) | Compositional Relational Graph | 0.7857 [0.610, 0.940] | 0.8007 | 0.6957 | 0.2203 | 73.08% (19/26) [53.9%, 86.3%] |
-| Evidence Text Only Ablation | Text Tokens / BiomedBERT Only | 0.8155 [0.620, 0.980] | 0.7736 | 0.7692 | 0.1777 | 76.92% (20/26) [57.9%, 89.0%] |
-| Biological Graph Only Ablation | GAT Mechanism Graph Only | 0.7083 [0.470, 0.930] | 0.6927 | 0.6667 | 0.2037 | 69.23% (18/26) [50.0%, 83.5%] |
+| **Present Invention** | **Biological Graph + Lineage + Text (Quality-Only)** | **0.8512 [0.659, 0.987]** | **0.8794** | **0.7826** | **0.1554** | **80.77% (21/26) [62.7%, 91.1%]** |
+| Standard Multimodal Fusion | Biological Graph + Text (Fixed $R=1$) | 0.8274 [0.650, 0.960] | 0.8504 | 0.6087 | 0.1795 | 65.38% (17/26) [46.2%, 80.6%] |
+| Re-implemented DeepDDI (Ryu et al.) | Target Profile Fingerprints | 0.8452 [0.680, 0.970] | 0.8414 | 0.7500 | 0.1687 | 76.92% (20/26) [57.9%, 89.0%] |
+| Re-implemented KGNN (Wang et al.) | Target Knowledge Graph | 0.7202 [0.490, 0.930] | 0.7805 | 0.6667 | 0.2194 | 69.23% (18/26) [50.0%, 83.5%] |
+| Re-implemented CompGCN (Vashishth) | Compositional Relational Graph | 0.7262 [0.510, 0.920] | 0.7774 | 0.7273 | 0.1918 | 76.92% (20/26) [57.9%, 89.0%] |
+| Evidence Text Only Ablation | Text Tokens / BiomedBERT Only | 0.8095 [0.610, 0.980] | 0.7647 | 0.7692 | 0.1934 | 76.92% (20/26) [57.9%, 89.0%] |
+| Biological Graph Only Ablation | GAT Mechanism Graph Only | 0.7202 [0.490, 0.920] | 0.6858 | 0.6667 | 0.2108 | 69.23% (18/26) [50.0%, 83.5%] |
 
 [0033] **Technical and Numerical Audit of Benchmark Results:**
-1. **Re-implemented Published Baselines:** DeepDDI, KGNN, and CompGCN were originally engineered for synthetic small-molecule drug–drug interactions using molecular fingerprints or static knowledge graphs. In this benchmark, they are re-implemented using canonical pharmacokinetic target profiles and evaluate identical candidate pairs without access to unstructured literature evidence or citation DAGs. Their performance reflects the ceiling achievable through static biological graphs alone.
+1. **Re-implemented Published Baselines:** DeepDDI, KGNN, and CompGCN were originally engineered for synthetic small-molecule drug–drug interactions using molecular fingerprints or static knowledge graphs. In this benchmark, they are re-implemented using canonical pharmacokinetic target profiles and evaluate identical candidate pairs without access to unstructured literature evidence or citation DAGs.
 2. **ROC-AUC Denominator and Exact Fraction:**
-   - In the 26-record test split, ground-truth outcomes comprise 12 positive records, 13 negative records, and 1 conflicting study report (Ginseng–Digoxin, `STUDY_ANDERSON_2003`, true label $y = 0.5$).
-   - Standard integer target casting maps $y = 0.5 \to 0$, creating an evaluation population of 12 positive records and 14 non-positive records ($12 \times 14 = 168$ pairwise comparisons). The proposed model correctly orders 164 of these 168 pairs, yielding $\text{ROC-AUC} = 164 / 168 = 0.97619... \approx 0.9762$. The 4 inverted pairs are exclusively caused by the single conflicting report ($p = 0.7142$) being treated as a negative zero.
-   - When the conflicting record is legitimately recognized as ambiguous and excluded from binary discrimination metrics, the 25 binary-labeled records yield $12 \times 13 = 156$ pairs, on which the proposed model achieves **156/156 correctly ordered pairs (ROC-AUC = 1.0000)**.
-3. **Selective Accuracy vs. Coverage:**
-   - Under the tri-state decision rule, the model abstains on the single conflicting Ginseng–Digoxin record, achieving an abstention coverage of **25/26 = 96.15%**.
-   - Selective accuracy among retained non-conflicting records is **24/25 = 96.00%** (Wilson 95% CI: [80.5%, 99.3%]), with only a single borderline false negative (Kava–Chlorzoxazone at $p = 0.4949$ vs threshold $0.5000$). Full test set accuracy without abstention is **92.31% (24/26)** (Wilson 95% CI: [75.9%, 97.9%]).
+   - In the 26-record test split, ground-truth outcomes comprise 12 positive records, 14 negative records ($12 \times 14 = 168$ pairwise comparisons).
+   - Under leakage-free evaluation (`quality_only` lineage mode), the proposed model achieves $\text{ROC-AUC} = 0.8512$ [95% CI: 0.659, 0.987] and correctly classifies 21 of 26 held-out records (Accuracy = 80.77%).
+3. **Selective Accuracy and Abstention Safeguard:**
+   - Under the tri-state decision rule with conformal sets, the system abstains when epistemic uncertainty or scientific contradiction exceeds calibrated bounds, safely routing ambiguous pairs to clinical review rather than forcing uncalibrated classifications.
 4. **Calibration Superiority via Brier Score:**
-   - Expected Calibration Error (ECE) on small test sets ($N=26$) is subject to bin-partitioning artifacts (0.1650 vs 0.1688). In contrast, the Brier Score is a strictly proper scoring rule directly measuring mean squared probability error without discretization artifacts.
-   - The proposed model achieves a Brier Score of **0.0846**, representing a **48.4% error reduction** over Standard Multimodal Fusion (0.1640), a **54.3% error reduction** over DeepDDI (0.1851), and a **62.7% error reduction** over KGNN (0.2266).
-5. **Multi-Seed Robustness and Anti-Circularity Rationale:**
-   - In 5-seed cross-validation across 123 independent clusters, the proposed model achieves mean ROC-AUC **0.9716 $\pm$ 0.0458** and mean Brier Score **0.0783 $\pm$ 0.0334**.
-   - Ablating context compatibility and contradiction modeling (`no_context_conflict`) drops mean ROC-AUC to **0.9307 $\pm$ 0.0589** and inflates Brier error to **0.1008 $\pm$ 0.0402 (+28.7% probability error)**, proving the measurable technical contribution of multi-factor pharmacokinetic weighting.
-   - While an ablation using raw citation counts (`no_study_dependence`) achieves high scores on literature-studied pairs (AUC 0.9951) by exploiting literature consensus collinearity, it represents circular literature memorization. Echo attenuation ($\alpha = 0.15$) ensures epistemic safety by preventing unverified citation cascades from generating false certainty, enabling reliable generalization to unstudied candidates via biological graph priors.
+   - The proposed model achieves a Brier Score of **0.1554**, demonstrating superior probability calibration compared to Standard Multimodal Fusion (0.1795), DeepDDI (0.1687), and KGNN (0.2194).
+5. **Anti-Circularity and Leakage Control:**
+   - Echo attenuation ($\alpha = 0.15$) and quality-only lineage gating prevent unverified citation cascades from generating false certainty, ensuring that when literature is absent or conflicting, the model reliably falls back to biological graph priors without hallucination.
 
 ---
 
@@ -194,7 +189,7 @@ with clinical safety parameters $\tau_u = 0.25$, $\tau_c = 0.50$, and $\tau_{\te
    - dynamically fusing said biological mechanism embedding and said contextual literature embedding in accordance with said scalar reliability score $R$ to generate a reliability-conditioned representation $\mathbf{z}_{\text{fused}}$;
    - scaling raw link prediction logits generated from $\mathbf{z}_{\text{fused}}$ using a validation-calibrated temperature parameter $T^* > 0$ learned on a study-disjoint validation partition;
    - classifying said candidate pair into an Interaction Present state, a No Interaction state, or an Abstain state based on epistemic predictive variance computed via Monte Carlo dropout and said scientific contradiction index; and
-   - generating an electronic clinical decision support control signal that triggers an automated prescription interlock when an interaction is predicted, and routes the transaction to an asynchronous clinical review queue while displaying a non-intrusive advisory flag when the Abstain state is triggered.
+   - generating an electronic clinical decision support control signal that communicates a Clinical Decision Support (CDS) advisory alert or high-priority pharmacist review routing when an interaction is predicted, and routes the transaction to an asynchronous clinical review queue while displaying a non-intrusive advisory flag when the Abstain state is triggered.
 
 2. **The method of Claim 1,** wherein independent evidence roots are identified:
    - for clinical studies, by distinct clinical trial registrations or distinct patient cohorts;
@@ -206,7 +201,7 @@ with clinical safety parameters $\tau_u = 0.25$, $\tau_c = 0.50$, and $\tau_{\te
    where $q(s) \in [0, 1]$ is a study extraction quality score.
 
 4. **The method of Claim 1,** wherein calculating said pharmacokinetic context compatibility score comprises assigning:
-   - a species weight $w_{\text{species}} \in [0.90, 1.00]$ for human clinical studies, $w_{\text{species}} \in [0.50, 0.75]$ for in vivo non-human mammalian models, and $w_{\text{species}} \in [0.20, 0.40]$ for in vitro microsomal assays;
+   - a species weight $w_{\text{species}} \in [0.90, 1.00]$ for human clinical studies, $w_{\text{species}} \in [0.40, 0.65]$ (nominal $0.50$) for in vivo non-human mammalian models, and $w_{\text{species}} \in [0.15, 0.35]$ (nominal $0.20$) for in vitro microsomal assays;
    - a preparation weight $w_{\text{prep}} \in [0.90, 1.00]$ for standardized botanical extracts, $w_{\text{prep}} \in [0.75, 0.90]$ for crude whole-herb extracts, and $w_{\text{prep}} \in [0.60, 0.75]$ for isolated single phytochemical aglycones; and
    - an administration route weight $w_{\text{route}} \in [0.90, 1.00]$ for oral administration and $w_{\text{route}} \in [0.65, 0.85]$ for parenteral administration.
 
@@ -252,7 +247,7 @@ with clinical safety parameters $\tau_u = 0.25$, $\tau_c = 0.50$, and $\tau_{\te
     - scaling raw link prediction logits using a validation-calibrated temperature parameter $T^*$; and
     - executing a tri-state classification decision rule selectively withholding classification when epistemic uncertainty or scientific contradiction exceeds predetermined clinical safety thresholds.
 
-12. **The non-transitory computer-readable storage medium of Claim 11,** wherein said operations further comprise generating an electronic alert control signal that triggers an automated prescription interlock in an electronic health record system when an interaction is predicted, and routing the order to an asynchronous clinical review queue while displaying a non-intrusive advisory flag when an Abstain state is triggered.
+12. **The non-transitory computer-readable storage medium of Claim 11,** wherein said operations further comprise generating an electronic alert control signal that communicates a Clinical Decision Support (CDS) advisory alert or high-priority pharmacist review routing in an electronic health record system when an interaction is predicted, and routing the order to an asynchronous clinical review queue while displaying a non-intrusive advisory flag when an Abstain state is triggered.
 
 13. **The method of Claim 1,** wherein said tri-state classification decision rule is governed by a split conformal prediction engine establishing a distribution-free finite-sample coverage guarantee:
     $$P(Y \in \mathcal{C}(X)) \ge 1 - \epsilon$$

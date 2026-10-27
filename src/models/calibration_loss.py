@@ -165,20 +165,25 @@ class CalibrationLoss(nn.Module):
             reliability_scores: (batch, 1) R values
             metadata: (batch, 5) with column 4 being source type code
         """
-        source_types = metadata[:, 4].long()
         R = reliability_scores.squeeze()
-
         if len(R) < 2:
             return torch.tensor(0.0, device=R.device)
 
-        # Fetch expected quality scores using a fast CPU list comprehension,
-        # then move back to device
-        source_types_cpu = source_types.cpu().tolist()
-        expected = torch.tensor(
-            [self.quality_ordering.get(st, 0.3) for st in source_types_cpu],
-            device=R.device,
-            dtype=torch.float32
-        )
+        d = metadata.size(-1)
+        if d >= 8:
+            # Continuous source quality score is at index 3 in 8D/10D/12D metadata
+            expected = metadata[:, 3].float().to(R.device)
+        elif d == 7:
+            # Continuous source quality score is at index 1 in 7D quality metadata
+            expected = metadata[:, 1].float().to(R.device)
+        else:
+            source_types = metadata[:, 4].long()
+            source_types_cpu = source_types.cpu().tolist()
+            expected = torch.tensor(
+                [self.quality_ordering.get(st, 0.3) for st in source_types_cpu],
+                device=R.device,
+                dtype=torch.float32
+            )
 
         # Pairwise differences (j, i)
         # expected_diff[j, i] = expected[i] - expected[j]

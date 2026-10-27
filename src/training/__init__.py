@@ -16,7 +16,11 @@ from src.training.evaluation import (
     LeakageSafeSplitter,
     compute_comprehensive_metrics,
     ComprehensiveEvaluationReport,
+    RepeatedNestedCVResult,
     format_ablation_markdown_table,
+    format_repeated_cv_markdown_table,
+    run_repeated_nested_cv,
+    compare_models_significance,
 )
 
 __all__ = [
@@ -31,6 +35,10 @@ __all__ = [
     "LeakageSafeSplitter",
     "compute_comprehensive_metrics",
     "ComprehensiveEvaluationReport",
+    "RepeatedNestedCVResult",
     "format_ablation_markdown_table",
+    "format_repeated_cv_markdown_table",
+    "run_repeated_nested_cv",
+    "compare_models_significance",
 ]
 

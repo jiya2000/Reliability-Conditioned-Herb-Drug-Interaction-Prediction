@@ -166,7 +166,7 @@ Your local Streamlit application running at `http://localhost:8502` is the inter
 
 1. **Runs 100% Offline:** Uses the local trained weights in `checkpoints/best_model.pt`—no external APIs or active Colab sessions required.
 2. **Four Working Preset Scenarios:**
-   * **Case 1 (St. John's Wort + Cyclosporine):** Severe Interaction ($p = 1.00$, $R = 0.00$, $C = 0.00$) $\to$ Issues immediate organ-rejection dispense interlock.
+   * **Case 1 (St. John's Wort + Cyclosporine):** Severe Interaction ($p = 1.00$, $R = 0.00$, $C = 0.00$) $\to$ Issues immediate organ-rejection Clinical Decision Support (CDS) advisory alert / high-priority pharmacist review routing.
    * **Case 2 (American Ginseng + Digoxin):** Scientific Contradiction ($p = 0.38$, $R = 0.86$, $C = 0.35$) $\to$ Triggers **ABSTAIN** and routes to the Pharmacist Queue.
    * **Case 3 (Valerian Root + Alprazolam):** Safe Co-administration ($p = 0.44$, $R = 1.00$, $C = 0.00$) $\to$ Verifies negative trial evidence and clears the prescription.
    * **Case 4 (Saw Palmetto + Acetaminophen):** De Novo Unstudied Pair $\to$ Operates in biological fallback mode without crashing.

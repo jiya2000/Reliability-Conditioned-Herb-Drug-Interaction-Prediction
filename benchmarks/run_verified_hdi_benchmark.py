@@ -12,9 +12,13 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import argparse
+import json
 from typing import Dict, List, Any, Optional
 import numpy as np
 import pandas as pd
@@ -24,7 +28,7 @@ from loguru import logger
 from src.data.public_data_loader import PublicDataLoader
 from src.data.evidence_lineage import EvidenceLineageAnalyzer
 from src.data.source_registry import AuditableSourceRegistry, DEFAULT_SOURCE_REGISTRY, ReferenceVerificationStatus
-from src.features.biological_features import BiologicalProfileExtractor, EvidenceTextFeatureExtractor
+from src.features.biological_features import BiologicalProfileExtractor, EvidenceTextFeatureExtractor, TARGET_TO_IDX
 from src.models.interaction_model import ReliabilityConditionedInteractionModel
 from src.training.calibration import TemperatureScaler
 from src.training.evaluation import (
@@ -33,6 +37,135 @@ from src.training.evaluation import (
     format_ablation_markdown_table,
     ComprehensiveEvaluationReport,
 )
+from benchmarks.external_baselines import DeepDDIModel, KGNNModel, CompGCNModel
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+
+
+def extract_tabular_features(
+    partition_df: pd.DataFrame,
+    summary_map: Dict[Any, Any],
+    bio_extractor: BiologicalProfileExtractor,
+    feature_group: str = "quality_only",
+) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Extracts tabular features for tree and linear baselines:
+    - 7D quality-only lineage features (echo_ratio, q_mean, W_context, C_hd, missingness, rho_reach, f_m_CYP)
+    - 6D CYP and transporter overlap features (CYP3A4, ABCB1, CYP2C9, CYP1A2, CYP2E1, total overlap)
+    Total = 13 features.
+    """
+    X_list = []
+    y_list = []
+    for _, row in partition_df.iterrows():
+        h_id = row["herb_id"]
+        d_id = row["drug_id"]
+
+        summary = summary_map.get((h_id, d_id))
+        if summary:
+            lineage_vec = summary.to_feature_group(feature_group)
+        else:
+            lineage_vec = np.zeros(7 if feature_group == "quality_only" else 12, dtype=np.float32)
+
+        h_vec, d_vec, interaction_vec = bio_extractor.extract_pair_features(h_id, d_id)
+        overlap_cyp3a4 = abs(h_vec[TARGET_TO_IDX["CYP3A4"]] * d_vec[TARGET_TO_IDX["CYP3A4"]])
+        overlap_pgp = abs(h_vec[TARGET_TO_IDX["ABCB1"]] * d_vec[TARGET_TO_IDX["ABCB1"]])
+        overlap_cyp2c9 = abs(h_vec[TARGET_TO_IDX["CYP2C9"]] * d_vec[TARGET_TO_IDX["CYP2C9"]])
+        overlap_cyp1a2 = abs(h_vec[TARGET_TO_IDX["CYP1A2"]] * d_vec[TARGET_TO_IDX["CYP1A2"]])
+        overlap_cyp2e1 = abs(h_vec[TARGET_TO_IDX["CYP2E1"]] * d_vec[TARGET_TO_IDX["CYP2E1"]])
+        overlap_total = float(np.sum(np.abs(interaction_vec)))
+
+        overlap_feats = np.array([
+            overlap_cyp3a4, overlap_pgp, overlap_cyp2c9, overlap_cyp1a2, overlap_cyp2e1, overlap_total
+        ], dtype=np.float32)
+
+        feat = np.concatenate([lineage_vec, overlap_feats])
+        X_list.append(feat)
+
+        out = str(row["outcome"]).lower()
+        y = 1 if out in {"interaction_present", "positive", "1", "true"} else 0
+        y_list.append(y)
+
+    return np.array(X_list, dtype=np.float32), np.array(y_list, dtype=int)
+
+
+def predict_mechanistic_rule(
+    partition_df: pd.DataFrame,
+    bio_extractor: BiologicalProfileExtractor,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Mechanistic rule heuristic: predicts interaction if herb compounds and drug clearance pathway
+    share at least one CYP enzyme or transporter clearance pathway.
+    """
+    probs, preds, labels = [], [], []
+    for _, row in partition_df.iterrows():
+        h_id = row["herb_id"]
+        d_id = row["drug_id"]
+        h_vec, d_vec, interaction_vec = bio_extractor.extract_pair_features(h_id, d_id)
+        shared = np.any(np.abs(interaction_vec) > 0.01)
+        tot = float(np.sum(np.abs(interaction_vec)))
+
+        if shared:
+            pred = 1
+            prob = min(0.95, 0.60 + 0.35 * min(1.0, tot))
+        else:
+            pred = 0
+            prob = 0.05
+
+        probs.append(prob)
+        preds.append(pred)
+
+        out = str(row["outcome"]).lower()
+        y = 1 if out in {"interaction_present", "positive", "1", "true"} else 0
+        labels.append(y)
+
+    return np.array(labels, dtype=int), np.array(probs, dtype=float), np.array(preds, dtype=int)
+
+
+def run_llm_zero_shot_baseline(
+    partition_df: pd.DataFrame,
+    api_key: Optional[str] = None,
+) -> Optional[ComprehensiveEvaluationReport]:
+    """
+    Optional LLM zero-shot baseline behind a flag (--enable-llm).
+    Skips cleanly if no API key is provided or module unavailable.
+    """
+    import os
+    key = api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("OPENAI_API_KEY")
+    if not key:
+        logger.info("LLM zero-shot baseline: No API key detected (GEMINI_API_KEY/OPENAI_API_KEY). Skipping cleanly.")
+        return None
+    try:
+        from google import genai
+        client = genai.Client(api_key=key)
+        preds, probs, labels = [], [], []
+        for _, r in partition_df.iterrows():
+            prompt = (
+                f"Does the botanical {r['herb_id']} interact with {r['drug_id']}? "
+                "Answer ONLY with JSON: {\"interaction\": true/false, \"confidence\": float_between_0_and_1}"
+            )
+            response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+            # Parse response
+            txt = response.text.strip().lower()
+            pred = 1 if "true" in txt else 0
+            prob = 0.85 if pred == 1 else 0.15
+            out = str(r["outcome"]).lower()
+            y = 1 if out in {"interaction_present", "positive", "1", "true"} else 0
+            preds.append(pred)
+            probs.append(prob)
+            labels.append(y)
+        rep = compute_comprehensive_metrics(
+            y_true=labels,
+            y_prob=probs,
+            y_pred=preds,
+            split_name="test_study_disjoint",
+            model_variant="LLM_Zero_Shot (Gemini 2.5 Flash)",
+            compute_bootstrap_ci=True,
+            n_bootstrap=500,
+        )
+        return rep
+    except Exception as e:
+        logger.warning(f"LLM zero-shot baseline execution failed: {e}. Skipping cleanly.")
+        return None
 
 
 def run_benchmark(
@@ -42,6 +175,9 @@ def run_benchmark(
     require_registered: bool = True,
     text_encoder_type: str = "tfidf",
     graph_encoder_type: str = "profile",
+    enable_llm: bool = False,
+    output_json: Optional[str] = "reports/verified_hdi_benchmark_results.json",
+    output_md: Optional[str] = "reports/verified_hdi_benchmark_report.md",
 ) -> Dict[str, Any]:
     """
     Execute full verified botanical HDI benchmark across model variants.
@@ -194,8 +330,10 @@ def run_benchmark(
 
     # 5. Evaluate Model Variants Across Baselines
     variants = [
+        "reliability_conditioned_quality_only",
         "reliability_conditioned",
         "standard_fusion",
+        "naive_concat_mlp",
         "graph_only",
         "evidence_only",
         "graph_plus_naive_evidence",
@@ -205,6 +343,16 @@ def run_benchmark(
 
     torch.manual_seed(seed)
     np.random.seed(seed)
+
+    test_metadata = [
+        {
+            "herb_id": str(row["herb_id"]),
+            "drug_id": str(row["drug_id"]),
+            "study_id": str(row.get("study_id", "")),
+            "source_id": str(row.get("source_id", "")),
+        }
+        for _, row in test_df.iterrows()
+    ]
 
     reports: List[ComprehensiveEvaluationReport] = []
 
@@ -236,7 +384,6 @@ def run_benchmark(
             t_out = model(te_h, te_d, te_ev, metadata=te_meta, return_details=True)
 
         scaler = TemperatureScaler()
-        # Ensure validation targets have binary labels
         scaler.fit(v_out["logits"].cpu().numpy(), val_y.cpu().numpy(), max_iter=25)
 
         # Apply calibration to test partition
@@ -251,13 +398,137 @@ def run_benchmark(
             model_variant=variant,
             compute_bootstrap_ci=True,
             n_bootstrap=500,
+            sample_metadata=test_metadata,
         )
         reports.append(rep)
 
+    # 6. Tabular Baselines: Gradient Boosted Trees and Logistic Regression
+    tr_X, tr_y_tab = extract_tabular_features(train_df, train_summaries, bio_extractor)
+    val_X, val_y_tab = extract_tabular_features(val_df, val_summaries, bio_extractor)
+    te_X, te_y_tab = extract_tabular_features(test_df, test_summaries, bio_extractor)
+
+    # Gradient Boosted Trees (HistGradientBoosting / LightGBM)
+    hgb = HistGradientBoostingClassifier(random_state=seed, max_iter=100)
+    hgb.fit(tr_X, tr_y_tab)
+    hgb_probs = hgb.predict_proba(te_X)[:, 1]
+    hgb_rep = compute_comprehensive_metrics(
+        y_true=te_y_tab,
+        y_prob=hgb_probs,
+        split_name="test_study_disjoint",
+        model_variant="gradient_boosted_trees",
+        compute_bootstrap_ci=True,
+        n_bootstrap=500,
+        sample_metadata=test_metadata,
+    )
+    reports.append(hgb_rep)
+
+    # Logistic Regression on lineage + CYP overlap features
+    lr_model = LogisticRegression(random_state=seed, max_iter=1000)
+    lr_model.fit(tr_X, tr_y_tab)
+    lr_probs = lr_model.predict_proba(te_X)[:, 1]
+    lr_rep = compute_comprehensive_metrics(
+        y_true=te_y_tab,
+        y_prob=lr_probs,
+        split_name="test_study_disjoint",
+        model_variant="logistic_regression",
+        compute_bootstrap_ci=True,
+        n_bootstrap=500,
+        sample_metadata=test_metadata,
+    )
+    reports.append(lr_rep)
+
+    # 7. Mechanistic Rule Baseline
+    mech_labels, mech_probs, mech_preds = predict_mechanistic_rule(test_df, bio_extractor)
+    mech_rep = compute_comprehensive_metrics(
+        y_true=mech_labels,
+        y_prob=mech_probs,
+        y_pred=mech_preds,
+        split_name="test_study_disjoint",
+        model_variant="mechanistic_rule_baseline",
+        compute_bootstrap_ci=True,
+        n_bootstrap=500,
+        sample_metadata=test_metadata,
+    )
+    reports.append(mech_rep)
+
+    # 8. Published External DDI Baselines (DeepDDI, KGNN, CompGCN)
+    external_models = {
+        "DeepDDI (Ryu et al. 2018)": DeepDDIModel(in_features=embedding_dim, hidden_dim=32, num_layers=3),
+        "KGNN (Wang et al. 2019)": KGNNModel(dim=embedding_dim, hidden_dim=32),
+        "CompGCN (Vashishth et al. 2020)": CompGCNModel(dim=embedding_dim, hidden_dim=32),
+    }
+
+    for ext_name, ext_model in external_models.items():
+        opt = torch.optim.AdamW(ext_model.parameters(), lr=0.008, weight_decay=1e-4)
+        crit = torch.nn.BCEWithLogitsLoss()
+        ext_model.train()
+        for _ in range(25):
+            opt.zero_grad()
+            out = ext_model(tr_h, tr_d)
+            loss = crit(out["logits"], tr_y)
+            loss.backward()
+            opt.step()
+
+        ext_model.eval()
+        with torch.no_grad():
+            v_ext = ext_model(val_h, val_d)
+            t_ext = ext_model(te_h, te_d)
+
+        sc = TemperatureScaler()
+        sc.fit(v_ext["logits"].cpu().numpy(), val_y.cpu().numpy(), max_iter=25)
+        scaled_ext = sc(t_ext["logits"])
+        ext_cal_probs = torch.sigmoid(scaled_ext).detach().cpu().numpy().flatten()
+
+        ext_rep = compute_comprehensive_metrics(
+            y_true=test_labels,
+            y_prob=ext_cal_probs,
+            split_name="test_study_disjoint",
+            model_variant=ext_name,
+            compute_bootstrap_ci=True,
+            n_bootstrap=500,
+            sample_metadata=test_metadata,
+        )
+        reports.append(ext_rep)
+
+    # 9. Optional LLM Zero-Shot Baseline
+    if enable_llm:
+        llm_rep = run_llm_zero_shot_baseline(test_df)
+        if llm_rep:
+            reports.append(llm_rep)
+
+    ddi_baselines_note = (
+        "Note on Published DDI Baselines (DeepDDI, KGNN, CompGCN): "
+        "These models were originally engineered for synthetic small-molecule drug-drug interactions (DDIs) "
+        "using structural fingerprints or multi-relational knowledge graphs. When adapted to botanical HDI, "
+        "they are provided with canonical target enzyme and transporter modulation profiles (16D) as input representations. "
+        "They evaluate identical candidate pairs under the same study-disjoint split, but have no access to "
+        "unstructured literature text, citation lineage DAGs, or context compatibility adjustments."
+    )
+
     table_md = format_ablation_markdown_table(reports)
     logger.info("\n" + table_md)
+    logger.info(f"\n{ddi_baselines_note}")
 
-    return {
+    predictions_map = {r.model_variant: r.predictions for r in reports if r.predictions}
+    pred_json_path = PROJECT_ROOT / "reports" / "benchmark_test_predictions.json"
+    pred_json_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(pred_json_path, "w") as f:
+        json.dump(predictions_map, f, indent=2)
+    logger.info(f"Saved benchmark test predictions to '{pred_json_path}'.")
+
+    # Also save flattened CSV
+    csv_rows = []
+    for variant, preds in predictions_map.items():
+        for p in preds:
+            row = dict(p)
+            row["model_variant"] = variant
+            csv_rows.append(row)
+    if csv_rows:
+        pred_csv_path = PROJECT_ROOT / "reports" / "benchmark_test_predictions.csv"
+        pd.DataFrame(csv_rows).to_csv(pred_csv_path, index=False)
+        logger.info(f"Saved benchmark test predictions CSV to '{pred_csv_path}'.")
+
+    res = {
         "status": "success",
         "num_records": len(df),
         "label_counts": label_counts,
@@ -266,7 +537,26 @@ def run_benchmark(
         "outcome_verified_references": outcome_verified_refs,
         "reports": [r.to_dict() for r in reports],
         "markdown_table": table_md,
+        "ddi_baselines_note": ddi_baselines_note,
+        "saved_predictions_file": "reports/benchmark_test_predictions.json",
+        "saved_predictions_csv": "reports/benchmark_test_predictions.csv",
     }
+
+    if output_json:
+        out_j = Path(output_json)
+        out_j.parent.mkdir(parents=True, exist_ok=True)
+        with open(out_j, "w") as f:
+            json.dump(res, f, indent=2)
+        logger.info(f"Saved benchmark results to '{out_j}'.")
+
+    if output_md:
+        out_m = Path(output_md)
+        out_m.parent.mkdir(parents=True, exist_ok=True)
+        with open(out_m, "w") as f:
+            f.write(f"# Verified Botanical HDI Benchmark Report\n\n{table_md}\n\n{ddi_baselines_note}\n")
+        logger.info(f"Saved benchmark markdown report to '{out_m}'.")
+
+    return res
 
 
 if __name__ == "__main__":
@@ -276,6 +566,9 @@ if __name__ == "__main__":
     parser.add_argument("--embedding_dim", type=int, default=16, help="Biological embedding dimension")
     parser.add_argument("--text_encoder", default="tfidf", choices=["tfidf", "biomedbert"], help="Text encoder")
     parser.add_argument("--graph_encoder", default="profile", choices=["profile", "gat"], help="Graph encoder")
+    parser.add_argument("--enable_llm", action="store_true", help="Enable LLM zero-shot baseline (requires API key)")
+    parser.add_argument("--output_json", default="reports/verified_hdi_benchmark_results.json", help="Path to save JSON results")
+    parser.add_argument("--output_md", default="reports/verified_hdi_benchmark_report.md", help="Path to save markdown report")
     args = parser.parse_args()
 
     run_benchmark(
@@ -284,4 +577,7 @@ if __name__ == "__main__":
         embedding_dim=args.embedding_dim,
         text_encoder_type=args.text_encoder,
         graph_encoder_type=args.graph_encoder,
+        enable_llm=args.enable_llm,
+        output_json=args.output_json,
+        output_md=args.output_md,
     )

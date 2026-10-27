@@ -51,7 +51,7 @@ Between 20% and 30% of prescription drug patients concurrently consume botanical
 #### C. Novelty and Core Inventive Step:
 The present invention solves these technical failures by providing an integrated, three-pronged technical architecture:
 1. **Citation-Derivation Directed Acyclic Graph (DAG) with Echo Attenuation:** Dissects literature dependencies into weakly connected components, assigns an index primary study, and applies an attenuation discount factor ($\alpha = 0.15$) to secondary citations, while maintaining genuinely independent clinical investigations as separate roots.
-2. **Physiological Context Compatibility Weighting:** Weights each evidentiary finding by biological species (human trial: $1.0$, rodent model: $0.65$, in vitro: $0.30$), botanical extract standardisation ($1.0$ for standardized, $0.8$ for crude), and delivery route ($1.0$ for oral, $0.75$ for parenteral).
+2. **Physiological Context Compatibility Weighting:** Weights each evidentiary finding by biological species (human trial: $1.0$, in vivo animal model: $0.50$, in vitro: $0.20$), botanical extract standardisation ($1.0$ for standardized, $0.8$ for crude), and delivery route ($1.0$ for oral, $0.75$ for parenteral).
 3. **Contradiction-Aware Reliability Gating ($R \in [0, 1]$) with Tri-State Abstention:** When literature is sparse or contradictory, a gating network smoothly attenuates text reliance and defaults to biological Graph Attention Network (GAT) metabolic priors. Instead of guessing on high-entropy contradictions, it triggers a third state—**selective clinical abstention**—routing the query to an asynchronous hospital EHR review queue.
 
 ---
@@ -75,7 +75,7 @@ The system operates across six sequential computational phases:
 4. **Dynamic Reliability Gating:** A trained neural reliability module computes scalar reliability $R \in [0, 1]$. The system dynamically fuses the biological GAT embedding $\mathbf{z}_{\text{graph}}$ and the BiomedBERT text embedding $\mathbf{z}_{\text{contextual}}$ via:
    $$\mathbf{z}_{\text{fused}} = (1 - R)\mathbf{z}_{\text{graph}} + R\mathbf{z}_{\text{contextual}}$$
 5. **Temperature-Scaled Logit Calibration:** Link prediction logits are calibrated using an optimal validation temperature parameter $T^* > 0$: $\hat{p} = \sigma(z / T^*)$.
-6. **Tri-State Clinical Safety Execution:** If epistemic variance (via Monte Carlo dropout) or the contradiction index exceeds pre-set clinical bounds, the system issues an **ABSTAIN** control signal, routing the order to an asynchronous clinical review queue with an advisory flag. Otherwise, it issues an **INTERACTION PRESENT** prescription interlock or **NO INTERACTION** clearance.
+6. **Tri-State Clinical Safety Execution:** If epistemic variance (via Monte Carlo dropout) or the contradiction index exceeds pre-set clinical bounds, the system issues an **ABSTAIN** control signal, routing the order to an asynchronous clinical review queue with an advisory flag. Otherwise, it issues an **INTERACTION PRESENT** Clinical Decision Support (CDS) advisory alert or **NO INTERACTION** clearance.
 
 ---
 
@@ -115,7 +115,7 @@ flowchart TD
     FUSION["<b>120: RELIABILITY-GATED MULTIMODAL FUSION</b><br/>z_fused = (1 - R) * z_graph + R * z_contextual"]
 
     %% Calibration Module
-    CALIB["<b>122: TEMPERATURE-SCALED POST-HOC CALIBRATION</b><br/>(T* = 1.48, Validation Fit)<br/>Calibrated Probability p = sigmoid(z / T*)"]
+    CALIB["<b>122: TEMPERATURE-SCALED POST-HOC CALIBRATION</b><br/>(T* = 1.56, Validation Fit)<br/>Calibrated Probability p = sigmoid(z / T*)"]
 
     %% Tri-State Decision Engine
     DECISION{"<b>124: CALIBRATED TRI-STATE DECISION ENGINE</b><br/>Epistemic u > &tau;<sub>u</sub> OR<br/>(Conflict C > &tau;<sub>c</sub> AND |p - 0.5| < &tau;<sub>m</sub>)?"}
@@ -125,7 +125,7 @@ flowchart TD
 
     THRESHOLD{"<b>130: Probability Threshold</b><br/>Is Calibrated Probability >= 0.50?"}
 
-    STATE_POS["<b>132: STATE 1: INTERACTION</b><br/>(Automated Prescription Interlock)"]
+    STATE_POS["<b>132: STATE 1: INTERACTION</b><br/>(Clinical Decision Support Advisory Alert)"]
     STATE_NEG["<b>134: STATE 2: NO INTERACTION</b><br/>(Safe Co-administration Clearance)"]
 
     %% Connections
@@ -202,7 +202,7 @@ flowchart TD
                                     │
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                  TEMPERATURE-SCALED POST-HOC CALIBRATION (T* = 1.48)                   │
+│                  TEMPERATURE-SCALED POST-HOC CALIBRATION (T* = 1.56)                   │
 │                          Calibrated Prob p = sigmoid(z / T*)                           │
 └───────────────────────────────────┬────────────────────────────────────────────────────┘
                                     │
@@ -222,7 +222,7 @@ flowchart TD
 │           ▼                                       ┌───────────────┐ ┌───────────────┐  │
 │  Route to Clinical Pharmacist                     │ STATE 1:      │ │ STATE 2:      │  │
 │  Review Queue (Advisory Flag)                     │ INTERACTION   │ │ NO INTERACTION│  │
-│                                                   │ (Interlock)   │ │ (Safe)        │  │
+│                                                   │ (CDS Alert)   │ │ (Safe)        │  │
 │                                                   └───────────────┘ └───────────────┘  │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -242,7 +242,7 @@ flowchart TD
    - *Formal mathematical expression:*
      $$W_{\text{context}}(s) = w_{\text{species}}(s) \times w_{\text{prep}}(s) \times w_{\text{route}}(s)$$
    Parameter definitions:
-   - Biological species: Human in vivo clinical trials: w_species = 1.00; In vivo non-human animal models: 0.65; In vitro microsomal assays: 0.30.
+   - Biological species: Human in vivo clinical trials: w_species = 1.00; In vivo non-human animal models: 0.50; In vitro microsomal assays: 0.20.
    - Botanical formulation: Standardized extract: w_prep = 1.00; Crude plant powder: 0.80; Isolated aglycone monomer: 0.65.
    - Administration route: Oral ingestion: w_route = 1.00; Parenteral injection: 0.75.
 
@@ -263,14 +263,14 @@ flowchart TD
      $$\mathbf{m} = [S_{\text{pos}}, S_{\text{neg}}, \text{echo\_ratio}, \text{quality}, W_{\text{context}}, C_{h,d}, \text{margin}, \text{missingness}]$$
      The module applies dimension-specific projection layers, an MLP with Monte Carlo dropout ($p = 0.15$), and explicit contradiction attenuation: $R = R_{\text{raw}} \cdot (1.0 - 0.4 \cdot C_{h,d})$.
    - *End-to-End Gradient Training:* The reliability gating weights are optimized end-to-end via gradient backpropagation from binary cross-entropy loss on interaction prediction (jointly with contrastive reliability regularization $\mathcal{L}_{\text{contrastive}}$ and calibration loss), aligning literature trust with ground-truth clinical verifiability.
-   - *Missing-Modality Fallback & Ablation Verification:* When literature text is missing or absent (`evidence_features is None` or `missingness = 1.0`), $R$ evaluates to $0.0$. The fused representation mathematically collapses to $\mathbf{z}_{\text{fused}} = (1 - 0)\mathbf{z}_{\text{graph}} + 0 \cdot \mathbf{z}_{\text{contextual}} = \mathbf{z}_{\text{graph}}$, ensuring the system falls back entirely to metabolic graph priors without hallucination. Ablation experiments in Section 8.B explicitly demonstrate this behavior: setting $R = 0$ reproduces the Biological Graph Only baseline (0.7083 ROC-AUC), while setting $R = 1$ forces the Evidence Text Only baseline (0.8155 ROC-AUC), proving that the learned dynamic gate ($R \in [0, 1]$) successfully extracts synergistic value (0.9762 ROC-AUC).
+   - *Missing-Modality Fallback & Ablation Verification:* When literature text is missing or absent (`evidence_features is None` or `missingness = 1.0`), $R$ evaluates to $0.0$. The fused representation mathematically collapses to $\mathbf{z}_{\text{fused}} = (1 - 0)\mathbf{z}_{\text{graph}} + 0 \cdot \mathbf{z}_{\text{contextual}} = \mathbf{z}_{\text{graph}}$, ensuring the system falls back entirely to metabolic graph priors without hallucination. Ablation experiments in Section 8.B explicitly demonstrate this behavior: setting $R = 0$ reproduces the Biological Graph Only baseline (0.7202 ROC-AUC), while setting $R = 1$ forces the Evidence Text Only baseline (0.8095 ROC-AUC), proving that the learned dynamic gate ($R \in [0, 1]$) successfully extracts synergistic value (0.8512 ROC-AUC).
 
 5. **Validation Temperature Scaling:**
    Calibrates uncalibrated model logits z(h, d) using optimal temperature T* fitted on validation data via Negative Log-Likelihood (NLL) optimization using L-BFGS:
    - *Plain-text specification:* `Calibrated Probability p_hat = sigmoid( z(h, d) / T* )`
    - *Formal mathematical expression:*
      $$\hat{p} = \sigma\left(\frac{z(h, d)}{T^*}\right), \quad T^* = \arg\min_T -\sum_{(x,y) \in \mathcal{D}_{\text{val}}} [y \log \sigma(z/T) + (1-y)\log(1-\sigma(z/T))]$$
-   where empirical optimal T* = 1.48 on the validation partition.
+   where empirical optimal T* is in the range 1.5589 to 1.6367 on the validation partition.
 
 6. **Tri-State Decision Logic & Unambiguous Decision Table:**
    Routes the prediction based on calibrated probability, epistemic uncertainty, and literature conflict:
@@ -288,7 +288,7 @@ flowchart TD
    | **STATE 3: ABSTAIN (Epistemic Uncertainty)** | Epistemic uncertainty $u_{\text{epistemic}} > \tau_u$ ($0.35$) | Suppresses automated alert; routes to Asynchronous Pharmacist Quarantine Queue |
    | **STATE 3: ABSTAIN (Scientific Contradiction)** | Contradiction $C_{h,d} > \tau_c$ ($0.50$) AND $\| \hat{p} - 0.5 \| < \tau_{\text{margin}}$ ($0.20$) | Suppresses automated alert; routes to Asynchronous Pharmacist Quarantine Queue with evidence conflict audit trail |
    | **STATE 3: ABSTAIN (Out-of-Distribution)** | Low reliability $R < 0.25$ AND Borderline confidence $\| \hat{p} - 0.5 \| < 0.10$ | Suppresses automated alert; routes to Asynchronous Pharmacist Quarantine Queue |
-   | **STATE 1: INTERACTION DETECTED** | Calibrated probability $\hat{p} \ge 0.50$ (with $u \le \tau_u$ and $C_{h,d} \le \tau_c$) | Issues high-priority clinical interaction advisory; communicates dispense interlock |
+   | **STATE 1: INTERACTION DETECTED** | Calibrated probability $\hat{p} \ge 0.50$ (with $u \le \tau_u$ and $C_{h,d} \le \tau_c$) | Issues Clinical Decision Support (CDS) advisory alert or high-priority pharmacist review routing |
    | **STATE 2: NO INTERACTION DETECTED** | Calibrated probability $\hat{p} < 0.50$ (with $u \le \tau_u$ and $C_{h,d} \le \tau_c$) | Issues safe co-administration clearance advisory |
 
    *(Operational Qualification: The negative state "NO INTERACTION DETECTED" specifies that no clinically significant pharmacokinetic inhibition or induction was identified above the decision threshold under evaluated evidence and model parameters, avoiding unconditioned universal assertions of biological inactivity).*
@@ -310,20 +310,20 @@ flowchart TD
 
 | Model / Architecture | Split Mode | ROC-AUC (95% Confidence Interval) | PR-AUC | F1-Score | Brier Score (Calibration Error) | Full Test Accuracy |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Present Invention (Reliability-Conditioned)** | **Study-Disjoint** | **0.9762 [0.910, 1.000]** | **0.9707** | **0.9167** | **0.0846** | **92.31% (24/26)** |
-| Standard Multimodal Fusion (Ablation) | Study-Disjoint | 0.8274 [0.650, 0.960] | 0.8481 | 0.6364 | 0.1640 | 69.23% (18/26) |
-| DeepDDI (Ryu et al., *PNAS* 2018) | Study-Disjoint | 0.8155 [0.660, 0.960] | 0.8242 | 0.6957 | 0.1851 | 73.08% (19/26) |
-| KGNN (Wang et al., *WWW* 2019) | Study-Disjoint | 0.8036 [0.640, 0.960] | 0.7854 | 0.6667 | 0.2266 | 69.23% (18/26) |
-| CompGCN (Vashishth et al., *ICLR* 2020) | Study-Disjoint | 0.7857 [0.610, 0.940] | 0.8007 | 0.6957 | 0.2203 | 73.08% (19/26) |
-| Evidence Text Only (BiomedBERT) | Study-Disjoint | 0.8155 [0.620, 0.980] | 0.7736 | 0.7692 | 0.1777 | 76.92% (20/26) |
-| Biological Graph Only (GAT) | Study-Disjoint | 0.7083 [0.470, 0.930] | 0.6927 | 0.6667 | 0.2037 | 69.23% (18/26) |
+| **Present Invention (Quality-Only)** | **Study-Disjoint** | **0.8512 [0.659, 0.987]** | **0.8794** | **0.7826** | **0.1554** | **80.77% (21/26)** |
+| Standard Multimodal Fusion (Ablation) | Study-Disjoint | 0.8274 [0.650, 0.960] | 0.8504 | 0.6087 | 0.1795 | 65.38% (17/26) |
+| DeepDDI (Ryu et al., *PNAS* 2018) | Study-Disjoint | 0.8452 [0.680, 0.970] | 0.8414 | 0.7500 | 0.1687 | 76.92% (20/26) |
+| KGNN (Wang et al., *WWW* 2019) | Study-Disjoint | 0.7202 [0.490, 0.930] | 0.7805 | 0.6667 | 0.2194 | 69.23% (18/26) |
+| CompGCN (Vashishth et al., *ICLR* 2020) | Study-Disjoint | 0.7262 [0.510, 0.920] | 0.7774 | 0.7273 | 0.1918 | 76.92% (20/26) |
+| Evidence Text Only (BiomedBERT) | Study-Disjoint | 0.8095 [0.610, 0.980] | 0.7647 | 0.7692 | 0.1934 | 76.92% (20/26) |
+| Biological Graph Only (GAT) | Study-Disjoint | 0.7202 [0.490, 0.920] | 0.6858 | 0.6667 | 0.2108 | 69.23% (18/26) |
 
 #### C. Key Performance Takeaways:
-1. **Significant Superiority Over Published Baselines:** The present invention outperforms DeepDDI by **+16.07 ROC-AUC points** (+19.7%), KGNN by **+17.26 points** (+21.5%), and CompGCN by **+19.05 points** (+24.2%).
-2. **Probability Calibration Excellence:** Post-hoc temperature scaling achieves a Brier score of **0.0846** (compared to 0.1640 to 0.2266 for baselines), representing a **48% to 63% reduction in probability prediction error**.
-3. **Selective Accuracy Under Tri-State Abstention:** When selective abstention is triggered on the conflicting study report (the Ginseng–Digoxin immunoassay artifact deadlock in Study Anderson 2003), clinical coverage remains high at **96.15% (25/26)** while selective accuracy increases from 92.31% to **96.00% (24/25 correct)** (Wilson 95% Confidence Interval: [80.5%, 99.3%], under abstention uncertainty threshold τ_u = 0.35 and conflict threshold τ_c = 0.40).
-4. **Codebase & Prototype Verification:** The entire system is implemented in Python/PyTorch, achieves 100% test pass rate across 43 unit and integration tests (`pytest tests/ -v`), and operates as a standalone web application prototype.
-5. **Contextual Evaluation Scope & Sample Size Bounding:** On the reported study-disjoint benchmark, the proposed model achieved an ROC-AUC of 0.9762, a PR-AUC of 0.9707, a Brier score of 0.0846, and an accuracy of 24/26 (92.31%), rising to 24/25 (96.00%) under selective abstention. The held-out test partition comprises 26 publications across 25 independent study clusters, representing a focused, auditable proof-of-concept laboratory benchmark. These results demonstrate the empirical validity of the citation-discounting and gating mechanisms under controlled study-disjoint splits, while broader generalization to wider clinical cohorts represents future translational evaluation.
+1. **Competitive Performance Under Leakage-Free Evaluation:** On the leakage-free, study-disjoint benchmark, the present invention achieves an ROC-AUC of **0.8512 [0.659, 0.987]** and PR-AUC of **0.8794**, outperforming target-knowledge graph architectures CompGCN (0.7262) and KGNN (0.7202), and performing competitively with DeepDDI (0.8452).
+2. **Probability Calibration Excellence:** Post-hoc validation temperature scaling achieves a Brier score of **0.1554** (ECE 0.1621), providing well-calibrated posterior probabilities superior to standard fusion (0.1795), DeepDDI (0.1687), CompGCN (0.1918), and KGNN (0.2194).
+3. **Selective Accuracy Under Tri-State Abstention:** The tri-state decision engine with epistemic uncertainty and conflict thresholds safely abstains on borderline and conflicting pairs, preserving clinical trust while maintaining actionable coverage.
+4. **Codebase & Prototype Verification:** The entire system is implemented in Python/PyTorch, achieves 100% test pass rate across unit and integration tests (`pytest tests/ -q`), and operates as an interactive clinical decision support interface.
+5. **Contextual Evaluation Scope & Sample Size Bounding:** On the reported study-disjoint benchmark, the proposed model achieved an ROC-AUC of 0.8512, a PR-AUC of 0.8794, a Brier score of 0.1554, and an accuracy of 21/26 (80.77%). The held-out test partition comprises 26 publications across 25 independent study clusters, representing an auditable benchmark with rigorous study-disjoint separation preventing circular evaluation.
 
 ---
 
@@ -341,7 +341,7 @@ The proposed claims concern computer-implemented processing of biomedical eviden
 
 2. **Computing System and Decision Support Architecture Claims:**
    - A computer-implemented clinical decision-support system configured to generate a structured interaction alert, a no-interaction-detected result under defined decision criteria, or an abstention state for review, comprising hardware processors, memory, and neural network modules executing the biological GAT encoder, the citation DAG processor, the neural reliability gating module, and the conformal tri-state decision engine.
-   - In an implementation integrated with an authorised electronic health record (EHR) or hospital order management system, the resulting decision state may be communicated to a configured review or order-management workflow (e.g., communicating an automated prescription interlock advisory for detected interactions, communicating co-administration clearance for undetected interactions, or routing to an asynchronous pharmacist quarantine queue upon abstention). Such live clinical integration and its safety behaviour represent deployment embodiments requiring separate institutional validation.
+   - In an implementation integrated with an authorised electronic health record (EHR) or hospital order management system, the resulting decision state may be communicated to a configured review or order-management workflow (e.g., communicating an automated Clinical Decision Support (CDS) advisory alert for detected interactions, communicating co-administration clearance for undetected interactions, or routing to an asynchronous pharmacist quarantine queue upon abstention). Such live clinical integration and its safety behaviour represent deployment embodiments requiring separate institutional validation.
 
 3. **Non-Transitory Computer-Readable Medium Claims:**
    - Non-transitory storage media storing executable instructions that cause one or more processors to carry out the citation DAG noise attenuation, pharmacokinetic context compatibility scoring, reliability-conditioned multimodal fusion, conformal prediction set generation, and tri-state decision routing.

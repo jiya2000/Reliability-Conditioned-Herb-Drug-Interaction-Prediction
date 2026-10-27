@@ -37,7 +37,7 @@ botanical–pharmaceutical interaction prediction:
    NO_INTERACTION if p̂ < 0.5 (and not abstaining)
 
 8. **EHR Decision Support Control Signal**:
-   - INTERACTION_PRESENT → automated prescription interlock
+   - INTERACTION_PRESENT → Clinical Decision Support (CDS) advisory alert
    - NO_INTERACTION → safe co-administration clearance
    - ABSTAIN → asynchronous clinical pharmacist review queue (advisory flag)
 

@@ -102,7 +102,7 @@ def generate_patent_figure():
 
     # 122: Temperature Calibration
     draw_box(25, 49, 50, 7.5, "122: TEMPERATURE-SCALED POST-HOC CALIBRATION",
-             r"Calibrated Probability $\hat{p} = \sigma(z / T^*)$, where $T^* = 1.48$",
+             r"Calibrated Probability $\hat{p} = \sigma(z / T^*)$, where $T^* = 1.56$",
              title_fs=9, body_fs=8.5)
     draw_arrow(50, 63, 50, 56.5)
 
@@ -125,7 +125,7 @@ def generate_patent_figure():
     draw_arrow(68, 36, 74, 28.5, label="NO (Definitive)", label_offset=(4, 2))
 
     # 132 Positive Interaction
-    draw_box(48, 7, 24, 8, "132: STATE 1: INTERACTION", "Automated Prescription\nInterlock Alert", title_fs=8, body_fs=7)
+    draw_box(48, 7, 24, 8, "132: STATE 1: INTERACTION", "Clinical Decision Support\n(CDS) Advisory Alert", title_fs=8, body_fs=7)
     draw_arrow(65, 18.5, 60, 15, label="YES", label_offset=(-2, 0.5))
 
     # 134 Negative Safe

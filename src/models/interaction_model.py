@@ -57,7 +57,11 @@ class ReliabilityConditionedInteractionModel(nn.Module):
         mode: str = "reliability_conditioned",
         abstain_uncertainty_threshold: float = 0.35,
         abstain_conflict_threshold: float = 0.50,
+        abstain_margin_threshold: float = 0.20,
         dropout: float = 0.1,
+        feature_group: Optional[str] = None,
+        enable_auxiliary_heads: bool = False,
+        num_severity_classes: int = 3,
     ):
         super().__init__()
         valid_modes = {
@@ -65,7 +69,9 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             "evidence_only",
             "graph_plus_naive_evidence",
             "standard_fusion",
+            "naive_concat_mlp",
             "reliability_conditioned",
+            "reliability_conditioned_quality_only",
             "no_study_dependence",
             "no_context_conflict",
         }
@@ -78,6 +84,19 @@ class ReliabilityConditionedInteractionModel(nn.Module):
         self.fused_dim = fused_dim
         self.abstain_uncertainty_threshold = abstain_uncertainty_threshold
         self.abstain_conflict_threshold = abstain_conflict_threshold
+        self.abstain_margin_threshold = abstain_margin_threshold
+        self.enable_auxiliary_heads = enable_auxiliary_heads
+        self.num_severity_classes = num_severity_classes
+
+        # Default feature group: quality_only is headline default following leakage probe confirmation
+        if feature_group is not None:
+            self.feature_group = feature_group
+        elif mode == "reliability_conditioned_quality_only":
+            self.feature_group = "quality_only"
+        elif mode == "reliability_conditioned":
+            self.feature_group = "quality_only"
+        else:
+            self.feature_group = "full"
 
         # Graph pair representation projection: [h_u; h_v; |h_u - h_v|; h_u * h_v]
         pair_dim = graph_dim * 4
@@ -99,12 +118,20 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             embed_dim=fused_dim, num_heads=4, dropout=dropout, batch_first=True
         )
 
+        # Naive concatenation projection: [z_graph; z_ev] -> fused_dim
+        self.concat_fusion_proj = nn.Sequential(
+            nn.Linear(2 * fused_dim, fused_dim),
+            nn.GELU(),
+            nn.Dropout(dropout),
+        )
+
         # Reliability Scorer
         self.reliability_scorer = ReliabilityScorer(
             hidden_dim=hidden_dim,
             dropout=dropout,
             mc_dropout_rate=0.15,
             mc_samples=10,
+            feature_group=self.feature_group,
         )
 
         # Link Predictor MLP head mapping fused representation to interaction logits
@@ -115,8 +142,38 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             nn.Linear(hidden_dim, 1),
         )
 
+        # Additive auxiliary task heads (Phase 8)
+        if enable_auxiliary_heads:
+            # 1. Direction classification: decreased_exposure (0) vs increased_exposure (1)
+            self.direction_head = nn.Sequential(
+                nn.Linear(fused_dim, max(16, hidden_dim // 2)),
+                nn.GELU(),
+                nn.Dropout(dropout),
+                nn.Linear(max(16, hidden_dim // 2), 1),
+            )
+            # 2. Clinical severity grade: e.g. 0: mild, 1: moderate, 2: severe
+            self.severity_head = nn.Sequential(
+                nn.Linear(fused_dim, max(16, hidden_dim // 2)),
+                nn.GELU(),
+                nn.Dropout(dropout),
+                nn.Linear(max(16, hidden_dim // 2), num_severity_classes),
+            )
+            # 3. Pharmacokinetic log fold-change regression: ln(AUC_ratio) or ln(Cmax_ratio)
+            self.pk_regression_head = nn.Sequential(
+                nn.Linear(fused_dim, max(16, hidden_dim // 2)),
+                nn.GELU(),
+                nn.Dropout(dropout),
+                nn.Linear(max(16, hidden_dim // 2), 1),
+            )
+        else:
+            self.direction_head = None
+            self.severity_head = None
+            self.pk_regression_head = None
 
-        logger.info(f"Initialized InteractionModel in '{self.mode}' mode (fused_dim={fused_dim})")
+        logger.info(
+            f"Initialized InteractionModel in '{self.mode}' mode (fused_dim={fused_dim}, "
+            f"auxiliary_heads={enable_auxiliary_heads})"
+        )
 
     def forward(
         self,
@@ -195,6 +252,15 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             z_fused = 0.5 * z_graph + 0.5 * z_ev
             R = torch.ones(batch_size, 1, device=herb_emb.device)
 
+        elif self.mode == "naive_concat_mlp":
+            # Baseline: Concatenation MLP fusion without cross-attention or reliability gating
+            if evidence_features.dim() == 3:
+                z_ev = self.evidence_proj(evidence_features).mean(dim=1)
+            else:
+                z_ev = self.evidence_proj(evidence_features)
+            z_fused = self.concat_fusion_proj(torch.cat([z_graph, z_ev], dim=-1))
+            R = torch.ones(batch_size, 1, device=herb_emb.device)
+
         else:
             # Proposed Reliability-Conditioned Architecture (or targeted ablations)
             if evidence_features.dim() == 3:
@@ -208,51 +274,28 @@ class ReliabilityConditionedInteractionModel(nn.Module):
                 z_contextual = self.evidence_proj(evidence_features)
 
             if metadata is not None:
-                if metadata.size(-1) >= 10:
-                    # 10D metadata provides explicit raw and lineage-adjusted counts:
-                    # [indep_pos, indep_neg, echo, qual, ctx, conflict, margin, missing, raw_pos, raw_neg]
-                    indep_pos = metadata[:, 0:1]
-                    indep_neg = metadata[:, 1:2]
-                    echo = metadata[:, 2:3]
-                    qual = metadata[:, 3:4]
-                    ctx = metadata[:, 4:5]
-                    conflict = metadata[:, 5:6]
-                    margin = metadata[:, 6:7]
-                    missing = metadata[:, 7:8]
-                    raw_pos = metadata[:, 8:9]
-                    raw_neg = metadata[:, 9:10]
-
-                    if self.mode == "no_study_dependence":
-                        # Strictly use separate raw positive and raw negative counts; zero out echo
-                        meta_input = torch.cat([
-                            raw_pos, raw_neg, torch.zeros_like(echo),
-                            qual, ctx, conflict, raw_pos - raw_neg, missing
-                        ], dim=-1)
-                    elif self.mode == "no_context_conflict":
-                        # Strictly neutralize context to 1.0, zero contradiction, and remove conflict subtraction from margin
-                        meta_input = torch.cat([
-                            indep_pos, indep_neg, echo,
-                            qual, torch.ones_like(ctx), torch.zeros_like(conflict), indep_pos, missing
-                        ], dim=-1)
-                    elif self.mode in {"graph_plus_naive_evidence", "raw_naive"}:
-                        meta_input = torch.cat([
-                            raw_pos, raw_neg, torch.zeros_like(echo),
-                            qual, torch.ones_like(ctx), torch.zeros_like(conflict), raw_pos - raw_neg, missing
-                        ], dim=-1)
-                    else:
-                        meta_input = metadata[:, :8]
-
-                elif metadata.size(-1) == 8:
-                    meta_input = metadata.clone()
-                    if self.mode == "no_study_dependence":
-                        # In 8D mode without explicit raw fields, zero out echo ratio
+                meta_input = metadata.clone()
+                if self.mode == "no_study_dependence":
+                    # Zero out echo ratio (index 2 in 12D/8D, index 0 in 7D)
+                    if meta_input.size(-1) >= 8:
                         meta_input[:, 2:3] = 0.0
-                    elif self.mode == "no_context_conflict":
+                        if meta_input.size(-1) >= 10:
+                            raw_pos = meta_input[:, 8:9]
+                            raw_neg = meta_input[:, 9:10]
+                            meta_input[:, 0:1] = raw_pos
+                            meta_input[:, 1:2] = raw_neg
+                            meta_input[:, 6:7] = raw_pos - raw_neg
+                    elif meta_input.size(-1) == 7:
+                        meta_input[:, 0:1] = 0.0  # echo_ratio
+                elif self.mode == "no_context_conflict":
+                    # Neutralize context to 1.0, zero contradiction
+                    if meta_input.size(-1) >= 8:
                         meta_input[:, 4:5] = 1.0
                         meta_input[:, 5:6] = 0.0
                         meta_input[:, 6:7] = meta_input[:, 0:1]
-                else:
-                    meta_input = metadata
+                    elif meta_input.size(-1) == 7:
+                        meta_input[:, 2:3] = 1.0  # context_compat
+                        meta_input[:, 3:4] = 0.0  # contradiction
 
                 # Compute reliability and epistemic uncertainty
                 R, uncertainty, breakdown = self.reliability_scorer.forward_with_uncertainty(meta_input)
@@ -277,6 +320,11 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             "uncertainty": uncertainty,
         }
 
+        if self.enable_auxiliary_heads:
+            result["direction_logits"] = self.direction_head(z_fused)
+            result["severity_logits"] = self.severity_head(z_fused)
+            result["pk_fold_change"] = self.pk_regression_head(z_fused)
+
         if return_details:
             result["z_fused"] = z_fused
             result["z_graph"] = z_graph
@@ -284,6 +332,90 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             result["attn_weights"] = attn_weights
 
         return result
+
+    def compute_multitask_loss(
+        self,
+        predictions: Dict[str, torch.Tensor],
+        target_interaction: torch.Tensor,
+        target_direction: Optional[torch.Tensor] = None,
+        target_severity: Optional[torch.Tensor] = None,
+        target_pk_fold_change: Optional[torch.Tensor] = None,
+        weights: Optional[Dict[str, float]] = None,
+    ) -> Dict[str, torch.Tensor]:
+        """
+        Computes multi-task loss with loss masking on unannotated/missing records.
+
+        Args:
+            predictions: Model output dict from forward pass.
+            target_interaction: (batch, 1) or (batch,) binary interaction label in {0, 1}.
+            target_direction: (batch, 1) or (batch,) binary direction (0: decreased, 1: increased, -1: unannotated).
+            target_severity: (batch, 1) or (batch,) severity grade (0: mild, 1: moderate, 2: severe, -1: unannotated).
+            target_pk_fold_change: (batch, 1) or (batch,) float log fold-change, with NaN for missing values.
+            weights: Dict specifying multi-task loss weights (default: interaction=1.0, direction=0.5, severity=0.5, pk=0.25).
+
+        Returns:
+            Dict containing loss_total, loss_interaction, loss_direction, loss_severity, and loss_pk.
+        """
+        import torch.nn.functional as F
+
+        w = {
+            "interaction": 1.0,
+            "direction": 0.5,
+            "severity": 0.5,
+            "pk_regression": 0.25,
+        }
+        if weights is not None:
+            w.update(weights)
+
+        device = predictions["logits"].device
+        target_int = target_interaction.view(-1, 1).to(device).float()
+        loss_int = F.binary_cross_entropy_with_logits(predictions["logits"], target_int)
+
+        loss_dir = torch.tensor(0.0, device=device)
+        if self.enable_auxiliary_heads and "direction_logits" in predictions and target_direction is not None:
+            t_dir = target_direction.view(-1, 1).to(device).float()
+            mask_dir = (t_dir >= 0.0) & (t_dir <= 1.0)
+            if mask_dir.sum() > 0:
+                loss_dir = F.binary_cross_entropy_with_logits(
+                    predictions["direction_logits"][mask_dir],
+                    t_dir[mask_dir],
+                )
+
+        loss_sev = torch.tensor(0.0, device=device)
+        if self.enable_auxiliary_heads and "severity_logits" in predictions and target_severity is not None:
+            t_sev = target_severity.view(-1).to(device).long()
+            mask_sev = (t_sev >= 0) & (t_sev < self.num_severity_classes)
+            if mask_sev.sum() > 0:
+                loss_sev = F.cross_entropy(
+                    predictions["severity_logits"][mask_sev],
+                    t_sev[mask_sev],
+                )
+
+        loss_pk = torch.tensor(0.0, device=device)
+        if self.enable_auxiliary_heads and "pk_fold_change" in predictions and target_pk_fold_change is not None:
+            t_pk = target_pk_fold_change.view(-1, 1).to(device).float()
+            mask_pk = ~torch.isnan(t_pk)
+            if mask_pk.sum() > 0:
+                loss_pk = F.smooth_l1_loss(
+                    predictions["pk_fold_change"][mask_pk],
+                    t_pk[mask_pk],
+                )
+
+        loss_total = (
+            w["interaction"] * loss_int
+            + w["direction"] * loss_dir
+            + w["severity"] * loss_sev
+            + w["pk_regression"] * loss_pk
+        )
+
+        return {
+            "loss_total": loss_total,
+            "loss_interaction": loss_int,
+            "loss_direction": loss_dir,
+            "loss_severity": loss_sev,
+            "loss_pk": loss_pk,
+        }
+
 
     def predict_with_decision(
         self,
@@ -337,10 +469,10 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             if u > self.abstain_uncertainty_threshold:
                 abstain = True
                 reason = "high_epistemic_uncertainty"
-            elif conflict > self.abstain_conflict_threshold and confidence < 0.40:
+            elif conflict > self.abstain_conflict_threshold and confidence < (2.0 * self.abstain_margin_threshold):
                 abstain = True
                 reason = "active_scientific_conflict"
-            elif confidence < 0.20 and r < 0.25:
+            elif confidence < self.abstain_margin_threshold and r < 0.25:
                 abstain = True
                 reason = "insufficient_out_of_distribution_evidence"
 

@@ -11,8 +11,8 @@ Implements:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Union
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import torch
@@ -24,11 +24,15 @@ from loguru import logger
 @dataclass
 class CalibrationMetrics:
     """Evaluation metrics for prediction confidence and probability calibration."""
-    expected_calibration_error: float  # ECE (binned)
+    expected_calibration_error: float  # ECE (equal-width binned)
     max_calibration_error: float       # MCE
     brier_score: float                 # MSE between probs and binary labels
     log_loss: float                    # Binary cross-entropy
     temperature: float = 1.0
+    equal_mass_ece: float = 0.0        # ECE with equal-mass (quantile) bins
+    brier_positive: float = 0.0        # Per-class calibration for positive labels
+    brier_negative: float = 0.0        # Per-class calibration for negative labels
+    reliability_diagram_data: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -109,7 +113,8 @@ def compute_calibration_metrics(
     temperature: float = 1.0,
 ) -> CalibrationMetrics:
     """
-    Compute ECE, MCE, Brier score, and log loss for binary predictions.
+    Compute ECE (equal-width and equal-mass), MCE, Brier score (overall & per-class),
+    log loss, and reliability diagram coordinates for binary predictions.
     """
     if isinstance(probs, torch.Tensor):
         probs = probs.detach().cpu().numpy().flatten()
@@ -122,18 +127,25 @@ def compute_calibration_metrics(
         labels = np.asarray(labels, dtype=np.float64).flatten()
 
     probs = np.clip(probs, 1e-7, 1.0 - 1e-7)
+    total_samples = len(probs)
 
-    # 1. Brier Score
+    # 1. Overall Brier Score
     brier_score = float(np.mean((probs - labels) ** 2))
+
+    # Per-class Brier scores
+    pos_mask = (labels >= 0.5)
+    neg_mask = (labels < 0.5)
+    brier_pos = float(np.mean((probs[pos_mask] - 1.0) ** 2)) if np.any(pos_mask) else 0.0
+    brier_neg = float(np.mean((probs[neg_mask] - 0.0) ** 2)) if np.any(neg_mask) else 0.0
 
     # 2. Log Loss (Binary Cross-Entropy)
     log_loss = float(-np.mean(labels * np.log(probs) + (1.0 - labels) * np.log(1.0 - probs)))
 
-    # 3. Expected Calibration Error (ECE) and MCE
+    # 3. Equal-width Expected Calibration Error (ECE) and MCE
     bin_boundaries = np.linspace(0.0, 1.0, num_bins + 1)
     ece = 0.0
     mce = 0.0
-    total_samples = len(probs)
+    bin_accs, bin_confs, bin_counts = [], [], []
 
     for i in range(num_bins):
         bin_lower = bin_boundaries[i]
@@ -142,11 +154,37 @@ def compute_calibration_metrics(
         bin_count = np.sum(in_bin)
 
         if bin_count > 0:
-            bin_acc = float(np.mean(labels[in_bin]))
-            bin_conf = float(np.mean(probs[in_bin]))
-            bin_error = abs(bin_acc - bin_conf)
+            b_acc = float(np.mean(labels[in_bin]))
+            b_conf = float(np.mean(probs[in_bin]))
+            bin_error = abs(b_acc - b_conf)
             ece += (bin_count / total_samples) * bin_error
             mce = max(mce, bin_error)
+            bin_accs.append(b_acc)
+            bin_confs.append(b_conf)
+            bin_counts.append(int(bin_count))
+
+    # 4. Equal-mass Expected Calibration Error (quantile bins)
+    quantiles = np.linspace(0.0, 100.0, num_bins + 1)
+    eq_boundaries = np.percentile(probs, quantiles)
+    eq_ece = 0.0
+    for i in range(num_bins):
+        b_low = eq_boundaries[i]
+        b_high = eq_boundaries[i + 1]
+        in_bin = (probs >= b_low) & (probs < b_high) if i < num_bins - 1 else (probs >= b_low) & (probs <= b_high)
+        cnt = np.sum(in_bin)
+        if cnt > 0:
+            acc = float(np.mean(labels[in_bin]))
+            conf = float(np.mean(probs[in_bin]))
+            eq_ece += (cnt / total_samples) * abs(acc - conf)
+
+    diagram_data = {
+        "bin_accuracies": bin_accs,
+        "bin_confidences": bin_confs,
+        "bin_counts": bin_counts,
+        "equal_mass_ece": float(eq_ece),
+        "brier_positive": brier_pos,
+        "brier_negative": brier_neg,
+    }
 
     return CalibrationMetrics(
         expected_calibration_error=float(ece),
@@ -154,6 +192,10 @@ def compute_calibration_metrics(
         brier_score=brier_score,
         log_loss=log_loss,
         temperature=temperature,
+        equal_mass_ece=float(eq_ece),
+        brier_positive=brier_pos,
+        brier_negative=brier_neg,
+        reliability_diagram_data=diagram_data,
     )
 
 

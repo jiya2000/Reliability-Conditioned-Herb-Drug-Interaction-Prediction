@@ -135,6 +135,11 @@ HERB_BIOLOGICAL_PROFILES: Dict[str, Dict[str, float]] = {
         "CYP3A4": -1.0,   # Irreversible mechanism-based intestinal CYP3A4 inactivation
         "ABCB1": -0.5,    # Intestinal P-gp inhibition
     },
+    "HERB_KRATOM": {
+        "CYP3A4": -0.8,   # Potent mechanism-based/reversible inhibition by mitragynine
+        "CYP2D6": -0.7,   # Inhibition of CYP2D6
+        "CYP2C9": -0.5,   # Moderate CYP2C9 inhibition
+    },
 }
 
 # Curated biological pharmacokinetic profiles for drug entities

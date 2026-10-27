@@ -1,0 +1,3932 @@
+{
+  "reliability_conditioned_quality_only": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.8796015977859497,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.9548370242118835,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.7453922033309937,
+      "y_pred": 1,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.7514990568161011,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.2565866708755493,
+      "y_pred": 0,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.8857059478759766,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.7430503368377686,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.3575572967529297,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.6717867255210876,
+      "y_pred": 1,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.1569458246231079,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.40464097261428833,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.7744882106781006,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.36503875255584717,
+      "y_pred": 0,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.31964951753616333,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.258464515209198,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.2703278660774231,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.2458934485912323,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.3524477779865265,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.3144424259662628,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.44191187620162964,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.5812408328056335,
+      "y_pred": 1,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.8196874260902405,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.2206903100013733,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.3105825185775757,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.9261916875839233,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.33704423904418945,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "reliability_conditioned": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.8785759210586548,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.8287785649299622,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.5188417434692383,
+      "y_pred": 1,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.9058740139007568,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.679740309715271,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.8790924549102783,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.6240204572677612,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.37012043595314026,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.44666698575019836,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.3177033066749573,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.37597349286079407,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.9035768508911133,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.8265160918235779,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.4332829713821411,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.5311461687088013,
+      "y_pred": 1,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.44910934567451477,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.3148882985115051,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.3667660355567932,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.37322676181793213,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.36667612195014954,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.39982059597969055,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.7872267365455627,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.36626601219177246,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.49714866280555725,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.7551816701889038,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.3626730740070343,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "standard_fusion": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.8963874578475952,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.8663179874420166,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.557417094707489,
+      "y_pred": 1,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.8313618898391724,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.49415701627731323,
+      "y_pred": 0,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.8674266338348389,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.6594945192337036,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.3908331096172333,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.4596238136291504,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.30006644129753113,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.4118451476097107,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.8252621293067932,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.6364097595214844,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.5101336240768433,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.486178994178772,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.4373498558998108,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.34973084926605225,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.39766398072242737,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.40002042055130005,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.4061906039714813,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.49684301018714905,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.8159367442131042,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.3596675992012024,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.4068414270877838,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.8136759996414185,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.3917790949344635,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "naive_concat_mlp": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.998648464679718,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.9925576448440552,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.7192322015762329,
+      "y_pred": 1,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.9558160901069641,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.7369487285614014,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.9990449547767639,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.5925341844558716,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.1707676500082016,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.7416582107543945,
+      "y_pred": 1,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.02972486801445484,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.13827206194400787,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.972369909286499,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.6734519004821777,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.288108229637146,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.3756657540798187,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.2086610496044159,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.03084922395646572,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.09119105339050293,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.17912118136882782,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.2327035665512085,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.5681379437446594,
+      "y_pred": 1,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.9864470958709717,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.05009710043668747,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.4421389698982239,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.9579126834869385,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.1401723474264145,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "graph_only": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.894856333732605,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.848251223564148,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.42375707626342773,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.876607358455658,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.850741982460022,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.8635401129722595,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.6225552558898926,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.36306384205818176,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.38909533619880676,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.21542565524578094,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.25693756341934204,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.8672686219215393,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.9115809798240662,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.3727012574672699,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.6760373115539551,
+      "y_pred": 1,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.42021265625953674,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.11822252720594406,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.22778205573558807,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.29150235652923584,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.18825164437294006,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.2999880611896515,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.6988406181335449,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.29367586970329285,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.732270359992981,
+      "y_pred": 1,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.848251223564148,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.36306384205818176,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "evidence_only": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.7886927127838135,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.6546915173530579,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.6646485924720764,
+      "y_pred": 1,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.5482357144355774,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.3422282040119171,
+      "y_pred": 0,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.6604147553443909,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.8243057131767273,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.4591313600540161,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.6682155728340149,
+      "y_pred": 1,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.35293081402778625,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.5312219262123108,
+      "y_pred": 1,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.6612339019775391,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.2890934348106384,
+      "y_pred": 0,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.37022265791893005,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.38031330704689026,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.4445320665836334,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.49574118852615356,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.5065529942512512,
+      "y_pred": 1,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.5653895735740662,
+      "y_pred": 1,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.7061851620674133,
+      "y_pred": 1,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.7882591485977173,
+      "y_pred": 1,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.8731061816215515,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.36878952383995056,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.3416496217250824,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.44694456458091736,
+      "y_pred": 0,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.43528875708580017,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "graph_plus_naive_evidence": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.9214838147163391,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.8667322397232056,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.46804487705230713,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.8734445571899414,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.5639038681983948,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.9156904220581055,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.5957093834877014,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.3512284457683563,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.42654862999916077,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.24181461334228516,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.31490594148635864,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.8826999068260193,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.7679754495620728,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.3826044499874115,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.47189173102378845,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.3974490165710449,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.25293031334877014,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.3059867322444916,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.35677629709243774,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.3947165608406067,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.426628053188324,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.8337130546569824,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.3103334605693817,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.438647598028183,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.7942351698875427,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.3422691226005554,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "no_study_dependence": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.9206472039222717,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.9188934564590454,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.357729434967041,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.9134804606437683,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.8378912806510925,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.912672758102417,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.5667354464530945,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.30182895064353943,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.3875080943107605,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.2716195583343506,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.2603979706764221,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.9051985740661621,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.9327347874641418,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.3560104966163635,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.6446067690849304,
+      "y_pred": 1,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.3101651966571808,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.1520128697156906,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.23299197852611542,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.3016376197338104,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.20503711700439453,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.28580164909362793,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.69273841381073,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.3307875394821167,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.6611248254776001,
+      "y_pred": 1,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.9188950061798096,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.30182895064353943,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "no_context_conflict": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.997697651386261,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.9965963959693909,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.48141610622406006,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.992901623249054,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.9815288782119751,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.9935544729232788,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.5630831122398376,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.1666179746389389,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.8846902251243591,
+      "y_pred": 1,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.061733510345220566,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.3288244307041168,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.9921086430549622,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.026926225051283836,
+      "y_pred": 0,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.10998678207397461,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.09652562439441681,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.15963029861450195,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.28953319787979126,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.3138003945350647,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.8425881862640381,
+      "y_pred": 1,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.8317841291427612,
+      "y_pred": 1,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.8858293294906616,
+      "y_pred": 1,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.9685947895050049,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.05190519243478775,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.0660448670387268,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.9965963959693909,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.14364860951900482,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "gradient_boosted_trees": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.999434512357362,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.9906896848681421,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.13915251425002562,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.992755201325882,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.6203563777700049,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.7812708769902191,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.8659331985498634,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.4227083379571962,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.049442159848977076,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.049442159848977076,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.049442159848977076,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.992755201325882,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.6399863714618114,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.13915251425002562,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.13915251425002562,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.12587195543382715,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.13915251425002562,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.049442159848977076,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.6399863714618114,
+      "y_pred": 1,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.13915251425002562,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.6203563777700049,
+      "y_pred": 1,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.33368022553813326,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.13915251425002562,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.13915251425002562,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.9906896848681421,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.4227083379571962,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "logistic_regression": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.8398576378822327,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.8939968943595886,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.2831777334213257,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.9618673920631409,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.5898173451423645,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.6729594469070435,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.7093752026557922,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.4852057695388794,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.20105496048927307,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.20105496048927307,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.20105496048927307,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.9525105357170105,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.3349921703338623,
+      "y_pred": 0,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.2177136242389679,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.2177136242389679,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.2632928192615509,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.2177136242389679,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.20105496048927307,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.32516294717788696,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.2177136242389679,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.6415167450904846,
+      "y_pred": 1,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.7925727963447571,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.2353459745645523,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.2353459745645523,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.8939968943595886,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.4852057695388794,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "mechanistic_rule_baseline": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.95,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.95,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.95,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.8100000083446502,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.8449999958276748,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.880000004172325,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.7050000041723251,
+      "y_pred": 1,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.95,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.6630000025033951,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.6279999993741512,
+      "y_pred": 1,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.6490000002086163,
+      "y_pred": 1,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.8100000083446502,
+      "y_pred": 1,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.880000004172325,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.05,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.95,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.7050000041723251,
+      "y_pred": 1,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "DeepDDI (Ryu et al. 2018)": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.5691118240356445,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.7715864181518555,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.28873971104621887,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.880247950553894,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.8788320422172546,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.7233527898788452,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.30209165811538696,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.2816208302974701,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.2822897732257843,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.3488475978374481,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.4318092465400696,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.8639975786209106,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.764175295829773,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.3563835024833679,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.525608479976654,
+      "y_pred": 1,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.19739720225334167,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.1252502053976059,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.1761900782585144,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.36578676104545593,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.5084503889083862,
+      "y_pred": 1,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.3894388973712921,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.687662661075592,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.31604838371276855,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.7278715968132019,
+      "y_pred": 1,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.7715864181518555,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.2816208004951477,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "KGNN (Wang et al. 2019)": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.8635237216949463,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.9296988844871521,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.25066739320755005,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.9434921145439148,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.8615468144416809,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.7228168845176697,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.3860771059989929,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.38839977979660034,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.08168695122003555,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.11735281348228455,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.16812960803508759,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.9417250752449036,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.8957870602607727,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.42730045318603516,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.5309181809425354,
+      "y_pred": 1,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.37884095311164856,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.02076677978038788,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.03659467399120331,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.15953552722930908,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.20615418255329132,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.33894801139831543,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.8883277773857117,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.5629742741584778,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.8117238879203796,
+      "y_pred": 1,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.9296988844871521,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.38839977979660034,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ],
+  "CompGCN (Vashishth et al. 2020)": [
+    {
+      "index": 0,
+      "y_true": 1,
+      "y_prob": 0.753186047077179,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_JOHNE_1999",
+      "source_id": "PUBMED_10405234"
+    },
+    {
+      "index": 1,
+      "y_true": 1,
+      "y_prob": 0.9134808778762817,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_PISCITELLI_2000",
+      "source_id": "PUBMED_10675971"
+    },
+    {
+      "index": 2,
+      "y_true": 0,
+      "y_prob": 0.4825572967529297,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DIGOXIN",
+      "study_id": "STUDY_ANDERSON_2003",
+      "source_id": "PUBMED_12891223"
+    },
+    {
+      "index": 3,
+      "y_true": 1,
+      "y_prob": 0.9809333086013794,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TACROLIMUS",
+      "study_id": "STUDY_ALJENOOBI_2020",
+      "source_id": "PUBMED_31548658"
+    },
+    {
+      "index": 4,
+      "y_true": 1,
+      "y_prob": 0.8389827609062195,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_KUSUNOKI_2017",
+      "source_id": "PUBMED_28726116"
+    },
+    {
+      "index": 5,
+      "y_true": 1,
+      "y_prob": 0.9490601420402527,
+      "y_pred": 1,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_MISAKA_2017",
+      "source_id": "PUBMED_27448332"
+    },
+    {
+      "index": 6,
+      "y_true": 0,
+      "y_prob": 0.589328408241272,
+      "y_pred": 1,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_ALPRAZOLAM",
+      "study_id": "STUDY_DONOVAN_2004",
+      "source_id": "PUBMED_15044558"
+    },
+    {
+      "index": 7,
+      "y_true": 0,
+      "y_prob": 0.2504396140575409,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_GOEY_2013",
+      "source_id": "PUBMED_15175557"
+    },
+    {
+      "index": 8,
+      "y_true": 1,
+      "y_prob": 0.2430194914340973,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_KUDOLO_2001",
+      "source_id": "PUBMED_11579737"
+    },
+    {
+      "index": 9,
+      "y_true": 0,
+      "y_prob": 0.2085570991039276,
+      "y_pred": 0,
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_UCHIDA_2008",
+      "source_id": "PUBMED_18491225"
+    },
+    {
+      "index": 10,
+      "y_true": 0,
+      "y_prob": 0.34209224581718445,
+      "y_pred": 0,
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_ANDERSON_2004",
+      "source_id": "PUBMED_15175558"
+    },
+    {
+      "index": 11,
+      "y_true": 1,
+      "y_prob": 0.9767885208129883,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL",
+      "study_id": "STUDY_EPELBAUM_2012",
+      "source_id": "PUBMED_21677335"
+    },
+    {
+      "index": 12,
+      "y_true": 0,
+      "y_prob": 0.9465547800064087,
+      "y_pred": 1,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_ROSUVASTATIN",
+      "study_id": "STUDY_ALJENOOBI_2020B",
+      "source_id": "PUBMED_31548659"
+    },
+    {
+      "index": 13,
+      "y_true": 0,
+      "y_prob": 0.370991587638855,
+      "y_pred": 0,
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_CHOW_2003B",
+      "source_id": "PUBMED_15961984"
+    },
+    {
+      "index": 14,
+      "y_true": 0,
+      "y_prob": 0.4390780031681061,
+      "y_pred": 0,
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_STORMER_1993",
+      "source_id": "PUBMED_15876902"
+    },
+    {
+      "index": 15,
+      "y_true": 0,
+      "y_prob": 0.177260622382164,
+      "y_pred": 0,
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_IRINOTECAN",
+      "study_id": "STUDY_VAN_ERP_2005",
+      "source_id": "PUBMED_16043826"
+    },
+    {
+      "index": 16,
+      "y_true": 0,
+      "y_prob": 0.08115967363119125,
+      "y_pred": 0,
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_DONOVAN_2004C",
+      "source_id": "PUBMED_15044562"
+    },
+    {
+      "index": 17,
+      "y_true": 0,
+      "y_prob": 0.10892665386199951,
+      "y_pred": 0,
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2005E",
+      "source_id": "PUBMED_15961986"
+    },
+    {
+      "index": 18,
+      "y_true": 1,
+      "y_prob": 0.16173319518566132,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_LEVODOPA",
+      "study_id": "STUDY_SCHELOSKY_2001",
+      "source_id": "PUBMED_11758978"
+    },
+    {
+      "index": 19,
+      "y_true": 1,
+      "y_prob": 0.15085789561271667,
+      "y_pred": 0,
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_CHLORZOXAZONE",
+      "study_id": "STUDY_FOO_2001",
+      "source_id": "PUBMED_11525493"
+    },
+    {
+      "index": 20,
+      "y_true": 1,
+      "y_prob": 0.29551249742507935,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE",
+      "study_id": "STUDY_GORSKI_2004B",
+      "source_id": "PUBMED_15087348"
+    },
+    {
+      "index": 21,
+      "y_true": 1,
+      "y_prob": 0.766082763671875,
+      "y_pred": 1,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_FELODIPINE",
+      "study_id": "STUDY_DRESSER_2002",
+      "source_id": "PUBMED_12217992"
+    },
+    {
+      "index": 22,
+      "y_true": 0,
+      "y_prob": 0.2775592505931854,
+      "y_pred": 0,
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN",
+      "study_id": "STUDY_GURLEY_2008H",
+      "source_id": "PUBMED_17178270"
+    },
+    {
+      "index": 23,
+      "y_true": 0,
+      "y_prob": 0.3375720679759979,
+      "y_pred": 0,
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_WARFARIN",
+      "study_id": "STUDY_LILJA_2004",
+      "source_id": "PUBMED_15616539"
+    },
+    {
+      "index": 24,
+      "y_true": 1,
+      "y_prob": 0.9134808778762817,
+      "y_pred": 1,
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_INDINAVIR",
+      "study_id": "STUDY_HENNESSY_2002",
+      "source_id": "PUBMED_10675972"
+    },
+    {
+      "index": 25,
+      "y_true": 0,
+      "y_prob": 0.2504395842552185,
+      "y_pred": 0,
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_DOCETAXEL",
+      "study_id": "STUDY_SPARREBOOM_2014",
+      "source_id": "PUBMED_15175559"
+    }
+  ]
+}

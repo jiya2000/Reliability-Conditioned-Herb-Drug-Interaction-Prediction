@@ -423,3 +423,167 @@ def _normal_cdf(x: float) -> float:
         t * (-1.821256 + t * 1.330274))))
     )
     return 1.0 - p if x > 0 else p
+
+
+def paired_bootstrap_auc_test(
+    y_true: np.ndarray,
+    y_prob_a: np.ndarray,
+    y_prob_b: np.ndarray,
+    n_bootstrap: int = 2000,
+    seed: int = 42,
+) -> dict[str, float]:
+    """
+    Paired bootstrap hypothesis test for difference in ROC-AUC:
+    H0: AUC(B) - AUC(A) == 0 vs H1: AUC(B) != AUC(A).
+    Returns:
+        diff_auc: AUC(B) - AUC(A)
+        p_value: two-sided bootstrap p-value
+        cohens_d: standardized effect size
+        ci_lower: 2.5 percentile of bootstrap diff
+        ci_upper: 97.5 percentile of bootstrap diff
+    """
+    from sklearn.metrics import roc_auc_score
+
+    rng = np.random.RandomState(seed)
+    y_true = np.asarray(y_true, dtype=int).flatten()
+    p_a = np.asarray(y_prob_a, dtype=float).flatten()
+    p_b = np.asarray(y_prob_b, dtype=float).flatten()
+    n = len(y_true)
+
+    auc_a = float(roc_auc_score(y_true, p_a))
+    auc_b = float(roc_auc_score(y_true, p_b))
+    observed_diff = auc_b - auc_a
+
+    boot_diffs = []
+    for _ in range(n_bootstrap):
+        idx = rng.randint(0, n, size=n)
+        if len(np.unique(y_true[idx])) > 1:
+            diff = float(roc_auc_score(y_true[idx], p_b[idx]) - roc_auc_score(y_true[idx], p_a[idx]))
+            boot_diffs.append(diff)
+
+    boot_diffs = np.array(boot_diffs)
+    if len(boot_diffs) == 0:
+        return {"diff_auc": observed_diff, "p_value": 1.0, "cohens_d": 0.0, "ci_lower": 0.0, "ci_upper": 0.0}
+
+    centered = boot_diffs - np.mean(boot_diffs)
+    p_value = float(np.mean(np.abs(centered) >= np.abs(observed_diff)))
+    std_diff = float(np.std(boot_diffs, ddof=1))
+    effect_size = float(observed_diff / (std_diff + 1e-8))
+    ci_lower = float(np.percentile(boot_diffs, 2.5))
+    ci_upper = float(np.percentile(boot_diffs, 97.5))
+
+    return {
+        "diff_auc": float(observed_diff),
+        "p_value": float(max(1.0 / n_bootstrap, p_value)),
+        "cohens_d": effect_size,
+        "ci_lower": ci_lower,
+        "ci_upper": ci_upper,
+    }
+
+
+def delong_auc_test(
+    y_true: np.ndarray,
+    y_prob_a: np.ndarray,
+    y_prob_b: np.ndarray,
+) -> dict[str, float]:
+    """
+    DeLong's asymptotic test for comparing two correlated ROC curves on the same samples.
+    Computes structural placement values V10 and V01 and asymptotic covariance matrix.
+    """
+    y_true = np.asarray(y_true, dtype=int).flatten()
+    p_a = np.asarray(y_prob_a, dtype=float).flatten()
+    p_b = np.asarray(y_prob_b, dtype=float).flatten()
+
+    pos_mask = (y_true == 1)
+    neg_mask = (y_true == 0)
+    m = int(np.sum(pos_mask))
+    n = int(np.sum(neg_mask))
+
+    if m < 2 or n < 2:
+        return {"diff_auc": 0.0, "z_stat": 0.0, "p_value": 1.0, "auc_a": 0.5, "auc_b": 0.5, "cohens_d": 0.0}
+
+    pos_a, neg_a = p_a[pos_mask], p_a[neg_mask]
+    pos_b, neg_b = p_b[pos_mask], p_b[neg_mask]
+
+    def compute_placement_values(pos, neg):
+        diff = pos[:, None] - neg[None, :]
+        psi = np.where(diff > 0, 1.0, np.where(diff == 0, 0.5, 0.0))
+        v10 = np.mean(psi, axis=1)  # shape (m,)
+        v01 = np.mean(1.0 - psi, axis=0)  # shape (n,)
+        return v10, v01
+
+    v10_a, v01_a = compute_placement_values(pos_a, neg_a)
+    v10_b, v01_b = compute_placement_values(pos_b, neg_b)
+
+    auc_a = float(np.mean(v10_a))
+    auc_b = float(np.mean(v10_b))
+    diff_auc = auc_b - auc_a
+
+    s10 = np.cov(v10_a, v10_b, ddof=1)
+    s01 = np.cov(v01_a, v01_b, ddof=1)
+
+    sigma = (s10 / m) + (s01 / n)
+    var_diff = float(sigma[0, 0] + sigma[1, 1] - 2 * sigma[0, 1])
+
+    if var_diff <= 0:
+        return {"diff_auc": diff_auc, "z_stat": 0.0, "p_value": 1.0, "auc_a": auc_a, "auc_b": auc_b, "cohens_d": 0.0}
+
+    se_diff = float(np.sqrt(var_diff))
+    z_stat = float(diff_auc / (se_diff + 1e-9))
+    p_val = float(2 * (1.0 - _normal_cdf(abs(z_stat))))
+    d = float(diff_auc / (se_diff + 1e-9))
+
+    return {
+        "diff_auc": diff_auc,
+        "z_stat": z_stat,
+        "p_value": p_val,
+        "auc_a": auc_a,
+        "auc_b": auc_b,
+        "cohens_d": d,
+    }
+
+
+def paired_bootstrap_brier_test(
+    y_true: np.ndarray,
+    y_prob_a: np.ndarray,
+    y_prob_b: np.ndarray,
+    n_bootstrap: int = 2000,
+    seed: int = 42,
+) -> dict[str, float]:
+    """
+    Paired bootstrap test for difference in Brier score:
+    diff_brier = Brier(A) - Brier(B). Positive value indicates Model B is better calibrated.
+    """
+    rng = np.random.RandomState(seed)
+    y_true = np.asarray(y_true, dtype=float).flatten()
+    p_a = np.asarray(y_prob_a, dtype=float).flatten()
+    p_b = np.asarray(y_prob_b, dtype=float).flatten()
+    n = len(y_true)
+
+    se_a = (p_a - y_true) ** 2
+    se_b = (p_b - y_true) ** 2
+    brier_a = float(np.mean(se_a))
+    brier_b = float(np.mean(se_b))
+    observed_diff = brier_a - brier_b  # positive = B is better (lower error)
+
+    diffs = se_a - se_b
+    boot_diffs = []
+    for _ in range(n_bootstrap):
+        idx = rng.randint(0, n, size=n)
+        boot_diffs.append(float(np.mean(diffs[idx])))
+
+    boot_diffs = np.array(boot_diffs)
+    centered = boot_diffs - np.mean(boot_diffs)
+    p_val = float(np.mean(np.abs(centered) >= np.abs(observed_diff)))
+    std_diff = float(np.std(boot_diffs, ddof=1))
+    effect_size = float(observed_diff / (std_diff + 1e-8))
+
+    return {
+        "diff_brier": float(observed_diff),
+        "brier_a": brier_a,
+        "brier_b": brier_b,
+        "p_value": float(max(1.0 / n_bootstrap, p_val)),
+        "cohens_d": effect_size,
+        "ci_lower": float(np.percentile(boot_diffs, 2.5)),
+        "ci_upper": float(np.percentile(boot_diffs, 97.5)),
+    }

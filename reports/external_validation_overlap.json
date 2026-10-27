@@ -1,0 +1,124 @@
+{
+  "n_external_records": 5,
+  "n_source_training_records": 114,
+  "pair_level": {
+    "n_overlap_training_split": 4,
+    "n_overlap_full_benchmark": 4,
+    "overlapping_pairs": [
+      "HERB_CURCUMA + DRUG_MIDAZOLAM",
+      "HERB_GOLDENSEAL + DRUG_METFORMIN",
+      "HERB_GOLDENSEAL + DRUG_MIDAZOLAM",
+      "HERB_CURCUMA + DRUG_TALINOLOL"
+    ],
+    "novel_non_overlapping_pairs": [
+      "HERB_KRATOM + DRUG_OXYCODONE"
+    ]
+  },
+  "herb_level": {
+    "n_overlap": 2,
+    "overlapping_herbs": [
+      "HERB_CURCUMA",
+      "HERB_GOLDENSEAL"
+    ],
+    "novel_herbs": [
+      "HERB_KRATOM"
+    ]
+  },
+  "drug_level": {
+    "n_overlap": 4,
+    "overlapping_drugs": [
+      "DRUG_METFORMIN",
+      "DRUG_MIDAZOLAM",
+      "DRUG_OXYCODONE",
+      "DRUG_TALINOLOL"
+    ],
+    "novel_drugs": []
+  },
+  "study_level": {
+    "n_overlap": 0,
+    "overlapping_studies": [],
+    "verdict": "Zero study overlap (100% disjoint publications/cohorts)"
+  },
+  "source_level": {
+    "n_overlap": 0,
+    "overlapping_sources": [],
+    "verdict": "Zero source PMID/DOI overlap"
+  },
+  "per_record_diagnostics": [
+    {
+      "index": 0,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_MIDAZOLAM",
+      "study_id": "STUDY_PAINE_2018",
+      "source_id": "PUBMED_29774652",
+      "pair_in_training_split": true,
+      "pair_in_full_benchmark": true,
+      "herb_in_training": true,
+      "drug_in_training": true,
+      "study_in_training": false,
+      "source_in_training": false,
+      "is_curcuma_overlap": true,
+      "notes": "Pair exists in training benchmark (distinct clinical study/cohort)"
+    },
+    {
+      "index": 1,
+      "herb_id": "HERB_GOLDENSEAL",
+      "drug_id": "DRUG_METFORMIN",
+      "study_id": "STUDY_NGUYEN_2021",
+      "source_id": "PUBMED_32749033",
+      "pair_in_training_split": true,
+      "pair_in_full_benchmark": true,
+      "herb_in_training": true,
+      "drug_in_training": true,
+      "study_in_training": false,
+      "source_in_training": false,
+      "is_curcuma_overlap": false,
+      "notes": "Pair exists in training benchmark (distinct clinical study/cohort)"
+    },
+    {
+      "index": 2,
+      "herb_id": "HERB_KRATOM",
+      "drug_id": "DRUG_OXYCODONE",
+      "study_id": "STUDY_TANNA_2020",
+      "source_id": "PUBMED_32168541",
+      "pair_in_training_split": false,
+      "pair_in_full_benchmark": false,
+      "herb_in_training": false,
+      "drug_in_training": true,
+      "study_in_training": false,
+      "source_in_training": false,
+      "is_curcuma_overlap": false,
+      "notes": "Novel external pair (completely unobserved in training benchmark); De novo botanical entity (unseen herb)"
+    },
+    {
+      "index": 3,
+      "herb_id": "HERB_GOLDENSEAL",
+      "drug_id": "DRUG_MIDAZOLAM",
+      "study_id": "STUDY_GURLEY_2003",
+      "source_id": "PUBMED_14631289",
+      "pair_in_training_split": true,
+      "pair_in_full_benchmark": true,
+      "herb_in_training": true,
+      "drug_in_training": true,
+      "study_in_training": false,
+      "source_in_training": false,
+      "is_curcuma_overlap": false,
+      "notes": "Pair exists in training benchmark (distinct clinical study/cohort)"
+    },
+    {
+      "index": 4,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TALINOLOL",
+      "study_id": "STUDY_PAOLETTI_2007",
+      "source_id": "PUBMED_17563541",
+      "pair_in_training_split": true,
+      "pair_in_full_benchmark": true,
+      "herb_in_training": true,
+      "drug_in_training": true,
+      "study_in_training": false,
+      "source_in_training": false,
+      "is_curcuma_overlap": true,
+      "notes": "Pair exists in training benchmark (distinct clinical study/cohort)"
+    }
+  ]
+}

@@ -31,7 +31,7 @@
 
 \IEEEtitleabstractindextext{%
 \begin{abstract}
-Concurrent administration of botanical supplements and prescription pharmaceuticals is increasingly prevalent in modern healthcare, yet predicting herb--drug interactions (HDIs) remains a critical bioinformatics challenge. Unlike synthetic drug--drug interactions (DDIs) involving single active pharmaceutical ingredients, botanicals are complex multi-constituent mixtures whose scientific literature is corrupted by citation echo chambers (where dozens of secondary reviews reiterate an isolated index report), experimental context heterogeneity (in vitro vs. mammalian vs. human trials), and uncalibrated scientific contradictions. Here, we present a reliability-conditioned herb--drug interaction prediction framework that unifies: (1) evidence lineage directed acyclic graph (DAG) construction with connected-component echo attenuation ($\alpha = 0.15$); (2) multi-factor pharmacokinetic context compatibility scoring grounded in regulatory guidelines; (3) a heterogeneous Biological Graph Attention Network (GAT) over phase I/II human enzymes gated dynamically with BiomedBERT contextual embeddings; and (4) a validation-calibrated tri-state decision engine with epistemic uncertainty abstention. Evaluated on an auditable benchmark of 141 verified publications spanning 18 herbs and 40 prescription medications across 123 independent study clusters under strict study-disjoint partitioning (90 train, 25 validation, 26 test records), our architecture achieves 0.9762 ROC-AUC [95\% CI: 0.910, 1.000], 0.9707 PR-AUC, 0.9167 F1-score, and 92.31\% test accuracy (24/26 correct), providing absolute gains of +16.07 to +19.05 ROC-AUC points (+19.7\% to +24.2\% relative gain) over DeepDDI, KGNN, and CompGCN. Furthermore, calibrated abstention selectively identifies high-conflict trials, elevating diagnostic accuracy on non-conflicting queries to 96.00\% (24/25 correct).
+Concurrent administration of botanical supplements and prescription pharmaceuticals is increasingly prevalent in modern healthcare, yet predicting herb--drug interactions (HDIs) remains a critical bioinformatics challenge. Unlike synthetic drug--drug interactions (DDIs) involving single active pharmaceutical ingredients, botanicals are complex multi-constituent mixtures whose scientific literature is corrupted by citation echo chambers (where dozens of secondary reviews reiterate an isolated index report), experimental context heterogeneity (in vitro vs. mammalian vs. human trials), and uncalibrated scientific contradictions. Here, we present a reliability-conditioned herb--drug interaction prediction framework that unifies: (1) evidence lineage directed acyclic graph (DAG) construction with connected-component echo attenuation ($\alpha = 0.15$); (2) multi-factor pharmacokinetic context compatibility scoring grounded in regulatory guidelines; (3) a heterogeneous Biological Graph Attention Network (GAT) over phase I/II human enzymes gated dynamically with BiomedBERT contextual embeddings; and (4) a validation-calibrated tri-state decision engine with epistemic uncertainty abstention. Evaluated on an auditable benchmark of 141 verified publications spanning 18 herbs and 40 prescription medications across 123 independent study clusters under strict study-disjoint partitioning (90 train, 25 validation, 26 test records), our architecture achieves 0.8512 ROC-AUC [95\% CI: 0.659, 0.987], 0.8794 PR-AUC, 0.7826 F1-score, and 80.77\% test accuracy (21/26 correct), providing competitive performance against external graph architectures under strict leakage-free evaluation. Furthermore, calibrated abstention selectively identifies high-conflict and ambiguous trials, routing them safely to clinical pharmacist review.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -102,7 +102,7 @@ Each evidence record $e_i$ is parameterized by an experimental context compatibi
 \end{equation}
 where the contextual multipliers are:
 \begin{align}
-w_{\text{species}} &= \begin{cases} 1.00 & \text{Human clinical trial or PK study} \\ 0.65 & \text{In vivo mammalian (rodent, canine, porcine)} \\ 0.30 & \text{In vitro (microsomes, cell lines, recombinant)} \end{cases} \\
+w_{\text{species}} &= \begin{cases} 1.00 & \text{Human clinical trial or PK study} \\ 0.50 & \text{In vivo mammalian (rodent, canine, porcine)} \\ 0.20 & \text{In vitro (microsomes, cell lines, recombinant)} \end{cases} \\
 w_{\text{prep}} &= \begin{cases} 1.00 & \text{Standardized botanical extract (e.g., LI 160, EGb 761)} \\ 0.85 & \text{Crude whole-herb decoction / extract} \\ 0.70 & \text{Isolated pure single aglycone} \end{cases} \\
 w_{\text{route}} &= \begin{cases} 1.00 & \text{Oral co-administration (canonical clinical route)} \\ 0.75 & \text{Parenteral (IV, IP)} \end{cases}
 \end{align}
@@ -160,7 +160,7 @@ The benchmark dataset consists of \textbf{141 peer-reviewed scientific publicati
 \textbf{Study-Disjoint Splitting Protocol:} Weakly connected citation components are indivisibly partitioned: 60\% train (90 records, 73 clusters), 20\% validation (25 records, 25 clusters), and 20\% test (26 records, 25 clusters). Zero citation ancestors or descendants appear across splits.
 
 \subsection{Comparative Performance Against Baselines}
-Table~\ref{tab:results} summarizes performance on the study-disjoint test partition of 26 records. Our proposed framework achieves an ROC-AUC of \textbf{0.9762 [95\% CI: 0.910, 1.000]} and an accuracy of \textbf{92.31\% (24/26 correct)}, providing absolute gains of +16.07 to +19.05 ROC-AUC points (+19.7\% to +24.2\% relative gain) over published baselines DeepDDI, KGNN, and CompGCN.
+Table~\ref{tab:results} summarizes performance on the study-disjoint test partition of 26 records. Under strict leakage-free quality-only lineage modeling, our proposed framework achieves an ROC-AUC of \textbf{0.8512 [95\% CI: 0.659, 0.987]}, PR-AUC of \textbf{0.8794}, and an accuracy of \textbf{80.77\% (21/26 correct)}, providing competitive performance against external graph architectures such as DeepDDI (0.8452), KGNN (0.7202), and CompGCN (0.7262).
 
 \begin{table*}[t]
 \centering
@@ -171,13 +171,13 @@ Table~\ref{tab:results} summarizes performance on the study-disjoint test partit
 \toprule
 \textbf{Model Architecture} & \textbf{ROC-AUC (95\% CI)} & \textbf{PR-AUC} & \textbf{F1-Score} & \textbf{ECE} & \textbf{Brier Score} & \textbf{Accuracy} \\
 \midrule
-\textbf{Proposed Reliability-Conditioned} & \textbf{0.9762 [0.910, 1.000]} & \textbf{0.9707} & \textbf{0.9167} & \textbf{0.1650} & \textbf{0.0846} & \textbf{92.31\% (24/26)} \\
-Standard Multimodal Fusion & 0.8274 [0.650, 0.960] & 0.8481 & 0.6364 & 0.1688 & 0.1640 & 69.23\% (18/26) \\
-DeepDDI (Ryu et al., PNAS)~\cite{ryu2018deep} & 0.8155 [0.660, 0.960] & 0.8242 & 0.6957 & 0.2029 & 0.1851 & 73.08\% (19/26) \\
-KGNN (Wang et al., WWW)~\cite{wang2019kgnn} & 0.8036 [0.640, 0.960] & 0.7854 & 0.6667 & 0.2182 & 0.2266 & 69.23\% (18/26) \\
-CompGCN (Vashishth et al., ICLR)~\cite{vashishth2020compgcn} & 0.7857 [0.610, 0.940] & 0.8007 & 0.6957 & 0.2189 & 0.2203 & 73.08\% (19/26) \\
-Evidence Text Only & 0.8155 [0.620, 0.980] & 0.7736 & 0.7692 & 0.1359 & 0.1777 & 76.92\% (20/26) \\
-Biological Graph Only & 0.7083 [0.470, 0.930] & 0.6927 & 0.6667 & 0.2079 & 0.2037 & 69.23\% (18/26) \\
+\textbf{Proposed Reliability-Conditioned} & \textbf{0.8512 [0.659, 0.987]} & \textbf{0.8794} & \textbf{0.7826} & \textbf{0.1621} & \textbf{0.1554} & \textbf{80.77\% (21/26)} \\
+Standard Multimodal Fusion & 0.8274 [0.650, 0.960] & 0.8504 & 0.6087 & 0.1688 & 0.1795 & 65.38\% (17/26) \\
+DeepDDI (Ryu et al., PNAS)~\cite{ryu2018deep} & 0.8452 [0.680, 0.970] & 0.8414 & 0.7500 & 0.2029 & 0.1687 & 76.92\% (20/26) \\
+KGNN (Wang et al., WWW)~\cite{wang2019kgnn} & 0.7202 [0.490, 0.930] & 0.7805 & 0.6667 & 0.2182 & 0.2194 & 69.23\% (18/26) \\
+CompGCN (Vashishth et al., ICLR)~\cite{vashishth2020compgcn} & 0.7262 [0.510, 0.920] & 0.7774 & 0.7273 & 0.2189 & 0.1918 & 76.92\% (20/26) \\
+Evidence Text Only & 0.8095 [0.610, 0.980] & 0.7647 & 0.7692 & 0.1359 & 0.1934 & 76.92\% (20/26) \\
+Biological Graph Only & 0.7202 [0.490, 0.920] & 0.6858 & 0.6667 & 0.2079 & 0.2108 & 69.23\% (18/26) \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -211,10 +211,10 @@ Biological Graph Only & 0.7083 [0.470, 0.930] & 0.6927 & 0.6667 & 0.2079 & 0.203
 \end{figure}
 
 \subsection{Selective Accuracy and Abstention Analysis}
-On the 26 held-out test records, un-abstained accuracy is 92.31\% (24/26 correct, Wilson 95\% CI: [75.9\%, 97.9\%]). When the model selectively abstains on the single conflicting test record (the Ginseng--Digoxin immunoassay artifact deadlock in Study Anderson 2003), 25 records are retained (96.15\% coverage), and selective accuracy on the retained non-conflicting subset reaches \textbf{96.00\% (24/25 correct)} [Wilson 95\% CI: 80.5\%, 99.3\%], with only a single borderline false negative (Kava--Chlorzoxazone at $p=0.4949$ vs. 0.5000 threshold).
+On the 26 held-out test records, un-abstained accuracy is 80.77\% (21/26 correct, Wilson 95\% CI: [62.7\%, 91.1\%]). Rather than forcing high-confidence errors on out-of-distribution or conflicting evidence, the tri-state decision engine identifies borderline and ambiguous pairs for clinical pharmacist review routing rather than issuing uncalibrated forced predictions.
 
 \subsection{Ablation Analysis}
-Table~\ref{tab:ablations} details the impact of removing individual architectural components. Removing context compatibility degrades ROC-AUC to 0.8571, demonstrating the necessity of species and formulation scaling. Disabling dynamic reliability gating ($R=1.0$) drops ROC-AUC to 0.8274, confirming that unconditional fusion degrades representations when text quality varies.
+Table~\ref{tab:ablations} details the impact of removing individual architectural components under leakage-free evaluation. Disabling dynamic reliability gating ($R=1.0$, Standard Multimodal Fusion) drops ROC-AUC to 0.8274 and accuracy to 65.38\%, confirming that uncalibrated fusion degrades representations when text quality varies. Removing biological graph priors (Evidence Text Only) yields 0.8095 ROC-AUC, while relying solely on mechanistic graphs (Biological Graph Only) achieves 0.7202 ROC-AUC.
 
 \begin{table}[h]
 \centering
@@ -225,14 +225,29 @@ Table~\ref{tab:ablations} details the impact of removing individual architectura
 \toprule
 \textbf{Ablation Variant} & \textbf{ROC-AUC} & \textbf{F1} & \textbf{Brier Loss} & \textbf{Accuracy} \\
 \midrule
-\textbf{Full Proposed Framework} & \textbf{0.9762} & \textbf{0.9167} & \textbf{0.0846} & \textbf{92.31\% (24/26)} \\
-w/o Context Compatibility & 0.8571 & 0.6957 & 0.1661 & 73.08\% (19/26) \\
-w/o Dynamic Reliability Gating & 0.8274 & 0.6364 & 0.1640 & 69.23\% (18/26) \\
-w/o Biological Graph GAT & 0.8155 & 0.7692 & 0.1777 & 76.92\% (20/26) \\
-w/o Evidence NLP Branch & 0.7083 & 0.6667 & 0.2037 & 69.23\% (18/26) \\
+\textbf{Proposed Framework (Quality-Only)} & \textbf{0.8512} & \textbf{0.7826} & \textbf{0.1554} & \textbf{80.77\% (21/26)} \\
+Graph + Naive Evidence & 0.8512 & 0.7273 & 0.1652 & 76.92\% (20/26) \\
+w/o Dynamic Reliability Gating (Standard Fusion) & 0.8274 & 0.6087 & 0.1795 & 65.38\% (17/26) \\
+Evidence Text Only (w/o Graph Priors) & 0.8095 & 0.7692 & 0.1934 & 76.92\% (20/26) \\
+Biological Graph Only (w/o Text Evidence) & 0.7202 & 0.6667 & 0.2108 & 69.23\% (18/26) \\
+w/o Study Dependence (Ablation) & 0.7321 & 0.6667 & 0.1952 & 69.23\% (18/26) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Baseline Parity and Negative Results}
+We report transparently that on the focused study-disjoint test partition ($N=26$), simpler non-gated architectures achieve comparable or slightly higher point estimates: Naive Concat MLP achieves 0.9048 ROC-AUC, 0.9207 PR-AUC, and 80.77\% accuracy, while L2-regularized Logistic Regression on 13D tabular features achieves 0.8274 ROC-AUC and 84.62\% accuracy (22/26 correct). Similarly, DeepDDI achieves an ROC-AUC of 0.8452 (competitive with our 0.8512). 
+
+These findings indicate that when evaluated purely on uncorrupted in-distribution candidate pairs with available text, direct representation concatenation can learn effective decision boundaries without explicit reliability gating. However, the critical value of our proposed architecture lies not in marginal point-estimate ROC-AUC maximization on clean data, but in four safety-critical properties: (1) \textit{calibrated posterior probabilities} (Brier score 0.1554 vs. 0.1687--0.2194 for graph baselines); (2) \textit{principled fallback} ($R \to 0$) to biological GAT mechanism priors when literature is absent or uncorroborated, preventing textual hallucination; (3) \textit{citation echo attenuation} ($\alpha = 0.15$), preventing circular citation volume from artificially inflating prediction confidence; and (4) \textit{selective clinical abstention}, safely routing ambiguous or contradictory pairs to clinical pharmacist review rather than forcing binary guesses.
+
+\section{Limitations}
+While this work establishes an auditable foundation for reliability-conditioned HDI prediction, several important methodological and empirical limitations must be acknowledged:
+\begin{enumerate}
+    \item \textbf{Small Benchmark Cohort Size ($N=26$ test records):} Although our benchmark of 141 publications across 123 independent study clusters is fully audited with verified PubMed PMIDs and DOIs, the held-out study-disjoint test split contains 26 records (12 positive, 14 non-positive). Consequently, bootstrap confidence intervals are wide (ROC-AUC 95\% CI: [0.659, 0.987]), and differences between top-performing models do not reach statistical significance after multiple-testing correction.
+    \item \textbf{Zero-Literature External Validation Behavior:} When applied to external benchmarks without curated literature corpora (e.g., NaPDI clinical template pairs), the reliability module correctly detects complete literature missingness ($M = 1.0$) and sets $R = 0.0$. However, under strict conformal calibration bands ($\epsilon = 0.10$), the resulting biological GAT prior predictions ($\hat{p} \in [0.63, 0.80]$) fall within the non-singleton prediction set region, triggering 100\% abstention. While this represents safe protective behavior, prospective deployment requires automated literature retrieval pipelines to populate evidence lineage graphs for novel pairs.
+    \item \textbf{Decision Sensitivity to Initialization Seeds:} On small sample sizes, candidate pairs with predicted probabilities near the decision boundary ($\hat{p} \approx 0.50$, such as Kava--Chlorzoxazone at $\hat{p} = 0.4419$) can flip classifications across different neural network initialization seeds, highlighting the necessity of deep ensembling for clinical deployment.
+    \item \textbf{Translational Scope:} The system provides advisory Clinical Decision Support (CDS) alerts and review queue routing; it has not undergone prospective multi-center clinical trial validation in active Electronic Health Record (EHR) environments.
+\end{enumerate}
 
 \section{Clinical Case Studies}
 \subsection{Case 1: St. John's Wort and Cyclosporine (Echo Chamber)}
@@ -242,7 +257,7 @@ Four separate reports in our dataset documented severe drops in cyclosporine blo
 Literature contains direct conflict regarding cranberry juice and warfarin: case reports allege severe bleeding, whereas prospective randomized trials observed zero change in INR or clearance. Our system computed conflict index $C_{h,d} = 0.82$ and epistemic uncertainty $u = 0.31$, triggering the \textbf{ABSTAIN} state and routing the case to the clinical pharmacist review queue with an auditable summary rather than an uncalibrated false alarm.
 
 \section{Conclusion}
-We established the first reliability-conditioned prediction architecture specifically formulated for herb--drug interactions. By resolving citation echo chambers, experimental context mismatches, and scientific contradictions, our framework bridges computational pharmacovigilance with auditable clinical decision support.
+We established a reliability-conditioned prediction architecture for herb--drug interactions that replaces unconditioned literature trust with auditable evidence lineage graphs, context compatibility scoring, and calibrated selective abstention. By demonstrating that naive feature concatenation can achieve comparable raw accuracy while lacking safety mechanisms, our findings emphasize that responsible clinical AI must prioritize uncertainty calibration, circularity attenuation, and transparent fallback over uncalibrated metric optimization.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

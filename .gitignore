@@ -29,6 +29,7 @@ data/processed/
 *.db
 *.csv
 !data/benchmark/*.csv
+!reports/*.csv
 *.tsv
 *.jsonl
 

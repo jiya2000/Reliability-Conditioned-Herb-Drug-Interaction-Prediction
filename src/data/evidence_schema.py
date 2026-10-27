@@ -15,6 +15,7 @@ from dataclasses import dataclass, field, asdict
 from enum import Enum
 from typing import Any, Dict, List, Optional, Set, Tuple
 import json
+import os
 import pandas as pd
 from loguru import logger
 
@@ -106,6 +107,11 @@ class EvidenceRecord:
     raw_label: Optional[str] = None
     effect_direction: str = EffectDirection.UNSPECIFIED.value
     clinical_significance: Optional[str] = None
+    # Phase 3 Optional Pharmacokinetic Metadata Fields
+    extract_standardization: Optional[str] = None  # e.g., "0.3% hyperforin", "95% curcuminoids"
+    treatment_duration: Optional[str] = None       # e.g., "14 days", "single dose", "4 weeks"
+    interaction_direction: Optional[str] = None    # "induction", "inhibition", "none", "unspecified"
+    time_dependence: Optional[str] = None          # "reversible", "mechanism_based", "time_dependent", "tdi"
 
     def __post_init__(self):
         # Normalize and validate string values against null/nan leakage
@@ -138,6 +144,12 @@ class EvidenceRecord:
 
         cleaned_study = _clean_str(self.study_id)
         self.study_id = cleaned_study if cleaned_study is not None else self.source_id
+
+        # Phase 3 optional PK fields normalization
+        self.extract_standardization = _clean_str(self.extract_standardization)
+        self.treatment_duration = _clean_str(self.treatment_duration)
+        self.interaction_direction = _clean_str(self.interaction_direction)
+        self.time_dependence = _clean_str(self.time_dependence)
 
         # Normalize cited_study_ids
         if isinstance(self.cited_study_ids, str):
@@ -348,3 +360,135 @@ def load_canonical_table(input_path: str) -> pd.DataFrame:
         df["cited_study_ids"] = df["cited_study_ids"].apply(parse_citations)
 
     return df
+
+
+# =============================================================================
+# Pair-Level Ground-Truth Consensus Schema & Study-Design Decoupling
+# =============================================================================
+
+class ConsensusLabel(str, Enum):
+    """
+    Expert consensus interaction label for a herb-drug pair from authoritative
+    pharmacology compendia (NaPDI, Natural Medicines, Stockley's, DrugBank).
+    Decoupled from individual study findings.
+    """
+    INTERACTION = "interaction"
+    NO_INTERACTION = "no_interaction"
+    DISPUTED = "disputed"
+
+
+VALID_CONSENSUS_LABELS: Set[str] = {c.value for c in ConsensusLabel}
+
+
+@dataclass
+class ConsensusPairRecord:
+    """Pair-level ground-truth consensus record from authoritative compendia."""
+    herb_id: str
+    drug_id: str
+    consensus_label: str
+    severity: Optional[str] = None
+    direction: Optional[str] = None
+    source_name: Optional[str] = None
+    source_url_or_citation: Optional[str] = None
+    retrieval_date: Optional[str] = None
+    notes: Optional[str] = None
+
+    def validate(self) -> Tuple[bool, List[str]]:
+        errors = []
+        if not self.herb_id or not str(self.herb_id).strip():
+            errors.append("Missing required herb_id")
+        if not self.drug_id or not str(self.drug_id).strip():
+            errors.append("Missing required drug_id")
+        norm_label = str(self.consensus_label).lower().strip()
+        if norm_label not in VALID_CONSENSUS_LABELS:
+            errors.append(f"Invalid consensus_label '{self.consensus_label}'. Must be one of {VALID_CONSENSUS_LABELS}")
+        return len(errors) == 0, errors
+
+
+def validate_consensus_labels_table(df: pd.DataFrame) -> Tuple[bool, List[str]]:
+    """Validate a pair-level consensus ground-truth DataFrame."""
+    required = ["herb_id", "drug_id", "consensus_label"]
+    errors = []
+    missing_cols = [c for c in required if c not in df.columns]
+    if missing_cols:
+        return False, [f"Missing required columns in consensus table: {missing_cols}"]
+
+    for idx, row in df.iterrows():
+        rec = ConsensusPairRecord(
+            herb_id=str(row["herb_id"]).strip(),
+            drug_id=str(row["drug_id"]).strip(),
+            consensus_label=str(row["consensus_label"]).strip().lower(),
+            severity=_clean_str(row.get("severity")),
+            direction=_clean_str(row.get("direction")),
+            source_name=_clean_str(row.get("source_name")),
+            source_url_or_citation=_clean_str(row.get("source_url_or_citation")),
+            retrieval_date=_clean_str(row.get("retrieval_date")),
+            notes=_clean_str(row.get("notes")),
+        )
+        is_val, rec_errs = rec.validate()
+        if not is_val:
+            errors.append(f"Row {idx} ({rec.herb_id}, {rec.drug_id}): {rec_errs}")
+
+    return len(errors) == 0, errors
+
+
+def load_consensus_labels_table(path: str = "data/benchmark/consensus_labels.csv") -> Tuple[pd.DataFrame, bool]:
+    """
+    Loads pair-level consensus labels.
+    Returns (df, is_legacy_mode).
+    If file is missing, empty, or has 0 rows, logs a prominent banner and returns
+    (empty_df, True) to activate 'legacy label mode'.
+    """
+    if not os.path.exists(path) or os.path.getsize(path) <= 100:
+        logger.warning(
+            "⚠️ [LEGACY LABEL MODE ACTIVE] 'consensus_labels.csv' is empty or missing. "
+            "Pipeline is running with study-level outcome findings as legacy fallback. "
+            "Populate consensus_labels.csv with expert compendium annotations (NaPDI, Stockley's, Natural Medicines) "
+            "to enable supervised evidence aggregation."
+        )
+        return pd.DataFrame(columns=["herb_id", "drug_id", "consensus_label", "source_name"]), True
+
+    df = pd.read_csv(path)
+    if len(df) == 0:
+        logger.warning("⚠️ [LEGACY LABEL MODE ACTIVE] 'consensus_labels.csv' has 0 rows. Running in legacy mode.")
+        return df, True
+
+    is_valid, errors = validate_consensus_labels_table(df)
+    if not is_valid:
+        raise ValueError("Consensus table validation failed:\n" + "\n".join(errors[:10]))
+
+    logger.info(f"Loaded {len(df)} expert consensus pair labels from {path}.")
+    return df, False
+
+
+class StudyFinding(str, Enum):
+    """Individual study observation direction."""
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    NULL = "null"
+
+
+def extract_study_finding(outcome_str: Any) -> StudyFinding:
+    """Normalize raw study finding string to StudyFinding enum."""
+    s = str(outcome_str).lower().strip()
+    if s in {"interaction_present", "positive", "1", "true"}:
+        return StudyFinding.POSITIVE
+    elif s in {"no_interaction_observed", "negative", "0", "false"}:
+        return StudyFinding.NEGATIVE
+    return StudyFinding.NULL
+
+
+def extract_study_design_fields(row: Dict[str, Any] | pd.Series) -> Dict[str, Any]:
+    """
+    Extract strictly methodological/design fields from a study record.
+    Guaranteed to contain zero study outcome conclusions.
+    """
+    return {
+        "species": _clean_str(row.get("species", "unknown")),
+        "assay": _clean_str(row.get("evidence_type", "unknown")),
+        "route": _clean_str(row.get("route", "oral")),
+        "preparation": _clean_str(row.get("preparation", "standardized_extract")),
+        "dose": _clean_str(row.get("dose")),
+        "population": _clean_str(row.get("population")),
+        "extract_standardization": _clean_str(row.get("extract_standardization")),
+    }

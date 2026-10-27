@@ -539,7 +539,7 @@ st.markdown(
     """
     <div style="margin-bottom: 14px;">
         <span class="badge-patent">USPTO Provisional / PCT Eligible</span>
-        <span class="badge-patent">35 U.S.C. §101 Eligible Clinical Interlock</span>
+        <span class="badge-patent">Advisory Clinical Decision Support (Non-Device)</span>
         <span class="badge-verified">141 Verified PubMed Records</span>
         <span class="badge-verified">123 Citation Clusters (Study-Disjoint)</span>
     </div>
@@ -547,6 +547,9 @@ st.markdown(
         A clinical decision support framework resolving literature citation echo chambers, experimental context heterogeneity,
         and scientific contradictions via heterogeneous biological graph attention and calibrated tri-state abstention.
     </p>
+    <div style="background: rgba(245, 158, 11, 0.12); border-left: 4px solid #f59e0b; padding: 10px 14px; border-radius: 6px; margin-top: 10px; margin-bottom: 16px; font-size: 0.84rem; color: #fbbf24; line-height: 1.4;">
+        <b>⚠️ CLINICAL LIMITATIONS & RESEARCH PROTOTYPE DISCLAIMER:</b> This platform is an academic research prototype intended solely for investigational and clinical pharmacology decision support. It is <b>NOT an FDA-cleared or CE-marked medical device</b>, has not been prospectively validated in randomized clinical trials, and does not provide definitive medical diagnoses or automated prescription locks. Evaluated on a research benchmark (141 literature studies). All outputs must be reviewed and adjudicated by licensed clinical pharmacists and healthcare providers before clinical decision-making.
+    </div>
     """,
     unsafe_allow_html=True,
 )
@@ -599,8 +602,8 @@ with tab_interactive:
         # Mark missingness = 1.0
         meta_vector[7] = 1.0
 
-    # Apply interactive context overrides if specified
-    species_weight = 1.0 if "Human" in species_choice else (0.65 if "Rodent" in species_choice else 0.30)
+    # Apply interactive context overrides if specified (canonical: Human 1.0, Animal 0.50, In Vitro 0.20)
+    species_weight = 1.0 if "Human" in species_choice else (0.50 if "Rodent" in species_choice else 0.20)
     prep_weight = 1.0 if "Standardized" in prep_choice else (0.85 if "Crude" in prep_choice else 0.70)
     route_weight = 1.0 if "Oral" in route_choice else 0.75
     context_multiplier = species_weight * prep_weight * route_weight
@@ -651,30 +654,36 @@ with tab_interactive:
     routing = dec.routing_destination
 
     # ---------- Clinical Decision Banner ----------
-    if decision_state == "INTERACTION PRESENT":
+    if decision_state in ("INTERACTION PRESENT", "INTERACTION_PRESENT"):
         st.markdown(
             f"""
             <div class="alert-interaction">
-                <h3 style="margin: 0 0 6px 0; color: #ef4444; font-size: 1.3rem;">⚠️ CLINICAL INTERLOCK TRIGGERED: INTERACTION PRESENT</h3>
+                <h3 style="margin: 0 0 6px 0; color: #ef4444; font-size: 1.3rem;">⚠️ ADVISORY CLINICAL ALERT: INTERACTION LIKELY (DECISION SUPPORT)</h3>
                 <p style="margin: 0; font-size: 0.95rem;">
                     Concomitant administration of <b>{HERB_DISPLAY_NAMES.get(selected_herb, selected_herb)}</b> with 
                     <b>{DRUG_DISPLAY_NAMES.get(selected_drug, selected_drug)}</b> is predicted to induce significant pharmacokinetic alteration.
-                    <b>Electronic Health Record (EHR) Action:</b> Automated prescription interlock activated; dose modification or alternative therapeutic regimen required.
+                    <b>Advisory Decision-Support Action:</b> Clinical notification generated for pharmacist/physician review; therapeutic drug monitoring or dosing evaluation advised.
                 </p>
+                <div style="font-size: 0.8rem; margin-top: 6px; color: #fca5a5;">
+                    Reliability Gate: <b>R = {reliability:.4f}</b> | Contradiction Index: <b>C_hd = {contradiction_index:.4f}</b> | Routing: <b>{routing}</b>
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
-    elif decision_state == "NO INTERACTION":
+    elif decision_state in ("NO INTERACTION", "NO_INTERACTION"):
         st.markdown(
             f"""
             <div class="alert-safe">
-                <h3 style="margin: 0 0 6px 0; color: #10b981; font-size: 1.3rem;">✅ NO INTERACTION OBSERVED: SAFE CONCOMITANT USE</h3>
+                <h3 style="margin: 0 0 6px 0; color: #10b981; font-size: 1.3rem;">✅ NO INTERACTION OBSERVED: ADVISORY CLEARANCE</h3>
                 <p style="margin: 0; font-size: 0.95rem;">
                     Controlled clinical/pharmacokinetic evidence indicates <b>{HERB_DISPLAY_NAMES.get(selected_herb, selected_herb)}</b> does not 
                     significantly alter systemic exposure or clearance of <b>{DRUG_DISPLAY_NAMES.get(selected_drug, selected_drug)}</b>.
-                    <b>Electronic Health Record (EHR) Action:</b> Concomitant order approved without hard stop.
+                    <b>Advisory Decision-Support Action:</b> Concomitant order approved without advisory warning.
                 </p>
+                <div style="font-size: 0.8rem; margin-top: 6px; color: #86efac;">
+                    Reliability Gate: <b>R = {reliability:.4f}</b> | Contradiction Index: <b>C_hd = {contradiction_index:.4f}</b> | Routing: <b>{routing}</b>
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -683,12 +692,14 @@ with tab_interactive:
         st.markdown(
             f"""
             <div class="alert-abstain">
-                <h3 style="margin: 0 0 6px 0; color: #f59e0b; font-size: 1.3rem;">🛡️ SCIENTIFIC CONTRADICTION / UNCERTAINTY: ORDER ROUTED TO PHARMACIST REVIEW</h3>
+                <h3 style="margin: 0 0 6px 0; color: #f59e0b; font-size: 1.3rem;">🛡️ SELECTIVE ABSTENTION TRIGGERED: ROUTED TO SPECIALIST REVIEW</h3>
                 <p style="margin: 0; font-size: 0.95rem;">
-                    The system detected significant evidentiary conflict (Contradiction Index $C_{{h,d}} = {contradiction_index:.2f}$) or high epistemic predictive variance.
-                    Binary classification withheld to eliminate false alarm fatigue.
-                    <b>Electronic Health Record (EHR) Action:</b> Order seamlessly routed to an <b>asynchronous clinical pharmacist review queue</b>; non-intrusive advisory flag displayed.
+                    The system withheld binary classification due to: <b>{dec.abstention_reason}</b>.
+                    <b>Advisory Decision-Support Action:</b> Candidate routed to clinical pharmacist review queue rather than generating a forced or uncertain guess.
                 </p>
+                <div style="font-size: 0.8rem; margin-top: 6px; color: #fde68a;">
+                    <b>Abstention Reason:</b> {dec.abstention_reason} | <b>Reliability Score (R):</b> {reliability:.4f} | <b>Contradiction (C_hd):</b> {contradiction_index:.4f} | <b>Conformal Set:</b> {dec.conformal_set}
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -702,7 +713,7 @@ with tab_interactive:
             <div class="glass-card" style="text-align: center;">
                 <div class="metric-caption">Calibrated Interaction Probability</div>
                 <div class="metric-number">{calibrated_prob:.1%}</div>
-                <div style="color: #94a3b8; font-size: 0.75rem; margin-top: 4px;">Validation Temperature T* = 1.48</div>
+                <div style="color: #94a3b8; font-size: 0.75rem; margin-top: 4px;">Validation Temperature T* = {scaler.temperature.item():.4f}</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -810,6 +821,11 @@ with tab_interactive:
         )
 
         if has_records and pair_summary:
+            pk_branch = getattr(pair_summary, "pk_branch_used", "hepatic")
+            rho_reach_val = getattr(pair_summary, "rho_reach", 0.5)
+            missing_dose = getattr(pair_summary, "missing_dose_or_mw", False)
+            missing_str = "Yes (fallback used)" if missing_dose else "No (dose & MW verified)"
+
             st.markdown(
                 f"""
                 <div class="glass-card" style="padding: 14px 18px;">
@@ -825,9 +841,13 @@ with tab_interactive:
                         <span><b>Raw Citation Count:</b> {pair_summary.raw_positive_count + pair_summary.raw_negative_count}</span>
                         <span><b>Echo-Attenuated Strength:</b> {pair_summary.independent_positive_strength + pair_summary.independent_negative_strength:.2f}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                         <span><b>Context Compatibility:</b> {meta_vector[4]:.2f}</span>
                         <span><b>Scientific Contradiction:</b> {meta_vector[5]:.2f}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><b>PK Reachability (ρ_reach):</b> {rho_reach_val:.2f} ({pk_branch})</span>
+                        <span><b>Missing Dose/MW:</b> {missing_str}</span>
                     </div>
                 </div>
                 """,
@@ -864,72 +884,65 @@ with tab_benchmark:
         """
     )
 
-    # Reconciled Benchmark Table
-    benchmark_table = pd.DataFrame([
-        {
-            "Model Architecture": "Proposed Reliability-Conditioned",
-            "Input Feature Modalities": "Biological GAT + Lineage DAG + Text",
-            "ROC-AUC (95% CI)": "0.9762 [0.910, 1.000]",
-            "PR-AUC": "0.9707",
-            "F1-Score": "0.9167",
-            "Brier Score": "0.0846",
-            "Test Accuracy": "92.31% (24/26) [75.9%, 97.9%]",
-        },
-        {
-            "Model Architecture": "Standard Multimodal Fusion (Ablation)",
-            "Input Feature Modalities": "Biological Graph + Text (Fixed R=1)",
-            "ROC-AUC (95% CI)": "0.8274 [0.650, 0.960]",
-            "PR-AUC": "0.8481",
-            "F1-Score": "0.6364",
-            "Brier Score": "0.1640",
-            "Test Accuracy": "69.23% (18/26) [50.0%, 83.5%]",
-        },
-        {
-            "Model Architecture": "Re-implemented DeepDDI (Ryu et al.)",
-            "Input Feature Modalities": "Target Profile Fingerprints",
-            "ROC-AUC (95% CI)": "0.8155 [0.660, 0.960]",
-            "PR-AUC": "0.8242",
-            "F1-Score": "0.6957",
-            "Brier Score": "0.1851",
-            "Test Accuracy": "73.08% (19/26) [53.9%, 86.3%]",
-        },
-        {
-            "Model Architecture": "Re-implemented KGNN (Wang et al.)",
-            "Input Feature Modalities": "Target Knowledge Graph GCN",
-            "ROC-AUC (95% CI)": "0.8036 [0.640, 0.960]",
-            "PR-AUC": "0.7854",
-            "F1-Score": "0.6667",
-            "Brier Score": "0.2266",
-            "Test Accuracy": "69.23% (18/26) [50.0%, 83.5%]",
-        },
-        {
-            "Model Architecture": "Re-implemented CompGCN (Vashishth et al.)",
-            "Input Feature Modalities": "Compositional Relational Graph",
-            "ROC-AUC (95% CI)": "0.7857 [0.610, 0.940]",
-            "PR-AUC": "0.8007",
-            "F1-Score": "0.6957",
-            "Brier Score": "0.2203",
-            "Test Accuracy": "73.08% (19/26) [53.9%, 86.3%]",
-        },
-        {
-            "Model Architecture": "Evidence Text Only (Ablation)",
-            "Input Feature Modalities": "Unstructured Text Tokens Only",
-            "ROC-AUC (95% CI)": "0.8155 [0.620, 0.980]",
-            "PR-AUC": "0.7736",
-            "F1-Score": "0.7692",
-            "Brier Score": "0.1777",
-            "Test Accuracy": "76.92% (20/26) [57.9%, 89.0%]",
-        },
-        {
-            "Model Architecture": "Biological Graph Only (Ablation)",
-            "Input Feature Modalities": "GAT Mechanism Graph Only",
-            "ROC-AUC (95% CI)": "0.7083 [0.470, 0.930]",
-            "PR-AUC": "0.6927",
-            "F1-Score": "0.6667",
-            "Brier Score": "0.2037",
-            "Test Accuracy": "69.23% (18/26) [50.0%, 83.5%]",
-        },
-    ])
+    # Dynamically load master benchmark results
+    master_json_path = PROJECT_ROOT / "reports/master_benchmark_results.json"
+    benchmark_rows = []
+    if master_json_path.exists():
+        try:
+            with open(master_json_path, "r") as f:
+                master_data = json.load(f)
+            variant_reports = master_data.get("verified_hdi_benchmark", {}).get("all_variant_reports", [])
+            variant_name_map = {
+                "reliability_conditioned_quality_only": ("Proposed Reliability-Conditioned (Quality-Only)", "Biological GAT + Lineage DAG + Text (Leakage-Free)"),
+                "naive_concat_mlp": ("Naive Concat MLP (No Reliability Gating)", "Biological Graph + Unstructured Text (Direct Concat)"),
+                "standard_fusion": ("Standard Multimodal Fusion (Ablation)", "Biological Graph + Text (Fixed R=1)"),
+                "logistic_regression": ("Logistic Regression (13D Tabular)", "7D Quality Lineage + 6D Metabolic Match"),
+                "gradient_boosted_trees": ("Gradient Boosted Trees (13D Tabular)", "7D Quality Lineage + 6D Metabolic Match"),
+                "mechanistic_rule_baseline": ("Mechanistic Rule Baseline (Heuristic)", "Direct Enzyme Clearance Pathway Overlap"),
+                "DeepDDI (Ryu et al. 2018)": ("DeepDDI (Ryu et al. 2018)", "16D Target Profile Fingerprints"),
+                "KGNN (Wang et al. 2019)": ("KGNN (Wang et al. 2019)", "Target Knowledge Graph GCN"),
+                "CompGCN (Vashishth et al. 2020)": ("CompGCN (Vashishth et al. 2020)", "Compositional Relational Graph"),
+                "graph_only": ("Biological Graph Only (Ablation)", "GAT Mechanism Graph Only"),
+                "evidence_only": ("Evidence Text Only (Ablation)", "Unstructured Text Tokens Only"),
+                "graph_plus_naive_evidence": ("Graph + Naive Evidence", "Graph + Text (No Lineage Attenuation)"),
+                "reliability_conditioned": ("Reliability-Conditioned (Full 12D)", "12D Lineage (With Polarity Features)"),
+                "no_study_dependence": ("No Study Dependence (Ablation)", "Raw Count Citation Consensus"),
+                "no_context_conflict": ("No Context Conflict (Ablation)", "Context and Conflict Features Removed"),
+            }
+            for rep in variant_reports:
+                var = rep.get("model_variant", "")
+                name, modalities = variant_name_map.get(var, (var, "Heterogeneous Multimodal Features"))
+                ci_auc = rep.get("confidence_intervals_95", {}).get("roc_auc", [0.0, 1.0])
+                ci_str = f"{rep.get('roc_auc', 0.0):.4f} [{ci_auc[0]:.2f}, {ci_auc[1]:.2f}]"
+                acc = rep.get("accuracy", 0.0)
+                n_corr = int(round(acc * 26))
+                acc_str = f"{acc:.2%} ({n_corr}/26)"
+                benchmark_rows.append({
+                    "Model Architecture": name,
+                    "Input Feature Modalities": modalities,
+                    "ROC-AUC (95% CI)": ci_str,
+                    "PR-AUC": f"{rep.get('pr_auc', 0.0):.4f}",
+                    "F1-Score": f"{rep.get('f1', 0.0):.4f}",
+                    "Brier Score": f"{rep.get('brier_score', 0.0):.4f}",
+                    "Test Accuracy": acc_str,
+                })
+        except Exception as e:
+            logger.warning(f"Could not load dynamic master benchmark results: {e}")
+
+    if benchmark_rows:
+        benchmark_table = pd.DataFrame(benchmark_rows)
+    else:
+        benchmark_table = pd.DataFrame([
+            {
+                "Model Architecture": "Proposed Reliability-Conditioned (Quality-Only)",
+                "Input Feature Modalities": "Biological GAT + Lineage DAG + Text (Leakage-Free)",
+                "ROC-AUC (95% CI)": "0.8512 [0.66, 0.99]",
+                "PR-AUC": "0.8794",
+                "F1-Score": "0.7826",
+                "Brier Score": "0.1554",
+                "Test Accuracy": "80.77% (21/26)",
+            }
+        ])
 
     st.dataframe(benchmark_table, use_container_width=True, hide_index=True)
 
@@ -940,11 +953,12 @@ with tab_benchmark:
         st.markdown(
             """
             <div class="glass-card">
-                <b style="color: #00f2fe;">1. The ROC-AUC Denominator (164/168 = 0.9762):</b><br>
-                The test split contains 12 positive records, 13 negative records, and 1 conflicting report (Ginseng–Digoxin, Study Anderson 2003, y=0.5).
-                Integer casting converts 0.5 → 0, yielding 12 positives and 14 non-positives (12 × 14 = <b>168 pairs</b>).<br>
-                The model correctly ranks 164 of 168 pairs, yielding exactly <b>164 / 168 = 0.9762</b>.<br>
-                On the 25 pure binary records (excluding conflict), the model ranks <b>156/156 pairs correctly (ROC-AUC = 1.0000)</b>.
+                <b style="color: #00f2fe;">1. Study-Disjoint Evaluation (N = 26):</b><br>
+                The held-out study-disjoint test partition comprises 26 publications across 25 independent study clusters
+                (12 positive records, 14 negative records, 0 citation cluster overlap).<br>
+                The leakage-free proposed model achieves <b>0.8512 ROC-AUC [95% CI: 0.659, 0.987]</b>,
+                <b>0.8794 PR-AUC</b>, <b>0.7826 F1-score</b>, and <b>80.77% test accuracy (21/26 correct)</b>.<br>
+                Independent recomputation on persisted prediction artifacts verifies numerical consistency to within &lt; 10⁻⁹.
             </div>
             """,
             unsafe_allow_html=True,
@@ -953,11 +967,10 @@ with tab_benchmark:
         st.markdown(
             """
             <div class="glass-card">
-                <b style="color: #00f2fe;">2. Selective Accuracy vs. Coverage:</b><br>
-                When evaluated with tri-state abstention, the model withholds prediction on the conflicting Ginseng–Digoxin case,
-                retaining 25 out of 26 records (<b>96.15% coverage</b>).<br>
-                Selective accuracy on retained non-conflicting records is <b>24/25 = 96.00%</b> (Wilson 95% CI: [80.5%, 99.3%]),
-                with only 1 borderline false negative (Kava–Chlorzoxazone at p = 0.4949 vs 0.5000 threshold).
+                <b style="color: #00f2fe;">2. Selective Accuracy vs. Conformal Abstention:</b><br>
+                The tri-state decision engine withholds forced classification when epistemic uncertainty or scientific contradiction exceeds calibrated safety bounds.<br>
+                Under conformal prediction sets, novel unstudied pairs collapse to biological GAT priors (R ≈ 0.0) with non-singleton conformal sets {0, 1},
+                safely routing 100% of out-of-distribution queries to clinical pharmacist review rather than generating uncalibrated false alarms.
             </div>
             """,
             unsafe_allow_html=True,
@@ -1010,8 +1023,8 @@ with tab_dossier:
                             <li>Dynamic Reliability Gating: z_fused = (1-R)z_graph + R·z_contextual</li>
                         </ul>
                     </li>
-                    <li><b>Safety Interlock:</b> Solves clinical alert fatigue via tri-state abstention, routing contradictions to an asynchronous pharmacist review queue rather than generating false alarms or unsafe silence.</li>
-                    <li><b>Rigorous Audit:</b> 141 verified PubMed papers across 123 independent clusters under strict study-disjoint splitting. Achieves 0.9762 ROC-AUC and 96.00% selective accuracy, with a 48% to 63% reduction in Brier probability error.</li>
+                    <li><b>Safety Abstention & Decision Support:</b> Solves clinical alert fatigue via tri-state abstention, routing contradictions to an asynchronous pharmacist review queue rather than generating false alarms or unsafe silence.</li>
+                    <li><b>Rigorous Audit:</b> 141 verified PubMed papers across 123 independent clusters under strict study-disjoint splitting. Achieves 0.8512 ROC-AUC and 80.77% accuracy (21/26 correct) under leakage-free evaluation, with robust Brier probability calibration (0.1554) and zero citation leakage.</li>
                 </ol>
             </div>
             """,
@@ -1028,7 +1041,7 @@ with tab_dossier:
                     <i>Answer:</i> Unattenuated counting represents circular literature memorization. If 1 unverified case report is cited 10 times in reviews, a counting model assigns 100% false certainty. Furthermore, on unstudied pairs (N_raw = 0), a counting model collapses, whereas our model gracefully retreats to the biological GAT mechanism prior.</p>
                     
                     <p><b>Q2: "Is this patentable under 35 U.S.C. §101?"</b><br>
-                    <i>Answer:</i> Yes. Under <i>Ex parte Desjardins</i> (USPTO Precedential 2026), improvements to the neural network training pipeline itself (DAG echo attenuation and dynamic cross-modal gating) constitute patent-eligible subject matter, specifically integrated with an automated EHR clinical decision support interlock.</p>
+                    <i>Answer:</i> Yes. Under <i>Ex parte Desjardins</i> (USPTO Precedential 2026), improvements to the neural network training pipeline itself (DAG echo attenuation and dynamic cross-modal gating) constitute patent-eligible subject matter, specifically integrated with an automated EHR clinical decision support alert.</p>
                     
                     <p><b>Q3: "Why did you use study-disjoint splitting?"</b><br>
                     <i>Answer:</i> Random splitting leaks citation clusters between train and test, producing artificial 99% accuracy. Study-disjoint splitting guarantees that zero citation ancestors, descendants, or empirical cohorts overlap across splits.</p>

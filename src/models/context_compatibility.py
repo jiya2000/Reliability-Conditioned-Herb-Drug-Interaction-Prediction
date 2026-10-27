@@ -27,20 +27,21 @@ from loguru import logger
 
 
 # Prior physiological weights grounded in clinical pharmacology
+# Canonical default standard: human 1.00 / in vivo animal 0.50 / in vitro 0.20
 SPECIES_PRIORS: Dict[str, float] = {
     "human": 1.00,
     "clinical_trial": 1.00,
     "volunteer": 1.00,
-    "primate": 0.85,
-    "rat": 0.65,
-    "mouse": 0.60,
-    "rabbit": 0.55,
-    "dog": 0.60,
-    "in_vitro_caco2": 0.35,
-    "in_vitro_microsomes": 0.30,
-    "in_vitro_cell_line": 0.25,
-    "in_silico": 0.15,
-    "unknown": 0.45,
+    "primate": 0.60,
+    "rat": 0.50,
+    "mouse": 0.50,
+    "rabbit": 0.50,
+    "dog": 0.50,
+    "in_vitro_caco2": 0.20,
+    "in_vitro_microsomes": 0.20,
+    "in_vitro_cell_line": 0.20,
+    "in_silico": 0.10,
+    "unknown": 0.35,
 }
 
 PREPARATION_PRIORS: Dict[str, float] = {
@@ -170,19 +171,28 @@ class ContextCompatibilityScorer(nn.Module):
         self,
         learnable_refinement: bool = True,
         hidden_dim: int = 32,
+        custom_species_priors: Optional[Dict[str, float]] = None,
+        custom_prep_priors: Optional[Dict[str, float]] = None,
+        custom_route_priors: Optional[Dict[str, float]] = None,
+        learn_ordered_weights: bool = False,
     ):
         super().__init__()
         self.learnable = learnable_refinement
+        self.learn_ordered_weights = learn_ordered_weights
+
+        species_dict = custom_species_priors or SPECIES_PRIORS
+        prep_dict = custom_prep_priors or PREPARATION_PRIORS
+        route_dict = custom_route_priors or ROUTE_PRIORS
 
         # Static prior buffers
         species_prior_tensor = torch.tensor(
-            [SPECIES_PRIORS.get(s, 0.45) for s in self.SPECIES_LIST], dtype=torch.float32
+            [species_dict.get(s, 0.45) for s in self.SPECIES_LIST], dtype=torch.float32
         )
         prep_prior_tensor = torch.tensor(
-            [PREPARATION_PRIORS.get(p, 0.50) for p in self.PREP_LIST], dtype=torch.float32
+            [prep_dict.get(p, 0.50) for p in self.PREP_LIST], dtype=torch.float32
         )
         route_prior_tensor = torch.tensor(
-            [ROUTE_PRIORS.get(r, 0.50) for r in self.ROUTE_LIST], dtype=torch.float32
+            [route_dict.get(r, 0.50) for r in self.ROUTE_LIST], dtype=torch.float32
         )
 
         self.register_buffer("species_priors", species_prior_tensor)
@@ -190,7 +200,7 @@ class ContextCompatibilityScorer(nn.Module):
         self.register_buffer("route_priors", route_prior_tensor)
 
         # Learnable residual adjustments (delta) initialized to zero
-        if learnable_refinement:
+        if learnable_refinement and not learn_ordered_weights:
             self.delta_species = nn.Parameter(torch.zeros(len(self.SPECIES_LIST)))
             self.delta_prep = nn.Parameter(torch.zeros(len(self.PREP_LIST)))
             self.delta_route = nn.Parameter(torch.zeros(len(self.ROUTE_LIST)))
@@ -199,6 +209,12 @@ class ContextCompatibilityScorer(nn.Module):
             self.register_buffer("delta_prep", torch.zeros(len(self.PREP_LIST)))
             self.register_buffer("delta_route", torch.zeros(len(self.ROUTE_LIST)))
 
+        # Bounded parameterization enforcing ordering constraint: human > animal > in vitro
+        if learn_ordered_weights:
+            self.u_invitro = nn.Parameter(torch.tensor([-0.5], dtype=torch.float32))
+            self.u_animal_delta = nn.Parameter(torch.tensor([0.2], dtype=torch.float32))
+            self.u_human_delta = nn.Parameter(torch.tensor([0.2], dtype=torch.float32))
+
         # MLP projection for continuous embedding context vectors (e.g. from lineage features)
         self.continuous_proj = nn.Sequential(
             nn.Linear(1, hidden_dim),
@@ -206,6 +222,37 @@ class ContextCompatibilityScorer(nn.Module):
             nn.Linear(hidden_dim, 1),
             nn.Sigmoid(),
         )
+
+    def get_effective_species_weights(self) -> torch.Tensor:
+        """
+        Returns species weight tensor for all species in SPECIES_LIST.
+        If learn_ordered_weights=True, guarantees strictly:
+            w_human > w_animal > w_in_vitro
+        via bounded positive increments.
+        """
+        if self.learn_ordered_weights:
+            # Base in vitro weight in [0.05, 0.40]
+            w_invitro = 0.05 + 0.35 * torch.sigmoid(self.u_invitro)
+            # Positive increment for animal: [0.05, 0.45]
+            delta_animal = 0.05 + 0.40 * torch.sigmoid(self.u_animal_delta)
+            w_animal = torch.clamp(w_invitro + delta_animal, max=0.85)
+            # Positive increment for human: [0.05, 0.25]
+            delta_human = 0.05 + 0.20 * torch.sigmoid(self.u_human_delta)
+            w_human = torch.clamp(w_animal + delta_human, max=1.0)
+
+            weights = []
+            for s in self.SPECIES_LIST:
+                if s in {"human", "clinical_trial", "volunteer"}:
+                    weights.append(w_human)
+                elif s in {"primate", "rat", "mouse", "rabbit", "dog"}:
+                    weights.append(w_animal)
+                elif s in {"in_vitro_caco2", "in_vitro_microsomes", "in_vitro_cell_line", "in_silico"}:
+                    weights.append(w_invitro)
+                else:
+                    weights.append((w_animal + w_invitro) / 2.0)
+            return torch.cat(weights)
+        else:
+            return torch.clamp(self.species_priors + self.delta_species, 0.05, 1.0)
 
     def compute_from_indices(
         self,
@@ -226,7 +273,8 @@ class ContextCompatibilityScorer(nn.Module):
         Returns:
             W_context: (batch, 1) in [0, 1]
         """
-        w_s = torch.clamp(self.species_priors[species_idx] + self.delta_species[species_idx], 0.05, 1.0)
+        effective_species = self.get_effective_species_weights()
+        w_s = effective_species[species_idx]
         w_p = torch.clamp(self.prep_priors[prep_idx] + self.delta_prep[prep_idx], 0.05, 1.0)
         w_r = torch.clamp(self.route_priors[route_idx] + self.delta_route[route_idx], 0.05, 1.0)
 
@@ -279,3 +327,24 @@ class ContextCompatibilityScorer(nn.Module):
 
         # Fallback default
         return torch.tensor([[0.5]], dtype=torch.float32, device=self.species_priors.device)
+
+    def score_record(self, rec: Any) -> float:
+        """
+        Score an EvidenceRecord or dict using this ContextCompatibilityScorer.
+        Evaluates species, preparation, and route priors/weights.
+        """
+        if hasattr(rec, "to_dict"):
+            d = rec.to_dict()
+        elif isinstance(rec, dict):
+            d = rec
+        else:
+            d = {
+                "species": getattr(rec, "species", None),
+                "preparation": getattr(rec, "preparation", None),
+                "route": getattr(rec, "route", None),
+                "dose": getattr(rec, "dose", None),
+            }
+        ctx = ContextMetadataParser.parse_dict(d)
+        with torch.no_grad():
+            res = self.forward([ctx])
+            return float(res.squeeze().item())

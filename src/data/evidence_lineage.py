@@ -40,21 +40,28 @@ EVIDENCE_TYPE_WEIGHTS: Dict[str, float] = {
 }
 
 # Context species weights for human clinical translation
+# Canonical default standard: human 1.00 / in vivo animal 0.50 / in vitro 0.20
 SPECIES_TRANSLATION_WEIGHTS: Dict[str, float] = {
     "human": 1.0,
     "homo sapiens": 1.0,
     "patient": 1.0,
     "volunteer": 1.0,
-    "rattus norvegicus": 0.65,
-    "rat": 0.65,
-    "mus musculus": 0.60,
-    "mouse": 0.60,
-    "rabbit": 0.55,
-    "caco-2": 0.35,
-    "cell line": 0.30,
-    "in vitro": 0.30,
-    "unknown": 0.40,
+    "rattus norvegicus": 0.50,
+    "rat": 0.50,
+    "mus musculus": 0.50,
+    "mouse": 0.50,
+    "rabbit": 0.50,
+    "caco-2": 0.20,
+    "cell line": 0.20,
+    "in vitro": 0.20,
+    "unknown": 0.35,
 }
+
+
+# Feature Group Constants for Leakage Control
+FEATURE_GROUP_FULL = "full"
+FEATURE_GROUP_QUALITY_ONLY = "quality_only"
+FEATURE_GROUP_POLARITY_ONLY = "polarity_only"
 
 
 @dataclass
@@ -92,16 +99,72 @@ class PairEvidenceSummary:
     primary_study_clusters: List[List[str]] = field(default_factory=list)
     audit_sources: List[str] = field(default_factory=list)
 
-    def to_feature_vector(self, mode: Optional[str] = None) -> np.ndarray:
+    # Phase 3 PK reachability integration
+    rho_reach: float = 0.5
+    f_m_CYP: float = 0.5
+    pk_branch_used: str = "hepatic"
+    missing_dose_or_mw: bool = False
+
+    def to_feature_group(self, feature_group: str = FEATURE_GROUP_QUALITY_ONLY) -> np.ndarray:
         """
-        Returns an 8-dimensional evidence feature vector with rigorous ablation isolation.
+        Extract feature subset based on group for rigorous leakage control:
+        - 'full': 12D [S_pos, S_neg, echo_ratio, q_mean, W_context, C_hd, margin, missingness, N_raw_pos, N_raw_neg, rho_reach, f_m_CYP]
+        - 'quality_only': 7D [echo_ratio, q_mean, W_context, C_hd, missingness, rho_reach, f_m_CYP]
+        - 'polarity_only': 5D [S_pos, S_neg, margin, N_raw_pos, N_raw_neg]
+        """
+        rho_reach = self.rho_reach
+        f_m_CYP = self.f_m_CYP
+
+        if feature_group == FEATURE_GROUP_QUALITY_ONLY or feature_group == "quality_only":
+            return np.array([
+                self.citation_echo_ratio,
+                self.mean_source_quality,
+                self.context_compatibility_score,
+                self.contradiction_strength,
+                self.metadata_missingness,
+                rho_reach,
+                f_m_CYP,
+            ], dtype=np.float32)
+        elif feature_group == FEATURE_GROUP_POLARITY_ONLY or feature_group == "polarity_only":
+            return np.array([
+                self.independent_positive_strength,
+                self.independent_negative_strength,
+                self.net_evidence_margin,
+                float(self.raw_positive_count),
+                float(self.raw_negative_count),
+            ], dtype=np.float32)
+        else:  # FEATURE_GROUP_FULL
+            return np.array([
+                self.independent_positive_strength,
+                self.independent_negative_strength,
+                self.citation_echo_ratio,
+                self.mean_source_quality,
+                self.context_compatibility_score,
+                self.contradiction_strength,
+                self.net_evidence_margin,
+                self.metadata_missingness,
+                float(self.raw_positive_count),
+                float(self.raw_negative_count),
+                rho_reach,
+                f_m_CYP,
+            ], dtype=np.float32)
+
+    def to_feature_vector(self, mode: Optional[str] = None, feature_group: Optional[str] = None) -> np.ndarray:
+        """
+        Returns an evidence feature vector with rigorous ablation isolation.
 
         Modes:
         - 'reliability_conditioned': Full proposed model with lineage clustering, context, and conflict.
+        - 'reliability_conditioned_quality_only': Quality-only features, strictly leakage-free.
         - 'no_study_dependence': Replaces lineage-clustered strengths with raw counts, zeros echo ratio.
         - 'no_context_conflict': Neutralizes context to 1.0, zeros conflict, and removes conflict subtraction from margin.
         - 'graph_plus_naive_evidence': Baseline using solely raw counts and neutral context/conflict.
         """
+        if feature_group == FEATURE_GROUP_QUALITY_ONLY or mode == "reliability_conditioned_quality_only":
+            return self.to_feature_group(FEATURE_GROUP_QUALITY_ONLY)
+        elif feature_group == FEATURE_GROUP_POLARITY_ONLY:
+            return self.to_feature_group(FEATURE_GROUP_POLARITY_ONLY)
+
         if mode == "no_study_dependence":
             # Ablate study dependence: use un-discounted raw counts, ignore citation echo
             pos = float(self.raw_positive_count)
@@ -145,37 +208,22 @@ class PairEvidenceSummary:
             self.metadata_missingness,
         ], dtype=np.float32)
 
-    def to_full_metadata_vector(self) -> np.ndarray:
+    def to_full_metadata_vector(self, feature_group: str = "full") -> np.ndarray:
         """
-        Returns a 12-dimensional metadata vector containing lineage-adjusted
-        features and PK reachability parameters:
-        [0: indep_pos, 1: indep_neg, 2: echo_ratio, 3: source_quality,
-         4: context_compat, 5: contradiction, 6: net_margin, 7: missingness,
-         8: raw_positive_count, 9: raw_negative_count,
-         10: rho_reach, 11: f_m_CYP]
+        Returns a metadata vector containing lineage-adjusted features and PK reachability parameters.
+        - 'full': 12D [0: indep_pos, 1: indep_neg, 2: echo_ratio, 3: source_quality,
+                       4: context_compat, 5: contradiction, 6: net_margin, 7: missingness,
+                       8: raw_positive_count, 9: raw_negative_count,
+                       10: rho_reach, 11: f_m_CYP]
+        - 'quality_only': 7D [echo_ratio, source_quality, context_compat, contradiction,
+                              missingness, rho_reach, f_m_CYP]
+        - 'polarity_only': 5D [indep_pos, indep_neg, net_margin, raw_positive_count, raw_negative_count]
         """
-        # Physiological reachability ratio: ratio of in vitro to in vivo exposure
-        # Default value since specific PK data varies by constituent
-        rho_reach = 0.5  # Default: moderate reachability
-        
-        # Fraction of drug clearance mediated by the modulated CYP enzyme
-        # Default value since specific CYP data varies by constituent
-        f_m_CYP = 0.5  # Default: moderate metabolic clearance
-        
-        return np.array([
-            self.independent_positive_strength,
-            self.independent_negative_strength,
-            self.citation_echo_ratio,
-            self.mean_source_quality,
-            self.context_compatibility_score,
-            self.contradiction_strength,
-            self.net_evidence_margin,
-            self.metadata_missingness,
-            float(self.raw_positive_count),
-            float(self.raw_negative_count),
-            rho_reach,
-            f_m_CYP,
-        ], dtype=np.float32)
+        if feature_group in {FEATURE_GROUP_QUALITY_ONLY, "quality_only"}:
+            return self.to_feature_group(FEATURE_GROUP_QUALITY_ONLY)
+        elif feature_group in {FEATURE_GROUP_POLARITY_ONLY, "polarity_only"}:
+            return self.to_feature_group(FEATURE_GROUP_POLARITY_ONLY)
+        return self.to_feature_group(FEATURE_GROUP_FULL)
 
 
 
@@ -185,13 +233,22 @@ class EvidenceLineageAnalyzer:
     discount redundant echoes, evaluate context, and measure conflict.
     """
 
-    def __init__(self, echo_discount_factor: float = 0.15):
+    def __init__(
+        self,
+        echo_discount_factor: float = 0.15,
+        feature_group: str = FEATURE_GROUP_QUALITY_ONLY,
+        context_scorer: Optional[Any] = None,
+    ):
         """
         Args:
             echo_discount_factor: Weight given to each secondary repeating report
                                  within the same study cluster (default 0.15).
+            feature_group: Feature group mode ('quality_only', 'full', 'polarity_only').
+            context_scorer: Optional ContextCompatibilityScorer or callable for clinical context weighting.
         """
         self.echo_discount_factor = echo_discount_factor
+        self.feature_group = feature_group
+        self.context_scorer = context_scorer
 
     def build_lineage_graph(self, records: List[EvidenceRecord]) -> nx.DiGraph:
         """
@@ -255,6 +312,12 @@ class EvidenceLineageAnalyzer:
         Score how clinically compatible the contextual parameters of the record are.
         Evaluates species, preparation, and route.
         """
+        if self.context_scorer is not None:
+            if hasattr(self.context_scorer, "score_record"):
+                return float(self.context_scorer.score_record(rec))
+            elif callable(self.context_scorer):
+                return float(self.context_scorer(rec))
+
         score = 1.0
 
         # Species factor
@@ -442,16 +505,20 @@ class EvidenceLineageAnalyzer:
         )
 
     def analyze_dataset(self, df: pd.DataFrame) -> Dict[Tuple[str, str], PairEvidenceSummary]:
-        """Aggregate evidence records across all pairs in a dataset."""
-        return build_pair_summaries_from_dataframe(df)
+        """Aggregate evidence records across all pairs in a dataset using this analyzer instance."""
+        return build_pair_summaries_from_dataframe(df, analyzer=self)
 
 
-def build_pair_summaries_from_dataframe(df: pd.DataFrame) -> Dict[Tuple[str, str], PairEvidenceSummary]:
+def build_pair_summaries_from_dataframe(
+    df: pd.DataFrame,
+    analyzer: Optional[EvidenceLineageAnalyzer] = None,
+) -> Dict[Tuple[str, str], PairEvidenceSummary]:
     """
     Given a canonical evidence DataFrame (1 row per evidence record),
     group by (herb_id, drug_id) and build PairEvidenceSummary objects.
     """
-    analyzer = EvidenceLineageAnalyzer()
+    if analyzer is None:
+        analyzer = EvidenceLineageAnalyzer()
     summaries: Dict[Tuple[str, str], PairEvidenceSummary] = {}
 
     grouped = df.groupby(["herb_id", "drug_id"])

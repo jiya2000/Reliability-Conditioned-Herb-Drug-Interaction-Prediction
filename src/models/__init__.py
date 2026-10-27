@@ -30,9 +30,19 @@ from src.models.context_compatibility import (
 )
 from src.models.conformal_abstention import (
     ConformalTriStateEngine,
+    ConformalTriStateAbstainer,
     ClinicalDecision,
     ConformalDecision,
     ConformalMetrics,
+    RiskCoverageResult,
+    SelectiveAccuracyResult,
+    ConflictConcentrationResult,
+    DecisionStabilityResult,
+    check_conformal_sample_size,
+    compute_risk_coverage_curve,
+    compute_selective_accuracy_with_ci,
+    validate_abstention_conflict_concentration,
+    measure_decision_stability,
 )
 
 __all__ = [
@@ -55,6 +65,16 @@ __all__ = [
     "ClinicalDecision",
     "ConformalDecision",
     "ConformalMetrics",
+    "RiskCoverageResult",
+    "SelectiveAccuracyResult",
+    "ConflictConcentrationResult",
+    "DecisionStabilityResult",
+    "check_conformal_sample_size",
+    "compute_risk_coverage_curve",
+    "compute_selective_accuracy_with_ci",
+    "validate_abstention_conflict_concentration",
+    "measure_decision_stability",
 ]
+
 
 

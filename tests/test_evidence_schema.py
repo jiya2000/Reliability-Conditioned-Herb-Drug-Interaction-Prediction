@@ -250,3 +250,61 @@ def test_validate_dataframe_all_invalid():
     assert cleaned_df.empty
     assert len(errors) == 2
 
+
+def test_consensus_pair_record_validation():
+    """Verify consensus label validation, legacy mode activation, and design extraction."""
+    from src.data.evidence_schema import (
+        ConsensusPairRecord,
+        validate_consensus_labels_table,
+        load_consensus_labels_table,
+        extract_study_finding,
+        extract_study_design_fields,
+        StudyFinding,
+    )
+    # 1. Valid record
+    rec = ConsensusPairRecord(
+        herb_id="HERB_HYPERICUM",
+        drug_id="DRUG_CYCLOSPORINE",
+        consensus_label="interaction",
+        source_name="Stockley's Drug Interactions",
+        source_url_or_citation="Stockley 10th Ed.",
+    )
+    is_valid, errors = rec.validate()
+    assert is_valid
+    assert len(errors) == 0
+
+    # 2. Invalid record (bad label)
+    bad_rec = ConsensusPairRecord(
+        herb_id="HERB_HYPERICUM",
+        drug_id="DRUG_CYCLOSPORINE",
+        consensus_label="alleged_interaction",
+    )
+    is_valid, errors = bad_rec.validate()
+    assert not is_valid
+    assert any("Invalid consensus_label" in e for e in errors)
+
+    # 3. Empty template table loading (triggers legacy mode)
+    df_empty, is_legacy = load_consensus_labels_table("data/benchmark/consensus_labels.csv")
+    assert is_legacy
+    assert len(df_empty) == 0
+
+    # 4. Study design extractor (must exclude outcome)
+    row = {
+        "species": "human",
+        "evidence_type": "rct",
+        "route": "oral",
+        "dose": "300 mg TID",
+        "original_text": "Significantly increased clearance of cyclosporine.",
+        "outcome": "positive",
+    }
+    design = extract_study_design_fields(row)
+    assert design["species"] == "human"
+    assert design["assay"] == "rct"
+    assert "original_text" not in design
+    assert "outcome" not in design
+
+    # 5. Finding extraction
+    assert extract_study_finding("positive") == StudyFinding.POSITIVE
+    assert extract_study_finding("no_interaction_observed") == StudyFinding.NEGATIVE
+    assert extract_study_finding("conflicting") == StudyFinding.NULL
+

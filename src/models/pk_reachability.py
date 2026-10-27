@@ -147,6 +147,14 @@ class InVitroFinding:
     extract_type: str = "standardized"  # "standardized", "crude", "isolated"
     route: str = "in_vitro"  # "in_vitro", "oral", "iv"
     pmids: List[str] = field(default_factory=list)
+    # Phase 3 PK site-of-action and dosing fields
+    site_of_action: Optional[str] = None  # "hepatic", "intestinal", or None (auto-routed)
+    dose_mg: Optional[float] = None  # Dose in mg (required for intestinal lumen calculation)
+    molecular_weight: Optional[float] = None  # MW in g/mol (required for intestinal lumen calculation)
+    extract_standardization: Optional[float] = None  # Active fraction (e.g. 0.03 for 3% hyperforin)
+    treatment_duration: Optional[str] = None
+    interaction_direction: Optional[str] = None  # "induction" vs "inhibition"
+    time_dependence: Optional[str] = None  # "time_dependent" vs "reversible"
 
 
 @dataclass
@@ -154,12 +162,17 @@ class ReachabilityResult:
     """Result of reachability screening for one finding."""
     finding: InVitroFinding
     cu_max_human: float  # Achievable unbound Cmax in humans (uM)
-    ratio: float  # cu_max / potency (for inhibition) or EC50 (for induction)
+    ratio: float  # cu_max / potency (hepatic) or i_gut / potency (intestinal)
     is_reachable: bool  # True if ratio >= threshold
     threshold: float  # Threshold used (default 0.1 for inhibition, 1.0 for induction)
     confidence: str  # "high", "medium", "low" based on data quality
     reasoning: str  # Human-readable explanation
     penalty_factor: float  # 0.25 if unreachable, 1.0 if reachable
+    # Phase 3 PK branching audit metadata
+    branch_used: str = "hepatic"  # "hepatic" or "intestinal"
+    rho_reach: float = 0.5  # min(1.0, ratio)
+    i_gut_um: Optional[float] = None  # Intestinal gut lumen concentration in uM if intestinal
+    missing_dose_or_mw: bool = False  # True if intestinal branch was requested but dose/MW was missing
 
 
 class PKReachabilityScreen:
@@ -201,52 +214,193 @@ class PKReachabilityScreen:
         self.thresholds = thresholds or self.DEFAULT_THRESHOLDS.copy()
         self.herbal_pk = herbal_pk_db or HERBAL_PK_PARAMETERS.copy()
 
+    def _determine_site_of_action(self, finding: InVitroFinding) -> str:
+        """
+        Determine whether to route to intestinal or hepatic reachability formula.
+        Routes to intestinal CYP3A4 / P-gp when:
+        - site_of_action is explicitly 'intestinal', 'gut', 'enterocyte', etc.
+        - enzyme/transporter specifies intestinal localization (e.g. 'intestinal_cyp3a4', 'intestinal_p-gp')
+        - preparation is Caco-2, enterocyte, or intestinal microsomes for CYP3A4/P-gp
+        Otherwise routes to hepatic/systemic.
+        """
+        if finding.site_of_action is not None:
+            soa = str(finding.site_of_action).lower().strip()
+            if soa in {"intestinal", "gut", "enterocyte", "gi_tract", "intestinal_lumen"}:
+                return "intestinal"
+            elif soa in {"hepatic", "systemic", "liver", "plasma"}:
+                return "hepatic"
+
+        et = str(finding.enzyme_transporter).upper().strip()
+        if "INTESTINAL" in et or "GUT" in et or "ENTEROCYTE" in et:
+            return "intestinal"
+
+        prep = str(finding.preparation).lower().strip()
+        if ("CYP3A4" in et or "P-GP" in et or "PGP" in et or "ABCB1" in et):
+            if prep in {"caco2", "caco-2", "enterocyte", "gut_loop", "intestinal_microsomes"}:
+                return "intestinal"
+
+        return "hepatic"
+
+    def _screen_intestinal(
+        self, finding: InVitroFinding
+    ) -> Tuple[float, float, float, bool, float, bool, str, float]:
+        """
+        Intestinal CYP3A4 / P-gp reachability per FDA Guidance:
+        I_gut = dose / 250 mL converted to micromolar (uM) using molecular weight:
+            I_gut (uM) = (dose_mg * 4000.0) / MW
+        
+        Requires dose_mg and molecular_weight inputs.
+        Falls back gracefully with missing_dose_or_mw = True if unavailable.
+        
+        Returns:
+            (i_gut_um, ratio, rho_reach, is_reachable, threshold, missing_dose_or_mw, confidence, penalty_factor)
+        """
+        missing_dose_or_mw = False
+        dose_mg = finding.dose_mg
+        mw = finding.molecular_weight
+
+        pk = self.herbal_pk.get(finding.herb_constituent.lower())
+
+        if dose_mg is None:
+            missing_dose_or_mw = True
+            if pk is not None:
+                typ_dose = pk.get("typical_dose_mg", 300.0)
+                marker_cont = finding.extract_standardization or pk.get("extract_marker_content", 1.0)
+                dose_mg = typ_dose * marker_cont
+            else:
+                dose_mg = 10.0  # conservative default
+
+        if mw is None:
+            missing_dose_or_mw = True
+            if pk is not None and "mw" in pk:
+                mw = pk["mw"]
+            else:
+                mw = 400.0  # default small molecule MW (g/mol)
+
+        # I_gut = (dose_mg / 250 mL) in molar:
+        # (dose_mg * 1e-3 g / mw) / 0.25 L = (dose_mg * 4e-3) / mw mol/L
+        # in uM = (dose_mg * 4000.0) / mw
+        i_gut_um = (dose_mg * 4000.0) / max(mw, 1e-6)
+
+        potency = max(finding.potency_value, 1e-6)
+        ratio = i_gut_um / potency
+        rho_reach = min(1.0, max(0.0, ratio))
+
+        # Threshold per FDA guidance: I_gut / IC50 >= 10 for intestinal transporter/CYP
+        threshold = self.thresholds.get("transporter_intestinal", 10.0)
+        is_reachable = (ratio >= threshold) or abs(ratio - threshold) < 1e-5
+
+        penalty_factor = 1.0 if is_reachable else 0.25
+
+        if missing_dose_or_mw:
+            confidence = "low"
+        elif finding.extract_type == "standardized":
+            confidence = "high"
+        else:
+            confidence = "medium"
+
+        return i_gut_um, ratio, rho_reach, is_reachable, threshold, missing_dose_or_mw, confidence, penalty_factor
+
+    def _screen_hepatic(
+        self, finding: InVitroFinding
+    ) -> Tuple[float, float, float, bool, float, str, float]:
+        """
+        Hepatic/systemic reachability:
+        rho_reach = min(1.0, [I]u,max / (IC50 or EC50)) using unbound plasma Cmax.
+        
+        Returns:
+            (cu_max, ratio, rho_reach, is_reachable, threshold, confidence, penalty_factor)
+        """
+        cu_max = self._get_human_cu_max(finding)
+        threshold = self._get_threshold(finding)
+        potency = max(finding.potency_value, 1e-6)
+        ratio = cu_max / potency
+        rho_reach = min(1.0, max(0.0, ratio))
+        is_reachable = (ratio >= threshold) or abs(ratio - threshold) < 1e-5
+        confidence = self._assess_confidence(finding, cu_max)
+        penalty_factor = 1.0 if is_reachable else 0.25
+        return cu_max, ratio, rho_reach, is_reachable, threshold, confidence, penalty_factor
+
     def screen(self, finding: InVitroFinding) -> ReachabilityResult:
         """
-        Perform reachability screen for a single in vitro finding.
+        Perform reachability screen for a single in vitro finding with site-of-action routing.
         
-        Returns ReachabilityResult with penalty_factor = 0.25 if unreachable,
-        1.0 if reachable. This penalty_factor can be used as w_conc in
-        the ContextCompatibilityScorer.
+        Routes to:
+        1. Intestinal CYP3A4 / P-gp: uses gut-lumen concentration I_gut = dose / 250 mL
+        2. Hepatic/systemic: uses unbound plasma Cmax (rho_reach = min(1, [I]u,max / IC50))
         """
-        # Get human achievable unbound Cmax for this constituent
-        cu_max = self._get_human_cu_max(finding)
-        
-        # Determine threshold based on interaction type and target
-        threshold = self._get_threshold(finding)
-        
-        # Compute ratio
-        if finding.interaction_type in {"inhibition", "inhibition_reversible"}:
-            ratio = cu_max / max(finding.potency_value, 1e-6)
-        elif finding.interaction_type == "induction":
-            ratio = cu_max / max(finding.potency_value, 1e-6)
-        elif finding.interaction_type == "inhibition_tdi":
-            # For TDI, potency_value is kinact/KI (uM^-1 min^-1 or similar)
-            # Simplified: use same ratio logic
-            ratio = cu_max / max(finding.potency_value, 1e-6)
+        branch = self._determine_site_of_action(finding)
+
+        if branch == "intestinal":
+            (
+                i_gut_um,
+                ratio,
+                rho_reach,
+                is_reachable,
+                threshold,
+                missing_dose_or_mw,
+                confidence,
+                penalty_factor,
+            ) = self._screen_intestinal(finding)
+            cu_max = self._get_human_cu_max(finding)
+            reasoning = self._generate_reasoning(
+                finding=finding,
+                cu_max=cu_max,
+                ratio=ratio,
+                threshold=threshold,
+                is_reachable=is_reachable,
+                branch=branch,
+                i_gut_um=i_gut_um,
+                missing_dose_or_mw=missing_dose_or_mw,
+            )
+            return ReachabilityResult(
+                finding=finding,
+                cu_max_human=cu_max,
+                ratio=ratio,
+                is_reachable=is_reachable,
+                threshold=threshold,
+                confidence=confidence,
+                reasoning=reasoning,
+                penalty_factor=penalty_factor,
+                branch_used="intestinal",
+                rho_reach=rho_reach,
+                i_gut_um=i_gut_um,
+                missing_dose_or_mw=missing_dose_or_mw,
+            )
         else:
-            ratio = 0.0
-        
-        is_reachable = (ratio >= threshold) or abs(ratio - threshold) < 1e-5
-        
-        # Confidence based on data availability
-        confidence = self._assess_confidence(finding, cu_max)
-        
-        # Human-readable reasoning
-        reasoning = self._generate_reasoning(finding, cu_max, ratio, threshold, is_reachable)
-        
-        penalty_factor = 1.0 if is_reachable else 0.25
-        
-        return ReachabilityResult(
-            finding=finding,
-            cu_max_human=cu_max,
-            ratio=ratio,
-            is_reachable=is_reachable,
-            threshold=threshold,
-            confidence=confidence,
-            reasoning=reasoning,
-            penalty_factor=penalty_factor,
-        )
+            (
+                cu_max,
+                ratio,
+                rho_reach,
+                is_reachable,
+                threshold,
+                confidence,
+                penalty_factor,
+            ) = self._screen_hepatic(finding)
+            reasoning = self._generate_reasoning(
+                finding=finding,
+                cu_max=cu_max,
+                ratio=ratio,
+                threshold=threshold,
+                is_reachable=is_reachable,
+                branch="hepatic",
+                i_gut_um=None,
+                missing_dose_or_mw=False,
+            )
+            return ReachabilityResult(
+                finding=finding,
+                cu_max_human=cu_max,
+                ratio=ratio,
+                is_reachable=is_reachable,
+                threshold=threshold,
+                confidence=confidence,
+                reasoning=reasoning,
+                penalty_factor=penalty_factor,
+                branch_used="hepatic",
+                rho_reach=rho_reach,
+                i_gut_um=None,
+                missing_dose_or_mw=False,
+            )
 
     def _get_human_cu_max(self, finding: InVitroFinding) -> float:
         """Get achievable unbound plasma Cmax in humans for the herbal constituent."""
@@ -301,10 +455,6 @@ class PKReachabilityScreen:
 
     def _assess_confidence(self, finding: InVitroFinding, cu_max: float) -> str:
         """Assess confidence in the reachability assessment."""
-        # High: known constituent with full PK data, standardized extract, human system
-        # Medium: known constituent but some data missing, or non-human system
-        # Low: unknown constituent, crude extract, or very high in vitro concentration
-        
         pk = self.herbal_pk.get(finding.herb_constituent.lower())
         if pk is None:
             return "low"
@@ -326,18 +476,32 @@ class PKReachabilityScreen:
         ratio: float,
         threshold: float,
         is_reachable: bool,
+        branch: str = "hepatic",
+        i_gut_um: Optional[float] = None,
+        missing_dose_or_mw: bool = False,
     ) -> str:
         """Generate human-readable reasoning for the reachability decision."""
         status = "REACHABLE" if is_reachable else "NOT REACHABLE"
-        return (
-            f"{finding.herb_constituent} -> {finding.enzyme_transporter} "
-            f"({finding.interaction_type}): "
-            f"Human Cu,max = {cu_max:.4f} uM, "
-            f"In vitro potency = {finding.potency_value:.4f} uM, "
-            f"Ratio = {ratio:.3f}, "
-            f"Threshold = {threshold:.3f} -> {status}. "
-            f"Confidence: {self._assess_confidence(finding, cu_max)}."
-        )
+        if branch == "intestinal":
+            gut_str = f"I_gut = {i_gut_um:.3f} uM" if i_gut_um is not None else "I_gut = N/A"
+            missing_str = " (dose/MW imputed; missingness flagged)" if missing_dose_or_mw else ""
+            return (
+                f"{finding.herb_constituent} -> {finding.enzyme_transporter} [INTESTINAL SITE]: "
+                f"{gut_str}{missing_str}, "
+                f"In vitro potency = {finding.potency_value:.4f} uM, "
+                f"Ratio = {ratio:.3f}, "
+                f"FDA Guidance Threshold = {threshold:.3f} -> {status}. "
+                f"Confidence: {'low' if missing_dose_or_mw else self._assess_confidence(finding, cu_max)}."
+            )
+        else:
+            return (
+                f"{finding.herb_constituent} -> {finding.enzyme_transporter} [HEPATIC SITE]: "
+                f"Human Cu,max = {cu_max:.4f} uM, "
+                f"In vitro potency = {finding.potency_value:.4f} uM, "
+                f"Ratio = {ratio:.3f}, "
+                f"Threshold = {threshold:.3f} -> {status}. "
+                f"Confidence: {self._assess_confidence(finding, cu_max)}."
+            )
 
     def screen_batch(self, findings: List[InVitroFinding]) -> List[ReachabilityResult]:
         """Screen multiple findings."""

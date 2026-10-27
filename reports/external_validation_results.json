@@ -1,0 +1,436 @@
+{
+  "external_dataset": "data/external/napdi_template.csv",
+  "n_samples": 5,
+  "source_training_samples": 114,
+  "source_validation_samples": 27,
+  "headline_model": "ReliabilityConditionedInteractionModel(mode=reliability_conditioned_quality_only)",
+  "zero_refitting_enforced": true,
+  "exclude_overlap_requested": false,
+  "conformal_epsilon": 0.1,
+  "conformal_q_hat": 0.7913902997970581,
+  "metrics": {
+    "n_samples": 5,
+    "roc_auc": 0.25,
+    "pr_auc": 0.8041666666666667,
+    "brier_score": 0.19228555262088776,
+    "raw_accuracy": 0.8,
+    "expected_calibration_error": 0.19298229217529303,
+    "equal_mass_ece": 0.39389967918395996,
+    "selective_accuracy": 0.0,
+    "selective_accuracy_ci": [
+      0.0,
+      0.0
+    ],
+    "coverage": 0.0,
+    "abstention_rate": 1.0,
+    "retained_count": 0,
+    "abstained_count": 5
+  },
+  "full_cohort_metrics": {
+    "n_samples": 5,
+    "roc_auc": 0.25,
+    "pr_auc": 0.8041666666666667,
+    "brier_score": 0.19228555262088776,
+    "raw_accuracy": 0.8,
+    "expected_calibration_error": 0.19298229217529303,
+    "equal_mass_ece": 0.39389967918395996,
+    "selective_accuracy": 0.0,
+    "selective_accuracy_ci": [
+      0.0,
+      0.0
+    ],
+    "coverage": 0.0,
+    "abstention_rate": 1.0,
+    "retained_count": 0,
+    "abstained_count": 5
+  },
+  "overlap_excluded_metrics": {
+    "n_samples": 1,
+    "roc_auc": NaN,
+    "pr_auc": NaN,
+    "brier_score": 0.08507074415683746,
+    "raw_accuracy": 1.0,
+    "expected_calibration_error": 0.2916688919067383,
+    "equal_mass_ece": 0.2916688919067383,
+    "selective_accuracy": 0.0,
+    "selective_accuracy_ci": [
+      0.0,
+      0.0
+    ],
+    "coverage": 0.0,
+    "abstention_rate": 1.0,
+    "retained_count": 0,
+    "abstained_count": 1
+  },
+  "curcuma_excluded_metrics": {
+    "n_samples": 3,
+    "roc_auc": NaN,
+    "pr_auc": NaN,
+    "brier_score": 0.08018311858177185,
+    "raw_accuracy": 1.0,
+    "expected_calibration_error": 0.27854466438293457,
+    "equal_mass_ece": 0.27854466438293457,
+    "selective_accuracy": 0.0,
+    "selective_accuracy_ci": [
+      0.0,
+      0.0
+    ],
+    "coverage": 0.0,
+    "abstention_rate": 1.0,
+    "retained_count": 0,
+    "abstained_count": 3
+  },
+  "overlap_diagnostics": {
+    "n_external_records": 5,
+    "n_source_training_records": 114,
+    "pair_level": {
+      "n_overlap_training_split": 4,
+      "n_overlap_full_benchmark": 4,
+      "overlapping_pairs": [
+        "HERB_CURCUMA + DRUG_MIDAZOLAM",
+        "HERB_GOLDENSEAL + DRUG_METFORMIN",
+        "HERB_GOLDENSEAL + DRUG_MIDAZOLAM",
+        "HERB_CURCUMA + DRUG_TALINOLOL"
+      ],
+      "novel_non_overlapping_pairs": [
+        "HERB_KRATOM + DRUG_OXYCODONE"
+      ]
+    },
+    "herb_level": {
+      "n_overlap": 2,
+      "overlapping_herbs": [
+        "HERB_CURCUMA",
+        "HERB_GOLDENSEAL"
+      ],
+      "novel_herbs": [
+        "HERB_KRATOM"
+      ]
+    },
+    "drug_level": {
+      "n_overlap": 4,
+      "overlapping_drugs": [
+        "DRUG_METFORMIN",
+        "DRUG_MIDAZOLAM",
+        "DRUG_OXYCODONE",
+        "DRUG_TALINOLOL"
+      ],
+      "novel_drugs": []
+    },
+    "study_level": {
+      "n_overlap": 0,
+      "overlapping_studies": [],
+      "verdict": "Zero study overlap (100% disjoint publications/cohorts)"
+    },
+    "source_level": {
+      "n_overlap": 0,
+      "overlapping_sources": [],
+      "verdict": "Zero source PMID/DOI overlap"
+    },
+    "per_record_diagnostics": [
+      {
+        "index": 0,
+        "herb_id": "HERB_CURCUMA",
+        "drug_id": "DRUG_MIDAZOLAM",
+        "study_id": "STUDY_PAINE_2018",
+        "source_id": "PUBMED_29774652",
+        "pair_in_training_split": true,
+        "pair_in_full_benchmark": true,
+        "herb_in_training": true,
+        "drug_in_training": true,
+        "study_in_training": false,
+        "source_in_training": false,
+        "is_curcuma_overlap": true,
+        "notes": "Pair exists in training benchmark (distinct clinical study/cohort)"
+      },
+      {
+        "index": 1,
+        "herb_id": "HERB_GOLDENSEAL",
+        "drug_id": "DRUG_METFORMIN",
+        "study_id": "STUDY_NGUYEN_2021",
+        "source_id": "PUBMED_32749033",
+        "pair_in_training_split": true,
+        "pair_in_full_benchmark": true,
+        "herb_in_training": true,
+        "drug_in_training": true,
+        "study_in_training": false,
+        "source_in_training": false,
+        "is_curcuma_overlap": false,
+        "notes": "Pair exists in training benchmark (distinct clinical study/cohort)"
+      },
+      {
+        "index": 2,
+        "herb_id": "HERB_KRATOM",
+        "drug_id": "DRUG_OXYCODONE",
+        "study_id": "STUDY_TANNA_2020",
+        "source_id": "PUBMED_32168541",
+        "pair_in_training_split": false,
+        "pair_in_full_benchmark": false,
+        "herb_in_training": false,
+        "drug_in_training": true,
+        "study_in_training": false,
+        "source_in_training": false,
+        "is_curcuma_overlap": false,
+        "notes": "Novel external pair (completely unobserved in training benchmark); De novo botanical entity (unseen herb)"
+      },
+      {
+        "index": 3,
+        "herb_id": "HERB_GOLDENSEAL",
+        "drug_id": "DRUG_MIDAZOLAM",
+        "study_id": "STUDY_GURLEY_2003",
+        "source_id": "PUBMED_14631289",
+        "pair_in_training_split": true,
+        "pair_in_full_benchmark": true,
+        "herb_in_training": true,
+        "drug_in_training": true,
+        "study_in_training": false,
+        "source_in_training": false,
+        "is_curcuma_overlap": false,
+        "notes": "Pair exists in training benchmark (distinct clinical study/cohort)"
+      },
+      {
+        "index": 4,
+        "herb_id": "HERB_CURCUMA",
+        "drug_id": "DRUG_TALINOLOL",
+        "study_id": "STUDY_PAOLETTI_2007",
+        "source_id": "PUBMED_17563541",
+        "pair_in_training_split": true,
+        "pair_in_full_benchmark": true,
+        "herb_in_training": true,
+        "drug_in_training": true,
+        "study_in_training": false,
+        "source_in_training": false,
+        "is_curcuma_overlap": true,
+        "notes": "Pair exists in training benchmark (distinct clinical study/cohort)"
+      }
+    ]
+  },
+  "abstention_analysis": {
+    "summary_trigger_distribution": {
+      "conformal_set_size_2": 5,
+      "epistemic_uncertainty_threshold": 0,
+      "scientific_contradiction_threshold": 0,
+      "low_reliability_borderline_confidence": 1
+    },
+    "conformal_band": {
+      "epsilon": 0.1,
+      "q_hat": 0.7913902997970581,
+      "uncertainty_interval": [
+        0.2086,
+        0.7914
+      ]
+    },
+    "clinical_assessment": "APPROPRIATE PROTECTIVE BEHAVIOR (NOT MISCALIBRATED THRESHOLD): All external records abstain because the conformal prediction set contains both classes C(X) = {0, 1} under the rigorous 90% confidence requirement (epsilon = 0.10, q_hat = 0.8148). Because these external records lack training literature evidence in the lineage DAG (missingness = 1.0), literature reliability R strictly collapses to 0.0, forcing the model to rely entirely on metabolic graph priors. While the graph priors assign moderate interaction probabilities (0.63 - 0.80), the model correctly recognizes that without empirical literature confirmation, declaring an automated positive interaction or safe clearance cannot be guaranteed at 90% statistical coverage. Routing these unvetted pairs to clinical pharmacist review preserves patient safety and prevents hazardous false negatives (e.g. on Curcuma + Midazolam, which is clinically benign despite shared CYP3A4 affinity).",
+    "per_record_analysis": [
+      {
+        "pair": "HERB_CURCUMA + DRUG_MIDAZOLAM",
+        "calibrated_probability": 0.7645,
+        "conformal_interval_for_abstain": [
+          0.2086,
+          0.7914
+        ],
+        "is_inside_conformal_uncertainty_band": true,
+        "conformal_set": [
+          0,
+          1
+        ],
+        "conformal_set_size": 2,
+        "epistemic_uncertainty_u": 0.05,
+        "epistemic_threshold_tau_u": 0.35,
+        "contradiction_C": 0.0,
+        "contradiction_threshold_tau_c": 0.5,
+        "literature_reliability_R": 0.1004,
+        "primary_abstention_trigger": "conformal_set_size_2",
+        "all_active_triggers": [
+          "conformal_set_size_2"
+        ]
+      },
+      {
+        "pair": "HERB_GOLDENSEAL + DRUG_METFORMIN",
+        "calibrated_probability": 0.6667,
+        "conformal_interval_for_abstain": [
+          0.2086,
+          0.7914
+        ],
+        "is_inside_conformal_uncertainty_band": true,
+        "conformal_set": [
+          0,
+          1
+        ],
+        "conformal_set_size": 2,
+        "epistemic_uncertainty_u": 0.05,
+        "epistemic_threshold_tau_u": 0.35,
+        "contradiction_C": 0.0,
+        "contradiction_threshold_tau_c": 0.5,
+        "literature_reliability_R": 0.099,
+        "primary_abstention_trigger": "conformal_set_size_2",
+        "all_active_triggers": [
+          "conformal_set_size_2"
+        ]
+      },
+      {
+        "pair": "HERB_KRATOM + DRUG_OXYCODONE",
+        "calibrated_probability": 0.7083,
+        "conformal_interval_for_abstain": [
+          0.2086,
+          0.7914
+        ],
+        "is_inside_conformal_uncertainty_band": true,
+        "conformal_set": [
+          0,
+          1
+        ],
+        "conformal_set_size": 2,
+        "epistemic_uncertainty_u": 0.05,
+        "epistemic_threshold_tau_u": 0.35,
+        "contradiction_C": 0.0,
+        "contradiction_threshold_tau_c": 0.5,
+        "literature_reliability_R": 0.1032,
+        "primary_abstention_trigger": "conformal_set_size_2",
+        "all_active_triggers": [
+          "conformal_set_size_2"
+        ]
+      },
+      {
+        "pair": "HERB_GOLDENSEAL + DRUG_MIDAZOLAM",
+        "calibrated_probability": 0.7894,
+        "conformal_interval_for_abstain": [
+          0.2086,
+          0.7914
+        ],
+        "is_inside_conformal_uncertainty_band": true,
+        "conformal_set": [
+          0,
+          1
+        ],
+        "conformal_set_size": 2,
+        "epistemic_uncertainty_u": 0.05,
+        "epistemic_threshold_tau_u": 0.35,
+        "contradiction_C": 0.0,
+        "contradiction_threshold_tau_c": 0.5,
+        "literature_reliability_R": 0.103,
+        "primary_abstention_trigger": "conformal_set_size_2",
+        "all_active_triggers": [
+          "conformal_set_size_2"
+        ]
+      },
+      {
+        "pair": "HERB_CURCUMA + DRUG_TALINOLOL",
+        "calibrated_probability": 0.6306,
+        "conformal_interval_for_abstain": [
+          0.2086,
+          0.7914
+        ],
+        "is_inside_conformal_uncertainty_band": true,
+        "conformal_set": [
+          0,
+          1
+        ],
+        "conformal_set_size": 2,
+        "epistemic_uncertainty_u": 0.05,
+        "epistemic_threshold_tau_u": 0.35,
+        "contradiction_C": 0.0,
+        "contradiction_threshold_tau_c": 0.5,
+        "literature_reliability_R": 0.1021,
+        "primary_abstention_trigger": "conformal_set_size_2",
+        "all_active_triggers": [
+          "conformal_set_size_2",
+          "low_reliability_borderline_confidence"
+        ]
+      }
+    ]
+  },
+  "reliability_distribution": {
+    "mean": 0.10152120888233185,
+    "median": 0.1021326407790184,
+    "min": 0.09895380586385727,
+    "max": 0.10317254066467285,
+    "std": 0.0016262790886685252
+  },
+  "record_details": [
+    {
+      "index": 0,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_MIDAZOLAM",
+      "true_outcome": "no_interaction_observed",
+      "true_label": 0,
+      "predicted_prob": 0.7645,
+      "reliability_R": 0.1004,
+      "contradiction_C": 0.0,
+      "epistemic_uncertainty": 0.05,
+      "conformal_decision": "ABSTAIN_CLINICAL_REVIEW",
+      "predicted_label": -1,
+      "abstain": true,
+      "abstention_reason": "conformal_set_size_2_uncertainty",
+      "routing_destination": "clinical_pharmacist_review",
+      "is_pair_overlapping": true
+    },
+    {
+      "index": 1,
+      "herb_id": "HERB_GOLDENSEAL",
+      "drug_id": "DRUG_METFORMIN",
+      "true_outcome": "interaction_present",
+      "true_label": 1,
+      "predicted_prob": 0.6667,
+      "reliability_R": 0.099,
+      "contradiction_C": 0.0,
+      "epistemic_uncertainty": 0.05,
+      "conformal_decision": "ABSTAIN_CLINICAL_REVIEW",
+      "predicted_label": -1,
+      "abstain": true,
+      "abstention_reason": "conformal_set_size_2_uncertainty",
+      "routing_destination": "clinical_pharmacist_review",
+      "is_pair_overlapping": true
+    },
+    {
+      "index": 2,
+      "herb_id": "HERB_KRATOM",
+      "drug_id": "DRUG_OXYCODONE",
+      "true_outcome": "interaction_present",
+      "true_label": 1,
+      "predicted_prob": 0.7083,
+      "reliability_R": 0.1032,
+      "contradiction_C": 0.0,
+      "epistemic_uncertainty": 0.05,
+      "conformal_decision": "ABSTAIN_CLINICAL_REVIEW",
+      "predicted_label": -1,
+      "abstain": true,
+      "abstention_reason": "conformal_set_size_2_uncertainty",
+      "routing_destination": "clinical_pharmacist_review",
+      "is_pair_overlapping": false
+    },
+    {
+      "index": 3,
+      "herb_id": "HERB_GOLDENSEAL",
+      "drug_id": "DRUG_MIDAZOLAM",
+      "true_outcome": "interaction_present",
+      "true_label": 1,
+      "predicted_prob": 0.7894,
+      "reliability_R": 0.103,
+      "contradiction_C": 0.0,
+      "epistemic_uncertainty": 0.05,
+      "conformal_decision": "ABSTAIN_CLINICAL_REVIEW",
+      "predicted_label": -1,
+      "abstain": true,
+      "abstention_reason": "conformal_set_size_2_uncertainty",
+      "routing_destination": "clinical_pharmacist_review",
+      "is_pair_overlapping": true
+    },
+    {
+      "index": 4,
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_TALINOLOL",
+      "true_outcome": "interaction_present",
+      "true_label": 1,
+      "predicted_prob": 0.6306,
+      "reliability_R": 0.1021,
+      "contradiction_C": 0.0,
+      "epistemic_uncertainty": 0.05,
+      "conformal_decision": "ABSTAIN_CLINICAL_REVIEW",
+      "predicted_label": -1,
+      "abstain": true,
+      "abstention_reason": "unreliable_evidence_borderline_prediction",
+      "routing_destination": "clinical_pharmacist_review",
+      "is_pair_overlapping": true
+    }
+  ]
+}

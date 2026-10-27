@@ -1,0 +1,31 @@
+{
+  "protocol": "20 repeats of 5-fold grouped CV, Logistic Regression, TF-IDF (100 features)",
+  "num_records": 141,
+  "views": {
+    "raw_unmasked": {
+      "herb_disjoint": {"mean": 0.9476, "sd": 0.0056},
+      "drug_disjoint": {"mean": 0.9727, "sd": 0.0047},
+      "pair_disjoint": {"mean": 0.9716, "sd": 0.0065}
+    },
+    "level1_outcome_masked": {
+      "herb_disjoint": {"mean": 0.8577, "sd": 0.0096},
+      "drug_disjoint": {"mean": 0.8825, "sd": 0.0106},
+      "pair_disjoint": {"mean": 0.9056, "sd": 0.0101}
+    },
+    "level2_outcome_and_entities": {
+      "herb_disjoint": {"mean": 0.8305, "sd": 0.0108},
+      "drug_disjoint": {"mean": 0.7986, "sd": 0.0130},
+      "pair_disjoint": {"mean": 0.8464, "sd": 0.0129}
+    },
+    "level3_aggressive_with_proxies": {
+      "herb_disjoint": {"mean": 0.7950, "sd": 0.0130},
+      "drug_disjoint": {"mean": 0.7563, "sd": 0.0202},
+      "pair_disjoint": {"mean": 0.8208, "sd": 0.0143}
+    },
+    "level4_design_only": {
+      "herb_disjoint": {"mean": 0.6364, "sd": 0.0267},
+      "drug_disjoint": {"mean": 0.6237, "sd": 0.0277},
+      "pair_disjoint": {"mean": 0.6543, "sd": 0.0166}
+    }
+  }
+}

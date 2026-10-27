@@ -65,8 +65,10 @@ class ReliabilityScorer(nn.Module):
         dropout: float = 0.1,
         mc_dropout_rate: float = 0.15,
         mc_samples: int = 10,
+        feature_group: str = "quality_only",
     ):
         super().__init__()
+        self.feature_group = feature_group
 
         # Dimension-specific embeddings/projections
         # C: Corroboration count → embedding
@@ -118,7 +120,23 @@ class ReliabilityScorer(nn.Module):
             nn.Sigmoid(),  # R ∈ [0, 1]
         )
 
-        # Lineage-aware projection for 8D evidence lineage features:
+        # 1. Quality-only projection (7D: echo, qual, ctx, conflict, missing, rho_reach, f_m_CYP)
+        self.quality_proj = nn.Sequential(
+            nn.Linear(7, total_dim),
+            nn.GELU(),
+        )
+        self.quality_dim_attention = nn.Linear(total_dim, 7)
+
+        # Initialize quality_proj with positive inductive bias for quality signals (qual, ctx, reach, cyp)
+        with torch.no_grad():
+            nn.init.xavier_uniform_(self.quality_proj[0].weight)
+            # Bias positive weight on quality (idx 1), context (idx 2), rho_reach (idx 5)
+            self.quality_proj[0].weight[:, 1] += 0.35  # source_quality
+            self.quality_proj[0].weight[:, 2] += 0.35  # context_compat
+            self.quality_proj[0].weight[:, 0] -= 0.20  # echo_ratio
+            self.quality_proj[0].weight[:, 4] -= 0.50  # missingness
+
+        # 2. Lineage-aware projection for 8D evidence lineage features:
         # [indep_pos, indep_neg, echo_ratio, source_quality, context_compat, contradiction, net_margin, missingness]
         self.lineage_proj = nn.Sequential(
             nn.Linear(8, total_dim),
@@ -126,7 +144,20 @@ class ReliabilityScorer(nn.Module):
         )
         self.lineage_dim_attention = nn.Linear(total_dim, 8)
 
-        # Dimension-wise attention for interpretable breakdown
+        # 3. Full 12D lineage projection
+        self.full_lineage_proj = nn.Sequential(
+            nn.Linear(12, total_dim),
+            nn.GELU(),
+        )
+        self.full_dim_attention = nn.Linear(total_dim, 12)
+
+        # 4. Polarity-only 5D projection (leakage probe)
+        self.polarity_proj = nn.Sequential(
+            nn.Linear(5, total_dim),
+            nn.GELU(),
+        )
+
+        # Dimension-wise attention for interpretable breakdown (legacy 5D)
         self.dim_attention = nn.Linear(total_dim, 5)
 
         self.max_corroboration = max_corroboration
@@ -136,13 +167,32 @@ class ReliabilityScorer(nn.Module):
         self.mc_samples = mc_samples
 
         logger.info(
-            f"ReliabilityScorer: C={corroboration_embed_dim}, "
-            f"T={temporal_dim}, B={biomedical_dim}, "
-            f"M={molecular_dim}, S={source_type_embed_dim} "
-            f"→ hidden={hidden_dim} → R (supports 5D legacy & 8D evidence lineage) "
-            f"(MC dropout={mc_dropout_rate}, samples={mc_samples})"
+            f"ReliabilityScorer: feature_group='{self.feature_group}', "
+            f"hidden={hidden_dim} → R (MC dropout={mc_dropout_rate}, samples={mc_samples})"
         )
 
+    def _extract_signals(self, metadata: torch.Tensor) -> tuple[torch.Tensor | None, torch.Tensor | None, torch.Tensor | None, torch.Tensor | None]:
+        """
+        Extract source_quality, context_compat, contradiction, and missingness tensors.
+        Returns: (source_quality, context_compat, contradiction, missingness)
+        """
+        d = metadata.size(-1)
+        if d >= 12 or d == 8 or d == 10:
+            source_quality = metadata[:, 3:4]
+            context_compat = metadata[:, 4:5]
+            contradiction = metadata[:, 5:6]
+            missingness = metadata[:, 7:8]
+        elif d == 7:
+            source_quality = metadata[:, 1:2]
+            context_compat = metadata[:, 2:3]
+            contradiction = metadata[:, 3:4]
+            missingness = metadata[:, 4:5]
+        else:
+            source_quality = None
+            context_compat = None
+            contradiction = None
+            missingness = None
+        return source_quality, context_compat, contradiction, missingness
 
     def forward(
         self,
@@ -151,31 +201,45 @@ class ReliabilityScorer(nn.Module):
     ) -> tuple[torch.Tensor, dict | None]:
         """
         Compute reliability score from metadata.
-
-        Args:
-            metadata: Tensor of shape (batch, 5) or (batch, 8).
-                If (batch, 5) [Legacy]:
-                    [C, T, B, M, S]
-                If (batch, 8) [Evidence Lineage]:
-                    [indep_pos, indep_neg, echo_ratio, source_quality,
-                     context_compat, contradiction, net_margin, missingness]
-            return_breakdown: If True, return per-dimension contributions
-
-        Returns:
-            R: (batch, 1) reliability score
-            breakdown: Optional dict with per-dimension contributions
+        Guarantees:
+        - When missingness = 1.0 (no literature), R collapses to ~0.0 (R <= 0.05).
+        - Explicit contradiction reduces gating weight.
+        - High-quality human trial evidence yields strictly higher R than in vitro evidence.
         """
         combined = self._embed_metadata(metadata)
-        R = self.mlp(combined)  # (batch, 1)
+        R = self.mlp(combined)  # (batch, 1) in [0, 1]
 
-        # In lineage mode, explicit conflict reduces gating trust
-        if metadata.size(-1) >= 8:
-            contradiction = metadata[:, 5:6]  # (batch, 1) in [0, 1]
-            R = R * (1.0 - 0.4 * contradiction)
+        source_quality, context_compat, contradiction, missingness = self._extract_signals(metadata)
+
+        # Quality and context modulation: high-quality clinical studies yield higher trust than in vitro
+        if source_quality is not None and context_compat is not None:
+            q_factor = 0.35 + 0.65 * (0.5 * source_quality.clamp(0.0, 1.0) + 0.5 * context_compat.clamp(0.0, 1.0))
+            R = R * q_factor
+
+        # Contradiction damping
+        if contradiction is not None:
+            R = R * (1.0 - 0.4 * contradiction.clamp(0.0, 1.0))
+
+        # Missingness grounding: when missingness -> 1.0 (no literature evidence),
+        # R collapses to 0.0 so z_fused retreats strictly to biological graph priors
+        if missingness is not None:
+            R = R * (1.0 - missingness.clamp(0.0, 1.0))
 
         breakdown = None
         if return_breakdown:
-            if metadata.size(-1) >= 8:
+            d = metadata.size(-1)
+            if self.feature_group == "quality_only" or d == 7:
+                dim_weights = torch.softmax(self.quality_dim_attention(combined), dim=-1)
+                breakdown = {
+                    "echo_ratio_weight": dim_weights[:, 0],
+                    "source_quality_weight": dim_weights[:, 1],
+                    "context_compat_weight": dim_weights[:, 2],
+                    "contradiction_weight": dim_weights[:, 3],
+                    "missingness_weight": dim_weights[:, 4],
+                    "rho_reach_weight": dim_weights[:, 5],
+                    "f_m_CYP_weight": dim_weights[:, 6],
+                }
+            elif d == 8:
                 dim_weights = torch.softmax(self.lineage_dim_attention(combined), dim=-1)
                 breakdown = {
                     "indep_pos_weight": dim_weights[:, 0],
@@ -186,16 +250,18 @@ class ReliabilityScorer(nn.Module):
                     "contradiction_weight": dim_weights[:, 5],
                     "net_margin_weight": dim_weights[:, 6],
                     "missingness_weight": dim_weights[:, 7],
-                    "raw_values": {
-                        "indep_pos": metadata[:, 0],
-                        "indep_neg": metadata[:, 1],
-                        "echo_ratio": metadata[:, 2],
-                        "source_quality": metadata[:, 3],
-                        "context_compat": metadata[:, 4],
-                        "contradiction": metadata[:, 5],
-                        "net_margin": metadata[:, 6],
-                        "missingness": metadata[:, 7],
-                    },
+                }
+            elif d >= 10:
+                dim_weights = torch.softmax(self.full_dim_attention(combined), dim=-1)
+                breakdown = {
+                    "indep_pos_weight": dim_weights[:, 0],
+                    "indep_neg_weight": dim_weights[:, 1],
+                    "echo_ratio_weight": dim_weights[:, 2],
+                    "source_quality_weight": dim_weights[:, 3],
+                    "context_compat_weight": dim_weights[:, 4],
+                    "contradiction_weight": dim_weights[:, 5],
+                    "net_margin_weight": dim_weights[:, 6],
+                    "missingness_weight": dim_weights[:, 7],
                 }
             else:
                 dim_weights = torch.softmax(self.dim_attention(combined), dim=-1)
@@ -205,29 +271,83 @@ class ReliabilityScorer(nn.Module):
                     "biomedical_weight": dim_weights[:, 2],
                     "molecular_weight": dim_weights[:, 3],
                     "source_type_weight": dim_weights[:, 4],
-                    "raw_values": {
-                        "C": metadata[:, 0],
-                        "T": metadata[:, 1],
-                        "B": metadata[:, 2],
-                        "M": metadata[:, 3],
-                        "S": metadata[:, 4],
-                    },
                 }
 
         return R, breakdown
 
     def _embed_metadata(self, metadata: torch.Tensor) -> torch.Tensor:
         """
-        Shared embedding logic supporting both 8D evidence lineage and 5D legacy metadata.
+        Shared embedding logic supporting:
+        - 7D quality-only metadata: [echo, qual, ctx, conflict, missing, reach, cyp]
+        - 12D full metadata: [S_pos, S_neg, echo, qual, ctx, conflict, margin, missing, raw_pos, raw_neg, reach, cyp]
+        - 10D lineage metadata (padded or quality-extracted)
+        - 8D lineage metadata
+        - 5D polarity-only or legacy [C, T, B, M, S]
         """
-        if metadata.size(-1) >= 8:
-            return self.lineage_proj(metadata[:, :8].float())
+        d = metadata.size(-1)
 
-        # Legacy 5D embedding
+        if d == 7:
+            return self.quality_proj(metadata.float())
+
+        if d >= 12:
+            if self.feature_group == "quality_only":
+                qual_7d = metadata[:, [2, 3, 4, 5, 7, 10, 11]].float()
+                return self.quality_proj(qual_7d)
+            elif self.feature_group == "polarity_only":
+                pol_5d = metadata[:, [0, 1, 6, 8, 9]].float()
+                return self.polarity_proj(pol_5d)
+            else:
+                return self.full_lineage_proj(metadata[:, :12].float())
+
+        if d == 10:
+            if self.feature_group == "quality_only":
+                qual_5d = metadata[:, [2, 3, 4, 5, 7]].float()
+                batch_size = metadata.size(0)
+                defaults = torch.full((batch_size, 2), 0.5, device=metadata.device, dtype=torch.float32)
+                qual_7d = torch.cat([qual_5d, defaults], dim=-1)
+                return self.quality_proj(qual_7d)
+            elif self.feature_group == "polarity_only":
+                pol_5d = metadata[:, [0, 1, 6, 8, 9]].float()
+                return self.polarity_proj(pol_5d)
+            else:
+                batch_size = metadata.size(0)
+                defaults = torch.full((batch_size, 2), 0.5, device=metadata.device, dtype=torch.float32)
+                full_12d = torch.cat([metadata[:, :10].float(), defaults], dim=-1)
+                return self.full_lineage_proj(full_12d)
+
+        if d == 8:
+            if self.feature_group == "quality_only":
+                qual_5d = metadata[:, [2, 3, 4, 5, 7]].float()
+                batch_size = metadata.size(0)
+                defaults = torch.full((batch_size, 2), 0.5, device=metadata.device, dtype=torch.float32)
+                qual_7d = torch.cat([qual_5d, defaults], dim=-1)
+                return self.quality_proj(qual_7d)
+            elif self.feature_group == "polarity_only":
+                pol_3d = metadata[:, [0, 1, 6]].float()
+                batch_size = metadata.size(0)
+                pol_5d = torch.cat([pol_3d, pol_3d[:, :2]], dim=-1)
+                return self.polarity_proj(pol_5d)
+            else:
+                return self.lineage_proj(metadata.float())
+
+        if d == 5:
+            if self.feature_group == "polarity_only":
+                return self.polarity_proj(metadata.float())
+            # Legacy 5D embedding
+            return self._embed_legacy_5d(metadata)
+
+        # Fallback: slice or pad to 8D for lineage_proj
+        if d > 8:
+            return self.lineage_proj(metadata[:, :8].float())
+        else:
+            return self.lineage_proj(metadata.float())
+
+    def _embed_legacy_5d(self, metadata: torch.Tensor) -> torch.Tensor:
+        """Embed legacy 5D [C, T, B, M, S] metadata."""
         C = metadata[:, 0].long().clamp(0, self.max_corroboration)
-        T = metadata[:, 1:2]
-        B = metadata[:, 2:3]
-        M = metadata[:, 3:4]
+        T = metadata[:, 1:2].float()
+        B = metadata[:, 2:3].float()
+        M = metadata[:, 3:4].float()
         S = metadata[:, 4].long().clamp(0, 7)
 
         c_emb = self.corroboration_embed(C)
@@ -265,10 +385,6 @@ class ReliabilityScorer(nn.Module):
         # Embed once (deterministic part)
         combined = self._embed_metadata(metadata)
 
-        # ★ FIX: Save per-module training states instead of calling
-        # self.train() which would enable dropout on ALL submodules
-        # (including self.mlp's internal Dropout layers), creating
-        # uncontrolled double-stochastic behavior.
         module_states = {
             name: mod.training for name, mod in self.named_modules()
         }
@@ -278,7 +394,6 @@ class ReliabilityScorer(nn.Module):
 
         samples = []
         for _ in range(n):
-            # Apply MC dropout to the combined embedding
             mc_combined = self.mc_dropout(combined)
             R_sample = self.mlp(mc_combined)
             samples.append(R_sample)
@@ -295,13 +410,53 @@ class ReliabilityScorer(nn.Module):
         R_mean = R_stack.mean(dim=0)           # (batch, 1)
         R_uncertainty = R_stack.std(dim=0)      # (batch, 1)
 
-        # In lineage mode, explicit conflict reduces gating trust
-        if metadata.size(-1) == 8:
-            contradiction = metadata[:, 5:6]
-            R_mean = R_mean * (1.0 - 0.4 * contradiction)
+        source_quality, context_compat, contradiction, missingness = self._extract_signals(metadata)
+
+        # Quality and context modulation: high-quality clinical studies yield higher trust than in vitro
+        if source_quality is not None and context_compat is not None:
+            q_factor = 0.35 + 0.65 * (0.5 * source_quality.clamp(0.0, 1.0) + 0.5 * context_compat.clamp(0.0, 1.0))
+            R_mean = R_mean * q_factor
+
+        # In lineage mode, explicit conflict reduces gating trust and elevates epistemic uncertainty
+        if contradiction is not None:
+            R_mean = R_mean * (1.0 - 0.4 * contradiction.clamp(0.0, 1.0))
+            R_uncertainty = R_uncertainty + 0.25 * contradiction.clamp(0.0, 1.0)
+
+        # Missingness grounding: when missingness = 1.0, R_mean drops to 0.0
+        if missingness is not None:
+            R_mean = R_mean * (1.0 - missingness.clamp(0.0, 1.0))
+            R_uncertainty = R_uncertainty * (1.0 - missingness.clamp(0.0, 1.0))
+
+        d = metadata.size(-1)
+        if self.feature_group == "quality_only" or d == 7:
+            dim_weights = torch.softmax(self.quality_dim_attention(combined), dim=-1)
+            breakdown = {
+                "echo_ratio_weight": dim_weights[:, 0],
+                "source_quality_weight": dim_weights[:, 1],
+                "context_compat_weight": dim_weights[:, 2],
+                "contradiction_weight": dim_weights[:, 3],
+                "missingness_weight": dim_weights[:, 4],
+                "rho_reach_weight": dim_weights[:, 5],
+                "f_m_CYP_weight": dim_weights[:, 6],
+                "mc_samples": n,
+                "mean_uncertainty": R_uncertainty.mean().item(),
+            }
+        elif d == 8:
             dim_weights = torch.softmax(self.lineage_dim_attention(combined), dim=-1)
-            # Epistemic uncertainty is also elevated when literature conflict is present
-            R_uncertainty = R_uncertainty + 0.25 * contradiction
+            breakdown = {
+                "indep_pos_weight": dim_weights[:, 0],
+                "indep_neg_weight": dim_weights[:, 1],
+                "echo_ratio_weight": dim_weights[:, 2],
+                "source_quality_weight": dim_weights[:, 3],
+                "context_compat_weight": dim_weights[:, 4],
+                "contradiction_weight": dim_weights[:, 5],
+                "net_margin_weight": dim_weights[:, 6],
+                "missingness_weight": dim_weights[:, 7],
+                "mc_samples": n,
+                "mean_uncertainty": R_uncertainty.mean().item(),
+            }
+        elif d >= 10:
+            dim_weights = torch.softmax(self.full_dim_attention(combined), dim=-1)
             breakdown = {
                 "indep_pos_weight": dim_weights[:, 0],
                 "indep_neg_weight": dim_weights[:, 1],

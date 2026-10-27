@@ -12,11 +12,11 @@ Concurrent administration of botanical supplements and pharmaceutical agents is 
 
 To address these vulnerabilities, we introduce a **Reliability-Conditioned Herb–Drug Interaction Prediction framework**. Our contributions are fourfold:
 1. **Evidence Lineage & Echo Chamber Detection**: We construct citation-derivation directed acyclic graphs (DAGs) per herb–drug candidate pair, cluster derivative secondary reports around primary index studies while preserving independent clinical trials as distinct roots, and apply discounted independence scoring ($\alpha = 0.15$) to prevent circular citation inflation.
-2. **Multi-Factor Context Compatibility**: We formulate a pharmacokinetic context compatibility metric scoring species translation (human = 1.0, rat = 0.65, in vitro = 0.30), preparation standardisation, and administration route, grounded in FDA and EMA botanical guidance.
+2. **Multi-Factor Context Compatibility**: We formulate a pharmacokinetic context compatibility metric scoring species translation (human = 1.00, in vivo mammalian = 0.50, in vitro = 0.20), preparation standardisation, and administration route, grounded in FDA and EMA botanical guidance.
 3. **Reliability-Conditioned Multimodal Fusion**: We combine a 2-layer Biological Graph Attention Network (GAT) over human pharmacokinetic enzymes (CYP450s, ABCB1, OATP transporters) with frozen BiomedBERT language representations, dynamically gated by a learned reliability score $R \in [0, 1]$.
 4. **Calibrated Tri-State Decision Engine with Abstention**: The model yields three clinical outcomes (*Interaction Present*, *No Interaction Observed*, or *Abstain*), withholding automated judgement when epistemic uncertainty or scientific contradiction exceeds rigorous safety thresholds.
 
-Evaluated on an auditable benchmark of **141 curated clinical and pharmacokinetic publications** spanning 18 herbs and 40 prescription drugs across **123 independent study clusters** under strict **study-disjoint partitioning** (zero citation cluster leakage across splits), our framework achieves **0.9762 ROC-AUC [95% CI: 0.910, 1.000]**, **0.9707 PR-AUC**, and **0.9167 F1-score**, yielding substantial absolute improvements of **+14.88 to +23.81 ROC-AUC points** (+17.9% to +32.2% relative gain) over standard multimodal fusion, DeepDDI, KGNN, and CompGCN. Furthermore, calibrated abstention selectively eliminates uncertain predictions, driving selective diagnostic accuracy to **96.15%** at 80% coverage on retained clinical queries.
+Evaluated on an auditable benchmark of **141 curated clinical and pharmacokinetic publications** spanning 18 herbs and 40 prescription drugs across **123 independent study clusters** under strict **study-disjoint partitioning** (zero citation cluster leakage across splits), our framework achieves **0.8512 ROC-AUC [95% CI: 0.659, 0.987]**, **0.8794 PR-AUC**, **0.7826 F1-score**, and **80.77% accuracy (21/26 correct)**, providing competitive performance against external graph architectures under rigorous leakage-free evaluation. Furthermore, calibrated abstention selectively identifies uncertain and conflicting predictions, routing them safely to clinical pharmacist review.
 
 ---
 
@@ -112,7 +112,7 @@ where $q(s) \in [0, 1]$ is the verified extraction quality of study $s$, and $\a
 Each evidence record $e_i$ is parameterized by its experimental context tuple grounded in FDA and EMA guidelines:
 $$\mathcal{K}(e_i) = w_{\text{species}}(e_i) \cdot w_{\text{prep}}(e_i) \cdot w_{\text{route}}(e_i)$$
 where:
-$$w_{\text{species}} = \begin{cases} 1.00 & \text{Human (clinical trial, PK study)} \\ 0.65 & \text{In vivo mammalian (rat, dog, mouse)} \\ 0.30 & \text{In vitro (cell line, microsomes, recombinant)} \end{cases}$$
+$$w_{\text{species}} = \begin{cases} 1.00 & \text{Human (clinical trial, PK study)} \\ 0.50 & \text{In vivo mammalian (rat, dog, mouse)} \\ 0.20 & \text{In vitro (cell line, microsomes, recombinant)} \end{cases}$$
 $$w_{\text{prep}} = \begin{cases} 1.00 & \text{Standardized botanical extract (LI 160, EGb 761)} \\ 0.85 & \text{Crude whole-herb extract / decoction} \\ 0.70 & \text{Isolated pure aglycone / phytochemical} \end{cases}$$
 $$w_{\text{route}} = \begin{cases} 1.00 & \text{Oral administration (canonical clinical route)} \\ 0.75 & \text{Intravenous / Intraperitoneal} \end{cases}$$
 
@@ -161,36 +161,58 @@ To guarantee zero data contamination, all evaluations enforce **Study-Disjoint P
 
 | Model Architecture | Input Features | ROC-AUC (95% CI) | PR-AUC | F1-Score | Brier Score | Accuracy (Wilson 95% CI) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Reliability-Conditioned (Ours)** | **Biological Graph + Lineage + Text** | **0.9762 [0.910, 1.000]** | **0.9707** | **0.9167** | **0.0846** | **92.31% (24/26) [75.9%, 97.9%]** |
-| Standard Multimodal Fusion | Biological Graph + Text (Fixed $R=1$) | 0.8274 [0.650, 0.960] | 0.8481 | 0.6364 | 0.1640 | 69.23% (18/26) [50.0%, 83.5%] |
-| Re-implemented DeepDDI (Ryu et al.) | Target Profile Fingerprints | 0.8155 [0.660, 0.960] | 0.8242 | 0.6957 | 0.1851 | 73.08% (19/26) [53.9%, 86.3%] |
-| Re-implemented KGNN (Wang et al.) | Target Knowledge Graph | 0.8036 [0.640, 0.960] | 0.7854 | 0.6667 | 0.2266 | 69.23% (18/26) [50.0%, 83.5%] |
-| Re-implemented CompGCN (Vashishth) | Compositional Relational Graph | 0.7857 [0.610, 0.940] | 0.8007 | 0.6957 | 0.2203 | 73.08% (19/26) [53.9%, 86.3%] |
-| Evidence Text Only Ablation | Text Tokens / BiomedBERT Only | 0.8155 [0.620, 0.980] | 0.7736 | 0.7692 | 0.1777 | 76.92% (20/26) [57.9%, 89.0%] |
-| Biological Graph Only Ablation | GAT Mechanism Graph Only | 0.7083 [0.470, 0.930] | 0.6927 | 0.6667 | 0.2037 | 69.23% (18/26) [50.0%, 83.5%] |
+| **Reliability-Conditioned (Quality-Only)** | **Biological Graph + Lineage + Text** | **0.8512 [0.659, 0.987]** | **0.8794** | **0.7826** | **0.1554** | **80.77% (21/26) [62.7%, 91.1%]** |
+| Standard Multimodal Fusion | Biological Graph + Text (Fixed $R=1$) | 0.8274 [0.650, 0.960] | 0.8504 | 0.6087 | 0.1795 | 65.38% (17/26) [46.2%, 80.6%] |
+| Re-implemented DeepDDI (Ryu et al.) | Target Profile Fingerprints | 0.8452 [0.680, 0.970] | 0.8414 | 0.7500 | 0.1687 | 76.92% (20/26) [57.9%, 89.0%] |
+| Re-implemented KGNN (Wang et al.) | Target Knowledge Graph | 0.7202 [0.490, 0.930] | 0.7805 | 0.6667 | 0.2194 | 69.23% (18/26) [50.0%, 83.5%] |
+| Re-implemented CompGCN (Vashishth) | Compositional Relational Graph | 0.7262 [0.510, 0.920] | 0.7774 | 0.7273 | 0.1918 | 76.92% (20/26) [57.9%, 89.0%] |
+| Evidence Text Only Ablation | Text Tokens / BiomedBERT Only | 0.8095 [0.610, 0.980] | 0.7647 | 0.7692 | 0.1934 | 76.92% (20/26) [57.9%, 89.0%] |
+| Biological Graph Only Ablation | GAT Mechanism Graph Only | 0.7202 [0.490, 0.920] | 0.6858 | 0.6667 | 0.2108 | 69.23% (18/26) [50.0%, 83.5%] |
 
 **Performance Analysis & Numerical Audit:**
-- **Absolute Gains over Re-implemented Baselines:** The proposed model achieves an absolute ROC-AUC gain of **+14.88 points** over Standard Multimodal Fusion, **+16.07 points** over DeepDDI, **+17.26 points** over KGNN, and **+19.05 points** over CompGCN (+19.7% to +24.2% relative gain).
-- **ROC-AUC Calculation & Conflicting Record:** The 26 test records include 12 positive records, 13 negative records, and 1 conflicting study report (Ginseng–Digoxin, `STUDY_ANDERSON_2003`, target $y=0.5$). When cast to integer ($y=0.5 \to 0$), the evaluation population contains 12 positives and 14 non-positives ($12 \times 14 = 168$ pairs). The model correctly ranks 164 of 168 pairs ($164/168 = 0.9762$). When the conflicting record is legitimately excluded from pure binary ranking, the model achieves **156/156 correctly ordered pairs (ROC-AUC = 1.0000)**.
-- **Selective Accuracy vs Coverage:** Under the tri-state abstention policy, the model withholds classification on the conflicting Ginseng–Digoxin record, retaining 25/26 records (96.15% coverage). Selective accuracy on retained records reaches **96.00% (24/25 correct)** (Wilson 95% CI: [80.5%, 99.3%]), with only 1 borderline false negative (Kava–Chlorzoxazone at $p=0.4949$ vs threshold $0.5000$).
-- **Calibration via Brier Score:** Rather than relying on ECE (which is sensitive to small-sample binning artifacts: 0.1650 vs 0.1688), probability calibration is established via Brier score, where the proposed model reduces probability error by **48.4% to 62.7%** (0.0846 vs 0.1640–0.2266).
+- **Competitive Performance Under Leakage-Free Evaluation:** Evaluated on the strictly partitioned study-disjoint test partition, the proposed quality-only model achieves an ROC-AUC of **0.8512** [0.659, 0.987] and PR-AUC of **0.8794**, outperforming target knowledge graph baselines CompGCN (0.7262) and KGNN (0.7202), and remaining competitive with DeepDDI (0.8452).
+- **ROC-AUC Calculation & Split Details:** The test partition comprises 26 publications across 25 independent study clusters, with 12 positive records and 14 negative/non-positive records ($12 \times 14 = 168$ evaluated rank pairs). The leakage-free model correctly ranks pairs without label-adjacent leakage.
+- **Selective Abstention:** Rather than forcing classifications under extreme epistemic uncertainty or irreconcilable evidence conflict, the tri-state decision engine routes ambiguous cases to clinical pharmacist review queues.
+- **Probability Calibration via Brier Score:** Validated post-hoc temperature scaling achieves a Brier score of **0.1554** and ECE of **0.1621**, providing calibrated probabilities that substantially improve over unconditioned baselines.
 
 ### 4.3 Systematic Ablation Studies & Anti-Circularity Analysis
 
-| Ablation Variant | Description | ROC-AUC | F1-Score | Brier Loss | Selective Acc. |
+| Ablation Variant | Description | ROC-AUC | F1-Score | Brier Loss | Accuracy |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Full Proposed Framework** | Complete reliability gating + lineage | **0.9762** | **0.9167** | **0.0846** | **0.9231** |
-| w/o Context & Contradiction | Neutral context (1.0) & zero conflict | 0.9643 | 0.9600 | 0.0385 | 0.9615 |
-| w/o Dynamic Reliability Gating | Fixed unconditioned fusion $R = 1.0$ | 0.8274 | 0.6364 | 0.1640 | 0.6923 |
-| w/o Biological Graph Priors | Evidence text only | 0.8155 | 0.7692 | 0.1777 | 0.7692 |
-| w/o Evidence Text | Biological graph only | 0.7083 | 0.6667 | 0.2037 | 0.6923 |
-| Raw Citation Counting (No Attenuation)* | Unattenuated raw citation counts | 1.0000* | 0.9600 | 0.0337 | 0.9615 |
+| **Proposed Quality-Only Framework** | Complete reliability gating + lineage | **0.8512** | **0.7826** | **0.1554** | **80.77% (21/26)** |
+| Graph + Naive Evidence | Graph fused with unweighted text | 0.8512 | 0.7273 | 0.1652 | 76.92% (20/26) |
+| Standard Multimodal Fusion | Fixed unconditioned fusion $R = 1.0$ | 0.8274 | 0.6087 | 0.1795 | 65.38% (17/26) |
+| Evidence Text Only (w/o Graph Priors) | BiomedBERT text representation only | 0.8095 | 0.7692 | 0.1934 | 76.92% (20/26) |
+| Biological Graph Only (w/o Text Evidence) | Biological GAT mechanism graph only | 0.7202 | 0.6667 | 0.2108 | 69.23% (18/26) |
+| w/o Study Dependence (Ablation) | Lineage without cluster clustering | 0.7321 | 0.6667 | 0.1952 | 69.23% (18/26) |
 
-*\*Critical Note on Label Circularity:* In the `no_study_dependence` ablation, the model receives unattenuated publication counts ($N_{\text{raw,pos}}, N_{\text{raw,neg}}$). Because published candidate pairs have existing literature, raw paper counting acts as a majority-vote classifier on literature consensus, artificially scoring 1.0000 on this test set (and 0.9951 across 5 random seeds). However, this represents circular literature memorization: it is completely blind to citation cascade distortions and collapses on unstudied candidate pairs ($N_{\text{raw}} = 0$). Echo attenuation ($\alpha = 0.15$) enforces epistemic safety, preventing false certainty while enabling the model to gracefully fall back to biological graph priors $(1-R)\mathbf{z}_{\text{graph}}$ on sparse or unstudied pairs. In 5-seed cross-validation, the proposed model achieves **0.9716 $\pm$ 0.0458 AUC** and **0.0783 $\pm$ 0.0334 Brier**, significantly outperforming standard fusion (0.7318 $\pm$ 0.0765 AUC, 0.2133 $\pm$ 0.0332 Brier).
+*\*Critical Note on Label Circularity and Echo Attenuation:* If polarity features ($S_{\text{pos}}, S_{\text{neg}}$) are unattenuated, the model acts as a direct label regurgitator. Isolating lineage features to `quality_only` mode eliminates target leakage and guarantees that literature quality, context compatibility, and contradiction indices are evaluated solely for their capacity to weight evidence without label contamination. Echo attenuation ($\alpha = 0.15$) enforces epistemic safety, preventing circular citation inflation while enabling the system to retreat gracefully to biological graph priors $(1-R)\mathbf{z}_{\text{graph}}$ when literature is absent or noisy.
+
+### 4.4 Baseline Parity and Negative Results
+We report transparently that on the focused study-disjoint test partition ($N=26$), simpler non-gated architectures achieve comparable or slightly higher point estimates:
+- **Naive Concat MLP**: Achieves **0.9048 ROC-AUC**, **0.9207 PR-AUC**, and **80.77% accuracy** (21/26 correct).
+- **Logistic Regression (13D Tabular)**: Achieves **0.8274 ROC-AUC**, **0.8616 PR-AUC**, and **84.62% accuracy** (22/26 correct).
+- **DeepDDI**: Achieves **0.8452 ROC-AUC** and **76.92% accuracy** (20/26 correct).
+
+These results demonstrate that when evaluated purely on uncorrupted in-distribution candidate pairs with available text, direct concatenation or tabular modeling can achieve strong point estimates without explicit reliability gating. However, the essential value of the proposed reliability-conditioned framework lies not in raw test-set metric maximization on clean small cohorts, but in four safety-critical properties:
+1. **Calibrated Posterior Probabilities**: Achieves a Brier score of **0.1554** and ECE of **0.1621**, compared to 0.1687–0.2194 for graph baselines.
+2. **Principled Fallback Mechanism**: When literature is absent or uncorroborated, reliability collapses ($R \to 0$), gracefully defaulting to biological GAT mechanism priors without hallucination.
+3. **Echo Chamber Attenuation**: Connected-component discounting ($\alpha = 0.15$) eliminates circular citation inflation.
+4. **Calibrated Tri-State Abstention**: Epistemic uncertainty and contradiction thresholds safely route ambiguous and contested pairs to clinical pharmacist review queues rather than issuing forced guesses.
 
 ---
 
-## 5. Clinical Case Studies
+## 5. Limitations
+
+While this work establishes an auditable foundation for reliability-conditioned HDI prediction, several important methodological and empirical limitations must be acknowledged:
+1. **Small Benchmark Sample Size ($N=26$ test records)**: Although our benchmark of 141 publications across 123 independent study clusters is fully audited with verified PubMed PMIDs and DOIs, the held-out study-disjoint test split contains 26 records (12 positive, 14 non-positive). Consequently, bootstrap confidence intervals are wide (ROC-AUC 95% CI: [0.659, 0.987]), and differences between top-performing models do not reach statistical significance after Holm-Bonferroni correction.
+2. **Zero-Literature External Validation Behavior**: When applied to external benchmarks without curated literature corpora (e.g., NaPDI clinical template pairs), the reliability module correctly detects complete literature missingness ($M = 1.0$) and sets $R = 0.0$. Under strict conformal calibration bands ($\epsilon = 0.10$), the resulting biological GAT prior predictions ($\hat{p} \in [0.63, 0.80]$) fall within the non-singleton prediction set region, triggering 100% abstention. While this represents safe protective clinical behavior, prospective deployment requires automated literature retrieval pipelines to populate evidence lineage graphs for novel pairs.
+3. **Decision Sensitivity to Initialization Seeds**: On small sample sizes, candidate pairs with predicted probabilities near the decision boundary ($\hat{p} \approx 0.50$, such as Kava–Chlorzoxazone at $\hat{p} = 0.4419$) can flip classifications across different neural network initialization seeds, highlighting the necessity of deep ensembling for clinical deployment.
+4. **Translational Scope**: The system provides advisory Clinical Decision Support (CDS) alerts and review queue routing; it has not undergone prospective multi-center clinical trial validation in active Electronic Health Record (EHR) environments.
+
+---
+
+## 6. Clinical Case Studies
 
 ### Case 1: *Hypericum perforatum* and Cyclosporine (Echo Chamber Identification)
 In our citation graph, 4 separate publications reported catastrophic drops in cyclosporine blood levels following St. John's wort ingestion. Lineage analysis revealed that `Breidenbach_2000`, `Mai_2000`, and `Ernst_2000` all directly derived from the index clinical landmark report `Ruschitzka_1999` (Lancet). Our connected component algorithm grouped these into a single independent cluster ($S_{\text{pos}} = 1.0 + 3 \times 0.15 = 1.45$), correctly assigning a high reliability score ($R = 0.94$) grounded in genuine clinical replication rather than an artificial 4.0× count.
@@ -200,6 +222,6 @@ Cranberry juice co-administration with warfarin presents severe evidentiary conf
 
 ---
 
-## 6. Conclusion
+## 7. Conclusion
 
-We presented the first reliability-conditioned prediction architecture specifically formulated for herb–drug interactions. By integrating citation-derivation directed acyclic graphs, multi-factor pharmacokinetic context compatibility, heterogeneous biological graph attention, and validation-calibrated tri-state abstention, our system bridges the critical gap between computational bioinformatics and trustworthy clinical decision support.
+We presented a reliability-conditioned prediction architecture specifically formulated for herb–drug interactions that replaces unconditioned literature trust with auditable evidence lineage graphs, context compatibility scoring, and calibrated selective abstention. By demonstrating that simpler concatenation models can achieve parity in raw test accuracy while lacking safety mechanisms, our findings emphasize that responsible clinical AI must prioritize uncertainty calibration, circularity attenuation, and transparent fallback over uncalibrated metric optimization.
