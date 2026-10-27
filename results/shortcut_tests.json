@@ -1974,5 +1974,33 @@
         ]
       }
     }
+  },
+  "per_fold_auc": {
+    "overlap_6d": {
+      "herb_disjoint": {
+        "mean": 0.8572,
+        "fold_mean": 0.8739,
+        "fold_aucs": [
+          0.8739
+        ],
+        "oof_auc": 0.8572
+      },
+      "pair_disjoint": {
+        "mean": 0.8669,
+        "fold_mean": 0.8733,
+        "fold_aucs": [
+          0.8733
+        ],
+        "oof_auc": 0.8669
+      }
+    },
+    "curation_2d": {
+      "herb_disjoint": {
+        "mean": 0.7984,
+        "fold_mean": null,
+        "fold_aucs": [],
+        "oof_auc": null
+      }
+    }
   }
 }

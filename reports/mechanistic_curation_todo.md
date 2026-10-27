@@ -19,11 +19,11 @@ Every row in `data/curation/mechanistic_features.csv` contains the following fie
 | **`entity`** | String | Botanical ID (`HERB_*`) or Prescription Drug ID (`DRUG_*`) | Must match canonical benchmark identifier |
 | **`target`** | String | Pharmacokinetic or pharmacodynamic target | One of canonical PK targets (CYP3A4, CYP2D6, CYP2C9, CYP2C19, CYP1A2, CYP2E1, ABCB1, SLCO1B1, NR1I2) **or** PD targets (VKORC1, PTGS1, PTGS2, HSD11B2, SLCO1A2) |
 | **`status`** | String | Curation status: `measured` | Tested and measured value obtained; `tested_no_effect` | Actively tested and found no measurable effect; `not_tested` | No experimental data found for this entity-target pair. Must be set based on evidence, not assumed. |
-| **`value_ic50_uM`** | Float | Half-maximal inhibitory concentration in $\mu	ext{M}$ | Enter measured $IC_{50}$ value. Leave empty if `status` is not `measured`. |
-| **`value_ki_uM`** | Float | Inhibition constant in $\mu	ext{M}$ | Enter measured $K_i$ value. Leave empty if `status` is not `measured`. |
-| **`value_fold_induction`** | Float | Fold induction of enzyme expression/activity | Enter fold-induction value (e.g., 2.5 for 2-fold induction). Leave empty if `status` is not `measured`. |
-| **`value_fm`** | Float | Fraction metabolized via target | Enter $f_m$ value (0.0–1.0). Leave empty if `status` is not `measured`. |
-| **`value_substrate_flag`** | Integer | Substrate designation (1 = substrate, 0 = not a substrate) | Enter `1` if the entity is a known substrate for this target, `0` otherwise. Leave empty if unknown. |
+| **`value_ic50_uM`** | Float | Half-maximal inhibitory concentration in $\mu	ext{M}$ | For inhibition targets. Enter measured $IC_{50}$ value. Leave empty if `status` is not `measured`. |
+| **`value_ki_uM`** | Float | Inhibition constant in $\mu	ext{M}$ | For inhibition targets. Enter measured $K_i$ value. Leave empty if `status` is not `measured`. |
+| **`value_fold_induction`** | Float | Fold induction of enzyme expression/activity | For induction targets (e.g., CYP3A4, CYP2B6). Enter fold-induction value (e.g., 2.5 for 2-fold induction). Leave empty if `status` is not `measured`. |
+| **`value_fm`** | Float | Fraction metabolized via target | For drugs only. Enter $f_m$ value (0.0–1.0). Leave empty if `status` is not `measured` or if the entity is not a drug. |
+| **`value_substrate_flag`** | Integer | Substrate designation (1 = substrate, 0 = not a substrate) | For drugs only. Enter `1` if the drug is a known substrate for this target, `0` if not a substrate, or leave empty if unknown. Do not use for botanical entities. |
 | **`exposure_conc_uM`** | float | Exposure concentration in $\mu	ext{M}$ for static-model R values | Enter steady-state or $C_{	ext{max}}$ concentration in $\mu	ext{M}$. Enables static PK/PD modeling. Leave empty if not available. |
 | **`exposure_source`** | String | Source of exposure data (FDA label, Pharmacometrics, literature) | Replace `"UNVERIFIED"` with actual source name (`FDA_DDI_Table`, `DrugBank`, `NaPDI`, primary literature). |
 | **`assay_or_unit`** | String | Measurement context (e.g., `microsomal_IC50_uM`, `in_vivo_clearance_fm`, `Ki_uM`, `fold_induction`) | Must describe measurement assay type. |
@@ -81,7 +81,7 @@ Each herb × each of the 9 canonical PK targets has one row. Status starts as `n
 - `HERB_CRANBERRY`: targets needed `CYP2C9`
 - `HERB_CHAMOMILE`: targets needed `CYP1A2`, `CYP2C9`, `CYP3A4`
 - `HERB_PEPPERMINT`: targets needed `CYP3A4`
-- Negative control botanicals: `HERB_MILKTHISTLE`, `HERB_VALERIAN`, `HERB_SAWPALMETTO`, `HERB_BLACKCOHOSH` — verify lack of clinical CYP3A4/P-gp modulation in humans (per blind protocol: record measured values regardless of expected null result)
+- Negative control botanicals: `HERB_MILKTHISTLE`, `HERB_VALERIAN`, `HERB_SAWPALMETTO`, `HERB_BLACKCOHOSH` —  (per blind protocol: record measured values regardless of expected null result)
 - `HERB_KAVA`: also has `GABRA1` target (GABA-A receptor modulation)
 
 ### 3.2 PK Rows: 40 Drug Entities × 9 Targets = 360 Entries
@@ -175,3 +175,25 @@ The `UnverifiedCurationError` guard remains in effect. Models will **strictly bl
 | DRUG_MIDAZOLAM | CYP3A4 | measured | 1.8 | | | 0.95 | 1 | | FDA_DDI_Table | microsomal_IC50_uM | 10.1016/s0091-2721(00)00145-5 | 2026-01-15 | Gold standard FDA clinical index substrate; $f_{m,CYP3A4} > 0.90$ |
 | HERB_HYPERICUM | CYP3A4 | measured | 0.5 | | | | 1 | | NaPDI | microsomal_IC50_uM | 10.1016/j.clpt.2005.05.012 | 2026-01-15 | Hyperforin-mediated PXR activation, strong CYP3A4 induction |
 | DRUG_WARFARIN | VKORC1 | measured | | | | | | 5.0 | FDA_DDI_Table | | 2026-01-15 | Warfarin's direct pharmacodynamic target; vitamin K epoxide reductase |
+
+### Why the PD Block Has 200 Rows
+
+The pharmacodynamic (PD) block contains 200 rows representing drug–PD target pairs that are not covered by the PK substrate framework. These include:
+- `DRUG_WARFARIN` + `VKORC1` (direct pharmacodynamic target)
+- `DRUG_ASPIRIN` + `PTGS1` and `PTGS2` (COX enzyme targets)
+- `DRUG_PREDNISOLONE` + `HSD11B2` (11β-HSD2 substrate)
+- `DRUG_HYDROCHLOROTHIAZIDE` + `HSD11B2` (mineralocorticoid additive risk)
+These rows are optional and only used when running the model in PK+PD task mode. They are flagged with `status = not_tested` by default and should be curated separately from the PK rows.
+### Status: `not_tested` as Missing
+
+The `status` field uses three values: `measured`, `tested_no_effect`, and `not_tested`. `not_tested` indicates that no experimental data was found for this entity-target pair; it should be treated as **missing data**, never as zero. Rows with `status = not_tested` have all value columns left empty. The `measured_count` curation-only feature (below) counts only rows with `status = measured`.
+### Measured Count Curation-Only Feature
+
+A new curation-only feature `measured_count` can be computed from the CSV: the number of entity-target pairs with `status = measured`. Once verified data exists, this can be reported alongside the overlap AUC:
+
+| Feature | overlap_6d AUC | measured_count AUC |
+| :--- | :---: | ---: |
+| Train-only | 0.8669 | TBD |
+| Full panel | 0.8572 | TBD |
+
+This feature is strictly for curation progress tracking and should not be used for model training until all entries have `status = measured`.

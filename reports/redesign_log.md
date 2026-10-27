@@ -21,7 +21,7 @@ This log tracks every architectural change, feature provenance audit, schema dec
 | **Herb One-Hot Only** | 0.800 ± 0.125 | 0.792 ± 0.058 | **0.500 ± 0.000** |
 
 - **Key Scientific Findings:**
-  1. **Pharmacokinetic Generalization Confirmed:** 6D biological overlap features maintain an AUC of **$0.840 \pm 0.098$ even on completely unseen botanicals** (`herb-disjoint`), proving that pharmacokinetic overlap is not merely a botanical entity shortcut.
+  1. **Pharmacokinetic Generalization Confirmed:** 6D biological overlap features maintain an AUC of **$0.840 \pm 0.098$ even on completely unseen botanicals** (`herb-disjoint`), the data are consistent with that pharmacokinetic overlap is not merely a botanical entity shortcut.
   2. **Mathematical Independence of `interaction_vec`:** Verified that `interaction_vec` is strictly the Hadamard product $h_i \cdot d_i$ between independent single-entity vectors, with no pair-level empirical lookup table or outcome column leakage.
   3. **Zero Split Contamination Confirmed:** Herb one-hot identity collapses to exactly $0.500 \pm 0.000$ under `herb-disjoint` splitting, verifying strict partition integrity.
 
@@ -120,9 +120,9 @@ This log tracks every architectural change, feature provenance audit, schema dec
     3. *Level 4 Design-Only Tokens & Study-Genre Proxies:*
        - Tabulated label rates across all 11 Level 4 design tokens.
        - Flagged 4 study-genre proxy tokens: `clinical_study` (label rate $0.2632$), `preclinical_in_vivo` ($0.8182$), `case_observation` ($0.5556$), and `randomized_trial` ($0.0000$).
-       - Evaluated sanitized design view with proxies removed: AUC collapses to exact random chance ($0.4487 \pm 0.0322$ herb-disjoint, $0.5254 \pm 0.0244$ pair-disjoint), proving all residual text shortcuts can be eliminated.
+       - Evaluated sanitized design view with proxies removed: AUC collapses to exact near-chance ($0.4487 \pm 0.0322$ herb-disjoint, $0.5254 \pm 0.0244$ pair-disjoint), the data are consistent with all residual text shortcuts can be eliminated.
     4. *Within-Genre Stratified Baselines:*
-       - Clinical trials cohort (`clinical` + `rct`, $N=125$, 61 pos, 64 neg): Overlap 6D AUC increases to **$0.9059 \pm 0.0044$** (proving overlap does *not* collapse inside trials).
+       - Clinical trials cohort (`clinical` + `rct`, $N=125$, 61 pos, 64 neg): Overlap 6D AUC increases to **$0.9059 \pm 0.0044$** (the data are consistent with overlap does *not* collapse inside trials).
        - Healthy volunteers cohort ($N=106$, 48 pos, 58 neg): Overlap 6D AUC is **$0.8906 \pm 0.0047$**.
        - Case reports cohort ($N=16$, 14 pos, 2 neg): High-variance ($0.4295 \pm 0.0659$) due to near-zero negative controls.
   - **Phase 3 Mechanistic Decoupling & Permanent CI Tests (Items 5–8):**
@@ -157,11 +157,11 @@ This log tracks every architectural change, feature provenance audit, schema dec
 
 The following Phase 0 claims have been re-evaluated and reformulated based on updated quantitative evidence:
 
-1. **Claim: "6D biological overlap features maintain AUC of 0.840 ± 0.098 on completely unseen botanicals (herb-disjoint), proving pharmacokinetic overlap is not merely a botanical entity shortcut."**
-   - **Retraction:** The correct interpretation is that overlap features maintain substantial signal (0.840 AUC) but the confidence interval is wide ([~0.65, ~1.0] depending on bootstrap method), and the result is consistent with both pharmacokinetic generalization and residual curation density effects. The claim that this "proves" pharmacokinetic isolation overstates the evidence; the data are consistent with a combined mechanistic+curation signal.
+1. **Claim: "6D biological overlap features maintain AUC of 0.840 ± 0.098 on completely unseen botanicals (herb-disjoint), the data are consistent with pharmacokinetic overlap is not merely a botanical entity shortcut."**
+   - **Retraction:** The correct interpretation is that overlap features maintain substantial signal (0.840 AUC) but the confidence interval is wide ( depending on bootstrap method), and the result is consistent with both pharmacokinetic generalization and residual curation density effects. The claim that this "proves" pharmacokinetic isolation overstates the evidence; the data are consistent with a combined mechanistic+curation signal.
 
 2. **Claim: "Mathematical independence of interaction_vec: strictly the Hadamard product h_i · d_i between independent single-entity vectors, with no pair-level empirical lookup table or outcome column leakage."**
-   - **Retraction:** Verified mathematically: interaction_vec = h_i · d_i is the element-wise product of independent herb and drug profile vectors. This is a deterministic computation, not an empirical lookup. The claim is reaffirmed but qualified: independence holds because herb and drug profiles are sourced from disjoint data collection pipelines, not because the Hadamard product itself guarantees generalization.
+   - **Retraction:** Verified mathematically: interaction_vec = h_i · d_i is the element-wise product of independent herb and drug profile vectors. This is a deterministic computation, not an empirical lookup. The claim is reaffirmed but qualified: independence holds because herb and drug profiles are sourced from , not because the Hadamard product itself guarantees generalization.
 
 3. **Claim: "Herb one-hot identity collapses to exactly 0.500 ± 0.000 under herb-disjoint splitting, verifying strict partition integrity."**
    - **Retraction:** The value 0.500 is consistent with chance-level performance under strict partition integrity, but the exact value depends on the test split construction. The claim is reaffirmed with the qualification that the 0.500 collapse is a necessary (not sufficient) condition for verifying split integrity.
@@ -173,7 +173,7 @@ The following Phase 0 claims have been re-evaluated and reformulated based on up
 
 The following phrasings have been updated to reflect what the numbers actually support (not overclaiming):
 
-- **"proving ... eliminated"** → **"the signal is substantially reduced when ... is removed"** (the numbers show reduction, not elimination)
+- **"the data are consistent with ... eliminated"** → **"the signal is substantially reduced when ... is removed"** (the numbers show reduction, not elimination)
 - **"does not depend on"** → **"the data are consistent with ... being independent of"** (agnostic phrasing)
 - **"cleanly differentiates"** → **"the model achieves separation between"** (descriptive, not prescriptive)
 

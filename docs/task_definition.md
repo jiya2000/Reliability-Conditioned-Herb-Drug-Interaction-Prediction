@@ -47,6 +47,16 @@ Task A solves the de novo screening problem: assessing theoretical interaction r
 
 ---
 
+
+
+### 3. Pair Study Statistics
+
+- Total unique herb–drug pairs: **120**
+- Pairs with 2 or more studies: **15** (out of 120 total pairs)
+- Study count distribution: 105 pairs with 1 study, 11 pairs with 2 studies, 2 pairs with 3 studies, 2 pairs with 4 studies
+
+Given that only **15 out of 120** pairs have 2 or more studies (well below the threshold of 20), **Task B is marked "not testable on this panel."** The limited number of pairs with multiple study citations means that reliability conditioning on study agreement cannot be meaningfully evaluated on this 141-record panel. Task B would require a substantially larger benchmark with more replicate evidence per pair.
+
 ## 3. Task B: Supervised Evidence Aggregation & Reliability Conditioning
 
 ### 3.1 Problem Formulation

@@ -332,3 +332,16 @@ def test_permanent_g_curation_density_check(benchmark_df):
                 f"targets marked as verified. All 9 PK targets must be filled "
                 f"(status = measured or tested_no_effect) before model execution."
             )
+
+
+def test_constant_predictor_auc_is_0_5():
+    '''Assert that a constant predictor scoring 0.5 AUC under the primary metric.'''
+    import numpy as np
+    from sklearn.metrics import roc_auc_score
+    y_true = np.array([0, 1] * 70 + [0])
+    y_prob = np.full_like(y_true, 0.5)
+    auc = roc_auc_score(y_true, y_prob)
+    assert abs(auc - 0.5) < 1e-6, f"Constant predictor AUC ({auc:.4f}) should be 0.5"
+    y_true2 = np.array([0] * 70 + [1] * 71)
+    auc2 = roc_auc_score(y_true2, y_prob[:len(y_true2)])
+    assert abs(auc2 - 0.5) < 1e-6, f"Constant predictor AUC2 ({auc2:.4f}) should be 0.5"
