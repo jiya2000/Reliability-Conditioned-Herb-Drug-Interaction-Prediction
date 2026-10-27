@@ -149,4 +149,9 @@ This log tracks every architectural change, feature provenance audit, schema dec
 - **Test Suite Status:** 149 passed, 0 failures, 19 warnings (in 24.72s).
 - **STOP Point:** Standing by for user-supplied consensus labels before touching Phase 4 or Phase 5.
 
+## CI Workflow Diagnostic & Fix (October 28, 2026)
+- **Failure Analysis:** GitHub Actions CI Run #15 on commit `c85753f` failed on the `Run unit test suite` step (144 passed, 5 failed). The failed tests were `test_dag_audit_file_integrity`, `test_external_validation_schema_and_loader`, `test_external_validation_execution`, `test_overlap_diagnostics_computation`, and `test_external_validation_execution_and_artifacts`.
+- **Root Cause:** In `.gitignore`, `*.csv` excluded all CSV files outside `data/benchmark/`, `data/curation/`, and `reports/`. Consequently, `data/audit/dag_audit_samples.csv` and `data/external/napdi_template.csv` were not tracked in git and were missing from clean runner checkouts.
+- **Resolution:** Added `!data/audit/*.csv` and `!data/external/*.csv` to `.gitignore`, tracked and staged both files in git. Verified 0 occurrences of prohibited terms, all 149/149 pytest test suite tests pass cleanly.
+
 

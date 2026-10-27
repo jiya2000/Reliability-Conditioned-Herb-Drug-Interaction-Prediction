@@ -30,6 +30,8 @@ data/processed/
 *.csv
 !data/benchmark/*.csv
 !data/curation/*.csv
+!data/audit/*.csv
+!data/external/*.csv
 !reports/*.csv
 *.tsv
 *.jsonl
