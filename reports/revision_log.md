@@ -377,7 +377,7 @@ This log tracks every modification, rationale, test result, and quantitative met
       1. `test_context_weight_sweep_produces_distinct_tensors`: Fails if metadata tensors from scale $0.50x$ and $1.50x$ are byte-identical or numerically identical.
       2. `test_alpha_sweep_produces_distinct_tensors_in_full_mode`: Fails if metadata tensors in `full` mode from $\alpha=0.05$ and $\alpha=1.00$ are byte-identical.
       3. `test_sensitivity_figures_and_results_exist`: Verifies all generated PNG figures and JSON results exist and are non-empty.
-- **Numbers Recorded:**
+~~- **Numbers Recorded (Superseded Preliminary Run):**
   - **Context-Weight Scale Sweep ($W_{\text{context}}$):**
     - $0.50x$: Mean $W_{\text{context}} = 0.4601$, ROC-AUC: `0.8512`, Brier: `0.1654`, Selective Acc: `0.8077`, Coverage: `100.0%`
     - $0.75x$: Mean $W_{\text{context}} = 0.6901$, ROC-AUC: `0.8512`, Brier: `0.1587`, Selective Acc: `0.8077`, Coverage: `100.0%`
@@ -390,7 +390,7 @@ This log tracks every modification, rationale, test result, and quantitative met
     - $\alpha = 0.15$ (default): Effective Evidence $= 0.716$, Echo Ratio $= 0.056$ | QO AUC: `0.8512` | Full AUC: `0.7976`, Full Brier: `0.1878`
     - $\alpha = 0.25$: Effective Evidence $= 0.804$, Echo Ratio $= 0.056$ | QO AUC: `0.8512` | Full AUC: `0.7976`, Full Brier: `0.1895`
     - $\alpha = 0.50$: Effective Evidence $= 1.026$, Echo Ratio $= 0.056$ | QO AUC: `0.8512` | Full AUC: `0.7917`, Full Brier: `0.1942`
-    - $\alpha = 1.00$: Effective Evidence $= 1.469$, Echo Ratio $= 0.056$ | QO AUC: `0.8512` | Full AUC: `0.7857`, Full Brier: `0.2031`
+    - $\alpha = 1.00$: Effective Evidence $= 1.469$, Echo Ratio $= 0.056$ | QO AUC: `0.8512` | Full AUC: `0.7857`, Full Brier: `0.2031`~~
 - **Test Suite Status:** 122 passed, 0 failures, 19 warnings (in 22.70s).
 
 ---

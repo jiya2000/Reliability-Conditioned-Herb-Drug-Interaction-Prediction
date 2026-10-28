@@ -24,7 +24,7 @@
 3. **Hypericum perforatum Dependency:**
    - **Claim Softened:** Leaving out *Hypericum perforatum* causes a performance drop of **0.0477** AUC (to **0.8273**), demonstrating that benchmark performance is disproportionately anchored by St. John's Wort.
 5. **Residual Study-Genre Leakage in Design-Only Representation:**
-   - **Claim Softened:** The Level 4 design-only representation still contains study-genre proxy tokens (such as sample size and healthy volunteer indicators) that correlate with study genres. In the clinical trials cohort ($N=125$), the sanitized design-only view (with genre proxies removed) drops to **0.4743**, and when pure-negative controls are excluded ($N=100$), drops further to **0.4328**, showing that performance collapses toward near-chance once genre proxies are filtered out.
+   - **Claim Softened:** The Level 4 design-only representation extracts study type, route, and formulation tokens (specifically the `clinical_study` token triggered by 'volunteers' or 'subjects', and the `case_observation` token triggered by 'case report' or 'patient'; note that no explicit sample size tokens are extracted). In the clinical trials cohort ($N=125$), the sanitized design-only view (with genre proxies removed) drops to **0.4743**, and when pure-negative controls are excluded ($N=100$), drops further to **0.4328**. This 0.4328 sub-chance result reflects the absence of design variation among the remaining 100 trials (nearly all oral standardized extracts) where linear weights fit small-sample noise from intravenous challenges, showing that design-only tokens lack intrinsic pharmacokinetic mechanism.
 
 ## 3. Claims That Survive (Rigorous & Traceable)
 1. **Severe Text Outcome Leakage:**

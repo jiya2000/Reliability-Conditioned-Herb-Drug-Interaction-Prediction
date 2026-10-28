@@ -241,7 +241,8 @@ def test_synthetic_fixture_end_to_end_reliability_pipeline(tmp_path):
     # Calibration scaling test
     from scripts.run_phase5_task_a import fit_temperature_scaling
     logits_cal = np.log(np.clip(learned_R, 1e-5, 1 - 1e-5) / (1 - np.clip(learned_R, 1e-5, 1 - 1e-5)))
-    temp = fit_temperature_scaling(logits_cal, planted_targets.astype(int))
+    res = fit_temperature_scaling(logits_cal, planted_targets.astype(int))
+    temp = res[0] if isinstance(res, tuple) else res
     assert temp > 0.0, f"Temperature {temp} must be positive"
 
     # Aggregation reduces to prior at k=0

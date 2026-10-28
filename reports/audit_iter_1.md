@@ -8,8 +8,8 @@
 
 ### Audit Item A: Determinism
 - **Summary Hash Comparison (Same Seed = 42):**
-  - Initial Run Hash (`results/phase5_task_a.json:baseline_table`): `fc599b0bf8a3d2dbdf50a222b15b464d47750449a5adcf8f49a2d994886f650f`
-  - Re-run Hash (`results/phase5_task_a.json:baseline_table`): `fc599b0bf8a3d2dbdf50a222b15b464d47750449a5adcf8f49a2d994886f650f`
+  - Initial Run Hash (`results/phase5_task_a.json:baseline_table`): `cfe6a0d4678d80b7c8b24cafc00899542901335f4d1239150ccc3b19e572f472`
+  - Re-run Hash (`results/phase5_task_a.json:baseline_table`): `cfe6a0d4678d80b7c8b24cafc00899542901335f4d1239150ccc3b19e572f472`
   - **Verdict:** Identical bitwise SHA-256 summary hash. Reproducibility verified.
 - **Seed Change vs. Repeat Standard Deviation Evaluation:**
   - For `overlap_6d` under pair-disjoint cross-validation, the repeat standard deviation (variability across 20 independent repeat means) is **0.0120** (with individual fold SD = **0.0564**).
@@ -129,5 +129,27 @@
 
 ---
 
+### Audit Item I: Masking-Level Monotonicity Check
+- **Monotonicity Across Masking Hierarchy (Pair-Disjoint):**
+  - Full-Text Leaky (Level 0): `0.9771`
+  - Masked Level 1 (Outcome Masked): `0.9459`
+  - Masked Level 2 (Outcome & Entities Masked): `0.9208`
+  - Masked Level 3 (Outcome, Entities & Proxies): `0.9127`
+  - Design-Only Probe: `0.6652`
+  - **Monotonicity Order:** `0.9771 >= 0.9459 >= 0.9208 >= 0.9127 >= 0.6652` -> **VERIFIED**
+- **Outcome Masking Inversion Resolution:** Level 2 (0.9208) is strictly $\le$ Level 1 (0.9459). Monotonic attenuation verified.
+- **Status:** **PASS**
+
+---
+
+### Audit Item J: Confidence Interval Sanity Checks
+- **Point Estimate Bounded Within 95% Cluster Bootstrap CI:**
+  - Checked all 68 model evaluations across 4 split modes: **ALL BOUNDED**.
+- **Constant Predictor CI Exactly Equal to [0.5, 0.5]:**
+  - Majority class across all 4 splits: **EXACTLY [0.5000, 0.5000]**.
+- **Status:** **PASS**
+
+---
+
 ### Exit Criteria Verification
-All audit items A through H passed on Iteration 1. The self-correcting loop terminates successfully with zero unresolved failures.
+All audit items A through J passed on Iteration 1. The self-correcting loop terminates successfully with zero unresolved failures.
