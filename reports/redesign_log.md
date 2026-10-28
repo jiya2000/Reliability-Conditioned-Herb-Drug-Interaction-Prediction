@@ -193,3 +193,54 @@ These changes are logged in accordance with the principle of not fabricating cer
 1. Profiles are hand-coded in one file by the same team after the labels existed, all values UNVERIFIED.
 2. `herb_onehot` `herb-disjoint` was 0.500 in the first run and 0.367 in the repeated run, an artifact of pooling out-of-fold predictions across folds with different intercepts, so the 0.500 claim is withdrawn.
 3. The "Pharmacokinetic Generalization Confirmed" and "Zero Split Contamination Confirmed" findings are withdrawn.
+
+## Phase 4 and Phase 5 Implementation & Verification Log (October 28, 2026)
+
+### Preconditions (Step 0) Completed:
+1. **Consensus Labeling File Sanitization:**
+   - Sanitized `data/benchmark/consensus_labels_pairs_to_label.csv` to strictly contain 8 columns: `herb_id, drug_id, consensus_label, severity, source_name, source_url_or_citation, retrieval_date, notes` (last 6 columns empty).
+   - Removed all outcome information and evidence source columns (`candidate_interaction_type`, `evidence_source`) to prevent outcome leakage.
+   - Seeded shuffle applied across 120 unique benchmark pairs.
+   - Moved all stratification metadata to gitignored `data/benchmark/private/pair_strata.csv`.
+   - Applied identical schema stripping and shuffling to `data/benchmark/consensus_labels_random_unstudied.csv` (study status moved to `data/benchmark/private/unstudied_strata.csv`).
+   - **Stratum Discrepancy Bug Identified:** Inspected old stratification labels against raw overlap values; discovered that 11 pairs labeled `high_overlap_negative` in the legacy file actually had overlap $\le 0.05$ (e.g., `HERB_VALERIAN + DRUG_MIDAZOLAM` = 0.0, `HERB_SAWPALMETTO + DRUG_DIGOXIN` = 0.0, `HERB_BLACKCOHOSH + DRUG_MIDAZOLAM` = 0.0). Root cause: legacy metadata assigned strata qualitatively without computing raw overlap features.
+2. **Schema Integrity Tests:**
+   - Added unit tests `test_consensus_labels_pairs_to_label_schema` and `test_consensus_labels_random_unstudied_schema` that fail if any column outside the approved 8 is present.
+3. **Storage Hygiene & Prediction Extraction:**
+   - Extracted fold prediction vectors from `results/shortcut_tests.json` and `results/phase5_task_a.json` into compressed NPZ files (`results/predictions/shortcut_fold_predictions.npz` and `results/predictions/phase5_fold_predictions.npz`).
+   - Reduced `results/shortcut_tests.json` file size from ~337,000 lines to ~8,800 lines while embedding SHA-256 integrity hashes.
+
+### Phase 4 Scaffolding Implementation:
+1. **Residual Aggregation Architecture (`src/models/aggregation.py`):**
+   - Implemented `ReliabilityAggregationModel` computing $\text{logit}_{\text{fused}} = \text{logit}_{\text{prior}} + \sum_{i=1}^k R_i \cdot \delta_i$.
+   - Enforced zero-literature invariance: when $k=0$ or studies are missing, output reduces strictly to prior logit (`assert_array_equal`).
+   - Reliability weight $R_i \in [0, 1]$ depends strictly on study design parameters and citation lineage features (no text, no outcome language, no herb/drug entity identities).
+2. **Reliability Agreement Target & Loader Guard:**
+   - Implemented `ReliabilityTarget`: $\text{agree} = 1$ iff $(o_i == +1 \land Y == 1) \lor (o_i == -1 \land Y == 0)$; equivocal observations ($o_i == 0$) are excluded.
+   - Implemented `load_consensus_labels` which raises `ConsensusLabelsNotPopulatedError` while no validated consensus rows exist.
+   - Guarded training entry point `train_reliability_model_entrypoint` to call `load_consensus_labels`, preventing supervised training of $R$ on legacy labels.
+3. **Task B Baselines:**
+   - Implemented majority vote baseline, quality-weighted vote, echo-discounted vote, and pair-level logistic regression aggregator.
+4. **Synthetic Fixture Pipeline Test (R6 Compliant):**
+   - Added unit test `test_synthetic_fixture_end_to_end_reliability_pipeline` verifying that $R$ training recovers a planted reliability structure (AUC > 0.80) and that temperature calibration and zero-literature collapse execute properly.
+   - Added test to permanently ensure no synthetic test fixture data or tokens appear in results/ or reports/.
+5. **Task B Benchmark Status:**
+   - Formally documented that Task B is not testable on the current benchmark panel because exactly 15 of 120 pairs have $\ge 2$ studies (~1 study per pair).
+
+### Phase 5 Task A Evaluation (label_mode = legacy, EXPLORATORY):
+1. **Repeated Grouped Cross-Validation:**
+   - Executed 20 repeats of 5-fold grouped CV across 4 split protocols: `herb_disjoint`, `drug_disjoint`, `pair_disjoint`, and `study_disjoint`.
+   - Verified split disjointness assertions on every CV split.
+   - Computed cluster-bootstrap 95% confidence intervals resampling herbs and drugs separately (1,000 resamples each).
+   - Conducted Holm-Bonferroni corrected paired $t$-tests across models against Logistic Regression on matched folds.
+2. **Baseline Model Evaluation:**
+   - Evaluated 15 models: `herb_identity`, `drug_identity`, `overlap_total`, `overlap_6d`, `curation_2d`, `quality_only`, `masked_text_level1`, `masked_text_level2`, `masked_text_level3`, `design_only`, `full_text_leaky` (reference only), `logistic_regression`, `gradient_boosted_trees`, `small_gat`, and `majority_class`.
+   - **SmallGAT Rejection:** SmallGAT scored $0.5417$ mean AUC under `herb_disjoint` (vs LR $0.8836$, $p < 0.0001$), failing the requirement to beat LR across all three primary disjoint split protocols. SmallGAT is formally DROPPED from recommendation.
+   - **Curation-Density Confound:** The 2D curation feature alone achieved $0.7885$ AUC under `herb_disjoint` and $0.8189$ under `pair_disjoint` without target identity, demonstrating that profile density is a primary non-mechanistic confound.
+   - **Design-Only Text Probe:** Achieved $0.6537$ under `herb_disjoint` and $0.6652$ under `pair_disjoint`, remaining strictly below the 0.70 threshold.
+   - **Full-Text Leakage:** Raw unmasked clinical study text scored $0.9647$ (herb-disjoint) and $0.9771$ (pair-disjoint), labeled "LEAKY, reference only".
+3. **Sensitivity Analysis:**
+   - Evaluated genre-stratified cohorts and sensitivity to the 4 pure-negative botanicals (`HERB_BLACKCOHOSH`, `HERB_MILKTHISTLE`, `HERB_SAWPALMETTO`, `HERB_VALERIAN`). In clinical trials, excluding pure-negative botanicals dropped `curation_2d` from $0.7836$ to $0.6974$.
+4. **Calibration & Conformal Abstention:**
+   - Evaluated post-hoc temperature scaling fitted strictly on inner splits.
+   - Evaluated split-conformal abstention across maximum probability, uncertainty estimation, and tri-state routing.

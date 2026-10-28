@@ -550,11 +550,30 @@ def main():
                     "pooled_oof_mean": res["pooled_oof_mean"],
                 }
 
-    # Save output
+    # Save predictions to NPZ and keep summaries/hashes in JSON
+    import hashlib
+    os.makedirs("results/predictions", exist_ok=True)
+    all_preds = {}
+
+    def extract_preds(obj, prefix=''):
+        if isinstance(obj, dict):
+            if 'fold_predictions' in obj:
+                key = prefix.strip('.')
+                preds_list = obj.pop('fold_predictions')
+                all_preds[key] = json.dumps(preds_list).encode('utf-8')
+                h = hashlib.sha256(all_preds[key]).hexdigest()
+                obj['predictions_npz'] = f'results/predictions/shortcut_fold_predictions.npz:{key}'
+                obj['predictions_sha256'] = h
+            for k, v in obj.items():
+                extract_preds(v, prefix + k + '.')
+
+    extract_preds(results)
+    np.savez_compressed('results/predictions/shortcut_fold_predictions.npz', **all_preds)
+
     os.makedirs("results", exist_ok=True)
     with open("results/shortcut_tests.json", "w") as f:
         json.dump(results, f, indent=2)
-    print("\nSuccessfully updated results/shortcut_tests.json!")
+    print("\nSuccessfully updated results/shortcut_tests.json with predictions in results/predictions/!")
 
 
 if __name__ == "__main__":

@@ -2,6 +2,14 @@
 Unit tests for BiomedBERTEvidenceEncoder.
 Tests frozen 768D embedding extraction, training-exclusive SVD projection,
 leakage safety, and multi-token cross-attention tensor shapes.
+
+Execution:
+  Standard fast test run (skips slow model downloads/inferences):
+    pytest -m "not slow"
+  Include slow Transformer model tests:
+    pytest -m slow
+  Or run directly:
+    pytest tests/test_biomedbert_encoder.py
 """
 
 import pytest
@@ -17,6 +25,7 @@ def test_biomedbert_encoder_unfitted_raises():
         encoder.transform(["Sample clinical text"])
 
 
+@pytest.mark.slow
 def test_biomedbert_encoder_fit_and_transform_leakage_safety():
     train_texts = [
         "St John's wort induces CYP3A4 and ABCB1 expression in human intestinal epithelium.",

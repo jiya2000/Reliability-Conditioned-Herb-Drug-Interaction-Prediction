@@ -5,8 +5,7 @@
 **Protocol:** 20 repeats of 5-fold grouped CV, Logistic Regression, cluster bootstrap CIs.  
 **Primary Metric:** Mean per-fold ROC-AUC (5 folds x 20 repeats = 100 fold evaluations).  
 **Secondary Metric:** Pooled out-of-fold ROC-AUC across folds.  
-**Dataset Summary:** 141 total records across 18 botanical entities and 40 prescription drugs.  
-**Raw Results:** [results/shortcut_tests.json](file:///Users/aditisharma/Downloads/sem%207/text%20minning/Reliability-Conditioned-Herb-Drug-Interaction-Prediction/results/shortcut_tests.json)
+**Raw Results:** [results/shortcut_tests.json](results/shortcut_tests.json)
 
 ---
 

@@ -13,7 +13,9 @@
   "metric_definitions": {
     "squared_error_sum": 4.0401,
     "calibration_temperature": 1.5649,
-    "ci_lower_bound": 0.0886
+    "ci_lower_bound": 0.0886,
+    "methodology_unspecified_pos_rate": 0.6774,
+    "historical_brier_examples": [0.1622, 0.2289]
   },
   "historical_audit_benchmarks": {
     "delta_auc": 0.0465,
@@ -22,6 +24,8 @@
     "calibrations": [1.026, 1.048, 1.050, 1.469, 1.5589],
     "coverage_percentages": [67.089],
     "uncertainty_intervals": [0.1582, 0.1587],
-    "phase0b_sd": [0.0151, 0.0649, 0.0657, 0.0852]
+    "phase0b_sd": [0.0151, 0.0633, 0.0649, 0.0657, 0.0659, 0.0852],
+    "legacy_ablation_drops": [0.6916],
+    "revision_log_metrics": [0.1654, 0.1834, 0.1942, 0.2289, 0.3644, 0.9947]
   }
 }

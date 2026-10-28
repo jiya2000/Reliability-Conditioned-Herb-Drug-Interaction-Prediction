@@ -1,0 +1,4973 @@
+{
+  "metadata": {
+    "phase": "5",
+    "task": "A",
+    "label_mode": "legacy",
+    "feature_set": "legacy_label_adjacent",
+    "status": "EXPLORATORY",
+    "disclaimer": "EXPLORATORY analysis on legacy label-adjacent baseline features. Every baseline row operates under label_mode='legacy'. No proposed model rows are reported. Conflict and reliability signals are NOT evaluated until consensus labels exist.",
+    "n_splits": 5,
+    "n_repeats": 20,
+    "seed": 42,
+    "data_path": "data/benchmark/verified_botanical_hdi.csv",
+    "n_samples": 141,
+    "n_positive": 75,
+    "n_negative": 66,
+    "timestamp": "2026-10-28T00:30:27Z"
+  },
+  "baseline_table": {
+    "herb_disjoint": {
+      "herb_identity": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.5,
+        "sd_auc": 0.0,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.2444,
+          0.5018
+        ],
+        "ci_95_drug_cluster": [
+          0.3131,
+          0.4102
+        ],
+        "ece_equal_mass": 0.1204,
+        "brier_score": 0.2598,
+        "temperature": 10.0,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_herb_identity",
+        "predictions_sha256": "bb9e3928e22fdbb6f2aac7055c68fff996055c1636d3da473cbba91e371f8248",
+        "conformal_abstention": {
+          "coverage": 0.9039,
+          "selective_accuracy": 0.4017,
+          "confidence_threshold": 0.5056,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.7143,
+            0.6632,
+            0.4576
+          ],
+          "mean_predicted_value": [
+            0.3869,
+            0.4607,
+            0.5212
+          ],
+          "n_bins": 10
+        }
+      },
+      "drug_identity": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.7485,
+        "sd_auc": 0.116,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.6315,
+          0.7906
+        ],
+        "ci_95_drug_cluster": [
+          0.5083,
+          0.794
+        ],
+        "ece_equal_mass": 0.1059,
+        "brier_score": 0.2243,
+        "temperature": 1.5691,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_drug_identity",
+        "predictions_sha256": "e68ad041161b9b3345bc8225634006209c30413e3510ec858af970da7cef5ffd",
+        "conformal_abstention": {
+          "coverage": 0.9043,
+          "selective_accuracy": 0.6875,
+          "confidence_threshold": 0.523,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0138,
+            "acc_85": 0.0085,
+            "acc_90": 0.0085,
+            "acc_95": 0.0085
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.3333,
+            0.1639,
+            0.2403,
+            0.2072,
+            0.5353,
+            0.6391,
+            0.7325,
+            0.7745,
+            0.65,
+            0.5674
+          ],
+          "mean_predicted_value": [
+            0.0466,
+            0.1485,
+            0.2598,
+            0.3389,
+            0.4543,
+            0.5448,
+            0.6463,
+            0.7452,
+            0.8641,
+            0.9303
+          ],
+          "n_bins": 10
+        }
+      },
+      "overlap_total": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8613,
+        "sd_auc": 0.1084,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7171,
+          0.9327
+        ],
+        "ci_95_drug_cluster": [
+          0.7621,
+          0.9115
+        ],
+        "ece_equal_mass": 0.0774,
+        "brier_score": 0.1627,
+        "temperature": 0.7331,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_overlap_total",
+        "predictions_sha256": "6cea3390d48137e9cd2b118fa6222743dbda3043206214753c22b43dcbcd8a92",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8002,
+          "confidence_threshold": 0.5361,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.8883,
+            "acc_85": 0.5858,
+            "acc_90": 0.295,
+            "acc_95": 0.1926
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.2657,
+            0.2,
+            0.2259,
+            0.4566,
+            0.5902,
+            0.784,
+            0.8698,
+            0.8684,
+            0.9928
+          ],
+          "mean_predicted_value": [
+            0.1765,
+            0.2465,
+            0.3414,
+            0.4529,
+            0.5424,
+            0.6505,
+            0.7524,
+            0.8444,
+            0.9502
+          ],
+          "n_bins": 10
+        }
+      },
+      "overlap_6d": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8651,
+        "sd_auc": 0.0929,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7401,
+          0.935
+        ],
+        "ci_95_drug_cluster": [
+          0.7797,
+          0.9193
+        ],
+        "ece_equal_mass": 0.0594,
+        "brier_score": 0.1506,
+        "temperature": 0.9096,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_overlap_6d",
+        "predictions_sha256": "9add63e723329a9d872cae4f10b7227218a28b9a426e6f0b4029d466eb928933",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8199,
+          "confidence_threshold": 0.563,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.9759,
+            "acc_85": 0.7202,
+            "acc_90": 0.294,
+            "acc_95": 0.1461
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.1973,
+            0.1829,
+            0.3776,
+            0.3383,
+            0.6358,
+            0.6861,
+            0.796,
+            0.9427,
+            0.942
+          ],
+          "mean_predicted_value": [
+            0.1701,
+            0.2325,
+            0.3609,
+            0.4478,
+            0.5417,
+            0.6512,
+            0.7619,
+            0.8465,
+            0.9597
+          ],
+          "n_bins": 10
+        }
+      },
+      "curation_2d": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.7885,
+        "sd_auc": 0.1358,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.6244,
+          0.9107
+        ],
+        "ci_95_drug_cluster": [
+          0.7322,
+          0.8561
+        ],
+        "ece_equal_mass": 0.0922,
+        "brier_score": 0.184,
+        "temperature": 0.718,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_curation_2d",
+        "predictions_sha256": "32f4ff207860a69bdc4e7f2c58f92d254400ebf4df56dd9034be5d630c0591db",
+        "conformal_abstention": {
+          "coverage": 0.9021,
+          "selective_accuracy": 0.7441,
+          "confidence_threshold": 0.534,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.6525,
+            "acc_85": 0.4727,
+            "acc_90": 0.216,
+            "acc_95": 0.2106
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0987,
+            0.1891,
+            0.4666,
+            0.6281,
+            0.7833,
+            0.6597,
+            0.895,
+            0.9524
+          ],
+          "mean_predicted_value": [
+            0.1417,
+            0.2674,
+            0.3583,
+            0.4458,
+            0.5516,
+            0.6462,
+            0.755,
+            0.8765,
+            0.9245
+          ],
+          "n_bins": 10
+        }
+      },
+      "quality_only": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.6406,
+        "sd_auc": 0.1331,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.4162,
+          0.6268
+        ],
+        "ci_95_drug_cluster": [
+          0.4014,
+          0.5881
+        ],
+        "ece_equal_mass": 0.1156,
+        "brier_score": 0.2606,
+        "temperature": 6.0377,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_quality_only",
+        "predictions_sha256": "94a6c78130106dbdde2df7bfe74d2f0a211d8eea0e5150fabc667d585d3852c5",
+        "conformal_abstention": {
+          "coverage": 0.9028,
+          "selective_accuracy": 0.4815,
+          "confidence_threshold": 0.5122,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0043,
+            "acc_85": 0.0043,
+            "acc_90": 0.0043,
+            "acc_95": 0.0043
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.71,
+            0.6717,
+            0.4993,
+            0.4336,
+            0.8182,
+            0.8323,
+            0.6207,
+            1.0
+          ],
+          "mean_predicted_value": [
+            0.1583,
+            0.2629,
+            0.3494,
+            0.4592,
+            0.5474,
+            0.6571,
+            0.7351,
+            0.8372,
+            0.9281
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level1": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9167,
+        "sd_auc": 0.066,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.846,
+          0.9634
+        ],
+        "ci_95_drug_cluster": [
+          0.8403,
+          0.9591
+        ],
+        "ece_equal_mass": 0.2124,
+        "brier_score": 0.1543,
+        "temperature": 0.3136,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_masked_text_level1",
+        "predictions_sha256": "f1196766f65dc5a927393b1055b963ff8f049be0f3943b5594db501e3805ae3d",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9019,
+          "confidence_threshold": 0.5365,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 0.889,
+            "acc_95": 0.1738
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.1818,
+            0.041,
+            0.0672,
+            0.234,
+            0.7783,
+            0.9056,
+            0.8429,
+            1.0
+          ],
+          "mean_predicted_value": [
+            0.19,
+            0.2584,
+            0.352,
+            0.4502,
+            0.5541,
+            0.6485,
+            0.7388,
+            0.8333
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level2": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9658,
+        "sd_auc": 0.0462,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.9149,
+          0.9962
+        ],
+        "ci_95_drug_cluster": [
+          0.9102,
+          0.9907
+        ],
+        "ece_equal_mass": 0.1986,
+        "brier_score": 0.1026,
+        "temperature": 0.3127,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_masked_text_level2",
+        "predictions_sha256": "dab646fb5d41a84255d3272b62ad55e4d0ddf9c6da45542e749d1da1cf23cfef",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9578,
+          "confidence_threshold": 0.602,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 1.0,
+            "acc_95": 0.9408
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0,
+            0.0236,
+            0.2197,
+            0.6993,
+            0.9223,
+            0.9333,
+            0.9409
+          ],
+          "mean_predicted_value": [
+            0.1737,
+            0.2407,
+            0.3407,
+            0.4532,
+            0.5537,
+            0.6583,
+            0.7467,
+            0.8306
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level3": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9142,
+        "sd_auc": 0.0663,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.8428,
+          0.9592
+        ],
+        "ci_95_drug_cluster": [
+          0.8307,
+          0.956
+        ],
+        "ece_equal_mass": 0.1872,
+        "brier_score": 0.1521,
+        "temperature": 0.3679,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_masked_text_level3",
+        "predictions_sha256": "3725670859ecedb9a3c771bf6f7bef15bb56d254a7984af153a809d03e7f4523",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8806,
+          "confidence_threshold": 0.5352,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 0.9699,
+            "acc_90": 0.8223,
+            "acc_95": 0.0305
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.16,
+            0.0343,
+            0.0539,
+            0.4128,
+            0.7219,
+            0.8874,
+            0.8899,
+            0.9321
+          ],
+          "mean_predicted_value": [
+            0.1783,
+            0.252,
+            0.3501,
+            0.4515,
+            0.5477,
+            0.6485,
+            0.7498,
+            0.8351
+          ],
+          "n_bins": 10
+        }
+      },
+      "design_only": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.6537,
+        "sd_auc": 0.1069,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.5293,
+          0.7227
+        ],
+        "ci_95_drug_cluster": [
+          0.5055,
+          0.7367
+        ],
+        "ece_equal_mass": 0.0971,
+        "brier_score": 0.2375,
+        "temperature": 1.4505,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_design_only",
+        "predictions_sha256": "5422c97751b6cb623d52262b41df4c8c763cee6db2b5208952666dc90da8c6ac",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.6509,
+          "confidence_threshold": 0.5374,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.5,
+            0.4345,
+            0.2647,
+            0.4265,
+            0.6228,
+            0.7233,
+            0.5701,
+            0.2759
+          ],
+          "mean_predicted_value": [
+            0.1994,
+            0.268,
+            0.3493,
+            0.441,
+            0.5517,
+            0.6475,
+            0.739,
+            0.8329
+          ],
+          "n_bins": 10
+        }
+      },
+      "full_text_leaky": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9647,
+        "sd_auc": 0.0463,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.9134,
+          0.9953
+        ],
+        "ci_95_drug_cluster": [
+          0.907,
+          0.9916
+        ],
+        "ece_equal_mass": 0.2129,
+        "brier_score": 0.1089,
+        "temperature": 0.2878,
+        "leaky_reference_only": true,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_full_text_leaky",
+        "predictions_sha256": "5fafeb9981afb6967b05b97621f9981a845551f07a55197e12597b6a3d2a3242",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9551,
+          "confidence_threshold": 0.5897,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 1.0,
+            "acc_95": 0.9394
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0,
+            0.0448,
+            0.2836,
+            0.75,
+            0.9425,
+            0.9231,
+            0.9569
+          ],
+          "mean_predicted_value": [
+            0.1768,
+            0.2443,
+            0.3417,
+            0.4473,
+            0.5563,
+            0.6584,
+            0.7434,
+            0.8223
+          ],
+          "n_bins": 10
+        }
+      },
+      "logistic_regression": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8836,
+        "sd_auc": 0.0919,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7343,
+          0.9376
+        ],
+        "ci_95_drug_cluster": [
+          0.7837,
+          0.9197
+        ],
+        "ece_equal_mass": 0.0369,
+        "brier_score": 0.1518,
+        "temperature": 0.9092,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_logistic_regression",
+        "predictions_sha256": "d230de3a24dfbe53bb8d5e082967558d745647da95060444ebba1b23df1cdabc",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8176,
+          "confidence_threshold": 0.5635,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.9762,
+            "acc_85": 0.7071,
+            "acc_90": 0.4447,
+            "acc_95": 0.1901
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.5,
+            0.1265,
+            0.2344,
+            0.3908,
+            0.3314,
+            0.6573,
+            0.719,
+            0.835,
+            0.8514,
+            0.962
+          ],
+          "mean_predicted_value": [
+            0.0877,
+            0.1615,
+            0.2409,
+            0.355,
+            0.4439,
+            0.5427,
+            0.6514,
+            0.7623,
+            0.8436,
+            0.9624
+          ],
+          "n_bins": 10
+        }
+      },
+      "gradient_boosted_trees": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8585,
+        "sd_auc": 0.1149,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7273,
+          0.9334
+        ],
+        "ci_95_drug_cluster": [
+          0.7642,
+          0.9183
+        ],
+        "ece_equal_mass": 0.0591,
+        "brier_score": 0.1559,
+        "temperature": 1.4005,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_gradient_boosted_trees",
+        "predictions_sha256": "13a9ddf7e7b02805f7c9f8d81ab1f9459a02146fa3a1a346b9425f6126016126",
+        "conformal_abstention": {
+          "coverage": 0.9004,
+          "selective_accuracy": 0.8121,
+          "confidence_threshold": 0.6041,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.9277,
+            "acc_85": 0.7454,
+            "acc_90": 0.2234,
+            "acc_95": 0.1652
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.2799,
+            0.1272,
+            0.4071,
+            0.437,
+            0.4812,
+            0.493,
+            0.6176,
+            0.6807,
+            0.849,
+            0.9373
+          ],
+          "mean_predicted_value": [
+            0.0743,
+            0.1392,
+            0.2482,
+            0.3478,
+            0.4557,
+            0.5458,
+            0.6466,
+            0.7528,
+            0.861,
+            0.9693
+          ],
+          "n_bins": 10
+        }
+      },
+      "small_gat": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.5417,
+        "sd_auc": 0.2091,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.3232,
+          0.6432
+        ],
+        "ci_95_drug_cluster": [
+          0.3561,
+          0.5565
+        ],
+        "ece_equal_mass": 0.2746,
+        "brier_score": 0.3467,
+        "temperature": 10.0,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_small_gat",
+        "predictions_sha256": "9fdb79a7a1c2c037404c58fc879c4ec9d64a8de1b651838b576037e0df10254c",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.4728,
+          "confidence_threshold": 0.5601,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0007,
+            "acc_85": 0.0007,
+            "acc_90": 0.0007,
+            "acc_95": 0.0007
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.6014,
+            0.5692,
+            0.5156,
+            0.5125,
+            0.6151,
+            0.5171,
+            0.5593,
+            0.5209,
+            0.5034,
+            0.413
+          ],
+          "mean_predicted_value": [
+            0.0663,
+            0.1527,
+            0.2489,
+            0.3473,
+            0.4483,
+            0.5508,
+            0.6528,
+            0.7547,
+            0.8539,
+            0.9288
+          ],
+          "n_bins": 10
+        }
+      },
+      "majority_class": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.5,
+        "sd_auc": 0.0,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.2292,
+          0.4959
+        ],
+        "ci_95_drug_cluster": [
+          0.292,
+          0.4017
+        ],
+        "ece_equal_mass": 0.1393,
+        "brier_score": 0.2607,
+        "temperature": 10.0,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:herb_disjoint_majority_class",
+        "predictions_sha256": "6bf4671b61ea3239a27dd32ec9802de7293180b29d42a45edafbaea8451ae2c0",
+        "conformal_abstention": {
+          "coverage": 0.9025,
+          "selective_accuracy": 0.4169,
+          "confidence_threshold": 0.5167,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.6876,
+            0.4706
+          ],
+          "mean_predicted_value": [
+            0.4668,
+            0.5467
+          ],
+          "n_bins": 10
+        }
+      }
+    },
+    "drug_disjoint": {
+      "herb_identity": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8222,
+        "sd_auc": 0.094,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.5721,
+          0.8682
+        ],
+        "ci_95_drug_cluster": [
+          0.7017,
+          0.85
+        ],
+        "ece_equal_mass": 0.1151,
+        "brier_score": 0.1997,
+        "temperature": 0.7034,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_herb_identity",
+        "predictions_sha256": "fb725d9cc6059ef2c816f83b3f63cbfcc2631ececbc6270493ea8fcb62a64378",
+        "conformal_abstention": {
+          "coverage": 0.9014,
+          "selective_accuracy": 0.7341,
+          "confidence_threshold": 0.5128,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.5358,
+            "acc_85": 0.3113,
+            "acc_90": 0.1305,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.24,
+            0.0286,
+            0.0706,
+            0.2749,
+            0.4229,
+            0.6243,
+            0.753,
+            0.64,
+            0.9062,
+            0.8333
+          ],
+          "mean_predicted_value": [
+            0.0614,
+            0.1836,
+            0.2508,
+            0.3408,
+            0.4596,
+            0.5358,
+            0.644,
+            0.7385,
+            0.8495,
+            0.9425
+          ],
+          "n_bins": 10
+        }
+      },
+      "drug_identity": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.5,
+        "sd_auc": 0.0,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.3841,
+          0.4589
+        ],
+        "ci_95_drug_cluster": [
+          0.3597,
+          0.4824
+        ],
+        "ece_equal_mass": 0.1701,
+        "brier_score": 0.2874,
+        "temperature": 10.0,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_drug_identity",
+        "predictions_sha256": "7de9e53be436c313c2752e56e45dfc1a72d326abb3ff97056aaf70fa072eefc6",
+        "conformal_abstention": {
+          "coverage": 0.9035,
+          "selective_accuracy": 0.5188,
+          "confidence_threshold": 0.5452,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.6066,
+            0.5942,
+            0.4659
+          ],
+          "mean_predicted_value": [
+            0.5503,
+            0.6265,
+            0.748
+          ],
+          "n_bins": 10
+        }
+      },
+      "overlap_total": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8688,
+        "sd_auc": 0.0793,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7172,
+          0.9344
+        ],
+        "ci_95_drug_cluster": [
+          0.7653,
+          0.9122
+        ],
+        "ece_equal_mass": 0.0724,
+        "brier_score": 0.1627,
+        "temperature": 0.7448,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_overlap_total",
+        "predictions_sha256": "4112f83d356ad61c5f03f2e7c47dcbe642f7ece4ff200d49f4e7e9ed96da8052",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8006,
+          "confidence_threshold": 0.5332,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.905,
+            "acc_85": 0.6826,
+            "acc_90": 0.2617,
+            "acc_95": 0.1933
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.3239,
+            0.1596,
+            0.2541,
+            0.4212,
+            0.6046,
+            0.8289,
+            0.7968,
+            0.9091,
+            0.9925
+          ],
+          "mean_predicted_value": [
+            0.1749,
+            0.2343,
+            0.3427,
+            0.4536,
+            0.5469,
+            0.6474,
+            0.7577,
+            0.8437,
+            0.9545
+          ],
+          "n_bins": 10
+        }
+      },
+      "overlap_6d": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8704,
+        "sd_auc": 0.0807,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7231,
+          0.9348
+        ],
+        "ci_95_drug_cluster": [
+          0.7742,
+          0.9197
+        ],
+        "ece_equal_mass": 0.053,
+        "brier_score": 0.152,
+        "temperature": 1.0038,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_overlap_6d",
+        "predictions_sha256": "b920f34a3e8dd24ceaa16c81cbff30567f1a28e183388fa11570bdc48ffbe496",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8184,
+          "confidence_threshold": 0.5766,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.9755,
+            "acc_85": 0.717,
+            "acc_90": 0.316,
+            "acc_95": 0.183
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.4,
+            0.2058,
+            0.2153,
+            0.3744,
+            0.3378,
+            0.6429,
+            0.7059,
+            0.7975,
+            0.8796,
+            0.9552
+          ],
+          "mean_predicted_value": [
+            0.0889,
+            0.1704,
+            0.2449,
+            0.3546,
+            0.4481,
+            0.5396,
+            0.6554,
+            0.7514,
+            0.8615,
+            0.9626
+          ],
+          "n_bins": 10
+        }
+      },
+      "curation_2d": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8097,
+        "sd_auc": 0.0875,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.6096,
+          0.9001
+        ],
+        "ci_95_drug_cluster": [
+          0.7215,
+          0.8572
+        ],
+        "ece_equal_mass": 0.0908,
+        "brier_score": 0.1888,
+        "temperature": 0.6425,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_curation_2d",
+        "predictions_sha256": "a25f9864bfb3a8f5bf9bc9768b2b981443b64dc6187dfb730b4f3405912b3254",
+        "conformal_abstention": {
+          "coverage": 0.9004,
+          "selective_accuracy": 0.7338,
+          "confidence_threshold": 0.5352,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.6149,
+            "acc_85": 0.4426,
+            "acc_90": 0.1376,
+            "acc_95": 0.1163
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.006,
+            0.0405,
+            0.101,
+            0.4458,
+            0.6521,
+            0.6373,
+            0.8333,
+            0.9286,
+            0.8806
+          ],
+          "mean_predicted_value": [
+            0.0477,
+            0.1312,
+            0.2765,
+            0.3461,
+            0.4402,
+            0.5568,
+            0.6193,
+            0.7435,
+            0.875,
+            0.9274
+          ],
+          "n_bins": 10
+        }
+      },
+      "quality_only": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.6164,
+        "sd_auc": 0.1029,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.4676,
+          0.6424
+        ],
+        "ci_95_drug_cluster": [
+          0.4609,
+          0.6455
+        ],
+        "ece_equal_mass": 0.0966,
+        "brier_score": 0.2459,
+        "temperature": 1.8813,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_quality_only",
+        "predictions_sha256": "01ec0f6608caf9d67cb08da8857ea781aefa78b885c58a13804f2fd06217f0c4",
+        "conformal_abstention": {
+          "coverage": 0.9004,
+          "selective_accuracy": 0.5171,
+          "confidence_threshold": 0.5119,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0028,
+            "acc_85": 0.0028,
+            "acc_90": 0.0028,
+            "acc_95": 0.0028
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.4,
+            0.3226,
+            0.3158,
+            0.6667,
+            0.5271,
+            0.4264,
+            0.9237,
+            0.8905,
+            0.6296,
+            0.5
+          ],
+          "mean_predicted_value": [
+            0.0694,
+            0.1559,
+            0.2521,
+            0.3564,
+            0.4591,
+            0.5497,
+            0.654,
+            0.7546,
+            0.8472,
+            0.9247
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level1": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9461,
+        "sd_auc": 0.0427,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.8803,
+          0.9646
+        ],
+        "ci_95_drug_cluster": [
+          0.8961,
+          0.9685
+        ],
+        "ece_equal_mass": 0.2104,
+        "brier_score": 0.1514,
+        "temperature": 0.3177,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_masked_text_level1",
+        "predictions_sha256": "97123b939e5868e104876d2a35ad7ce68f9dcdc9fc87e3d72c37141fa09471fb",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.883,
+          "confidence_threshold": 0.533,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 0.8482,
+            "acc_95": 0.3156
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0291,
+            0.1213,
+            0.5496,
+            0.8266,
+            0.9085,
+            1.0
+          ],
+          "mean_predicted_value": [
+            0.2669,
+            0.3496,
+            0.4529,
+            0.5517,
+            0.6505,
+            0.7447,
+            0.8328
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level2": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9682,
+        "sd_auc": 0.0459,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.9275,
+          0.9974
+        ],
+        "ci_95_drug_cluster": [
+          0.9204,
+          0.9942
+        ],
+        "ece_equal_mass": 0.2045,
+        "brier_score": 0.1008,
+        "temperature": 0.3225,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_masked_text_level2",
+        "predictions_sha256": "133c0689e9e8179ffedf962954b8d85ef395243683cebb1d20509167e6a76cab",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9563,
+          "confidence_threshold": 0.5867,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 1.0,
+            "acc_95": 0.9489
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0,
+            0.0,
+            0.0252,
+            0.5828,
+            0.865,
+            0.953,
+            0.9322
+          ],
+          "mean_predicted_value": [
+            0.1635,
+            0.2478,
+            0.3394,
+            0.4571,
+            0.5474,
+            0.6631,
+            0.7502,
+            0.8222
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level3": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9066,
+        "sd_auc": 0.0641,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.8395,
+          0.9469
+        ],
+        "ci_95_drug_cluster": [
+          0.8351,
+          0.9511
+        ],
+        "ece_equal_mass": 0.1663,
+        "brier_score": 0.156,
+        "temperature": 0.3996,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_masked_text_level3",
+        "predictions_sha256": "93fae9fd5fd1c6740035078d2449229f23c2221f9db3bd9a0a6e6b176ae839ae",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8625,
+          "confidence_threshold": 0.5342,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 0.939,
+            "acc_90": 0.6301,
+            "acc_95": 0.1947
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0036,
+            0.0799,
+            0.2423,
+            0.6104,
+            0.779,
+            0.9068,
+            0.9265
+          ],
+          "mean_predicted_value": [
+            0.1806,
+            0.256,
+            0.3491,
+            0.4529,
+            0.5491,
+            0.6514,
+            0.746,
+            0.8288
+          ],
+          "n_bins": 10
+        }
+      },
+      "design_only": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.6487,
+        "sd_auc": 0.0949,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.5187,
+          0.7129
+        ],
+        "ci_95_drug_cluster": [
+          0.5368,
+          0.7135
+        ],
+        "ece_equal_mass": 0.1087,
+        "brier_score": 0.2404,
+        "temperature": 1.632,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_design_only",
+        "predictions_sha256": "e583d1da87eaa94b627a3b409599cad7178fe8b9615fb20777e200b8e9319940",
+        "conformal_abstention": {
+          "coverage": 0.9004,
+          "selective_accuracy": 0.6254,
+          "confidence_threshold": 0.5287,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0011,
+            "acc_85": 0.0011,
+            "acc_90": 0.0011,
+            "acc_95": 0.0011
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.7692,
+            0.4213,
+            0.2586,
+            0.4677,
+            0.4462,
+            0.732,
+            0.6057,
+            0.6176
+          ],
+          "mean_predicted_value": [
+            0.1763,
+            0.2612,
+            0.3461,
+            0.4516,
+            0.5497,
+            0.6474,
+            0.7394,
+            0.8188
+          ],
+          "n_bins": 10
+        }
+      },
+      "full_text_leaky": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.978,
+        "sd_auc": 0.0335,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.942,
+          0.9982
+        ],
+        "ci_95_drug_cluster": [
+          0.9432,
+          0.996
+        ],
+        "ece_equal_mass": 0.22,
+        "brier_score": 0.1045,
+        "temperature": 0.2691,
+        "leaky_reference_only": true,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_full_text_leaky",
+        "predictions_sha256": "94f474cd725cc55b3291f942c46d956cafc16999ede038778cdb75a99eea605c",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9614,
+          "confidence_threshold": 0.5885,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 1.0,
+            "acc_95": 0.9489
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0,
+            0.0,
+            0.025,
+            0.5706,
+            0.8799,
+            0.9635,
+            0.9849
+          ],
+          "mean_predicted_value": [
+            0.1736,
+            0.2517,
+            0.3428,
+            0.4483,
+            0.5575,
+            0.6636,
+            0.7511,
+            0.8239
+          ],
+          "n_bins": 10
+        }
+      },
+      "logistic_regression": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8832,
+        "sd_auc": 0.0836,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7385,
+          0.9444
+        ],
+        "ci_95_drug_cluster": [
+          0.7931,
+          0.928
+        ],
+        "ece_equal_mass": 0.049,
+        "brier_score": 0.1492,
+        "temperature": 1.0242,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_logistic_regression",
+        "predictions_sha256": "581a081f864afeb7771af93639a38d9cd634539f3828f61f5d0f74d6dc242394",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8195,
+          "confidence_threshold": 0.5803,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.9734,
+            "acc_85": 0.7564,
+            "acc_90": 0.5035,
+            "acc_95": 0.195
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.3478,
+            0.1194,
+            0.2602,
+            0.3598,
+            0.4739,
+            0.6513,
+            0.7087,
+            0.8043,
+            0.8604,
+            0.942
+          ],
+          "mean_predicted_value": [
+            0.071,
+            0.1655,
+            0.2412,
+            0.3482,
+            0.4437,
+            0.5487,
+            0.6557,
+            0.7509,
+            0.8643,
+            0.9653
+          ],
+          "n_bins": 10
+        }
+      },
+      "gradient_boosted_trees": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8854,
+        "sd_auc": 0.071,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7498,
+          0.9456
+        ],
+        "ci_95_drug_cluster": [
+          0.7955,
+          0.9347
+        ],
+        "ece_equal_mass": 0.0598,
+        "brier_score": 0.1473,
+        "temperature": 1.4459,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_gradient_boosted_trees",
+        "predictions_sha256": "5b006b6364d01c8e09f0dec2ac294f394086883c982d9648299b80f0358eb698",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8286,
+          "confidence_threshold": 0.6148,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.9911,
+            "acc_85": 0.7904,
+            "acc_90": 0.3521,
+            "acc_95": 0.2968
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.2344,
+            0.1294,
+            0.33,
+            0.3772,
+            0.5372,
+            0.5366,
+            0.7103,
+            0.8527,
+            0.625,
+            0.9338
+          ],
+          "mean_predicted_value": [
+            0.0719,
+            0.1459,
+            0.2397,
+            0.3453,
+            0.4516,
+            0.5521,
+            0.6541,
+            0.7515,
+            0.843,
+            0.9883
+          ],
+          "n_bins": 10
+        }
+      },
+      "small_gat": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.7492,
+        "sd_auc": 0.121,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.4984,
+          0.8023
+        ],
+        "ci_95_drug_cluster": [
+          0.6206,
+          0.7753
+        ],
+        "ece_equal_mass": 0.1478,
+        "brier_score": 0.2475,
+        "temperature": 2.4423,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_small_gat",
+        "predictions_sha256": "3fe6cb527d32908e7347c227ff4299ca50f84c8eeb6b5d62710ab475dc0face3",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.6458,
+          "confidence_threshold": 0.5691,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.3333,
+            0.3622,
+            0.3818,
+            0.3584,
+            0.3636,
+            0.4612,
+            0.4571,
+            0.5795,
+            0.6667,
+            0.7815
+          ],
+          "mean_predicted_value": [
+            0.0799,
+            0.1561,
+            0.2483,
+            0.3492,
+            0.4463,
+            0.5521,
+            0.6482,
+            0.7538,
+            0.86,
+            0.9306
+          ],
+          "n_bins": 10
+        }
+      },
+      "majority_class": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.5,
+        "sd_auc": 0.0,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.3531,
+          0.4411
+        ],
+        "ci_95_drug_cluster": [
+          0.323,
+          0.4809
+        ],
+        "ece_equal_mass": 0.105,
+        "brier_score": 0.2547,
+        "temperature": 10.0,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:drug_disjoint_majority_class",
+        "predictions_sha256": "9241e2e88cb0a8754b6d0fad3b003fe834ce2a9297d629ef329630727168a8fb",
+        "conformal_abstention": {
+          "coverage": 0.9018,
+          "selective_accuracy": 0.5053,
+          "confidence_threshold": 0.51,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.7308,
+            0.5235,
+            0.3861
+          ],
+          "mean_predicted_value": [
+            0.4936,
+            0.5392,
+            0.6135
+          ],
+          "n_bins": 10
+        }
+      }
+    },
+    "pair_disjoint": {
+      "herb_identity": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.7985,
+        "sd_auc": 0.0714,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.57,
+          0.8665
+        ],
+        "ci_95_drug_cluster": [
+          0.6972,
+          0.8467
+        ],
+        "ece_equal_mass": 0.0905,
+        "brier_score": 0.2038,
+        "temperature": 0.6553,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_herb_identity",
+        "predictions_sha256": "91b215280b5ec6ac734066328e0bcb65fef6a15e7522eb340047487e5208b115",
+        "conformal_abstention": {
+          "coverage": 0.9011,
+          "selective_accuracy": 0.7383,
+          "confidence_threshold": 0.5087,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.4571,
+            "acc_85": 0.2638,
+            "acc_90": 0.1333,
+            "acc_95": 0.0284
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.1111,
+            0.0844,
+            0.3711,
+            0.3496,
+            0.6211,
+            0.7932,
+            0.5583,
+            0.9275,
+            0.9487
+          ],
+          "mean_predicted_value": [
+            0.0586,
+            0.1801,
+            0.2535,
+            0.3522,
+            0.4667,
+            0.537,
+            0.6423,
+            0.7387,
+            0.845,
+            0.9293
+          ],
+          "n_bins": 10
+        }
+      },
+      "drug_identity": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.725,
+        "sd_auc": 0.0943,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.6111,
+          0.7958
+        ],
+        "ci_95_drug_cluster": [
+          0.5365,
+          0.7896
+        ],
+        "ece_equal_mass": 0.0936,
+        "brier_score": 0.2205,
+        "temperature": 1.265,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_drug_identity",
+        "predictions_sha256": "27dd39e6610389d5b8fcbc14a9eba68d1f032bb0c3718e3f5a3f422eeafc4de4",
+        "conformal_abstention": {
+          "coverage": 0.9011,
+          "selective_accuracy": 0.6954,
+          "confidence_threshold": 0.5226,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0071,
+            "acc_85": 0.0071,
+            "acc_90": 0.0018,
+            "acc_95": 0.0018
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.2609,
+            0.3562,
+            0.262,
+            0.1893,
+            0.5063,
+            0.5259,
+            0.7728,
+            0.7171,
+            0.7978,
+            0.6
+          ],
+          "mean_predicted_value": [
+            0.0515,
+            0.1524,
+            0.2605,
+            0.3494,
+            0.463,
+            0.544,
+            0.6408,
+            0.7439,
+            0.8739,
+            0.9261
+          ],
+          "n_bins": 10
+        }
+      },
+      "overlap_total": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8627,
+        "sd_auc": 0.063,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7148,
+          0.9355
+        ],
+        "ci_95_drug_cluster": [
+          0.7675,
+          0.913
+        ],
+        "ece_equal_mass": 0.0912,
+        "brier_score": 0.1645,
+        "temperature": 0.5971,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_overlap_total",
+        "predictions_sha256": "14995075e82b7e84fcc6eaee4adea50a79274ec08bd30797d09357f05f570275",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.7983,
+          "confidence_threshold": 0.5287,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.8553,
+            "acc_85": 0.6901,
+            "acc_90": 0.3621,
+            "acc_95": 0.1961
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.2759,
+            0.193,
+            0.2045,
+            0.4165,
+            0.7057,
+            0.7149,
+            0.9167,
+            0.9598,
+            0.9963
+          ],
+          "mean_predicted_value": [
+            0.1799,
+            0.2225,
+            0.3319,
+            0.4568,
+            0.553,
+            0.6505,
+            0.7567,
+            0.8399,
+            0.9509
+          ],
+          "n_bins": 10
+        }
+      },
+      "overlap_6d": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8675,
+        "sd_auc": 0.0619,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7425,
+          0.9414
+        ],
+        "ci_95_drug_cluster": [
+          0.7862,
+          0.9272
+        ],
+        "ece_equal_mass": 0.0625,
+        "brier_score": 0.1443,
+        "temperature": 0.9715,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_overlap_6d",
+        "predictions_sha256": "4e0c2690df4ae10f4a0aac83dc13cab8411250175ba94d19b55ad7ba0fd96730",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8255,
+          "confidence_threshold": 0.592,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 0.772,
+            "acc_90": 0.3543,
+            "acc_95": 0.2823
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.1793,
+            0.2073,
+            0.4,
+            0.3333,
+            0.7564,
+            0.7835,
+            0.6689,
+            0.8909,
+            0.9548
+          ],
+          "mean_predicted_value": [
+            0.1748,
+            0.2357,
+            0.3607,
+            0.4434,
+            0.5514,
+            0.6469,
+            0.7561,
+            0.8635,
+            0.9571
+          ],
+          "n_bins": 10
+        }
+      },
+      "curation_2d": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8189,
+        "sd_auc": 0.0604,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.6339,
+          0.9138
+        ],
+        "ci_95_drug_cluster": [
+          0.7429,
+          0.8649
+        ],
+        "ece_equal_mass": 0.0981,
+        "brier_score": 0.1859,
+        "temperature": 0.5319,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_curation_2d",
+        "predictions_sha256": "9c253c8709a86f1c1c4b66029730a30c944863c171a5a8d21c22dd09a2124de2",
+        "conformal_abstention": {
+          "coverage": 0.9011,
+          "selective_accuracy": 0.7509,
+          "confidence_threshold": 0.5333,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.7252,
+            "acc_85": 0.5493,
+            "acc_90": 0.3872,
+            "acc_95": 0.0908
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0779,
+            0.0443,
+            0.4523,
+            0.6602,
+            0.6816,
+            0.8287,
+            1.0,
+            0.9412
+          ],
+          "mean_predicted_value": [
+            0.1289,
+            0.2676,
+            0.3379,
+            0.4481,
+            0.5546,
+            0.6208,
+            0.7451,
+            0.8903,
+            0.92
+          ],
+          "n_bins": 10
+        }
+      },
+      "quality_only": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.6317,
+        "sd_auc": 0.108,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.5103,
+          0.691
+        ],
+        "ci_95_drug_cluster": [
+          0.4972,
+          0.6671
+        ],
+        "ece_equal_mass": 0.0422,
+        "brier_score": 0.2408,
+        "temperature": 1.3472,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_quality_only",
+        "predictions_sha256": "2faf4bdab135fbd486524dd226a23687f006556371289bd5502f09bb804b1a34",
+        "conformal_abstention": {
+          "coverage": 0.9007,
+          "selective_accuracy": 0.5673,
+          "confidence_threshold": 0.5114,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0014,
+            "acc_85": 0.0014,
+            "acc_90": 0.0014,
+            "acc_95": 0.0014
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.2857,
+            0.3,
+            0.5843,
+            0.4683,
+            0.5015,
+            0.84,
+            0.8488,
+            0.6393,
+            0.6667
+          ],
+          "mean_predicted_value": [
+            0.1812,
+            0.241,
+            0.3579,
+            0.4636,
+            0.5287,
+            0.6606,
+            0.7527,
+            0.8384,
+            0.9313
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level1": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9459,
+        "sd_auc": 0.0382,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.8874,
+          0.9793
+        ],
+        "ci_95_drug_cluster": [
+          0.8978,
+          0.9774
+        ],
+        "ece_equal_mass": 0.2195,
+        "brier_score": 0.1399,
+        "temperature": 0.2724,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_masked_text_level1",
+        "predictions_sha256": "ec9f609881bd3720ffc12ab00bb17ceb744c1a6cc81fd8467ec548be9eb8f3cd",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9212,
+          "confidence_threshold": 0.5504,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 0.9695,
+            "acc_95": 0.5255
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0088,
+            0.0717,
+            0.1973,
+            0.7123,
+            0.8626,
+            0.9539,
+            1.0,
+            1.0
+          ],
+          "mean_predicted_value": [
+            0.1903,
+            0.2604,
+            0.3499,
+            0.4451,
+            0.5586,
+            0.6509,
+            0.7461,
+            0.8289,
+            0.9031
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level2": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9688,
+        "sd_auc": 0.0338,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.9242,
+          0.9976
+        ],
+        "ci_95_drug_cluster": [
+          0.9177,
+          0.9931
+        ],
+        "ece_equal_mass": 0.1915,
+        "brier_score": 0.0959,
+        "temperature": 0.3234,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_masked_text_level2",
+        "predictions_sha256": "2de78c57f4c862d2559ba3ddc0d38bf8ce6245be3ff80942b8160b0c17c4cd9d",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9598,
+          "confidence_threshold": 0.606,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 1.0,
+            "acc_95": 0.9823
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0,
+            0.0105,
+            0.1579,
+            0.7241,
+            0.8847,
+            0.9508,
+            0.9309
+          ],
+          "mean_predicted_value": [
+            0.171,
+            0.2429,
+            0.3461,
+            0.4499,
+            0.5507,
+            0.6633,
+            0.7531,
+            0.8245
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level3": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9208,
+        "sd_auc": 0.0543,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.8555,
+          0.9663
+        ],
+        "ci_95_drug_cluster": [
+          0.8529,
+          0.9628
+        ],
+        "ece_equal_mass": 0.185,
+        "brier_score": 0.1437,
+        "temperature": 0.3626,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_masked_text_level3",
+        "predictions_sha256": "1de43f614c64e737bc69c7a22cf9b06c44bc063e8cfd590af0b7bb57941027d8",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.894,
+          "confidence_threshold": 0.5389,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 0.8677,
+            "acc_95": 0.0383
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.1538,
+            0.0334,
+            0.0637,
+            0.2944,
+            0.6782,
+            0.8827,
+            0.9221,
+            0.918
+          ],
+          "mean_predicted_value": [
+            0.1832,
+            0.2538,
+            0.35,
+            0.4488,
+            0.5464,
+            0.6503,
+            0.7506,
+            0.8296
+          ],
+          "n_bins": 10
+        }
+      },
+      "design_only": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.6652,
+        "sd_auc": 0.0909,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.5493,
+          0.7418
+        ],
+        "ci_95_drug_cluster": [
+          0.549,
+          0.734
+        ],
+        "ece_equal_mass": 0.0967,
+        "brier_score": 0.2306,
+        "temperature": 1.2551,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_design_only",
+        "predictions_sha256": "b3b1e5f73f6247767ab4317f58f6b69cb68a6879c6987e0426d9e2de0b961666",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.6533,
+          "confidence_threshold": 0.5262,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.3722,
+            0.2344,
+            0.5279,
+            0.5103,
+            0.7012,
+            0.658,
+            0.4651
+          ],
+          "mean_predicted_value": [
+            0.2692,
+            0.3425,
+            0.4591,
+            0.5463,
+            0.6529,
+            0.7424,
+            0.8132
+          ],
+          "n_bins": 10
+        }
+      },
+      "full_text_leaky": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9771,
+        "sd_auc": 0.0262,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.9373,
+          0.9989
+        ],
+        "ci_95_drug_cluster": [
+          0.9372,
+          0.9964
+        ],
+        "ece_equal_mass": 0.2161,
+        "brier_score": 0.1006,
+        "temperature": 0.2654,
+        "leaky_reference_only": true,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_full_text_leaky",
+        "predictions_sha256": "5f6a65c597d5302541b65e91f363eea27ae13062cbbd3d2c736d16d86b90ee3f",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9641,
+          "confidence_threshold": 0.5858,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 1.0,
+            "acc_95": 0.9911
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0,
+            0.0,
+            0.1497,
+            0.759,
+            0.8998,
+            0.9542,
+            0.9914
+          ],
+          "mean_predicted_value": [
+            0.1833,
+            0.2523,
+            0.338,
+            0.4498,
+            0.556,
+            0.6632,
+            0.7486,
+            0.8234
+          ],
+          "n_bins": 10
+        }
+      },
+      "logistic_regression": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8879,
+        "sd_auc": 0.0567,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7683,
+          0.9528
+        ],
+        "ci_95_drug_cluster": [
+          0.8074,
+          0.9366
+        ],
+        "ece_equal_mass": 0.0416,
+        "brier_score": 0.1415,
+        "temperature": 0.8655,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_logistic_regression",
+        "predictions_sha256": "5ab9dcac3f86ed021a20afe388445f44390bd2250f9e0b3cc443ec401df3e0ed",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8243,
+          "confidence_threshold": 0.5888,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 0.7819,
+            "acc_90": 0.6199,
+            "acc_95": 0.2589
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.5,
+            0.0884,
+            0.232,
+            0.3938,
+            0.4364,
+            0.6792,
+            0.6762,
+            0.7561,
+            0.8921,
+            0.9751
+          ],
+          "mean_predicted_value": [
+            0.084,
+            0.1629,
+            0.2387,
+            0.3618,
+            0.4442,
+            0.5511,
+            0.6565,
+            0.7513,
+            0.8612,
+            0.9625
+          ],
+          "n_bins": 10
+        }
+      },
+      "gradient_boosted_trees": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8788,
+        "sd_auc": 0.0646,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.75,
+          0.9465
+        ],
+        "ci_95_drug_cluster": [
+          0.7974,
+          0.9383
+        ],
+        "ece_equal_mass": 0.0571,
+        "brier_score": 0.1428,
+        "temperature": 1.3559,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_gradient_boosted_trees",
+        "predictions_sha256": "0ee8ef5ea734164b32d17aa324def04cf5ffae5b15c0288c34fbe6d1da089a3a",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8247,
+          "confidence_threshold": 0.5986,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 0.8025,
+            "acc_90": 0.5557,
+            "acc_95": 0.3032
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.2013,
+            0.1194,
+            0.4379,
+            0.4416,
+            0.3841,
+            0.5646,
+            0.6695,
+            0.7168,
+            0.6694,
+            0.9602
+          ],
+          "mean_predicted_value": [
+            0.0789,
+            0.1364,
+            0.2498,
+            0.3534,
+            0.4559,
+            0.5537,
+            0.6462,
+            0.7483,
+            0.8513,
+            0.9895
+          ],
+          "n_bins": 10
+        }
+      },
+      "small_gat": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.7718,
+        "sd_auc": 0.0848,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.6229,
+          0.8636
+        ],
+        "ci_95_drug_cluster": [
+          0.6883,
+          0.8407
+        ],
+        "ece_equal_mass": 0.0617,
+        "brier_score": 0.2014,
+        "temperature": 1.4608,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_small_gat",
+        "predictions_sha256": "82fc2afbe26639fbbf4ad34444af83e63deaaf1afa6740ee84ed80254b73ca9c",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.7238,
+          "confidence_threshold": 0.5743,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.461,
+            "acc_85": 0.206,
+            "acc_90": 0.0493,
+            "acc_95": 0.0025
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.163,
+            0.2467,
+            0.3223,
+            0.3566,
+            0.4091,
+            0.5366,
+            0.5708,
+            0.7004,
+            0.777,
+            0.8682
+          ],
+          "mean_predicted_value": [
+            0.0737,
+            0.1479,
+            0.2478,
+            0.346,
+            0.4513,
+            0.5491,
+            0.6479,
+            0.7493,
+            0.8516,
+            0.931
+          ],
+          "n_bins": 10
+        }
+      },
+      "majority_class": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.5,
+        "sd_auc": 0.0,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.4348,
+          0.4951
+        ],
+        "ci_95_drug_cluster": [
+          0.4091,
+          0.5033
+        ],
+        "ece_equal_mass": 0.0362,
+        "brier_score": 0.2497,
+        "temperature": 1.5188,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:pair_disjoint_majority_class",
+        "predictions_sha256": "42dd60fe5b8ea17a8fec13a3d2c7c720bc6f3e7ef862fc7c0b02ff5fe0f91273",
+        "conformal_abstention": {
+          "coverage": 0.9259,
+          "selective_accuracy": 0.527,
+          "confidence_threshold": 0.5179,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.5319
+          ],
+          "mean_predicted_value": [
+            0.5318
+          ],
+          "n_bins": 10
+        }
+      }
+    },
+    "study_disjoint": {
+      "herb_identity": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.7865,
+        "sd_auc": 0.083,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.5429,
+          0.8652
+        ],
+        "ci_95_drug_cluster": [
+          0.6798,
+          0.8407
+        ],
+        "ece_equal_mass": 0.0795,
+        "brier_score": 0.2047,
+        "temperature": 0.666,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_herb_identity",
+        "predictions_sha256": "d42e094f0fcd89e79d216f1027c8ccdcde20ec91a255175bcf45249b5ca4dca4",
+        "conformal_abstention": {
+          "coverage": 0.9004,
+          "selective_accuracy": 0.7156,
+          "confidence_threshold": 0.5079,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.445,
+            "acc_85": 0.2677,
+            "acc_90": 0.1947,
+            "acc_95": 0.0255
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.08,
+            0.0827,
+            0.4408,
+            0.4079,
+            0.5957,
+            0.7529,
+            0.6235,
+            0.9171,
+            0.9143
+          ],
+          "mean_predicted_value": [
+            0.063,
+            0.1862,
+            0.2565,
+            0.3452,
+            0.4669,
+            0.5394,
+            0.6436,
+            0.7369,
+            0.8452,
+            0.9247
+          ],
+          "n_bins": 10
+        }
+      },
+      "drug_identity": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.7243,
+        "sd_auc": 0.0924,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.6001,
+          0.7957
+        ],
+        "ci_95_drug_cluster": [
+          0.5168,
+          0.7837
+        ],
+        "ece_equal_mass": 0.0864,
+        "brier_score": 0.2227,
+        "temperature": 1.3702,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_drug_identity",
+        "predictions_sha256": "26cc20cdd0e6dd54967987f05e6638d413915c41864f3648eaf6480c3eb7dcee",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.6895,
+          "confidence_threshold": 0.5251,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0089,
+            "acc_85": 0.0089,
+            "acc_90": 0.005,
+            "acc_95": 0.005
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.3077,
+            0.3095,
+            0.2623,
+            0.1847,
+            0.5328,
+            0.5643,
+            0.7676,
+            0.6824,
+            0.717,
+            0.6322
+          ],
+          "mean_predicted_value": [
+            0.0491,
+            0.1576,
+            0.2505,
+            0.3428,
+            0.4607,
+            0.5464,
+            0.639,
+            0.7447,
+            0.8696,
+            0.9377
+          ],
+          "n_bins": 10
+        }
+      },
+      "overlap_total": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8673,
+        "sd_auc": 0.0675,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7195,
+          0.9374
+        ],
+        "ci_95_drug_cluster": [
+          0.7685,
+          0.9149
+        ],
+        "ece_equal_mass": 0.1087,
+        "brier_score": 0.165,
+        "temperature": 0.5863,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_overlap_total",
+        "predictions_sha256": "2494a2d98b5a020e65c532d9e9fd761531bca39b15233a23e15de9d6f5190fd2",
+        "conformal_abstention": {
+          "coverage": 0.9018,
+          "selective_accuracy": 0.7979,
+          "confidence_threshold": 0.528,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.845,
+            "acc_85": 0.7025,
+            "acc_90": 0.3865,
+            "acc_95": 0.1805
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.3333,
+            0.1477,
+            0.2172,
+            0.4119,
+            0.66,
+            0.795,
+            0.8963,
+            0.9372,
+            1.0
+          ],
+          "mean_predicted_value": [
+            0.1923,
+            0.222,
+            0.33,
+            0.4553,
+            0.5505,
+            0.6501,
+            0.7552,
+            0.8406,
+            0.9533
+          ],
+          "n_bins": 10
+        }
+      },
+      "overlap_6d": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8681,
+        "sd_auc": 0.0676,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7376,
+          0.9376
+        ],
+        "ci_95_drug_cluster": [
+          0.7798,
+          0.9231
+        ],
+        "ece_equal_mass": 0.0683,
+        "brier_score": 0.1491,
+        "temperature": 0.9347,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_overlap_6d",
+        "predictions_sha256": "74e362592bd6717ba2d2a2036e0b491beeabf4d1ee6af027805cd89325a72dc1",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8219,
+          "confidence_threshold": 0.5769,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 0.728,
+            "acc_90": 0.3223,
+            "acc_95": 0.2539
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.1796,
+            0.1841,
+            0.346,
+            0.4097,
+            0.7073,
+            0.7419,
+            0.7195,
+            0.9319,
+            0.9386
+          ],
+          "mean_predicted_value": [
+            0.1737,
+            0.2362,
+            0.3663,
+            0.4506,
+            0.5536,
+            0.6479,
+            0.754,
+            0.8629,
+            0.9603
+          ],
+          "n_bins": 10
+        }
+      },
+      "curation_2d": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8175,
+        "sd_auc": 0.0691,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.6259,
+          0.9134
+        ],
+        "ci_95_drug_cluster": [
+          0.7422,
+          0.8641
+        ],
+        "ece_equal_mass": 0.1005,
+        "brier_score": 0.1869,
+        "temperature": 0.5059,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_curation_2d",
+        "predictions_sha256": "420fb1c42686654ddc6876066dd96c6f67080ca4bac0eb770261031900df5463",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.7557,
+          "confidence_threshold": 0.5319,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.711,
+            "acc_85": 0.4493,
+            "acc_90": 0.3791,
+            "acc_95": 0.0805
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0,
+            0.1169,
+            0.0683,
+            0.4529,
+            0.6673,
+            0.6634,
+            0.8587,
+            1.0,
+            0.9352
+          ],
+          "mean_predicted_value": [
+            0.0779,
+            0.1269,
+            0.2659,
+            0.3417,
+            0.454,
+            0.5535,
+            0.6194,
+            0.7456,
+            0.8911,
+            0.9206
+          ],
+          "n_bins": 10
+        }
+      },
+      "quality_only": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.6115,
+        "sd_auc": 0.1164,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.4599,
+          0.6765
+        ],
+        "ci_95_drug_cluster": [
+          0.4743,
+          0.6415
+        ],
+        "ece_equal_mass": 0.0598,
+        "brier_score": 0.245,
+        "temperature": 1.6455,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_quality_only",
+        "predictions_sha256": "932c925c3be67fbf4ca19545c3608b6034189ad26082c071dc11af5f47fb751d",
+        "conformal_abstention": {
+          "coverage": 0.9039,
+          "selective_accuracy": 0.5536,
+          "confidence_threshold": 0.5097,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0078,
+            "acc_85": 0.0007,
+            "acc_90": 0.0007,
+            "acc_95": 0.0007
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.2222,
+            0.6,
+            0.6526,
+            0.4698,
+            0.49,
+            0.8359,
+            0.8462,
+            0.662,
+            0.3333
+          ],
+          "mean_predicted_value": [
+            0.1421,
+            0.2464,
+            0.3714,
+            0.4632,
+            0.5314,
+            0.6579,
+            0.746,
+            0.8365,
+            0.9226
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level1": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9414,
+        "sd_auc": 0.0452,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.8856,
+          0.9782
+        ],
+        "ci_95_drug_cluster": [
+          0.8968,
+          0.976
+        ],
+        "ece_equal_mass": 0.2132,
+        "brier_score": 0.1402,
+        "temperature": 0.2771,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_masked_text_level1",
+        "predictions_sha256": "1143d294a525472724a5399dbf8c0806549e91fad349003a29795cf18a38ef45",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9188,
+          "confidence_threshold": 0.5486,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 0.9691,
+            "acc_95": 0.4926
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0114,
+            0.0676,
+            0.1939,
+            0.7391,
+            0.86,
+            0.9455,
+            1.0
+          ],
+          "mean_predicted_value": [
+            0.1951,
+            0.2592,
+            0.3488,
+            0.4457,
+            0.5581,
+            0.6518,
+            0.7458,
+            0.8289
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level2": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9677,
+        "sd_auc": 0.038,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.9212,
+          0.9976
+        ],
+        "ci_95_drug_cluster": [
+          0.9158,
+          0.9928
+        ],
+        "ece_equal_mass": 0.1918,
+        "brier_score": 0.0958,
+        "temperature": 0.3281,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_masked_text_level2",
+        "predictions_sha256": "7cbb8322313f397f8a4c795f10d40dcecaa35816798f3bc7b0116ad34646cbfb",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9606,
+          "confidence_threshold": 0.6044,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 1.0,
+            "acc_95": 0.9755
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0,
+            0.0107,
+            0.1533,
+            0.6949,
+            0.8971,
+            0.9464,
+            0.9303
+          ],
+          "mean_predicted_value": [
+            0.1702,
+            0.2419,
+            0.3416,
+            0.4486,
+            0.5493,
+            0.6643,
+            0.7509,
+            0.8248
+          ],
+          "n_bins": 10
+        }
+      },
+      "masked_text_level3": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9206,
+        "sd_auc": 0.0556,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.8562,
+          0.9676
+        ],
+        "ci_95_drug_cluster": [
+          0.8551,
+          0.9631
+        ],
+        "ece_equal_mass": 0.1842,
+        "brier_score": 0.1429,
+        "temperature": 0.3617,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_masked_text_level3",
+        "predictions_sha256": "31441352da66c891ac883f4f8157cb28de13ffebbceeccd30ee718f2d1b733fe",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8991,
+          "confidence_threshold": 0.5353,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 0.8869,
+            "acc_95": 0.0603
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.1579,
+            0.038,
+            0.0603,
+            0.2877,
+            0.6997,
+            0.8938,
+            0.9102,
+            0.9294
+          ],
+          "mean_predicted_value": [
+            0.1866,
+            0.2524,
+            0.3478,
+            0.4507,
+            0.5474,
+            0.6527,
+            0.7494,
+            0.8304
+          ],
+          "n_bins": 10
+        }
+      },
+      "design_only": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.6661,
+        "sd_auc": 0.0997,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.5493,
+          0.7419
+        ],
+        "ci_95_drug_cluster": [
+          0.5544,
+          0.7362
+        ],
+        "ece_equal_mass": 0.0834,
+        "brier_score": 0.2317,
+        "temperature": 1.2879,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_design_only",
+        "predictions_sha256": "a0df80c4475ed2e630cf44f9385700778d5976ce6778aa2b524ca6d49c146e51",
+        "conformal_abstention": {
+          "coverage": 0.9004,
+          "selective_accuracy": 0.6526,
+          "confidence_threshold": 0.5319,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.5556,
+            0.3807,
+            0.2331,
+            0.5366,
+            0.5312,
+            0.6781,
+            0.6769,
+            0.5349
+          ],
+          "mean_predicted_value": [
+            0.1895,
+            0.2627,
+            0.3419,
+            0.4569,
+            0.5489,
+            0.6519,
+            0.7401,
+            0.8296
+          ],
+          "n_bins": 10
+        }
+      },
+      "full_text_leaky": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.9754,
+        "sd_auc": 0.0309,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.9345,
+          0.9985
+        ],
+        "ci_95_drug_cluster": [
+          0.9354,
+          0.9957
+        ],
+        "ece_equal_mass": 0.2148,
+        "brier_score": 0.1013,
+        "temperature": 0.2716,
+        "leaky_reference_only": true,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_full_text_leaky",
+        "predictions_sha256": "38005df6386bb15f585a7162798ab850d120f5442cdced01aa836bc978f8e21a",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.9649,
+          "confidence_threshold": 0.5851,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 1.0,
+            "acc_85": 1.0,
+            "acc_90": 1.0,
+            "acc_95": 0.9716
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.0,
+            0.0,
+            0.0,
+            0.1656,
+            0.7247,
+            0.9116,
+            0.9465,
+            0.9916
+          ],
+          "mean_predicted_value": [
+            0.1824,
+            0.2538,
+            0.3386,
+            0.4489,
+            0.5579,
+            0.6654,
+            0.7493,
+            0.8232
+          ],
+          "n_bins": 10
+        }
+      },
+      "logistic_regression": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.884,
+        "sd_auc": 0.0634,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7494,
+          0.9499
+        ],
+        "ci_95_drug_cluster": [
+          0.7939,
+          0.932
+        ],
+        "ece_equal_mass": 0.0321,
+        "brier_score": 0.146,
+        "temperature": 0.9307,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_logistic_regression",
+        "predictions_sha256": "aac599ea7f6bb93456f07a1c2540ea3820e191b1a8d83ab3bc16dec09f372367",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8188,
+          "confidence_threshold": 0.5811,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.9564,
+            "acc_85": 0.7514,
+            "acc_90": 0.5574,
+            "acc_95": 0.2021
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.1024,
+            0.2563,
+            0.3734,
+            0.4884,
+            0.637,
+            0.6549,
+            0.7439,
+            0.8846,
+            0.9544
+          ],
+          "mean_predicted_value": [
+            0.161,
+            0.2408,
+            0.3623,
+            0.4444,
+            0.5481,
+            0.6456,
+            0.7532,
+            0.8615,
+            0.96
+          ],
+          "n_bins": 10
+        }
+      },
+      "gradient_boosted_trees": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.8683,
+        "sd_auc": 0.0716,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.7083,
+          0.9428
+        ],
+        "ci_95_drug_cluster": [
+          0.7784,
+          0.9272
+        ],
+        "ece_equal_mass": 0.0706,
+        "brier_score": 0.155,
+        "temperature": 1.551,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_gradient_boosted_trees",
+        "predictions_sha256": "f61d9c9474191da717751fe461d100ba6660c4be2e2e160551436dd38841604f",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.8077,
+          "confidence_threshold": 0.6042,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.9213,
+            "acc_85": 0.7255,
+            "acc_90": 0.4301,
+            "acc_95": 0.2943
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.2337,
+            0.1172,
+            0.6093,
+            0.3757,
+            0.5152,
+            0.5441,
+            0.6435,
+            0.6854,
+            0.5812,
+            0.9483
+          ],
+          "mean_predicted_value": [
+            0.0732,
+            0.1387,
+            0.2423,
+            0.3477,
+            0.4505,
+            0.5465,
+            0.657,
+            0.7496,
+            0.8407,
+            0.9904
+          ],
+          "n_bins": 10
+        }
+      },
+      "small_gat": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.7621,
+        "sd_auc": 0.1031,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.5743,
+          0.8654
+        ],
+        "ci_95_drug_cluster": [
+          0.6608,
+          0.831
+        ],
+        "ece_equal_mass": 0.078,
+        "brier_score": 0.2104,
+        "temperature": 1.5646,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_small_gat",
+        "predictions_sha256": "f17e076441e7c235bbe709d8c0d72fde4b8b02434e85debc994d10b0bf689401",
+        "conformal_abstention": {
+          "coverage": 0.9,
+          "selective_accuracy": 0.7033,
+          "confidence_threshold": 0.5676,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.3337,
+            "acc_85": 0.1915,
+            "acc_90": 0.0096,
+            "acc_95": 0.0004
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.1963,
+            0.2633,
+            0.3194,
+            0.4023,
+            0.4977,
+            0.4902,
+            0.5819,
+            0.7402,
+            0.7239,
+            0.8728
+          ],
+          "mean_predicted_value": [
+            0.074,
+            0.154,
+            0.2444,
+            0.3453,
+            0.4498,
+            0.5505,
+            0.6527,
+            0.7491,
+            0.8529,
+            0.9289
+          ],
+          "n_bins": 10
+        }
+      },
+      "majority_class": {
+        "label_mode": "legacy",
+        "feature_set": "legacy_label_adjacent",
+        "status": "EXPLORATORY",
+        "mean_auc": 0.5,
+        "sd_auc": 0.0,
+        "n_folds": 100,
+        "ci_95_herb_cluster": [
+          0.4331,
+          0.4994
+        ],
+        "ci_95_drug_cluster": [
+          0.4192,
+          0.5052
+        ],
+        "ece_equal_mass": 0.0339,
+        "brier_score": 0.2497,
+        "temperature": 1.5132,
+        "leaky_reference_only": false,
+        "predictions_npz": "results/predictions/phase5_fold_predictions.npz:study_disjoint_majority_class",
+        "predictions_sha256": "b246e1df962b5b3ab2406e29f07d5b15ecbe27fc4852207add48d701b428dc47",
+        "conformal_abstention": {
+          "coverage": 0.9454,
+          "selective_accuracy": 0.5278,
+          "confidence_threshold": 0.5182,
+          "coverage_at_fixed_accuracy": {
+            "acc_80": 0.0,
+            "acc_85": 0.0,
+            "acc_90": 0.0,
+            "acc_95": 0.0
+          }
+        },
+        "reliability_diagram": {
+          "fraction_of_positives": [
+            0.5319
+          ],
+          "mean_predicted_value": [
+            0.5315
+          ],
+          "n_bins": 10
+        }
+      }
+    }
+  },
+  "calibration": {},
+  "abstention_comparison": {
+    "herb_disjoint": {
+      "max_probability": {
+        "alpha": 0.1,
+        "confidence_threshold": 0.5635,
+        "coverage": 0.9,
+        "selective_accuracy": 0.8176,
+        "coverage_at_fixed_accuracy": {
+          "acc_80": 0.9762,
+          "acc_85": 0.7071,
+          "acc_90": 0.4447,
+          "acc_95": 0.1901
+        },
+        "risk_coverage_curve": [
+          {
+            "threshold": 0.5001,
+            "coverage": 1.0,
+            "risk": 0.2039
+          },
+          {
+            "threshold": 0.5264,
+            "coverage": 0.9535,
+            "risk": 0.1908
+          },
+          {
+            "threshold": 0.5527,
+            "coverage": 0.9152,
+            "risk": 0.1836
+          },
+          {
+            "threshold": 0.579,
+            "coverage": 0.8738,
+            "risk": 0.179
+          },
+          {
+            "threshold": 0.6053,
+            "coverage": 0.822,
+            "risk": 0.1752
+          },
+          {
+            "threshold": 0.6316,
+            "coverage": 0.772,
+            "risk": 0.1681
+          },
+          {
+            "threshold": 0.6579,
+            "coverage": 0.7376,
+            "risk": 0.1587
+          },
+          {
+            "threshold": 0.6842,
+            "coverage": 0.7025,
+            "risk": 0.1464
+          },
+          {
+            "threshold": 0.7105,
+            "coverage": 0.672,
+            "risk": 0.133
+          },
+          {
+            "threshold": 0.7368,
+            "coverage": 0.6277,
+            "risk": 0.1254
+          },
+          {
+            "threshold": 0.7631,
+            "coverage": 0.5677,
+            "risk": 0.1149
+          },
+          {
+            "threshold": 0.7894,
+            "coverage": 0.4848,
+            "risk": 0.1024
+          },
+          {
+            "threshold": 0.8157,
+            "coverage": 0.4032,
+            "risk": 0.102
+          },
+          {
+            "threshold": 0.842,
+            "coverage": 0.2986,
+            "risk": 0.0819
+          },
+          {
+            "threshold": 0.8683,
+            "coverage": 0.2152,
+            "risk": 0.0643
+          },
+          {
+            "threshold": 0.8946,
+            "coverage": 0.1851,
+            "risk": 0.0479
+          },
+          {
+            "threshold": 0.9209,
+            "coverage": 0.1447,
+            "risk": 0.0196
+          },
+          {
+            "threshold": 0.9472,
+            "coverage": 0.122,
+            "risk": 0.0
+          },
+          {
+            "threshold": 0.9735,
+            "coverage": 0.0929,
+            "risk": 0.0
+          },
+          {
+            "threshold": 0.9998,
+            "coverage": 0.0014,
+            "risk": 0.0
+          }
+        ]
+      },
+      "gbt_uncertainty": {
+        "alpha": 0.1,
+        "confidence_threshold": 0.6041,
+        "coverage": 0.9004,
+        "selective_accuracy": 0.8121,
+        "coverage_at_fixed_accuracy": {
+          "acc_80": 0.9277,
+          "acc_85": 0.7454,
+          "acc_90": 0.2234,
+          "acc_95": 0.1652
+        },
+        "risk_coverage_curve": [
+          {
+            "threshold": 0.5001,
+            "coverage": 1.0,
+            "risk": 0.2184
+          },
+          {
+            "threshold": 0.5264,
+            "coverage": 0.966,
+            "risk": 0.2081
+          },
+          {
+            "threshold": 0.5527,
+            "coverage": 0.945,
+            "risk": 0.2019
+          },
+          {
+            "threshold": 0.5789,
+            "coverage": 0.9174,
+            "risk": 0.1933
+          },
+          {
+            "threshold": 0.6052,
+            "coverage": 0.8982,
+            "risk": 0.1875
+          },
+          {
+            "threshold": 0.6315,
+            "coverage": 0.8734,
+            "risk": 0.1807
+          },
+          {
+            "threshold": 0.6578,
+            "coverage": 0.8447,
+            "risk": 0.1734
+          },
+          {
+            "threshold": 0.6841,
+            "coverage": 0.8209,
+            "risk": 0.1663
+          },
+          {
+            "threshold": 0.7104,
+            "coverage": 0.8014,
+            "risk": 0.1624
+          },
+          {
+            "threshold": 0.7367,
+            "coverage": 0.7759,
+            "risk": 0.1586
+          },
+          {
+            "threshold": 0.763,
+            "coverage": 0.7418,
+            "risk": 0.1477
+          },
+          {
+            "threshold": 0.7893,
+            "coverage": 0.7213,
+            "risk": 0.1411
+          },
+          {
+            "threshold": 0.8156,
+            "coverage": 0.6883,
+            "risk": 0.1329
+          },
+          {
+            "threshold": 0.8419,
+            "coverage": 0.6376,
+            "risk": 0.1251
+          },
+          {
+            "threshold": 0.8681,
+            "coverage": 0.5039,
+            "risk": 0.121
+          },
+          {
+            "threshold": 0.8944,
+            "coverage": 0.3826,
+            "risk": 0.1409
+          },
+          {
+            "threshold": 0.9207,
+            "coverage": 0.2454,
+            "risk": 0.1113
+          },
+          {
+            "threshold": 0.947,
+            "coverage": 0.189,
+            "risk": 0.0713
+          },
+          {
+            "threshold": 0.9733,
+            "coverage": 0.156,
+            "risk": 0.0273
+          },
+          {
+            "threshold": 0.9996,
+            "coverage": 0.0007,
+            "risk": 0.0
+          }
+        ]
+      },
+      "conformal_tri_state_engine": {
+        "alpha": 0.1,
+        "coverage": 0.2706,
+        "abstention_rate": 0.7294,
+        "selective_accuracy": 0.9201,
+        "conflict_abstentions": 2057,
+        "note": "Conflict/reliability signals are NOT evaluated until consensus labels exist."
+      }
+    },
+    "drug_disjoint": {
+      "max_probability": {
+        "alpha": 0.1,
+        "confidence_threshold": 0.5803,
+        "coverage": 0.9,
+        "selective_accuracy": 0.8195,
+        "coverage_at_fixed_accuracy": {
+          "acc_80": 0.9734,
+          "acc_85": 0.7564,
+          "acc_90": 0.5035,
+          "acc_95": 0.195
+        },
+        "risk_coverage_curve": [
+          {
+            "threshold": 0.5004,
+            "coverage": 1.0,
+            "risk": 0.2082
+          },
+          {
+            "threshold": 0.5267,
+            "coverage": 0.9631,
+            "risk": 0.1951
+          },
+          {
+            "threshold": 0.553,
+            "coverage": 0.9376,
+            "risk": 0.1887
+          },
+          {
+            "threshold": 0.5793,
+            "coverage": 0.9018,
+            "risk": 0.1809
+          },
+          {
+            "threshold": 0.6056,
+            "coverage": 0.8582,
+            "risk": 0.1736
+          },
+          {
+            "threshold": 0.6319,
+            "coverage": 0.8326,
+            "risk": 0.1678
+          },
+          {
+            "threshold": 0.6582,
+            "coverage": 0.7986,
+            "risk": 0.1616
+          },
+          {
+            "threshold": 0.6844,
+            "coverage": 0.7635,
+            "risk": 0.1528
+          },
+          {
+            "threshold": 0.7107,
+            "coverage": 0.7248,
+            "risk": 0.1429
+          },
+          {
+            "threshold": 0.737,
+            "coverage": 0.6798,
+            "risk": 0.1304
+          },
+          {
+            "threshold": 0.7633,
+            "coverage": 0.6152,
+            "risk": 0.1199
+          },
+          {
+            "threshold": 0.7896,
+            "coverage": 0.5394,
+            "risk": 0.1078
+          },
+          {
+            "threshold": 0.8159,
+            "coverage": 0.4638,
+            "risk": 0.1002
+          },
+          {
+            "threshold": 0.8422,
+            "coverage": 0.3589,
+            "risk": 0.1057
+          },
+          {
+            "threshold": 0.8684,
+            "coverage": 0.2869,
+            "risk": 0.089
+          },
+          {
+            "threshold": 0.8947,
+            "coverage": 0.2362,
+            "risk": 0.0721
+          },
+          {
+            "threshold": 0.921,
+            "coverage": 0.1929,
+            "risk": 0.046
+          },
+          {
+            "threshold": 0.9473,
+            "coverage": 0.1638,
+            "risk": 0.0195
+          },
+          {
+            "threshold": 0.9736,
+            "coverage": 0.1064,
+            "risk": 0.0
+          },
+          {
+            "threshold": 0.9999,
+            "coverage": 0.0004,
+            "risk": 0.0
+          }
+        ]
+      },
+      "gbt_uncertainty": {
+        "alpha": 0.1,
+        "confidence_threshold": 0.6148,
+        "coverage": 0.9,
+        "selective_accuracy": 0.8286,
+        "coverage_at_fixed_accuracy": {
+          "acc_80": 0.9911,
+          "acc_85": 0.7904,
+          "acc_90": 0.3521,
+          "acc_95": 0.2968
+        },
+        "risk_coverage_curve": [
+          {
+            "threshold": 0.5011,
+            "coverage": 1.0,
+            "risk": 0.2025
+          },
+          {
+            "threshold": 0.5274,
+            "coverage": 0.9784,
+            "risk": 0.1957
+          },
+          {
+            "threshold": 0.5536,
+            "coverage": 0.9518,
+            "risk": 0.1867
+          },
+          {
+            "threshold": 0.5798,
+            "coverage": 0.9273,
+            "risk": 0.179
+          },
+          {
+            "threshold": 0.6061,
+            "coverage": 0.9113,
+            "risk": 0.1735
+          },
+          {
+            "threshold": 0.6323,
+            "coverage": 0.8837,
+            "risk": 0.1669
+          },
+          {
+            "threshold": 0.6586,
+            "coverage": 0.8543,
+            "risk": 0.1606
+          },
+          {
+            "threshold": 0.6848,
+            "coverage": 0.8252,
+            "risk": 0.1556
+          },
+          {
+            "threshold": 0.711,
+            "coverage": 0.7975,
+            "risk": 0.1516
+          },
+          {
+            "threshold": 0.7373,
+            "coverage": 0.767,
+            "risk": 0.1456
+          },
+          {
+            "threshold": 0.7635,
+            "coverage": 0.7415,
+            "risk": 0.1387
+          },
+          {
+            "threshold": 0.7898,
+            "coverage": 0.6989,
+            "risk": 0.137
+          },
+          {
+            "threshold": 0.816,
+            "coverage": 0.6613,
+            "risk": 0.1303
+          },
+          {
+            "threshold": 0.8422,
+            "coverage": 0.5759,
+            "risk": 0.1195
+          },
+          {
+            "threshold": 0.8685,
+            "coverage": 0.4869,
+            "risk": 0.1143
+          },
+          {
+            "threshold": 0.8947,
+            "coverage": 0.4064,
+            "risk": 0.1099
+          },
+          {
+            "threshold": 0.921,
+            "coverage": 0.3493,
+            "risk": 0.0893
+          },
+          {
+            "threshold": 0.9472,
+            "coverage": 0.2979,
+            "risk": 0.044
+          },
+          {
+            "threshold": 0.9734,
+            "coverage": 0.2738,
+            "risk": 0.013
+          },
+          {
+            "threshold": 0.9997,
+            "coverage": 0.0004,
+            "risk": 0.0
+          }
+        ]
+      },
+      "conformal_tri_state_engine": {
+        "alpha": 0.1,
+        "coverage": 0.3387,
+        "abstention_rate": 0.6613,
+        "selective_accuracy": 0.8963,
+        "conflict_abstentions": 1865,
+        "note": "Conflict/reliability signals are NOT evaluated until consensus labels exist."
+      }
+    },
+    "pair_disjoint": {
+      "max_probability": {
+        "alpha": 0.1,
+        "confidence_threshold": 0.5888,
+        "coverage": 0.9,
+        "selective_accuracy": 0.8243,
+        "coverage_at_fixed_accuracy": {
+          "acc_80": 1.0,
+          "acc_85": 0.7819,
+          "acc_90": 0.6199,
+          "acc_95": 0.2589
+        },
+        "risk_coverage_curve": [
+          {
+            "threshold": 0.503,
+            "coverage": 1.0,
+            "risk": 0.1968
+          },
+          {
+            "threshold": 0.5292,
+            "coverage": 0.9727,
+            "risk": 0.1903
+          },
+          {
+            "threshold": 0.5553,
+            "coverage": 0.9454,
+            "risk": 0.186
+          },
+          {
+            "threshold": 0.5814,
+            "coverage": 0.9082,
+            "risk": 0.1769
+          },
+          {
+            "threshold": 0.6076,
+            "coverage": 0.8667,
+            "risk": 0.1682
+          },
+          {
+            "threshold": 0.6337,
+            "coverage": 0.8199,
+            "risk": 0.16
+          },
+          {
+            "threshold": 0.6598,
+            "coverage": 0.7901,
+            "risk": 0.1517
+          },
+          {
+            "threshold": 0.686,
+            "coverage": 0.7599,
+            "risk": 0.1386
+          },
+          {
+            "threshold": 0.7121,
+            "coverage": 0.7248,
+            "risk": 0.1272
+          },
+          {
+            "threshold": 0.7382,
+            "coverage": 0.6819,
+            "risk": 0.1128
+          },
+          {
+            "threshold": 0.7644,
+            "coverage": 0.5986,
+            "risk": 0.093
+          },
+          {
+            "threshold": 0.7905,
+            "coverage": 0.4837,
+            "risk": 0.0733
+          },
+          {
+            "threshold": 0.8166,
+            "coverage": 0.423,
+            "risk": 0.0629
+          },
+          {
+            "threshold": 0.8428,
+            "coverage": 0.3337,
+            "risk": 0.0595
+          },
+          {
+            "threshold": 0.8689,
+            "coverage": 0.2617,
+            "risk": 0.0447
+          },
+          {
+            "threshold": 0.895,
+            "coverage": 0.1933,
+            "risk": 0.0275
+          },
+          {
+            "threshold": 0.9212,
+            "coverage": 0.1574,
+            "risk": 0.0068
+          },
+          {
+            "threshold": 0.9473,
+            "coverage": 0.1262,
+            "risk": 0.0
+          },
+          {
+            "threshold": 0.9734,
+            "coverage": 0.0844,
+            "risk": 0.0
+          },
+          {
+            "threshold": 0.9996,
+            "coverage": 0.0004,
+            "risk": 0.0
+          }
+        ]
+      },
+      "gbt_uncertainty": {
+        "alpha": 0.1,
+        "confidence_threshold": 0.5986,
+        "coverage": 0.9,
+        "selective_accuracy": 0.8247,
+        "coverage_at_fixed_accuracy": {
+          "acc_80": 1.0,
+          "acc_85": 0.8025,
+          "acc_90": 0.5557,
+          "acc_95": 0.3032
+        },
+        "risk_coverage_curve": [
+          {
+            "threshold": 0.5002,
+            "coverage": 1.0,
+            "risk": 0.1989
+          },
+          {
+            "threshold": 0.5265,
+            "coverage": 0.967,
+            "risk": 0.1896
+          },
+          {
+            "threshold": 0.5528,
+            "coverage": 0.9479,
+            "risk": 0.1833
+          },
+          {
+            "threshold": 0.5791,
+            "coverage": 0.9245,
+            "risk": 0.1784
+          },
+          {
+            "threshold": 0.6054,
+            "coverage": 0.8929,
+            "risk": 0.1732
+          },
+          {
+            "threshold": 0.6316,
+            "coverage": 0.8642,
+            "risk": 0.1658
+          },
+          {
+            "threshold": 0.6579,
+            "coverage": 0.839,
+            "risk": 0.1602
+          },
+          {
+            "threshold": 0.6842,
+            "coverage": 0.8138,
+            "risk": 0.1534
+          },
+          {
+            "threshold": 0.7105,
+            "coverage": 0.7862,
+            "risk": 0.1452
+          },
+          {
+            "threshold": 0.7368,
+            "coverage": 0.7617,
+            "risk": 0.1387
+          },
+          {
+            "threshold": 0.7631,
+            "coverage": 0.7223,
+            "risk": 0.1271
+          },
+          {
+            "threshold": 0.7894,
+            "coverage": 0.6894,
+            "risk": 0.1152
+          },
+          {
+            "threshold": 0.8157,
+            "coverage": 0.6617,
+            "risk": 0.1056
+          },
+          {
+            "threshold": 0.8419,
+            "coverage": 0.6209,
+            "risk": 0.1011
+          },
+          {
+            "threshold": 0.8682,
+            "coverage": 0.5294,
+            "risk": 0.0985
+          },
+          {
+            "threshold": 0.8945,
+            "coverage": 0.4287,
+            "risk": 0.0935
+          },
+          {
+            "threshold": 0.9208,
+            "coverage": 0.3291,
+            "risk": 0.0539
+          },
+          {
+            "threshold": 0.9471,
+            "coverage": 0.2819,
+            "risk": 0.0189
+          },
+          {
+            "threshold": 0.9734,
+            "coverage": 0.272,
+            "risk": 0.0078
+          },
+          {
+            "threshold": 0.9997,
+            "coverage": 0.0004,
+            "risk": 0.0
+          }
+        ]
+      },
+      "conformal_tri_state_engine": {
+        "alpha": 0.1,
+        "coverage": 0.311,
+        "abstention_rate": 0.689,
+        "selective_accuracy": 0.9441,
+        "conflict_abstentions": 1943,
+        "note": "Conflict/reliability signals are NOT evaluated until consensus labels exist."
+      }
+    },
+    "study_disjoint": {
+      "max_probability": {
+        "alpha": 0.1,
+        "confidence_threshold": 0.5811,
+        "coverage": 0.9,
+        "selective_accuracy": 0.8188,
+        "coverage_at_fixed_accuracy": {
+          "acc_80": 0.9564,
+          "acc_85": 0.7514,
+          "acc_90": 0.5574,
+          "acc_95": 0.2021
+        },
+        "risk_coverage_curve": [
+          {
+            "threshold": 0.5001,
+            "coverage": 1.0,
+            "risk": 0.2082
+          },
+          {
+            "threshold": 0.5264,
+            "coverage": 0.9691,
+            "risk": 0.2009
+          },
+          {
+            "threshold": 0.5526,
+            "coverage": 0.9383,
+            "risk": 0.1931
+          },
+          {
+            "threshold": 0.5789,
+            "coverage": 0.9039,
+            "risk": 0.182
+          },
+          {
+            "threshold": 0.6052,
+            "coverage": 0.8649,
+            "risk": 0.1726
+          },
+          {
+            "threshold": 0.6315,
+            "coverage": 0.7897,
+            "risk": 0.1585
+          },
+          {
+            "threshold": 0.6578,
+            "coverage": 0.7645,
+            "risk": 0.1517
+          },
+          {
+            "threshold": 0.6841,
+            "coverage": 0.7408,
+            "risk": 0.1412
+          },
+          {
+            "threshold": 0.7104,
+            "coverage": 0.7078,
+            "risk": 0.1308
+          },
+          {
+            "threshold": 0.7367,
+            "coverage": 0.6688,
+            "risk": 0.1209
+          },
+          {
+            "threshold": 0.763,
+            "coverage": 0.6067,
+            "risk": 0.1081
+          },
+          {
+            "threshold": 0.7893,
+            "coverage": 0.5323,
+            "risk": 0.0879
+          },
+          {
+            "threshold": 0.8156,
+            "coverage": 0.4709,
+            "risk": 0.0798
+          },
+          {
+            "threshold": 0.8419,
+            "coverage": 0.356,
+            "risk": 0.0717
+          },
+          {
+            "threshold": 0.8682,
+            "coverage": 0.2748,
+            "risk": 0.0581
+          },
+          {
+            "threshold": 0.8944,
+            "coverage": 0.2099,
+            "risk": 0.0473
+          },
+          {
+            "threshold": 0.9207,
+            "coverage": 0.1642,
+            "risk": 0.0302
+          },
+          {
+            "threshold": 0.947,
+            "coverage": 0.1319,
+            "risk": 0.0027
+          },
+          {
+            "threshold": 0.9733,
+            "coverage": 0.0883,
+            "risk": 0.0
+          },
+          {
+            "threshold": 0.9996,
+            "coverage": 0.0014,
+            "risk": 0.0
+          }
+        ]
+      },
+      "gbt_uncertainty": {
+        "alpha": 0.1,
+        "confidence_threshold": 0.6042,
+        "coverage": 0.9,
+        "selective_accuracy": 0.8077,
+        "coverage_at_fixed_accuracy": {
+          "acc_80": 0.9213,
+          "acc_85": 0.7255,
+          "acc_90": 0.4301,
+          "acc_95": 0.2943
+        },
+        "risk_coverage_curve": [
+          {
+            "threshold": 0.5011,
+            "coverage": 1.0,
+            "risk": 0.2213
+          },
+          {
+            "threshold": 0.5273,
+            "coverage": 0.9709,
+            "risk": 0.2122
+          },
+          {
+            "threshold": 0.5536,
+            "coverage": 0.9493,
+            "risk": 0.2051
+          },
+          {
+            "threshold": 0.5798,
+            "coverage": 0.9216,
+            "risk": 0.1993
+          },
+          {
+            "threshold": 0.6061,
+            "coverage": 0.8993,
+            "risk": 0.1916
+          },
+          {
+            "threshold": 0.6323,
+            "coverage": 0.8823,
+            "risk": 0.1889
+          },
+          {
+            "threshold": 0.6585,
+            "coverage": 0.8504,
+            "risk": 0.1814
+          },
+          {
+            "threshold": 0.6848,
+            "coverage": 0.8191,
+            "risk": 0.1753
+          },
+          {
+            "threshold": 0.711,
+            "coverage": 0.7883,
+            "risk": 0.1682
+          },
+          {
+            "threshold": 0.7373,
+            "coverage": 0.7596,
+            "risk": 0.1601
+          },
+          {
+            "threshold": 0.7635,
+            "coverage": 0.7379,
+            "risk": 0.1509
+          },
+          {
+            "threshold": 0.7898,
+            "coverage": 0.7011,
+            "risk": 0.134
+          },
+          {
+            "threshold": 0.816,
+            "coverage": 0.6567,
+            "risk": 0.1156
+          },
+          {
+            "threshold": 0.8422,
+            "coverage": 0.6028,
+            "risk": 0.1106
+          },
+          {
+            "threshold": 0.8685,
+            "coverage": 0.5071,
+            "risk": 0.1063
+          },
+          {
+            "threshold": 0.8947,
+            "coverage": 0.3989,
+            "risk": 0.0987
+          },
+          {
+            "threshold": 0.921,
+            "coverage": 0.3433,
+            "risk": 0.0733
+          },
+          {
+            "threshold": 0.9472,
+            "coverage": 0.289,
+            "risk": 0.0344
+          },
+          {
+            "threshold": 0.9735,
+            "coverage": 0.2812,
+            "risk": 0.0252
+          },
+          {
+            "threshold": 0.9997,
+            "coverage": 0.0004,
+            "risk": 0.0
+          }
+        ]
+      },
+      "conformal_tri_state_engine": {
+        "alpha": 0.1,
+        "coverage": 0.3298,
+        "abstention_rate": 0.6702,
+        "selective_accuracy": 0.9312,
+        "conflict_abstentions": 1890,
+        "note": "Conflict/reliability signals are NOT evaluated until consensus labels exist."
+      }
+    }
+  },
+  "paired_tests_vs_lr": {
+    "herb_disjoint": {
+      "herb_identity": {
+        "t_stat": -41.7263,
+        "mean_diff": -0.3836,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "majority_class": {
+        "t_stat": -41.7263,
+        "mean_diff": -0.3836,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "design_only": {
+        "t_stat": -17.1017,
+        "mean_diff": -0.2299,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "quality_only": {
+        "t_stat": -15.4754,
+        "mean_diff": -0.243,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "small_gat": {
+        "t_stat": -15.1441,
+        "mean_diff": -0.342,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "curation_2d": {
+        "t_stat": -10.1866,
+        "mean_diff": -0.0952,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "drug_identity": {
+        "t_stat": -9.5701,
+        "mean_diff": -0.1351,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level2": {
+        "t_stat": 8.6552,
+        "mean_diff": 0.0822,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "full_text_leaky": {
+        "t_stat": 8.5079,
+        "mean_diff": 0.081,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "overlap_6d": {
+        "t_stat": -7.3065,
+        "mean_diff": -0.0185,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "overlap_total": {
+        "t_stat": -5.9257,
+        "mean_diff": -0.0223,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "gradient_boosted_trees": {
+        "t_stat": -5.5272,
+        "mean_diff": -0.0251,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level1": {
+        "t_stat": 3.0083,
+        "mean_diff": 0.033,
+        "p_value_raw": 0.0033,
+        "p_value_holm": 0.0067,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level3": {
+        "t_stat": 2.7813,
+        "mean_diff": 0.0305,
+        "p_value_raw": 0.0065,
+        "p_value_holm": 0.0065,
+        "significant_005": true,
+        "n_folds": 100
+      }
+    },
+    "drug_disjoint": {
+      "drug_identity": {
+        "t_stat": -45.8584,
+        "mean_diff": -0.3832,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "majority_class": {
+        "t_stat": -45.8584,
+        "mean_diff": -0.3832,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "quality_only": {
+        "t_stat": -24.4364,
+        "mean_diff": -0.2667,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "design_only": {
+        "t_stat": -17.699,
+        "mean_diff": -0.2345,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "full_text_leaky": {
+        "t_stat": 10.06,
+        "mean_diff": 0.0948,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "small_gat": {
+        "t_stat": -9.3851,
+        "mean_diff": -0.1339,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level2": {
+        "t_stat": 8.4734,
+        "mean_diff": 0.085,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level1": {
+        "t_stat": 6.2918,
+        "mean_diff": 0.0629,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "curation_2d": {
+        "t_stat": -6.0363,
+        "mean_diff": -0.0735,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "herb_identity": {
+        "t_stat": -4.7744,
+        "mean_diff": -0.061,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "overlap_6d": {
+        "t_stat": -3.939,
+        "mean_diff": -0.0127,
+        "p_value_raw": 0.0002,
+        "p_value_holm": 0.0006,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "overlap_total": {
+        "t_stat": -3.6649,
+        "mean_diff": -0.0143,
+        "p_value_raw": 0.0004,
+        "p_value_holm": 0.0012,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level3": {
+        "t_stat": 2.1506,
+        "mean_diff": 0.0234,
+        "p_value_raw": 0.0339,
+        "p_value_holm": 0.0679,
+        "significant_005": false,
+        "n_folds": 100
+      },
+      "gradient_boosted_trees": {
+        "t_stat": 0.3955,
+        "mean_diff": 0.0022,
+        "p_value_raw": 0.6933,
+        "p_value_holm": 0.6933,
+        "significant_005": false,
+        "n_folds": 100
+      }
+    },
+    "pair_disjoint": {
+      "majority_class": {
+        "t_stat": -68.3852,
+        "mean_diff": -0.3879,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "quality_only": {
+        "t_stat": -23.73,
+        "mean_diff": -0.2562,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "design_only": {
+        "t_stat": -21.9895,
+        "mean_diff": -0.2228,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "drug_identity": {
+        "t_stat": -16.7808,
+        "mean_diff": -0.163,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "full_text_leaky": {
+        "t_stat": 14.8429,
+        "mean_diff": 0.0892,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "small_gat": {
+        "t_stat": -13.5996,
+        "mean_diff": -0.1161,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level2": {
+        "t_stat": 12.939,
+        "mean_diff": 0.0808,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "herb_identity": {
+        "t_stat": -9.568,
+        "mean_diff": -0.0894,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level1": {
+        "t_stat": 9.2106,
+        "mean_diff": 0.0579,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "curation_2d": {
+        "t_stat": -9.0205,
+        "mean_diff": -0.069,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "overlap_total": {
+        "t_stat": -7.7613,
+        "mean_diff": -0.0253,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "overlap_6d": {
+        "t_stat": -6.4179,
+        "mean_diff": -0.0204,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level3": {
+        "t_stat": 4.6375,
+        "mean_diff": 0.0329,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "gradient_boosted_trees": {
+        "t_stat": -1.9183,
+        "mean_diff": -0.0092,
+        "p_value_raw": 0.058,
+        "p_value_holm": 0.058,
+        "significant_005": false,
+        "n_folds": 100
+      }
+    },
+    "study_disjoint": {
+      "majority_class": {
+        "t_stat": -60.5394,
+        "mean_diff": -0.384,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "quality_only": {
+        "t_stat": -25.1547,
+        "mean_diff": -0.2725,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "design_only": {
+        "t_stat": -20.5303,
+        "mean_diff": -0.2179,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "drug_identity": {
+        "t_stat": -16.2934,
+        "mean_diff": -0.1598,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "full_text_leaky": {
+        "t_stat": 13.2746,
+        "mean_diff": 0.0914,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "small_gat": {
+        "t_stat": -11.9961,
+        "mean_diff": -0.1219,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level2": {
+        "t_stat": 11.3761,
+        "mean_diff": 0.0837,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "herb_identity": {
+        "t_stat": -10.5435,
+        "mean_diff": -0.0975,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level1": {
+        "t_stat": 7.8171,
+        "mean_diff": 0.0573,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "curation_2d": {
+        "t_stat": -7.6038,
+        "mean_diff": -0.0665,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "masked_text_level3": {
+        "t_stat": 4.435,
+        "mean_diff": 0.0366,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0001,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "overlap_6d": {
+        "t_stat": -4.2808,
+        "mean_diff": -0.0159,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0001,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "overlap_total": {
+        "t_stat": -4.2554,
+        "mean_diff": -0.0167,
+        "p_value_raw": 0.0,
+        "p_value_holm": 0.0001,
+        "significant_005": true,
+        "n_folds": 100
+      },
+      "gradient_boosted_trees": {
+        "t_stat": -3.3304,
+        "mean_diff": -0.0157,
+        "p_value_raw": 0.0012,
+        "p_value_holm": 0.0012,
+        "significant_005": true,
+        "n_folds": 100
+      }
+    }
+  },
+  "gat_retention_decision": {
+    "rule": "Keep SmallGAT only if it beats LR under all three disjoint protocols with p < 0.05",
+    "retained": false,
+    "split_evaluations": {
+      "herb_disjoint": {
+        "gat_mean_auc": 0.5417,
+        "lr_mean_auc": 0.8836,
+        "mean_diff": -0.342,
+        "t_stat": -15.1441,
+        "p_value": 0.0,
+        "beats_lr_significant": false
+      },
+      "drug_disjoint": {
+        "gat_mean_auc": 0.7492,
+        "lr_mean_auc": 0.8832,
+        "mean_diff": -0.1339,
+        "t_stat": -9.3851,
+        "p_value": 0.0,
+        "beats_lr_significant": false
+      },
+      "pair_disjoint": {
+        "gat_mean_auc": 0.7718,
+        "lr_mean_auc": 0.8879,
+        "mean_diff": -0.1161,
+        "t_stat": -13.5996,
+        "p_value": 0.0,
+        "beats_lr_significant": false
+      }
+    },
+    "decision": "DROPPED",
+    "rationale": "SmallGAT is REJECTED / DROPPED. Under the retention protocol, SmallGAT must beat Logistic Regression under all three primary disjoint split protocols (herb-disjoint, drug-disjoint, pair-disjoint) with statistical significance (p < 0.05). SmallGAT beats LR in all three: False."
+  },
+  "sensitivity_analysis": {
+    "clinical_trials_all": {
+      "label": "Clinical Trials (All Herbs)",
+      "N": 121,
+      "n_pos": 60,
+      "n_neg": 61,
+      "features": {
+        "overlap_6d": {
+          "mean": 0.9087,
+          "sd": 0.0548
+        },
+        "curation_2d": {
+          "mean": 0.8037,
+          "sd": 0.1086
+        },
+        "quality_only": {
+          "mean": 0.533,
+          "sd": 0.094
+        }
+      }
+    },
+    "clinical_trials_excl_pure_neg": {
+      "label": "Clinical Trials (Excl. 4 Pure-Neg Herbs)",
+      "N": 96,
+      "n_pos": 60,
+      "n_neg": 36,
+      "features": {
+        "overlap_6d": {
+          "mean": 0.8854,
+          "sd": 0.0621
+        },
+        "curation_2d": {
+          "mean": 0.6534,
+          "sd": 0.1381
+        },
+        "quality_only": {
+          "mean": 0.5647,
+          "sd": 0.093
+        }
+      }
+    },
+    "healthy_volunteers_all": {
+      "label": "Healthy Volunteers (All Herbs)",
+      "N": 106,
+      "n_pos": 48,
+      "n_neg": 58,
+      "features": {
+        "overlap_6d": {
+          "mean": 0.8927,
+          "sd": 0.0623
+        },
+        "curation_2d": {
+          "mean": 0.7648,
+          "sd": 0.1215
+        },
+        "quality_only": {
+          "mean": 0.5451,
+          "sd": 0.1188
+        }
+      }
+    },
+    "healthy_volunteers_excl_pure_neg": {
+      "label": "Healthy Volunteers (Excl. 4 Pure-Neg Herbs)",
+      "N": 83,
+      "n_pos": 48,
+      "n_neg": 35,
+      "features": {
+        "overlap_6d": {
+          "mean": 0.8687,
+          "sd": 0.0741
+        },
+        "curation_2d": {
+          "mean": 0.5931,
+          "sd": 0.1313
+        },
+        "quality_only": {
+          "mean": 0.5849,
+          "sd": 0.0982
+        }
+      }
+    },
+    "case_reports_all": {
+      "label": "Case Reports (All Herbs)",
+      "N": 16,
+      "n_pos": 14,
+      "n_neg": 2,
+      "features": {
+        "overlap_6d": {
+          "mean": NaN,
+          "sd": NaN
+        },
+        "curation_2d": {
+          "mean": NaN,
+          "sd": NaN
+        },
+        "quality_only": {
+          "mean": NaN,
+          "sd": NaN
+        }
+      }
+    }
+  }
+}

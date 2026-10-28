@@ -6,7 +6,7 @@
 **Scope:** Phase 0b Mechanistic Feature Provenance, Selection Adjacency, & Leakage Assessment  
 **Reference Codebase:** `src/features/biological_features.py`, `benchmarks/run_verified_hdi_benchmark.py`, `src/training/evaluation.py`  
 **Dataset:** `data/benchmark/verified_botanical_hdi.csv` (141 records across 18 herbs and 40 drugs)  
-**Per-Value Provenance Table:** [profile_provenance.csv](file:///Users/aditisharma/Downloads/sem%207/text%20minning/Reliability-Conditioned-Herb-Drug-Interaction-Prediction/reports/profile_provenance.csv) (111 parameter entries)
+**Per-Value Provenance Table:** [reports/profile_provenance.csv](reports/profile_provenance.csv) (111 parameter entries)
 
 ---
 
@@ -160,7 +160,7 @@ The following limitations must be recognized regarding mechanistic features in t
 
 ## 6. Per-Value Parameter Provenance Table
 
-A comprehensive parameter audit has been generated in [reports/profile_provenance.csv](file:///Users/aditisharma/Downloads/sem%207/text%20minning/Reliability-Conditioned-Herb-Drug-Interaction-Prediction/reports/profile_provenance.csv). Summary statistics:
+A comprehensive parameter audit has been generated in [reports/profile_provenance.csv](reports/profile_provenance.csv). Summary statistics:
 - **Total Profile Entries:** 111 (51 herb targets across 18 botanicals; 60 drug targets across 40 drugs).
 - **Source Citation:** 100% (111/111) are marked as **`UNVERIFIED`** because the codebase contains no formal DOI, PMID, or primary literature references for individual profile values.
 - **Retrieval Date & Curator:** 100% (111/111) are marked as **`UNVERIFIED`**.
