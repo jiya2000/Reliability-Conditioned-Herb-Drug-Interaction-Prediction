@@ -39,6 +39,7 @@ CURATION_COLUMNS = [
     "exposure_conc_uM",
     "exposure_source",
     "assay_or_unit",
+    "source",
     "citation",
     "retrieval_date",
     "notes",
@@ -84,47 +85,42 @@ def is_curation_verified(df: pd.DataFrame) -> Tuple[bool, int, int]:
     """
     Check whether all rows in the curation table are verified.
     
+    A row is verified if and only if:
+    1. 'source' is not empty and not 'UNVERIFIED'.
+    2. 'citation' is not empty and not 'UNVERIFIED'.
+    3. Status-specific validation:
+       - 'measured': At least one quantitative or substrate value column must be populated.
+       - 'tested_no_effect': Valid with external source/citation confirming no measurable effect.
+       - 'not_tested': Allowed ONLY if accompanied by a citation or database lookup note
+         verifying that an external search was conducted and no experimental data was found.
+    
     Returns:
         (is_verified, verified_count, unverified_count)
     """
     validate_curation_dataframe(df)
 
-    is_unverified_source = df["source"].astype(str).str.upper().str.strip() == "UNVERIFIED"
-    is_unverified_cite = df["citation"].astype(str).str.upper().str.strip() == "UNVERIFIED"
+    is_unverified_source = df["source"].astype(str).str.upper().str.strip().isin(["UNVERIFIED", "", "NAN", "NONE"])
+    is_unverified_cite = df["citation"].astype(str).str.upper().str.strip().isin(["UNVERIFIED", "", "NAN", "NONE"])
     
-    # Check that rows with status=measured have at least one value column filled
-    has_value_ic50 = df["value_ic50_uM"].apply(
-        lambda x: str(x).strip() != "" if pd.notna(x) else False
-    )
-    has_value_ki = df["value_ki_uM"].apply(
-        lambda x: str(x).strip() != "" if pd.notna(x) else False
-    )
-    has_value_fold = df["value_fold_induction"].apply(
-        lambda x: str(x).strip() != "" if pd.notna(x) else False
-    )
-    has_value_fm = df["value_fm"].apply(
-        lambda x: str(x).strip() != "" if pd.notna(x) else False
-    )
-    # value_substrate_flag: verified if not empty and not "0" (0 means not a substrate, 
-    # which is a valid measured result)
-    has_value_substrate = df["value_substrate_flag"].apply(
-        lambda x: str(x).strip() not in ["", "0"] if pd.notna(x) else False
-    )
-    
-    # Any row with status=measured must have at least one value column filled
+    # Check measured rows
     status_measured = df["status"].astype(str).str.strip() == "measured"
+    has_value_ic50 = df["value_ic50_uM"].apply(lambda x: str(x).strip() != "" and str(x).strip().lower() != "nan" if pd.notna(x) else False)
+    has_value_ki = df["value_ki_uM"].apply(lambda x: str(x).strip() != "" and str(x).strip().lower() != "nan" if pd.notna(x) else False)
+    has_value_fold = df["value_fold_induction"].apply(lambda x: str(x).strip() != "" and str(x).strip().lower() != "nan" if pd.notna(x) else False)
+    has_value_fm = df["value_fm"].apply(lambda x: str(x).strip() != "" and str(x).strip().lower() != "nan" if pd.notna(x) else False)
+    has_value_substrate = df["value_substrate_flag"].apply(lambda x: str(x).strip() not in ["", "nan", "none"] if pd.notna(x) else False)
+    
     has_any_value = has_value_ic50 | has_value_ki | has_value_fold | has_value_fm | has_value_substrate
-    # A measured row with no values is empty if ALL value columns are empty
-    empty_measured_rows = status_measured & (~has_any_value)
-    has_empty_measured = len(empty_measured_rows) > 0 and empty_measured_rows.any()
-    
-    # Unverified: source or citation is UNVERIFIED
-    unverified_mask = is_unverified_source | is_unverified_cite
-    
-    # Additional check: measured rows without values
-    if has_empty_measured:
-        unverified_mask = unverified_mask | empty_measured_rows.index[empty_measured_rows]
-    
+    empty_measured = status_measured & (~has_any_value)
+
+    # Check not_tested rows: allowed only if a citation or note confirms lookup found no data
+    status_not_tested = df["status"].astype(str).str.strip() == "not_tested"
+    notes_str = df["notes"].fillna("").astype(str).str.lower().str.strip()
+    has_lookup_note = notes_str.apply(lambda n: any(w in n for w in ["lookup", "searched", "no data", "not found", "checked", "verified absent"]))
+    invalid_not_tested = status_not_tested & (is_unverified_cite & ~has_lookup_note)
+
+    unverified_mask = is_unverified_source | is_unverified_cite | empty_measured | invalid_not_tested
+
     unverified_count = int(unverified_mask.sum())
     verified_count = int((~unverified_mask).sum())
     is_verified = (unverified_count == 0 and verified_count > 0)

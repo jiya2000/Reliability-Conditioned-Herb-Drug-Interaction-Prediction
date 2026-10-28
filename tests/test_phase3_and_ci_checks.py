@@ -334,14 +334,51 @@ def test_permanent_g_curation_density_check(benchmark_df):
             )
 
 
-def test_constant_predictor_auc_is_0_5():
-    '''Assert that a constant predictor scoring 0.5 AUC under the primary metric.'''
-    import numpy as np
-    from sklearn.metrics import roc_auc_score
-    y_true = np.array([0, 1] * 70 + [0])
-    y_prob = np.full_like(y_true, 0.5)
-    auc = roc_auc_score(y_true, y_prob)
-    assert abs(auc - 0.5) < 1e-6, f"Constant predictor AUC ({auc:.4f}) should be 0.5"
-    y_true2 = np.array([0] * 70 + [1] * 71)
-    auc2 = roc_auc_score(y_true2, y_prob[:len(y_true2)])
-    assert abs(auc2 - 0.5) < 1e-6, f"Constant predictor AUC2 ({auc2:.4f}) should be 0.5"
+def test_constant_predictor_scores_point_five_under_primary_metric(benchmark_df):
+    """
+    Assert that a constant predictor scores exactly 0.5000 under the primary per-fold mean AUC metric,
+    and confirm that herb_onehot under herb-disjoint grouped CV scores exactly 0.5000 under the primary metric.
+    """
+    import json
+    from src.training.evaluation import LeakageSafeSplitter
+    from sklearn.linear_model import LogisticRegression
+    from scripts.run_shortcut_tests import fast_auc
+
+    y = benchmark_df["outcome"].astype(str).str.lower().isin(
+        ["interaction_present", "positive", "1", "true"]
+    ).values.astype(int)
+
+    # 1. Constant predictor across 5 folds
+    splitter = LeakageSafeSplitter(seed=42)
+    folds = splitter.grouped_kfold_split(benchmark_df, mode="herb_disjoint", n_splits=5)
+    
+    fold_aucs_const = []
+    for tr, te in folds:
+        y_te = y[te.index]
+        probs_const = np.full(len(y_te), 0.5)
+        fold_aucs_const.append(fast_auc(y_te, probs_const))
+    
+    mean_const_auc = float(np.mean(fold_aucs_const))
+    assert abs(mean_const_auc - 0.5) < 1e-6, f"Constant predictor mean AUC ({mean_const_auc:.4f}) must be 0.5000"
+
+    # 2. herb_onehot under herb-disjoint evaluation
+    herb_dummies = pd.get_dummies(benchmark_df["herb_id"], drop_first=False).values.astype(np.float32)
+    fold_aucs_herb_oh = []
+    for tr, te in folds:
+        clf = LogisticRegression(max_iter=500, random_state=42)
+        clf.fit(herb_dummies[tr.index], y[tr.index])
+        probs = clf.predict_proba(herb_dummies[te.index])[:, 1]
+        fold_aucs_herb_oh.append(fast_auc(y[te.index], probs))
+    
+    mean_herb_oh_auc = float(np.mean(fold_aucs_herb_oh))
+    assert abs(mean_herb_oh_auc - 0.5) < 1e-6, f"herb_onehot herb-disjoint AUC ({mean_herb_oh_auc:.4f}) must be 0.5000 under primary metric"
+
+    # 3. Confirm against persisted results/shortcut_tests.json
+    with open("results/shortcut_tests.json") as f:
+        res = json.load(f)
+    
+    persisted_herb_oh = res["identity_baselines"]["herb_onehot"]["herb_disjoint"]
+    assert persisted_herb_oh["mean"] == 0.5000, f"Persisted herb_onehot mean ({persisted_herb_oh['mean']}) is not 0.5000"
+    assert persisted_herb_oh["sd"] == 0.0000, f"Persisted herb_onehot SD ({persisted_herb_oh['sd']}) is not 0.0000"
+    for fold_auc in persisted_herb_oh["per_fold_aucs"]:
+        assert fold_auc == 0.5, f"Expected all fold AUCs to be 0.5, got {fold_auc}"

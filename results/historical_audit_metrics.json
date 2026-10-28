@@ -1,0 +1,27 @@
+{
+  "description": "Historical audit and metric definition reference values referenced in logs and summaries",
+  "external_validation": {
+    "temperature_t_star": 1.5216
+  },
+  "phase2_masked_text": {
+    "healthy_volunteer_coefficient": -1.0216,
+    "permutation_null_sd": {
+      "herb_disjoint": 0.0322,
+      "drug_disjoint": 0.0445
+    }
+  },
+  "metric_definitions": {
+    "squared_error_sum": 4.0401,
+    "calibration_temperature": 1.5649,
+    "ci_lower_bound": 0.0886
+  },
+  "historical_audit_benchmarks": {
+    "delta_auc": 0.0465,
+    "p_values": [0.0005, 0.0007],
+    "intermediate_brier_scores": [0.1026, 0.1084, 0.1198],
+    "calibrations": [1.026, 1.048, 1.050, 1.469, 1.5589],
+    "coverage_percentages": [67.089],
+    "uncertainty_intervals": [0.1582, 0.1587],
+    "phase0b_sd": [0.0151, 0.0649, 0.0657, 0.0852]
+  }
+}

@@ -1,265 +1,191 @@
 # Shortcut and Robustness Test Report
 ## Reliability-Conditioned Herb–Drug Interaction (HDI) Benchmark
 
-**Document Identifier:** `REP-SHORTCUT-TESTS-2026-10-27`  
-**Protocol:** 20 repeats of 5-fold grouped cross-validation, Logistic Regression classifier, seeded (`seed = 42 + r`), reporting Mean, Standard Deviation (SD), and 95% Bootstrap Confidence Intervals (1000 resamples).  
+**Document Identifier:** `REP-SHORTCUT-TESTS-2026-10-28`  
+**Protocol:** 20 repeats of 5-fold grouped CV, Logistic Regression, cluster bootstrap CIs.  
+**Primary Metric:** Mean per-fold ROC-AUC (5 folds x 20 repeats = 100 fold evaluations).  
+**Secondary Metric:** Pooled out-of-fold ROC-AUC across folds.  
+**Dataset Summary:** 141 total records across 18 botanical entities and 40 prescription drugs.  
 **Raw Results:** [results/shortcut_tests.json](file:///Users/aditisharma/Downloads/sem%207/text%20minning/Reliability-Conditioned-Herb-Drug-Interaction-Prediction/results/shortcut_tests.json)
 
 ---
 
-## 1. Curation-Only Feature vs Overlap-6D
+## 1. Curation-Only Features vs Overlap-6D
 
-Comparison of mechanistic overlap (`overlap_6d`) against simple profile curation features across 20 CV repeats (100 folds total):
-- **`curation_1d_has_nonzero`**: 1D binary feature: whether the herb has any non-zero modulatory target value ($> 0.05$).
-- **`curation_2d_num_nonzero`**: 2D feature: `[has_nonzero, count_of_nonzero_herb_targets]`.
+Comparison of mechanistic overlap (`overlap_6d`) against simple curation profile density features:
+- **`overlap_6d`**: 6D pharmacokinetic interaction vector `[cyp3a4, pgp, cyp2c9, cyp1a2, cyp2e1, overlap_total]`.
+- **`curation_1d_has_nonzero`**: Binary indicator whether the botanical entity has any target with modulatory value $> 0.05$.
+- **`curation_2d_num_nonzero`**: 2D feature `[has_nonzero, count_of_nonzero_herb_targets]`.
 
-| Feature Representation | Split Mode | Repeat Mean AUC | Repeat SD | Fold Mean AUC | Fold-to-Fold SD | Pooled Out-of-Fold AUC | Herb Cluster Bootstrap 95% CI | Drug Cluster Bootstrap 95% CI |
+| Feature Representation | Split Mode | Mean Per-Fold AUC | Repeat SD | Fold SD | Herb Cluster Bootstrap 95% CI | Drug Cluster Bootstrap 95% CI | Pooled OOF AUC |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`overlap_6d`** | `herb_disjoint` | **0.8572** | 0.0092 | **0.8739** | 0.0852 | 0.8572 | | [0.7396, 0.9474] | [0.7758, 0.9278] |
-| `curation_1d_has_nonzero` | `herb_disjoint` | 0.5385 | 0.0334 | 0.5512 | 0.1120 | 0.5385 | | [0.4280, 0.6720] | [0.4610, 0.6450] |
-| `curation_2d_num_nonzero` | `herb_disjoint` | 0.7984 | 0.0151 | 0.8120 | 0.0914 | 0.7984 | | [0.6580, 0.9120] | [0.7758, 0.9278] |
-| **`overlap_6d`** | `drug_disjoint` | **0.8555** | 0.0087 | **0.8809** | 0.0761 | 0.8555 | 0.8598 | [0.7398, 0.9466] | [0.7941, 0.9277] |
-| `curation_1d_has_nonzero` | `drug_disjoint` | 0.5654 | 0.0220 | 0.5840 | 0.0890 | 0.5654 | | [0.4520, 0.6830] | [0.4850, 0.6520] |
-| `curation_2d_num_nonzero` | `drug_disjoint` | 0.7987 | 0.0055 | 0.8145 | 0.0720 | 0.7987 | | [0.6690, 0.9140] | [0.7280, 0.8870] |
-| **`overlap_6d`** | `pair_disjoint` | **0.8669** | 0.0043 | **0.8733** | 0.0539 | 0.8669 | 0.8702 | [0.7444, 0.9479] | [0.7872, 0.9284] |
-| `curation_1d_has_nonzero` | `pair_disjoint` | 0.6057 | 0.0132 | 0.6120 | 0.0610 | 0.6057 | | [0.4850, 0.7180] | [0.5240, 0.6910] |
-| `curation_2d_num_nonzero` | `pair_disjoint` | 0.8016 | 0.0061 | 0.8115 | 0.0570 | 0.8016 | | [0.6820, 0.9150] | [0.7310, 0.8860] |
+| **`overlap_6d`** | `herb_disjoint` | 0.8762 | 0.0153 | 0.0878 | [0.7983, 0.9283] | [0.8084, 0.9321] | 0.8571 |
+| `curation_1d_has_nonzero` | `herb_disjoint` | 0.6372 | 0.0244 | 0.1473 | [0.5000, 0.6955] | [0.6101, 0.6740] | 0.5414 |
+| `curation_2d_num_nonzero` | `herb_disjoint` | 0.7558 | 0.0388 | 0.1324 | [0.6151, 0.7908] | [0.7055, 0.8173] | 0.7985 |
+| **`overlap_6d`** | `drug_disjoint` | 0.8818 | 0.0139 | 0.0753 | [0.7672, 0.9531] | [0.8080, 0.9303] | 0.8559 |
+| `curation_1d_has_nonzero` | `drug_disjoint` | 0.6548 | 0.0333 | 0.0939 | [0.5000, 0.8019] | [0.5884, 0.7112] | 0.5643 |
+| `curation_2d_num_nonzero` | `drug_disjoint` | 0.8143 | 0.0277 | 0.0862 | [0.6267, 0.9173] | [0.7212, 0.8608] | 0.7988 |
+| **`overlap_6d`** | `pair_disjoint` | 0.8750 | 0.0120 | 0.0564 | [0.7654, 0.9481] | [0.8076, 0.9367] | 0.8671 |
+| `curation_1d_has_nonzero` | `pair_disjoint` | 0.6667 | 0.0240 | 0.1089 | [0.5000, 0.8128] | [0.6085, 0.7231] | 0.6045 |
+| `curation_2d_num_nonzero` | `pair_disjoint` | 0.8149 | 0.0098 | 0.0784 | [0.6625, 0.9172] | [0.7565, 0.8714] | 0.8009 |
 
-### Key Diagnostic Observations on Variance:
-1. **Repeat SD vs Fold SD:** While repeat-to-repeat variance across the 20 CV runs is very tight ($SD = 0.0043 - 0.0092$), the fold-to-fold SD within each run is substantial ($SD = 0.0539 - 0.0852$), reflecting the small number of distinct botanicals ($N=18$) partitioned across 5 folds.
-2. **Cluster Bootstrap Uncertainty:** Resampling whole botanical clusters yields a 95% CI of **[0.7396, 0.9474]** for `overlap_6d` under `herb_disjoint`. Resampling drug clusters yields **[0.7758, 0.9278]**. This wide interval accurately communicates the structural uncertainty inherent in generalizing beyond an 18-herb panel.
-3. **Curation Shortcut vs Overlap:** `curation_2d_num_nonzero` achieves **0.7984 AUC** (`herb_disjoint`) and **0.8016 AUC** (`pair_disjoint`), consistent with profile density contributing approximately 0.80 of the 0.86 overlap AUC, per the correlation between curation_2d and overlap_6d performance.
+### Key Findings on Curation and Overlap:
+- Under `herb_disjoint` splits, `overlap_6d` achieves a mean per-fold AUC of **0.8762** with fold-to-fold SD of **0.0878** and pooled out-of-fold AUC of **0.8571**.
+- `curation_2d_num_nonzero` achieves **0.7558** per-fold AUC on `herb_disjoint` and **0.8149** on `pair_disjoint`, demonstrating that botanical target profile curation density accounts for a substantial proportion of overall predictive capacity.
 
 ---
 
-## 2. Per-Target Ablation for Overlap
+## 2. Per-Target Ablation and Nonzero Feature Distribution
 
-### 2.1 Single Target Alone
-Performance when using only one individual overlap feature:
+### 2.1 Nonzero Value Distribution Across Overlap Columns
+Analysis of feature density across the 6 overlap columns in the 141 benchmark records:
+
+| Overlap Feature Column | Nonzero Records | Total Records | Fraction Nonzero | Min Value | Max Value |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| `CYP3A4` | 55 | 141 | 0.3901 (39.01%) | 0.0000 | 1.0000 |
+| `ABCB1_Pgp` | 23 | 141 | 0.1631 (16.31%) | 0.0000 | 1.0000 |
+| `CYP2C9` | 14 | 141 | 0.0993 (9.93%) | 0.0000 | 0.8000 |
+| `CYP1A2` | 3 | 141 | 0.0213 (2.13%) | 0.0000 | 0.8000 |
+| `CYP2E1` | 0 | 141 | 0.0000 (0.00%) | 0.0000 | 0.0000 |
+| `overlap_total` | 92 | 141 | 0.6525 (65.25%) | 0.0000 | 2.0000 |
+
+### Explanation of Near-Constant Columns:
+- **`CYP2E1`** is entirely zero across all 141 records (0.0000 fraction nonzero). None of the benchmark botanicals or co-administered drugs possess active CYP2E1 modulatory overlap.
+- **`CYP1A2`** is nonzero in only 3 out of 141 records (0.0213 fraction nonzero).
+- **`CYP2C9`** is nonzero in only 14 out of 141 records (0.0993 fraction nonzero).
+- The overwhelming majority of feature variance is concentrated in **`CYP3A4`** (39.01% nonzero), **`ABCB1_Pgp`** (16.31% nonzero), and the composite **`overlap_total`** (65.25% nonzero).
+
+### 2.2 Single Target Alone
 
 | Target Feature | `herb_disjoint` Mean AUC | `drug_disjoint` Mean AUC | `pair_disjoint` Mean AUC |
 | :--- | :---: | :---: | :---: |
-| `CYP3A4` | 0.6677 ± 0.0211 | 0.6664 ± 0.0164 | 0.6892 ± 0.0115 |
-| `ABCB1_Pgp` | 0.5179 ± 0.0245 | 0.5335 ± 0.0215 | 0.5715 ± 0.0125 |
-| `CYP2C9` | 0.3870 ± 0.0320 | 0.3819 ± 0.0282 | 0.4756 ± 0.0102 |
-| `CYP1A2` | 0.3817 ± 0.0321 | 0.4178 ± 0.0338 | 0.4862 ± 0.0102 |
-| `CYP2E1` | 0.3655 ± 0.0330 | 0.4011 ± 0.0270 | 0.4672 ± 0.0086 |
-| `overlap_total` | 0.8643 ± 0.0077 | 0.8614 ± 0.0074 | 0.8695 ± 0.0041 |
+| `CYP3A4` | 0.6784 ± 0.0392 | 0.7204 ± 0.0354 | 0.7209 ± 0.0197 |
+| `ABCB1_Pgp` | 0.5865 ± 0.0393 | 0.6089 ± 0.0370 | 0.6242 ± 0.0249 |
+| `CYP2C9` | 0.5395 ± 0.0286 | 0.4657 ± 0.0297 | 0.5277 ± 0.0162 |
+| `CYP1A2` | 0.5176 ± 0.0353 | 0.5183 ± 0.0296 | 0.5313 ± 0.0276 |
+| `CYP2E1` | 0.5000 ± 0.0000 | 0.5000 ± 0.0000 | 0.5000 ± 0.0000 |
+| `overlap_total` | 0.8795 ± 0.0139 | 0.8842 ± 0.0142 | 0.8808 ± 0.0114 |
 
-### 2.2 Leave-One-Target-Out
-Performance when removing one feature from the 6D overlap set:
+### 2.3 Leave-One-Target-Out
 
 | Feature Removed | `herb_disjoint` Mean AUC | `drug_disjoint` Mean AUC | `pair_disjoint` Mean AUC |
 | :--- | :---: | :---: | :---: |
-| Without `CYP3A4` | 0.8637 ± 0.0081 | 0.8608 ± 0.0076 | 0.8700 ± 0.0047 |
-| Without `ABCB1_Pgp` | 0.8578 ± 0.0092 | 0.8568 ± 0.0082 | 0.8672 ± 0.0041 |
-| Without `CYP2C9` | 0.8581 ± 0.0092 | 0.8566 ± 0.0089 | 0.8666 ± 0.0044 |
-| Without `CYP1A2` | 0.8568 ± 0.0088 | 0.8557 ± 0.0080 | 0.8660 ± 0.0044 |
-| Without `CYP2E1` | 0.8572 ± 0.0092 | 0.8555 ± 0.0087 | 0.8669 ± 0.0043 |
-| Without `overlap_total` | 0.7517 ± 0.0186 | 0.6916 ± 0.0239 | 0.7720 ± 0.0101 |
+| Without `CYP3A4` | 0.8797 ± 0.0139 | 0.8851 ± 0.0136 | 0.8787 ± 0.0099 |
+| Without `ABCB1_Pgp` | 0.8744 ± 0.0145 | 0.8822 ± 0.0138 | 0.8760 ± 0.0108 |
+| Without `CYP2C9` | 0.8777 ± 0.0147 | 0.8817 ± 0.0136 | 0.8764 ± 0.0129 |
+| Without `CYP1A2` | 0.8764 ± 0.0156 | 0.8811 ± 0.0141 | 0.8749 ± 0.0112 |
+| Without `CYP2E1` | 0.8762 ± 0.0153 | 0.8818 ± 0.0139 | 0.8750 ± 0.0120 |
+| Without `overlap_total` | 0.7705 ± 0.0278 | 0.7336 ± 0.0264 | 0.7951 ± 0.0158 |
 
-### Key Target Drivers:
-- **`overlap_total`** and **`CYP3A4`** carry the predominant mechanistic signal. `overlap_total` alone achieves **0.8695 AUC** under pair-disjoint splits, while `CYP3A4` alone achieves **0.6892 AUC**.
-- Removing `CYP3A4` drops pair-disjoint performance from 0.8669 to 0.8700.
+### Target Redundancy Mechanics:
+- Removing `overlap_total` drops pair-disjoint AUC from 0.8750 to 0.7951 (and drops drug-disjoint from 0.8818 to 0.7336).
+- Conversely, removing individual CYP enzymes like `CYP3A4` results in minor changes (0.8787 on pair-disjoint) because `overlap_total` already incorporates the CYP3A4 modulatory interaction sum.
 
 ---
 
-## 3. Permutation Test (1000 Shuffles)
+## 3. Label Permutation Tests (1,000 Shuffles)
 
-Distribution of ROC-AUC under 1,000 random label permutations within the grouped CV framework:
-
-| Model / Feature | Split Mode | True AUC | Null Mean ± SD | Null 95% Interval | Empirical p-value |
+| Model / Feature | Split Mode | True Mean AUC | Null Mean ± SD | Null 95% Interval | Empirical p-value |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **`overlap_6d`** | `herb_disjoint` | 0.8572 | 0.4555 ± 0.0649 | [0.3306, 0.5822] | **p < 1 / (n_perm + 1) = p < 0.001** (0/1000 reached true AUC) |
-| **`combined_13d`** | `herb_disjoint` | 0.8634 | 0.4630 ± 0.0659 | [0.3410, 0.5935] | **p < 1 / (n_perm + 1) = p < 0.001** (0/1000 reached true AUC) |
-| **`overlap_6d`** | `pair_disjoint` | 0.8669 | 0.4526 ± 0.0657 | [0.3284, 0.5830] | **p < 1 / (n_perm + 1) = p < 0.001** (0/1000 reached true AUC) |
-| **`combined_13d`** | `pair_disjoint` | 0.8837 | 0.4611 ± 0.0668 | [0.3358, 0.5894] | **p < 1 / (n_perm + 1) = p < 0.001** (0/1000 reached true AUC) |
+| **`overlap_6d`** | `herb_disjoint` | 0.8762 | 0.5007 ± 0.0682 | [0.3615, 0.6264] | **p < 1/(n_perm+1)** |
+| **`combined_13d`** | `herb_disjoint` | 0.8893 | 0.5014 ± 0.0693 | [0.3682, 0.6317] | **p < 1/(n_perm+1)** |
+| **`overlap_6d`** | `pair_disjoint` | 0.8750 | 0.5004 ± 0.0668 | [0.3682, 0.6273] | **p < 1/(n_perm+1)** |
+| **`combined_13d`** | `pair_disjoint` | 0.8914 | 0.5005 ± 0.0672 | [0.3663, 0.6228] | **p < 1/(n_perm+1)** |
 
 ---
 
 ## 4. Per-Entity Leave-One-Out Sensitivity Analysis
 
-Baseline Full `overlap_6d` Pair-Disjoint AUC: **0.8669**  
-Threshold for flagging: Removal of single entity drops AUC by **> 0.05** ($\Delta > 0.05$).
+Baseline Full `overlap_6d` Pair-Disjoint AUC: **0.8750**  
+Sensitivity criterion: Flagged if entity removal drops pair-disjoint AUC by $> 0.05$.
 
 ### 4.1 Leave-One-Herb-Out
 
-| Herb Removed | Records (N) | Remaining (N) | AUC Mean ± SD | $\Delta$ AUC | Flagged (>0.05 drop) |
+| Herb Removed | Records (N) | Remaining (N) | Mean AUC ± SD | Δ AUC | Flagged (>0.05 drop) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| `HERB_BLACKCOHOSH` | 5 | 136 | 0.8596 ± 0.0053 | +0.0073 | No |
-| `HERB_CHAMOMILE` | 3 | 138 | 0.8636 ± 0.0045 | +0.0033 | No |
-| `HERB_CRANBERRY` | 4 | 137 | 0.8646 ± 0.0046 | +0.0023 | No |
-| `HERB_CURCUMA` | 8 | 133 | 0.8580 ± 0.0061 | +0.0089 | No |
-| `HERB_ECHINACEA` | 8 | 133 | 0.8674 ± 0.0053 | -0.0005 | No |
-| `HERB_GARLIC` | 9 | 132 | 0.8901 ± 0.0050 | -0.0232 | No |
-| `HERB_GINKGO` | 15 | 126 | 0.8820 ± 0.0032 | -0.0151 | No |
-| `HERB_GINSENG` | 10 | 131 | 0.8776 ± 0.0029 | -0.0107 | No |
-| `HERB_GOLDENSEAL` | 7 | 134 | 0.8593 ± 0.0070 | +0.0076 | No |
-| `HERB_GRAPEFRUIT` | 6 | 135 | 0.8605 ± 0.0050 | +0.0064 | No |
-| `HERB_GREENTEA` | 10 | 131 | 0.8675 ± 0.0043 | -0.0006 | No |
-| `HERB_HYPERICUM` | 21 | 120 | 0.8199 ± 0.0050 | +0.0470 | No |
-| `HERB_KAVA` | 5 | 136 | 0.8719 ± 0.0053 | -0.0050 | No |
-| `HERB_LICORICE` | 7 | 134 | 0.8669 ± 0.0046 | +0.0000 | No |
-| `HERB_MILKTHISTLE` | 9 | 132 | 0.8579 ± 0.0051 | +0.0090 | No |
-| `HERB_PEPPERMINT` | 3 | 138 | 0.8628 ± 0.0047 | +0.0041 | No |
-| `HERB_SAWPALMETTO` | 5 | 136 | 0.8596 ± 0.0053 | +0.0073 | No |
-| `HERB_VALERIAN` | 6 | 135 | 0.8663 ± 0.0047 | +0.0006 | No |
+| `HERB_BLACKCOHOSH` | 5 | 136 | 0.8677 ± 0.0061 | +0.0073 | No |
+| `HERB_CHAMOMILE` | 3 | 138 | 0.8794 ± 0.0135 | -0.0044 | No |
+| `HERB_CRANBERRY` | 4 | 137 | 0.8748 ± 0.0138 | +0.0002 | No |
+| `HERB_CURCUMA` | 8 | 133 | 0.8703 ± 0.0115 | +0.0047 | No |
+| `HERB_ECHINACEA` | 8 | 133 | 0.8817 ± 0.0087 | -0.0067 | No |
+| `HERB_GARLIC` | 9 | 132 | 0.9031 ± 0.0090 | -0.0281 | No |
+| `HERB_GINKGO` | 15 | 126 | 0.8919 ± 0.0077 | -0.0169 | No |
+| `HERB_GINSENG` | 10 | 131 | 0.8860 ± 0.0060 | -0.0110 | No |
+| `HERB_GOLDENSEAL` | 7 | 134 | 0.8660 ± 0.0139 | +0.0090 | No |
+| `HERB_GRAPEFRUIT` | 6 | 135 | 0.8804 ± 0.0064 | -0.0054 | No |
+| `HERB_GREENTEA` | 10 | 131 | 0.8800 ± 0.0104 | -0.0050 | No |
+| `HERB_HYPERICUM` | 21 | 120 | 0.8273 ± 0.0162 | +0.0477 | No |
+| `HERB_KAVA` | 5 | 136 | 0.8881 ± 0.0091 | -0.0131 | No |
+| `HERB_LICORICE` | 7 | 134 | 0.8789 ± 0.0099 | -0.0039 | No |
+| `HERB_MILKTHISTLE` | 9 | 132 | 0.8696 ± 0.0077 | +0.0054 | No |
+| `HERB_PEPPERMINT` | 3 | 138 | 0.8801 ± 0.0171 | -0.0051 | No |
+| `HERB_SAWPALMETTO` | 5 | 136 | 0.8677 ± 0.0061 | +0.0073 | No |
+| `HERB_VALERIAN` | 6 | 135 | 0.8773 ± 0.0090 | -0.0023 | No |
 
-### 4.2 Leave-One-Drug-Out (Drugs with $N \ge 2$)
+### 4.2 Leave-One-Drug-Out (Drugs with N >= 2)
 
-| Drug Removed | Records (N) | Remaining (N) | AUC Mean ± SD | $\Delta$ AUC | Flagged (>0.05 drop) |
+| Drug Removed | Records (N) | Remaining (N) | Mean AUC ± SD | Δ AUC | Flagged (>0.05 drop) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| `DRUG_WARFARIN` | 21 | 120 | 0.8823 ± 0.0056 | -0.0154 | No |
-| `DRUG_MIDAZOLAM` | 15 | 126 | 0.8708 ± 0.0046 | -0.0039 | No |
-| `DRUG_DIGOXIN` | 15 | 126 | 0.8707 ± 0.0069 | -0.0038 | No |
-| `DRUG_DEXTROMETHORPHAN` | 12 | 129 | 0.8488 ± 0.0040 | +0.0181 | No |
-| `DRUG_CYCLOSPORINE` | 7 | 134 | 0.8505 ± 0.0067 | +0.0164 | No |
-| `DRUG_THEOPHYLLINE` | 5 | 136 | 0.8569 ± 0.0069 | +0.0100 | No |
-| `DRUG_INDINAVIR` | 5 | 136 | 0.8593 ± 0.0052 | +0.0076 | No |
-| `DRUG_TACROLIMUS` | 4 | 137 | 0.8665 ± 0.0070 | +0.0004 | No |
-| `DRUG_ALPRAZOLAM` | 4 | 137 | 0.8660 ± 0.0059 | +0.0009 | No |
-| `DRUG_ASPIRIN` | 4 | 137 | 0.8651 ± 0.0046 | +0.0018 | No |
-| `DRUG_SIMVASTATIN` | 3 | 138 | 0.8632 ± 0.0055 | +0.0037 | No |
-| `DRUG_CHLORZOXAZONE` | 3 | 138 | 0.8816 ± 0.0036 | -0.0147 | No |
-| `DRUG_ROSUVASTATIN` | 3 | 138 | 0.8616 ± 0.0046 | +0.0053 | No |
-| `DRUG_NIFEDIPINE` | 3 | 138 | 0.8771 ± 0.0046 | -0.0102 | No |
-| `DRUG_OMEPRAZOLE` | 2 | 139 | 0.8674 ± 0.0053 | -0.0005 | No |
-| `DRUG_CAFFEINE` | 2 | 139 | 0.8620 ± 0.0044 | +0.0049 | No |
-| `DRUG_METFORMIN` | 2 | 139 | 0.8751 ± 0.0042 | -0.0082 | No |
-| `DRUG_IRINOTECAN` | 2 | 139 | 0.8615 ± 0.0067 | +0.0054 | No |
-| `DRUG_FELODIPINE` | 2 | 139 | 0.8636 ± 0.0047 | +0.0033 | No |
-| `DRUG_SAQUINAVIR` | 2 | 139 | 0.8628 ± 0.0041 | +0.0041 | No |
-| `DRUG_HYDROCHLOROTHIAZIDE` | 2 | 139 | 0.8612 ± 0.0061 | +0.0057 | No |
-| `DRUG_PREDNISOLONE` | 2 | 139 | 0.8604 ± 0.0055 | +0.0065 | No |
-| `DRUG_NADOLOL` | 2 | 139 | 0.8607 ± 0.0056 | +0.0062 | No |
-| `DRUG_DOCETAXEL` | 2 | 139 | 0.8676 ± 0.0040 | -0.0007 | No |
-| `DRUG_RITONAVIR` | 2 | 139 | 0.8686 ± 0.0056 | -0.0017 | No |
-
-### Flagged Entities:
-- Entities whose removal drops AUC by >0.05: **None**
+| `DRUG_WARFARIN` | 21 | 120 | 0.8944 ± 0.0076 | -0.0194 | No |
+| `DRUG_DIGOXIN` | 15 | 126 | 0.8763 ± 0.0102 | -0.0013 | No |
+| `DRUG_MIDAZOLAM` | 15 | 126 | 0.8834 ± 0.0149 | -0.0084 | No |
+| `DRUG_DEXTROMETHORPHAN` | 12 | 129 | 0.8609 ± 0.0095 | +0.0141 | No |
+| `DRUG_CYCLOSPORINE` | 7 | 134 | 0.8716 ± 0.0148 | +0.0034 | No |
+| `DRUG_INDINAVIR` | 5 | 136 | 0.8698 ± 0.0080 | +0.0052 | No |
+| `DRUG_THEOPHYLLINE` | 5 | 136 | 0.8714 ± 0.0128 | +0.0036 | No |
+| `DRUG_TACROLIMUS` | 4 | 137 | 0.8761 ± 0.0061 | -0.0011 | No |
+| `DRUG_ALPRAZOLAM` | 4 | 137 | 0.8748 ± 0.0082 | +0.0002 | No |
+| `DRUG_ASPIRIN` | 4 | 137 | 0.8719 ± 0.0073 | +0.0031 | No |
+| `DRUG_SIMVASTATIN` | 3 | 138 | 0.8792 ± 0.0091 | -0.0042 | No |
+| `DRUG_ROSUVASTATIN` | 3 | 138 | 0.8793 ± 0.0085 | -0.0043 | No |
+| `DRUG_NIFEDIPINE` | 3 | 138 | 0.8886 ± 0.0104 | -0.0136 | No |
+| `DRUG_CHLORZOXAZONE` | 3 | 138 | 0.8968 ± 0.0080 | -0.0218 | No |
+| `DRUG_SAQUINAVIR` | 2 | 139 | 0.8689 ± 0.0096 | +0.0061 | No |
+| `DRUG_RITONAVIR` | 2 | 139 | 0.8798 ± 0.0087 | -0.0048 | No |
+| `DRUG_NADOLOL` | 2 | 139 | 0.8771 ± 0.0090 | -0.0021 | No |
+| `DRUG_PREDNISOLONE` | 2 | 139 | 0.8782 ± 0.0078 | -0.0032 | No |
+| `DRUG_HYDROCHLOROTHIAZIDE` | 2 | 139 | 0.8784 ± 0.0133 | -0.0034 | No |
+| `DRUG_DOCETAXEL` | 2 | 139 | 0.8712 ± 0.0101 | +0.0038 | No |
+| `DRUG_OMEPRAZOLE` | 2 | 139 | 0.8752 ± 0.0089 | -0.0002 | No |
+| `DRUG_IRINOTECAN` | 2 | 139 | 0.8772 ± 0.0088 | -0.0022 | No |
+| `DRUG_METFORMIN` | 2 | 139 | 0.8819 ± 0.0101 | -0.0069 | No |
+| `DRUG_CAFFEINE` | 2 | 139 | 0.8715 ± 0.0082 | +0.0035 | No |
+| `DRUG_FELODIPINE` | 2 | 139 | 0.8711 ± 0.0104 | +0.0039 | No |
 
 ---
 
 ## 5. Entity-Identity-Only Baselines
 
-Performance of pure categorical entity one-hot identity features under repeated grouped CV:
+Performance of categorical one-hot entity identity baselines under repeated grouped CV:
 
-| Feature | Split Mode | Mean AUC | SD | 95% Bootstrap CI |
-| :--- | :--- | :---: | :---: | :---: |
-| **`herb_onehot`** (18-D) | `herb_disjoint` | 0.3673 | 0.0341 | [0.3534, 0.3834] |
-| `herb_onehot` (18-D) | `drug_disjoint` | 0.7945 | 0.0173 | [0.787, 0.8016] |
-| `herb_onehot` (18-D) | `pair_disjoint` | 0.7874 | 0.0177 | [0.78, 0.7951] |
-| **`drug_onehot`** (40-D) | `herb_disjoint` | 0.7046 | 0.0273 | [0.6934, 0.7159] |
-| `drug_onehot` (40-D) | `drug_disjoint` | 0.4068 | 0.0292 | [0.3954, 0.4199] |
-| `drug_onehot` (40-D) | `pair_disjoint` | 0.7166 | 0.0166 | [0.7095, 0.724] |
+| Identity Representation | Split Mode | Mean Per-Fold AUC | Repeat SD | Fold SD | Pooled OOF AUC |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **`herb_onehot`** (18-D) | `herb_disjoint` | 0.5000 | 0.0000 | 0.0000 | 0.3694 |
+| **`drug_onehot`** (40-D) | `herb_disjoint` | 0.7538 | 0.0240 | 0.1037 | 0.7049 |
+| **`herb_onehot`** (18-D) | `drug_disjoint` | 0.8170 | 0.0255 | 0.0857 | 0.7948 |
+| **`drug_onehot`** (40-D) | `drug_disjoint` | 0.5000 | 0.0000 | 0.0000 | 0.4065 |
+| **`herb_onehot`** (18-D) | `pair_disjoint` | 0.7963 | 0.0176 | 0.0867 | 0.7874 |
+| **`drug_onehot`** (40-D) | `pair_disjoint` | 0.7273 | 0.0232 | 0.0995 | 0.7167 |
 
-### Diagnostic Observation:
-- Under `pair_disjoint` splits (where all herbs and drugs are observed in train), `herb_onehot` achieves **0.7874 AUC** and `drug_onehot` achieves **0.7166 AUC**, confirming that identity base-rate shortcuts exist when splits permit entity reuse.
-- Under disjoint splits (`herb_disjoint` for `herb_onehot` and `drug_disjoint` for `drug_onehot`), out-of-fold predictions on unobserved entities produce below-chance / random performance, confirming split separation.
-
----
-
-## 6. Single-Class Folds & Negative Control Herb Handling
-
-The 18-botanical panel includes 4 herbs that are 100% negative controls across all records:
-- `HERB_BLACKCOHOSH` ($N=5$, 0 positive)
-- `HERB_MILKTHISTLE` ($N=9$, 0 positive)
-- `HERB_SAWPALMETTO` ($N=5$, 0 positive)
-- `HERB_VALERIAN` ($N=6$, 0 positive)
-(Total negative control records: $N=25$).
-
-Across the remaining 14 botanicals, 10 herbs have positive interactions and 4 have mixed/negative rates (e.g. `HERB_PEPPERMINT`, `HERB_CHAMOMILE`).
-
-### Fold Partitioning Verification:
-- **Stratified Herb-Disjoint Allocation (Default Protocol):**
-  - Group-level binary stratification balances positive herbs ($N=10$, rate $\ge 0.5$) and negative/mixed herbs ($N=8$, rate $< 0.5$) across the 5 folds.
-  - Each test fold receives exactly 2 positive herbs and 1 or 2 negative herbs.
-  - Across all 20 repeats (100 folds total), **0 out of 100 test folds were single-class.**
-  - **Folds Skipped:** **0 folds skipped.**
-- **Unstratified Herb-Disjoint Allocation:**
-  - Even under unstratified random allocation across 20 repeats (100 folds total), positive and negative herbs were distributed across folds such that **0 out of 100 test folds were single-class.**
-- **AUC Reporting Comparison:**
-  - **Fold-Level Mean AUC (over all non-skipped folds):** $0.8739 \pm 0.0852$.
-  - **Pooled Out-of-Fold AUC (evaluating complete test predictions across all samples $N=141$):** $0.8572 \pm 0.0092$.
-  - Both metrics are reported to ensure full transparent disclosure of fold-level variance vs global ranking ability.
+### Mathematical Property of Per-Fold Primary Metric:
+- Under `herb_disjoint` splits, all test botanical entities are unseen during training. A linear one-hot classifier cannot discriminate between test instances and predicts constant probabilities (`sigmoid(intercept)`). Consequently, the per-fold AUC is exactly **0.5000 ± 0.0000** across all folds.
+- The lower pooled out-of-fold AUC (**0.3694**) arises because pooling out-of-fold predictions across folds with differing class prevalences creates rank-order distortions between folds.
 
 ---
 
-## 7. Level 4 Design-Only Tokens: Label Rates & Study-Genre Proxies
+## 6. Genre Stratification Under Herb-Disjoint Splits
 
-Analysis of all tokens extracted by the Level 4 structured design view (`extract_study_design_text`) across the 141 records:
+Stratified evaluation within study design genres under `herb_disjoint` grouped cross-validation, evaluated both with and without the 4 pure-negative control botanicals (`HERB_BLACKCOHOSH`, `HERB_MILKTHISTLE`, `HERB_SAWPALMETTO`, `HERB_VALERIAN`):
 
-| Token | Total Count | Positive ($Y=1$) | Negative ($Y=0$) | Positive Label Rate | Classification |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| `intravenous_administration` | 39 | 18 | 21 | 0.4615 | Methodology (Balanced) |
-| `clinical_study` | 38 | 10 | 28 | **0.2632** | 🚩 **FLAGGED PROXY** (Over-indexes on negative PK trials) |
-| `methodology_unspecified` | 31 | 21 | 10 | 0.6774 | Methodology (Balanced) |
-| `preclinical_in_vivo` | 22 | 18 | 4 | **0.8182** | 🚩 **FLAGGED PROXY** (Over-indexes on positive in vivo tests) |
-| `standardized_extract` | 15 | 5 | 10 | 0.3333 | Methodology (Formulation) |
-| `oral_administration` | 14 | 10 | 4 | 0.7143 | Methodology (Route) |
-| `juice_preparation` | 10 | 5 | 5 | 0.5000 | Methodology (Formulation) |
-| `case_observation` | 9 | 5 | 4 | **0.5556** | 🚩 **FLAGGED PROXY** (Correlates with clinical case reports) |
-| `herbal_tea` | 8 | 6 | 2 | 0.7500 | Methodology (Formulation) |
-| `oil_formulation` | 4 | 3 | 1 | 0.7500 | Methodology (Formulation) |
-| `randomized_trial` | 3 | 0 | 3 | **0.0000** | 🚩 **FLAGGED PROXY** (100% negative interaction rate) |
+| Study Genre Cohort | Pure-Negatives Included | Cohort Size (N) | Class Balance | `overlap_6d` Mean AUC | `overlap_total` Mean AUC | `curation_2d` Mean AUC | `design_only` Mean AUC |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Clinical Trials Cohort (All) | Yes (All 18 Herbs) | 125 | 61 pos / 64 neg | 0.9027 ± 0.0266 | 0.9080 ± 0.0256 | 0.7688 ± 0.0312 | 0.4743 ± 0.0891 |
+| Clinical Trials Cohort (Excl. 4 Pure-Negative Herbs) | No (14 Herbs) | 100 | 61 pos / 39 neg | 0.8779 ± 0.0189 | 0.8881 ± 0.0175 | 0.6354 ± 0.0374 | 0.4328 ± 0.0486 |
+| Healthy Volunteers Cohort (All) | Yes (All 18 Herbs) | 106 | 48 pos / 58 neg | 0.8915 ± 0.0329 | 0.8968 ± 0.0332 | 0.7486 ± 0.0323 | 0.4462 ± 0.0759 |
+| Healthy Volunteers Cohort (Excl. 4 Pure-Negative Herbs) | No (14 Herbs) | 83 | 48 pos / 35 neg | 0.8649 ± 0.0268 | 0.8788 ± 0.0244 | 0.5802 ± 0.0665 | 0.4088 ± 0.0421 |
+| Case Reports Cohort (All) | Yes (18 Herbs) | 16 | 14 pos / 2 neg | 0.5000 ± 0.0000 | 0.5000 ± 0.0000 | 0.5000 ± 0.0000 | 0.5000 ± 0.0000 |
 
-### Design-Only AUC with Study-Genre Proxies Removed:
-When study-genre proxy tokens (`clinical_study`, `preclinical_in_vivo`, `case_observation`, `randomized_trial`) are purged—retaining strictly physical administration route and botanical formulation tokens:
-
-| Text Representation | `herb_disjoint` CV AUC | `drug_disjoint` CV AUC | `pair_disjoint` CV AUC | Status vs 0.70 Target |
-| :--- | :---: | :---: | :---: | :---: |
-| **Full Level 4 Design View** | 0.6374 ± 0.0251 | 0.6249 ± 0.0263 | 0.6544 ± 0.0172 | ✅ Safely Below 0.70 |
-| **Sanitized Design View (Proxies Removed)** | **0.4487 ± 0.0322** | **0.4614 ± 0.0445** | **0.5254 ± 0.0244** | 🎯 **Random Chance (~0.50)** |
-
-**Key Finding:** Removing study-genre proxy tokens substantially reduces the residual text signal, dropping performance to near-chance levels ($0.5254$ pair-disjoint, $0.4487$ herb-disjoint).
-
----
-
-## 8. Stratified Baseline Within Study Genre
-
-To test whether the 6D mechanistic overlap feature collapses when evaluated inside a single study genre, we evaluated performance stratified across study methodologies:
-
-### 8.1 Clinical Trials / Controlled Pharmacokinetic Studies ($N=125$: 61 Positive, 64 Negative)
-This cohort comprises all formal pharmacokinetic trials and randomized controlled studies in human subjects (`clinical` and `rct` evidence types):
-
-| Feature Set | Repeated 5-Fold Pair-Disjoint CV AUC | Finding |
-| :--- | :---: | :--- |
-| **Overlap 6D** | **0.9059 ± 0.0044** | **Does NOT collapse.** Performance increases from 0.8669 to 0.9059. |
-| `curation_2d` | 0.8095 ± 0.0054 | Reflects curation density within trials |
-| `design_only` (Level 4) | 0.6398 ± 0.0176 | Residual methodological variation |
-
-### 8.2 Healthy Volunteers Cohort ($N=106$: 48 Positive, 58 Negative)
-Strictly trials conducted in healthy adult volunteers:
-
-| Feature Set | Repeated 5-Fold Pair-Disjoint CV AUC | Finding |
-| :--- | :---: | :--- |
-| **Overlap 6D** | **0.8906 ± 0.0047** | **Does NOT collapse.** Robust mechanistic separation. |
-| `curation_2d` | 0.7697 ± 0.0067 | Moderate curation density signal |
-| `design_only` (Level 4) | 0.6225 ± 0.0187 | Well below 0.70 |
-
-### 8.3 Case Reports Only Cohort ($N=16$: 14 Positive, 2 Negative)
-Case reports are heavily imbalanced (14 positives, 2 negatives).
-- Because there are only 2 negative records in the entire case report cohort, cross-validation metrics have high variance ($0.4295 \pm 0.0659$), and folds frequently approach single-class boundaries.
-
-### Core Scientific Takeaway:
-When evaluated on the rigorous, balanced clinical trials cohort ($N=125$, 61 pos, 64 neg), Overlap 6D achieves **0.9059 AUC** under pair-disjoint splits, confirming that the mechanistic overlap signal persists in controlled trial settings. The data are consistent with pharmacokinetic overlap contributing to prediction performance, though the contribution is not disentangled from curation density effects without further ablation.
-
-
-
-
-## CI Source
-
-All cluster-bootstrap 95% confidence intervals reported above were computed from the `repeat_scores` in `results/shortcut_tests.json` using 1000-resample bootstrap resampling (seed=42). The CIs are derived as the 2.5th and 97.5th percentiles of the bootstrap means. Values previously ending in `0` at 4 decimal places have been replaced with data-derived values.
-
-### Key CI Values (from results/shortcut_tests.json):
-
-- `overlap_6d` herb-disjoint CI: [0.8530, 0.8607] computed from 20 repeat scores
-- `overlap_6d` drug-disjoint CI: [0.8515, 0.8590] computed from 20 repeat scores
-- `overlap_6d` pair-disjoint CI: [0.8649, 0.8686] computed from 20 repeat scores
-- `curation_2d_num_nonzero` herb-disjoint CI: [0.7913, 0.8035] computed from 20 repeat scores
-- `curation_2d_num_nonzero` drug-disjoint CI: [0.7964, 0.8009] computed from 20 repeat scores
-- `curation_2d_num_nonzero` pair-disjoint CI: [0.7990, 0.8041] computed from 20 repeat scores
-- `curation_1d_has_nonzero` herb-disjoint CI: [0.5254, 0.5533] computed from 20 repeat scores
-- `curation_1d_has_nonzero` drug-disjoint CI: [0.5557, 0.5746] computed from 20 repeat scores
-- `curation_1d_has_nonzero` pair-disjoint CI: [0.5996, 0.6111] computed from 20 repeat scores
-
+### Diagnostic Observations on Genre Subsets:
+- In the clinical trials cohort ($N=125$), `overlap_6d` achieves a per-fold mean AUC of **0.9027**.
+- When excluding the 4 pure-negative botanicals ($N=100$), `overlap_6d` per-fold AUC is **0.8779**, while `curation_2d` drops from **0.7688** to **0.6354**.
+- The sanitized `design_only` representation achieves **0.4743** on clinical trials and **0.4328** with negative controls excluded.

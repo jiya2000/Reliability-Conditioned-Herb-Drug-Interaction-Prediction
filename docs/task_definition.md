@@ -1,7 +1,7 @@
 # Task Definitions: Decoupling Mechanistic Cold-Start from Evidence Aggregation
 ## Reliability-Conditioned Herb–Drug Interaction (HDI) Prediction Framework
 
-**Document Identifier:** `DOC-TASK-DEF-2026-10-27`  
+**Document Identifier:** `DOC-TASK-DEF-2026-10-28`  
 **Authors:** Research & Development Engineering Team  
 **Scope:** Formal Task Definitions for Phase 1 Redesign  
 
@@ -12,7 +12,7 @@
 In standard literature-derived interaction datasets, a fundamental architectural flaw often arises: **each publication's reported finding serves simultaneously as the input evidence and the evaluation label**.
 
 When this occurs:
-1. **Text Reading Comprehension Shortcut:** Natural language models or bag-of-words classifiers achieve near-perfect performance ($0.9708$ TF-IDF AUC) simply by reading the author's conclusion words (*"does not alter"*, *"did not affect"*, *"inhibition"*, *"significantly increased AUC"*), rather than predicting interactions from biological mechanisms.
+1. **Text Reading Comprehension Shortcut:** Natural language models or bag-of-words classifiers achieve near-perfect performance ($0.9716$ TF-IDF AUC from `results/phase2_masked_text.json`) simply by reading the author's conclusion words (*"does not alter"*, *"did not affect"*, *"inhibition"*, *"significantly increased AUC"*), rather than predicting interactions from biological mechanisms.
 2. **Untrainable Reliability:** Evidence reliability cannot be meaningfully learned, because an empirical study cannot be "unreliable" about a ground-truth label that is defined as its own conclusion.
 3. **Inability to Model Genuine Contradiction:** When two publications report opposing findings (e.g., *Panax ginseng* + Digoxin), the dataset contains conflicting ground-truth rows rather than a unified entity pair with divergent evidentiary quality.
 
@@ -27,12 +27,10 @@ To resolve this root-cause design flaw, the framework formally decouples **indiv
 
 ### 2.1 Problem Formulation
 Given an unstudied botanical entity $h$ and prescription drug $d$ for which **zero empirical literature exists** ($\mathcal{E}_{h,d} = \emptyset$, literature missingness $M = 1.0$):
-- **Inputs:** Strictly biological and pharmacokinetic property representations:
-  1. Botanical enzyme modulation & transporter affinity vector $\mathbf{h} \in \mathbb{R}^{16}$.
-  2. Drug clearance pathway & probe dependency vector $\mathbf{d} \in \mathbb{R}^{16}$.
-  3. Pharmacokinetic target overlap features: $\mathbf{x}_{\text{overlap}} = [|h_j \cdot d_j|]_{j \in \text{CYPs, transporters}} \in \mathbb{R}^6$.
-  4. Pharmacokinetic site-of-action reachability: $\rho_{\text{reach}} = \min(1.0, [I]_{u,\max} / \text{potency})$.
-  5. Fraction of clearance mediated: $f_{m,\text{CYP}}$.
+- **Inputs:** Strictly biological and pharmacokinetic property representations sourced exclusively from the verified curation table (`data/curation/mechanistic_features.csv`). Legacy 16-D profile vectors from `src/features/biological_features.py` are strictly exempt only for the labeled legacy baseline comparison row:
+  1. Pharmacokinetic target overlap features: $\mathbf{x}_{\text{overlap}} = [|h_j \cdot d_j|]_{j \in \text{CYPs, transporters}} \in \mathbb{R}^6$.
+  2. Pharmacokinetic site-of-action reachability: $\rho_{\text{reach}} = \min(1.0, [I]_{u,\max} / \text{potency})$.
+  3. Fraction of clearance mediated: $f_{m,\text{CYP}}$.
   - **Forbidden Inputs:** Zero study text, zero citation lineage features, zero polarity counts, zero literature abstracts.
 - **Output:** Calibrated prior interaction probability:
   $$\hat{p}_{\text{prior}} = \sigma(\text{logit}_{\text{prior}}(\mathbf{x}_{\text{mechanistic}})) \in [0, 1]$$
@@ -47,19 +45,19 @@ Task A solves the de novo screening problem: assessing theoretical interaction r
 
 ---
 
+## 3. Pair Study Statistics & Feasibility Analysis
 
-
-### 3. Pair Study Statistics
-
-- Total unique herb–drug pairs: **120**
+- Total unique herb–drug pairs in benchmark: **120**
 - Pairs with 2 or more studies: **15** (out of 120 total pairs)
 - Study count distribution: 105 pairs with 1 study, 11 pairs with 2 studies, 2 pairs with 3 studies, 2 pairs with 4 studies
 
-Given that only **15 out of 120** pairs have 2 or more studies (well below the threshold of 20), **Task B is marked "not testable on this panel."** The limited number of pairs with multiple study citations means that reliability conditioning on study agreement cannot be meaningfully evaluated on this 141-record panel. Task B would require a substantially larger benchmark with more replicate evidence per pair.
+Given that only **15 out of 120** pairs have 2 or more studies (well below the required threshold of 20), **Task B is marked "not testable on this panel."** The limited number of pairs with multiple study citations means that reliability conditioning on study agreement cannot be meaningfully evaluated on this 141-record panel. Task B requires a substantially larger benchmark with multi-study evidence per pair.
 
-## 3. Task B: Supervised Evidence Aggregation & Reliability Conditioning
+---
 
-### 3.1 Problem Formulation
+## 4. Task B: Supervised Evidence Aggregation & Reliability Conditioning
+
+### 4.1 Problem Formulation
 Given a pair $(h, d)$ with a collection of $k \ge 1$ empirical study publications $\mathcal{E}_{h,d} = \{(d_i, o_i, \text{lineage}_i)\}_{i=1}^k$:
 - **Study Inputs ($d_i$):** Methodological design parameters ONLY:
   - Species ($w_{\text{species}} \in [0.20, 1.00]$: human in vivo, rodent in vivo, cell line in vitro)
@@ -71,11 +69,11 @@ Given a pair $(h, d)$ with a collection of $k \ge 1$ empirical study publication
 - **Study Observation ($o_i$):** Directional finding:
   $$o_i = \begin{cases} +1 & \text{if study observed significant interaction} \\ -1 & \text{if study observed no significant interaction} \\ 0 & \text{if study was inconclusive / equivocal} \end{cases}$$
 - **Supervised Reliability Scoring ($R_i$):**
-  Each study's reliability $R_i \in [0, 1]$ is explicitly supervised by whether study $i$'s finding $o_i$ agrees with the pair consensus $Y_{h,d}$:
-  $$\text{target}(R_i) = \mathbb{I}[ \text{sign}(o_i) == Y_{h,d} ]$$
-  This directly operationalizes the core scientific thesis: human clinical RCTs will consistently achieve high reliability ($R \to 1.0$), whereas irreproducible cell-culture assays or derivative review echo chambers will receive low reliability ($R \to 0.0$).
+  Each study's reliability $R_i \in [0, 1]$ is supervised by whether study $i$'s finding $o_i$ agrees with the pair consensus $Y_{h,d}$. Agreement is defined as $o_i == +1 \land Y_{h,d} == 1$ or $o_i == -1 \land Y_{h,d} == 0$, with equivocal / inconclusive observations ($o_i == 0$) excluded:
+  $$\text{target}(R_i) = \begin{cases} 1 & \text{if } (o_i == +1 \land Y_{h,d} == 1) \lor (o_i == -1 \land Y_{h,d} == 0) \\ 0 & \text{if } (o_i == +1 \land Y_{h,d} == 0) \lor (o_i == -1 \land Y_{h,d} == 1) \\ \text{excluded} & \text{if } o_i == 0 \end{cases}$$
+  This operationalizes the core scientific thesis: human clinical RCTs will consistently achieve high reliability ($R \to 1.0$), whereas irreproducible cell-culture assays or derivative review echo chambers will receive low reliability ($R \to 0.0$).
 
-### 3.2 Residual Aggregation Architecture
+### 4.2 Residual Aggregation Architecture
 The global prediction combines the cold-start mechanistic prior with the reliability-weighted evidentiary consensus:
 $$\text{logit}_{\text{fused}} = \text{logit}_{\text{prior}}(\mathbf{x}_{\text{mechanistic}}) + \sum_{i=1}^k R_i \cdot \delta(o_i)$$
 where $\delta(o_i) \in \mathbb{R}$ represents the evidentiary adjustment contribution.
@@ -88,7 +86,7 @@ where $\delta(o_i) \in \mathbb{R}$ represents the evidentiary adjustment contrib
 
 ---
 
-## 4. Conformal Tri-State Decision Routing
+## 5. Conformal Tri-State Decision Routing
 
 For both Task A and Task B, predictions are passed through split-conformal prediction sets:
 $$\mathcal{C}(X) \subseteq \{0, 1\}, \quad P(Y \in \mathcal{C}(X)) \ge 1 - \epsilon$$
@@ -100,7 +98,7 @@ Decisions are mapped into three actionable clinical routes:
 
 ---
 
-## 5. Summary Matrix of Task Differences
+## 6. Summary Matrix of Task Differences
 
 | Dimension | Task A: Mechanistic Cold-Start | Task B: Supervised Evidence Aggregation |
 | :--- | :--- | :--- |

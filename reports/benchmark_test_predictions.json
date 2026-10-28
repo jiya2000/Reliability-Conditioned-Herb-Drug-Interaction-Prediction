@@ -33,7 +33,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.7514990568161011,
+      "y_prob": 0.7514991164207458,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -93,7 +93,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.1569458246231079,
+      "y_prob": 0.1569458395242691,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -143,7 +143,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.258464515209198,
+      "y_prob": 0.25846460461616516,
       "y_pred": 0,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -153,7 +153,7 @@
     {
       "index": 15,
       "y_true": 0,
-      "y_prob": 0.2703278660774231,
+      "y_prob": 0.2703278958797455,
       "y_pred": 0,
       "herb_id": "HERB_MILKTHISTLE",
       "drug_id": "DRUG_IRINOTECAN",
@@ -253,7 +253,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.33704423904418945,
+      "y_prob": 0.33704426884651184,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -295,7 +295,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.9058740139007568,
+      "y_prob": 0.9058738946914673,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -325,7 +325,7 @@
     {
       "index": 6,
       "y_true": 0,
-      "y_prob": 0.6240204572677612,
+      "y_prob": 0.6240203976631165,
       "y_pred": 1,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_ALPRAZOLAM",
@@ -405,7 +405,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.5311461687088013,
+      "y_prob": 0.531146228313446,
       "y_pred": 1,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -425,7 +425,7 @@
     {
       "index": 16,
       "y_true": 0,
-      "y_prob": 0.3148882985115051,
+      "y_prob": 0.3148883283138275,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -465,7 +465,7 @@
     {
       "index": 20,
       "y_true": 1,
-      "y_prob": 0.39982059597969055,
+      "y_prob": 0.39982056617736816,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -527,7 +527,7 @@
     {
       "index": 0,
       "y_true": 1,
-      "y_prob": 0.8963874578475952,
+      "y_prob": 0.8963866829872131,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_DIGOXIN",
@@ -537,7 +537,7 @@
     {
       "index": 1,
       "y_true": 1,
-      "y_prob": 0.8663179874420166,
+      "y_prob": 0.8663172721862793,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -547,7 +547,7 @@
     {
       "index": 2,
       "y_true": 0,
-      "y_prob": 0.557417094707489,
+      "y_prob": 0.5574169158935547,
       "y_pred": 1,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DIGOXIN",
@@ -557,7 +557,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.8313618898391724,
+      "y_prob": 0.8313611745834351,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -577,7 +577,7 @@
     {
       "index": 5,
       "y_true": 1,
-      "y_prob": 0.8674266338348389,
+      "y_prob": 0.8674259185791016,
       "y_pred": 1,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -587,7 +587,7 @@
     {
       "index": 6,
       "y_true": 0,
-      "y_prob": 0.6594945192337036,
+      "y_prob": 0.6594940423965454,
       "y_pred": 1,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_ALPRAZOLAM",
@@ -597,7 +597,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.3908331096172333,
+      "y_prob": 0.39083343744277954,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -607,7 +607,7 @@
     {
       "index": 8,
       "y_true": 1,
-      "y_prob": 0.4596238136291504,
+      "y_prob": 0.45962396264076233,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_METFORMIN",
@@ -617,7 +617,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.30006644129753113,
+      "y_prob": 0.3000670373439789,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -627,7 +627,7 @@
     {
       "index": 10,
       "y_true": 0,
-      "y_prob": 0.4118451476097107,
+      "y_prob": 0.41184544563293457,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -637,7 +637,7 @@
     {
       "index": 11,
       "y_true": 1,
-      "y_prob": 0.8252621293067932,
+      "y_prob": 0.8252614140510559,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_PACLITAXEL",
@@ -647,7 +647,7 @@
     {
       "index": 12,
       "y_true": 0,
-      "y_prob": 0.6364097595214844,
+      "y_prob": 0.636409342288971,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -677,7 +677,7 @@
     {
       "index": 15,
       "y_true": 0,
-      "y_prob": 0.4373498558998108,
+      "y_prob": 0.4373500645160675,
       "y_pred": 0,
       "herb_id": "HERB_MILKTHISTLE",
       "drug_id": "DRUG_IRINOTECAN",
@@ -687,7 +687,7 @@
     {
       "index": 16,
       "y_true": 0,
-      "y_prob": 0.34973084926605225,
+      "y_prob": 0.34973132610321045,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -697,7 +697,7 @@
     {
       "index": 17,
       "y_true": 0,
-      "y_prob": 0.39766398072242737,
+      "y_prob": 0.39766430854797363,
       "y_pred": 0,
       "herb_id": "HERB_BLACKCOHOSH",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -707,7 +707,7 @@
     {
       "index": 18,
       "y_true": 1,
-      "y_prob": 0.40002042055130005,
+      "y_prob": 0.4000207185745239,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_LEVODOPA",
@@ -717,7 +717,7 @@
     {
       "index": 19,
       "y_true": 1,
-      "y_prob": 0.4061906039714813,
+      "y_prob": 0.4061909317970276,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_CHLORZOXAZONE",
@@ -737,7 +737,7 @@
     {
       "index": 21,
       "y_true": 1,
-      "y_prob": 0.8159367442131042,
+      "y_prob": 0.8159360289573669,
       "y_pred": 1,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_FELODIPINE",
@@ -747,7 +747,7 @@
     {
       "index": 22,
       "y_true": 0,
-      "y_prob": 0.3596675992012024,
+      "y_prob": 0.3596680462360382,
       "y_pred": 0,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -757,7 +757,7 @@
     {
       "index": 23,
       "y_true": 0,
-      "y_prob": 0.4068414270877838,
+      "y_prob": 0.4068417549133301,
       "y_pred": 0,
       "herb_id": "HERB_GRAPEFRUIT",
       "drug_id": "DRUG_WARFARIN",
@@ -767,7 +767,7 @@
     {
       "index": 24,
       "y_true": 1,
-      "y_prob": 0.8136759996414185,
+      "y_prob": 0.8136752843856812,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -777,7 +777,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.3917790949344635,
+      "y_prob": 0.39177942276000977,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -819,7 +819,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.9558160901069641,
+      "y_prob": 0.9558162093162537,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -859,7 +859,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.1707676500082016,
+      "y_prob": 0.1707676202058792,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -909,7 +909,7 @@
     {
       "index": 12,
       "y_true": 0,
-      "y_prob": 0.6734519004821777,
+      "y_prob": 0.6734517812728882,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -919,7 +919,7 @@
     {
       "index": 13,
       "y_true": 0,
-      "y_prob": 0.288108229637146,
+      "y_prob": 0.28810828924179077,
       "y_pred": 0,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -929,7 +929,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.3756657540798187,
+      "y_prob": 0.37566569447517395,
       "y_pred": 0,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -969,7 +969,7 @@
     {
       "index": 18,
       "y_true": 1,
-      "y_prob": 0.17912118136882782,
+      "y_prob": 0.17912116646766663,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_LEVODOPA",
@@ -1009,7 +1009,7 @@
     {
       "index": 22,
       "y_true": 0,
-      "y_prob": 0.05009710043668747,
+      "y_prob": 0.050097111612558365,
       "y_pred": 0,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1019,7 +1019,7 @@
     {
       "index": 23,
       "y_true": 0,
-      "y_prob": 0.4421389698982239,
+      "y_prob": 0.4421389102935791,
       "y_pred": 0,
       "herb_id": "HERB_GRAPEFRUIT",
       "drug_id": "DRUG_WARFARIN",
@@ -1039,7 +1039,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.1401723474264145,
+      "y_prob": 0.1401723325252533,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -1061,7 +1061,7 @@
     {
       "index": 1,
       "y_true": 1,
-      "y_prob": 0.848251223564148,
+      "y_prob": 0.8482511043548584,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -1081,7 +1081,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.876607358455658,
+      "y_prob": 0.8766072392463684,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -1121,7 +1121,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.36306384205818176,
+      "y_prob": 0.36306387186050415,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -1141,7 +1141,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.21542565524578094,
+      "y_prob": 0.21542568504810333,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1151,7 +1151,7 @@
     {
       "index": 10,
       "y_true": 0,
-      "y_prob": 0.25693756341934204,
+      "y_prob": 0.2569376230239868,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1191,7 +1191,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.6760373115539551,
+      "y_prob": 0.6760372519493103,
       "y_pred": 1,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -1211,7 +1211,7 @@
     {
       "index": 16,
       "y_true": 0,
-      "y_prob": 0.11822252720594406,
+      "y_prob": 0.11822257936000824,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1221,7 +1221,7 @@
     {
       "index": 17,
       "y_true": 0,
-      "y_prob": 0.22778205573558807,
+      "y_prob": 0.22778207063674927,
       "y_pred": 0,
       "herb_id": "HERB_BLACKCOHOSH",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1231,7 +1231,7 @@
     {
       "index": 18,
       "y_true": 1,
-      "y_prob": 0.29150235652923584,
+      "y_prob": 0.2915023863315582,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_LEVODOPA",
@@ -1241,7 +1241,7 @@
     {
       "index": 19,
       "y_true": 1,
-      "y_prob": 0.18825164437294006,
+      "y_prob": 0.18825170397758484,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_CHLORZOXAZONE",
@@ -1261,7 +1261,7 @@
     {
       "index": 21,
       "y_true": 1,
-      "y_prob": 0.6988406181335449,
+      "y_prob": 0.6988405585289001,
       "y_pred": 1,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_FELODIPINE",
@@ -1271,7 +1271,7 @@
     {
       "index": 22,
       "y_true": 0,
-      "y_prob": 0.29367586970329285,
+      "y_prob": 0.29367589950561523,
       "y_pred": 0,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1291,7 +1291,7 @@
     {
       "index": 24,
       "y_true": 1,
-      "y_prob": 0.848251223564148,
+      "y_prob": 0.8482511043548584,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -1301,7 +1301,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.36306384205818176,
+      "y_prob": 0.36306387186050415,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -1313,7 +1313,7 @@
     {
       "index": 0,
       "y_true": 1,
-      "y_prob": 0.7886927127838135,
+      "y_prob": 0.7886925339698792,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_DIGOXIN",
@@ -1323,7 +1323,7 @@
     {
       "index": 1,
       "y_true": 1,
-      "y_prob": 0.6546915173530579,
+      "y_prob": 0.6546913981437683,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -1333,7 +1333,7 @@
     {
       "index": 2,
       "y_true": 0,
-      "y_prob": 0.6646485924720764,
+      "y_prob": 0.6646484732627869,
       "y_pred": 1,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DIGOXIN",
@@ -1343,7 +1343,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.5482357144355774,
+      "y_prob": 0.5482355952262878,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -1353,7 +1353,7 @@
     {
       "index": 4,
       "y_true": 1,
-      "y_prob": 0.3422282040119171,
+      "y_prob": 0.34222835302352905,
       "y_pred": 0,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_WARFARIN",
@@ -1363,7 +1363,7 @@
     {
       "index": 5,
       "y_true": 1,
-      "y_prob": 0.6604147553443909,
+      "y_prob": 0.6604145765304565,
       "y_pred": 1,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -1373,7 +1373,7 @@
     {
       "index": 6,
       "y_true": 0,
-      "y_prob": 0.8243057131767273,
+      "y_prob": 0.824305534362793,
       "y_pred": 1,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_ALPRAZOLAM",
@@ -1383,7 +1383,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.4591313600540161,
+      "y_prob": 0.4591313898563385,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -1393,7 +1393,7 @@
     {
       "index": 8,
       "y_true": 1,
-      "y_prob": 0.6682155728340149,
+      "y_prob": 0.6682154536247253,
       "y_pred": 1,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_METFORMIN",
@@ -1403,7 +1403,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.35293081402778625,
+      "y_prob": 0.3529309332370758,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1423,7 +1423,7 @@
     {
       "index": 11,
       "y_true": 1,
-      "y_prob": 0.6612339019775391,
+      "y_prob": 0.6612337827682495,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_PACLITAXEL",
@@ -1433,7 +1433,7 @@
     {
       "index": 12,
       "y_true": 0,
-      "y_prob": 0.2890934348106384,
+      "y_prob": 0.28909358382225037,
       "y_pred": 0,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -1443,7 +1443,7 @@
     {
       "index": 13,
       "y_true": 0,
-      "y_prob": 0.37022265791893005,
+      "y_prob": 0.3702227473258972,
       "y_pred": 0,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -1453,7 +1453,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.38031330704689026,
+      "y_prob": 0.3803134262561798,
       "y_pred": 0,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -1463,7 +1463,7 @@
     {
       "index": 15,
       "y_true": 0,
-      "y_prob": 0.4445320665836334,
+      "y_prob": 0.4445321559906006,
       "y_pred": 0,
       "herb_id": "HERB_MILKTHISTLE",
       "drug_id": "DRUG_IRINOTECAN",
@@ -1473,7 +1473,7 @@
     {
       "index": 16,
       "y_true": 0,
-      "y_prob": 0.49574118852615356,
+      "y_prob": 0.49574124813079834,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1503,7 +1503,7 @@
     {
       "index": 19,
       "y_true": 1,
-      "y_prob": 0.7061851620674133,
+      "y_prob": 0.7061849236488342,
       "y_pred": 1,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_CHLORZOXAZONE",
@@ -1513,7 +1513,7 @@
     {
       "index": 20,
       "y_true": 1,
-      "y_prob": 0.7882591485977173,
+      "y_prob": 0.788258969783783,
       "y_pred": 1,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -1523,7 +1523,7 @@
     {
       "index": 21,
       "y_true": 1,
-      "y_prob": 0.8731061816215515,
+      "y_prob": 0.8731060028076172,
       "y_pred": 1,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_FELODIPINE",
@@ -1533,7 +1533,7 @@
     {
       "index": 22,
       "y_true": 0,
-      "y_prob": 0.36878952383995056,
+      "y_prob": 0.3687896132469177,
       "y_pred": 0,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1543,7 +1543,7 @@
     {
       "index": 23,
       "y_true": 0,
-      "y_prob": 0.3416496217250824,
+      "y_prob": 0.34164974093437195,
       "y_pred": 0,
       "herb_id": "HERB_GRAPEFRUIT",
       "drug_id": "DRUG_WARFARIN",
@@ -1563,7 +1563,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.43528875708580017,
+      "y_prob": 0.43528878688812256,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -1575,7 +1575,7 @@
     {
       "index": 0,
       "y_true": 1,
-      "y_prob": 0.9214838147163391,
+      "y_prob": 0.9214830994606018,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_DIGOXIN",
@@ -1585,7 +1585,7 @@
     {
       "index": 1,
       "y_true": 1,
-      "y_prob": 0.8667322397232056,
+      "y_prob": 0.8667314052581787,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -1595,7 +1595,7 @@
     {
       "index": 2,
       "y_true": 0,
-      "y_prob": 0.46804487705230713,
+      "y_prob": 0.4680449664592743,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DIGOXIN",
@@ -1605,7 +1605,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.8734445571899414,
+      "y_prob": 0.8734437823295593,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -1615,7 +1615,7 @@
     {
       "index": 4,
       "y_true": 1,
-      "y_prob": 0.5639038681983948,
+      "y_prob": 0.5639035701751709,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_WARFARIN",
@@ -1625,7 +1625,7 @@
     {
       "index": 5,
       "y_true": 1,
-      "y_prob": 0.9156904220581055,
+      "y_prob": 0.9156897068023682,
       "y_pred": 1,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -1635,7 +1635,7 @@
     {
       "index": 6,
       "y_true": 0,
-      "y_prob": 0.5957093834877014,
+      "y_prob": 0.5957090258598328,
       "y_pred": 1,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_ALPRAZOLAM",
@@ -1645,7 +1645,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.3512284457683563,
+      "y_prob": 0.3512290418148041,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -1655,7 +1655,7 @@
     {
       "index": 8,
       "y_true": 1,
-      "y_prob": 0.42654862999916077,
+      "y_prob": 0.42654889822006226,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_METFORMIN",
@@ -1665,7 +1665,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.24181461334228516,
+      "y_prob": 0.24181541800498962,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1675,7 +1675,7 @@
     {
       "index": 10,
       "y_true": 0,
-      "y_prob": 0.31490594148635864,
+      "y_prob": 0.31490659713745117,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1685,7 +1685,7 @@
     {
       "index": 11,
       "y_true": 1,
-      "y_prob": 0.8826999068260193,
+      "y_prob": 0.8826990723609924,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_PACLITAXEL",
@@ -1695,7 +1695,7 @@
     {
       "index": 12,
       "y_true": 0,
-      "y_prob": 0.7679754495620728,
+      "y_prob": 0.7679746150970459,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -1705,7 +1705,7 @@
     {
       "index": 13,
       "y_true": 0,
-      "y_prob": 0.3826044499874115,
+      "y_prob": 0.3826048970222473,
       "y_pred": 0,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -1715,7 +1715,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.47189173102378845,
+      "y_prob": 0.471891850233078,
       "y_pred": 0,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -1725,7 +1725,7 @@
     {
       "index": 15,
       "y_true": 0,
-      "y_prob": 0.3974490165710449,
+      "y_prob": 0.39744943380355835,
       "y_pred": 0,
       "herb_id": "HERB_MILKTHISTLE",
       "drug_id": "DRUG_IRINOTECAN",
@@ -1735,7 +1735,7 @@
     {
       "index": 16,
       "y_true": 0,
-      "y_prob": 0.25293031334877014,
+      "y_prob": 0.252931147813797,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1745,7 +1745,7 @@
     {
       "index": 17,
       "y_true": 0,
-      "y_prob": 0.3059867322444916,
+      "y_prob": 0.3059874176979065,
       "y_pred": 0,
       "herb_id": "HERB_BLACKCOHOSH",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1755,7 +1755,7 @@
     {
       "index": 18,
       "y_true": 1,
-      "y_prob": 0.35677629709243774,
+      "y_prob": 0.3567768633365631,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_LEVODOPA",
@@ -1765,7 +1765,7 @@
     {
       "index": 19,
       "y_true": 1,
-      "y_prob": 0.3947165608406067,
+      "y_prob": 0.3947169780731201,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_CHLORZOXAZONE",
@@ -1775,7 +1775,7 @@
     {
       "index": 20,
       "y_true": 1,
-      "y_prob": 0.426628053188324,
+      "y_prob": 0.42662835121154785,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -1785,7 +1785,7 @@
     {
       "index": 21,
       "y_true": 1,
-      "y_prob": 0.8337130546569824,
+      "y_prob": 0.8337122201919556,
       "y_pred": 1,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_FELODIPINE",
@@ -1795,7 +1795,7 @@
     {
       "index": 22,
       "y_true": 0,
-      "y_prob": 0.3103334605693817,
+      "y_prob": 0.31033411622047424,
       "y_pred": 0,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1805,7 +1805,7 @@
     {
       "index": 23,
       "y_true": 0,
-      "y_prob": 0.438647598028183,
+      "y_prob": 0.4386478364467621,
       "y_pred": 0,
       "herb_id": "HERB_GRAPEFRUIT",
       "drug_id": "DRUG_WARFARIN",
@@ -1815,7 +1815,7 @@
     {
       "index": 24,
       "y_true": 1,
-      "y_prob": 0.7942351698875427,
+      "y_prob": 0.7942342758178711,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -1825,7 +1825,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.3422691226005554,
+      "y_prob": 0.3422696590423584,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -1837,7 +1837,7 @@
     {
       "index": 0,
       "y_true": 1,
-      "y_prob": 0.9206472039222717,
+      "y_prob": 0.920647144317627,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_DIGOXIN",
@@ -1847,7 +1847,7 @@
     {
       "index": 1,
       "y_true": 1,
-      "y_prob": 0.9188934564590454,
+      "y_prob": 0.9188932776451111,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -1857,7 +1857,7 @@
     {
       "index": 2,
       "y_true": 0,
-      "y_prob": 0.357729434967041,
+      "y_prob": 0.3577295243740082,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DIGOXIN",
@@ -1867,7 +1867,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.9134804606437683,
+      "y_prob": 0.9134803414344788,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -1877,7 +1877,7 @@
     {
       "index": 4,
       "y_true": 1,
-      "y_prob": 0.8378912806510925,
+      "y_prob": 0.8378911018371582,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_WARFARIN",
@@ -1887,7 +1887,7 @@
     {
       "index": 5,
       "y_true": 1,
-      "y_prob": 0.912672758102417,
+      "y_prob": 0.9126726388931274,
       "y_pred": 1,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -1907,7 +1907,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.30182895064353943,
+      "y_prob": 0.3018290400505066,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -1917,7 +1917,7 @@
     {
       "index": 8,
       "y_true": 1,
-      "y_prob": 0.3875080943107605,
+      "y_prob": 0.38750818371772766,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_METFORMIN",
@@ -1927,7 +1927,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.2716195583343506,
+      "y_prob": 0.27161967754364014,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1937,7 +1937,7 @@
     {
       "index": 10,
       "y_true": 0,
-      "y_prob": 0.2603979706764221,
+      "y_prob": 0.26039811968803406,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -1947,7 +1947,7 @@
     {
       "index": 11,
       "y_true": 1,
-      "y_prob": 0.9051985740661621,
+      "y_prob": 0.9051984548568726,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_PACLITAXEL",
@@ -1957,7 +1957,7 @@
     {
       "index": 12,
       "y_true": 0,
-      "y_prob": 0.9327347874641418,
+      "y_prob": 0.9327346682548523,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -1967,7 +1967,7 @@
     {
       "index": 13,
       "y_true": 0,
-      "y_prob": 0.3560104966163635,
+      "y_prob": 0.3560105860233307,
       "y_pred": 0,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -1977,7 +1977,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.6446067690849304,
+      "y_prob": 0.6446066498756409,
       "y_pred": 1,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -1987,7 +1987,7 @@
     {
       "index": 15,
       "y_true": 0,
-      "y_prob": 0.3101651966571808,
+      "y_prob": 0.31016528606414795,
       "y_pred": 0,
       "herb_id": "HERB_MILKTHISTLE",
       "drug_id": "DRUG_IRINOTECAN",
@@ -1997,7 +1997,7 @@
     {
       "index": 16,
       "y_true": 0,
-      "y_prob": 0.1520128697156906,
+      "y_prob": 0.15201297402381897,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2007,7 +2007,7 @@
     {
       "index": 17,
       "y_true": 0,
-      "y_prob": 0.23299197852611542,
+      "y_prob": 0.23299208283424377,
       "y_pred": 0,
       "herb_id": "HERB_BLACKCOHOSH",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2017,7 +2017,7 @@
     {
       "index": 18,
       "y_true": 1,
-      "y_prob": 0.3016376197338104,
+      "y_prob": 0.3016377389431,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_LEVODOPA",
@@ -2027,7 +2027,7 @@
     {
       "index": 19,
       "y_true": 1,
-      "y_prob": 0.20503711700439453,
+      "y_prob": 0.2050371915102005,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_CHLORZOXAZONE",
@@ -2037,7 +2037,7 @@
     {
       "index": 20,
       "y_true": 1,
-      "y_prob": 0.28580164909362793,
+      "y_prob": 0.2858017385005951,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -2047,7 +2047,7 @@
     {
       "index": 21,
       "y_true": 1,
-      "y_prob": 0.69273841381073,
+      "y_prob": 0.6927383542060852,
       "y_pred": 1,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_FELODIPINE",
@@ -2057,7 +2057,7 @@
     {
       "index": 22,
       "y_true": 0,
-      "y_prob": 0.3307875394821167,
+      "y_prob": 0.33078762888908386,
       "y_pred": 0,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2067,7 +2067,7 @@
     {
       "index": 23,
       "y_true": 0,
-      "y_prob": 0.6611248254776001,
+      "y_prob": 0.6611246466636658,
       "y_pred": 1,
       "herb_id": "HERB_GRAPEFRUIT",
       "drug_id": "DRUG_WARFARIN",
@@ -2077,7 +2077,7 @@
     {
       "index": 24,
       "y_true": 1,
-      "y_prob": 0.9188950061798096,
+      "y_prob": 0.91889488697052,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -2087,7 +2087,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.30182895064353943,
+      "y_prob": 0.301829069852829,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -2099,7 +2099,7 @@
     {
       "index": 0,
       "y_true": 1,
-      "y_prob": 0.997697651386261,
+      "y_prob": 0.9976975321769714,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_DIGOXIN",
@@ -2109,7 +2109,7 @@
     {
       "index": 1,
       "y_true": 1,
-      "y_prob": 0.9965963959693909,
+      "y_prob": 0.9965962767601013,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -2119,7 +2119,7 @@
     {
       "index": 2,
       "y_true": 0,
-      "y_prob": 0.48141610622406006,
+      "y_prob": 0.48141613602638245,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DIGOXIN",
@@ -2129,7 +2129,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.992901623249054,
+      "y_prob": 0.9929015040397644,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -2139,7 +2139,7 @@
     {
       "index": 4,
       "y_true": 1,
-      "y_prob": 0.9815288782119751,
+      "y_prob": 0.9815285205841064,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_WARFARIN",
@@ -2149,7 +2149,7 @@
     {
       "index": 5,
       "y_true": 1,
-      "y_prob": 0.9935544729232788,
+      "y_prob": 0.9935543537139893,
       "y_pred": 1,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -2159,7 +2159,7 @@
     {
       "index": 6,
       "y_true": 0,
-      "y_prob": 0.5630831122398376,
+      "y_prob": 0.5630828142166138,
       "y_pred": 1,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_ALPRAZOLAM",
@@ -2169,7 +2169,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.1666179746389389,
+      "y_prob": 0.16661900281906128,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -2179,7 +2179,7 @@
     {
       "index": 8,
       "y_true": 1,
-      "y_prob": 0.8846902251243591,
+      "y_prob": 0.8846892714500427,
       "y_pred": 1,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_METFORMIN",
@@ -2189,7 +2189,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.061733510345220566,
+      "y_prob": 0.061734214425086975,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2199,7 +2199,7 @@
     {
       "index": 10,
       "y_true": 0,
-      "y_prob": 0.3288244307041168,
+      "y_prob": 0.3288251459598541,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2209,7 +2209,7 @@
     {
       "index": 11,
       "y_true": 1,
-      "y_prob": 0.9921086430549622,
+      "y_prob": 0.9921085238456726,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_PACLITAXEL",
@@ -2219,7 +2219,7 @@
     {
       "index": 12,
       "y_true": 0,
-      "y_prob": 0.026926225051283836,
+      "y_prob": 0.02692665532231331,
       "y_pred": 0,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -2229,7 +2229,7 @@
     {
       "index": 13,
       "y_true": 0,
-      "y_prob": 0.10998678207397461,
+      "y_prob": 0.10998773574829102,
       "y_pred": 0,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -2239,7 +2239,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.09652562439441681,
+      "y_prob": 0.09652649611234665,
       "y_pred": 0,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -2249,7 +2249,7 @@
     {
       "index": 15,
       "y_true": 0,
-      "y_prob": 0.15963029861450195,
+      "y_prob": 0.15963132679462433,
       "y_pred": 0,
       "herb_id": "HERB_MILKTHISTLE",
       "drug_id": "DRUG_IRINOTECAN",
@@ -2259,7 +2259,7 @@
     {
       "index": 16,
       "y_true": 0,
-      "y_prob": 0.28953319787979126,
+      "y_prob": 0.2895340323448181,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2269,7 +2269,7 @@
     {
       "index": 17,
       "y_true": 0,
-      "y_prob": 0.3138003945350647,
+      "y_prob": 0.31380119919776917,
       "y_pred": 0,
       "herb_id": "HERB_BLACKCOHOSH",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2279,7 +2279,7 @@
     {
       "index": 18,
       "y_true": 1,
-      "y_prob": 0.8425881862640381,
+      "y_prob": 0.8425871133804321,
       "y_pred": 1,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_LEVODOPA",
@@ -2289,7 +2289,7 @@
     {
       "index": 19,
       "y_true": 1,
-      "y_prob": 0.8317841291427612,
+      "y_prob": 0.8317830562591553,
       "y_pred": 1,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_CHLORZOXAZONE",
@@ -2299,7 +2299,7 @@
     {
       "index": 20,
       "y_true": 1,
-      "y_prob": 0.8858293294906616,
+      "y_prob": 0.8858283758163452,
       "y_pred": 1,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -2309,7 +2309,7 @@
     {
       "index": 21,
       "y_true": 1,
-      "y_prob": 0.9685947895050049,
+      "y_prob": 0.9685943126678467,
       "y_pred": 1,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_FELODIPINE",
@@ -2319,7 +2319,7 @@
     {
       "index": 22,
       "y_true": 0,
-      "y_prob": 0.05190519243478775,
+      "y_prob": 0.05190582200884819,
       "y_pred": 0,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2329,7 +2329,7 @@
     {
       "index": 23,
       "y_true": 0,
-      "y_prob": 0.0660448670387268,
+      "y_prob": 0.0660455971956253,
       "y_pred": 0,
       "herb_id": "HERB_GRAPEFRUIT",
       "drug_id": "DRUG_WARFARIN",
@@ -2339,7 +2339,7 @@
     {
       "index": 24,
       "y_true": 1,
-      "y_prob": 0.9965963959693909,
+      "y_prob": 0.9965962767601013,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -2349,7 +2349,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.14364860951900482,
+      "y_prob": 0.1436496078968048,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -2431,7 +2431,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.4227083379571962,
+      "y_prob": 0.42270833795719626,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -2611,7 +2611,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.4227083379571962,
+      "y_prob": 0.42270833795719626,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -2623,7 +2623,7 @@
     {
       "index": 0,
       "y_true": 1,
-      "y_prob": 0.8398576378822327,
+      "y_prob": 0.8398573408088672,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_DIGOXIN",
@@ -2633,7 +2633,7 @@
     {
       "index": 1,
       "y_true": 1,
-      "y_prob": 0.8939968943595886,
+      "y_prob": 0.8939969852902758,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -2643,7 +2643,7 @@
     {
       "index": 2,
       "y_true": 0,
-      "y_prob": 0.2831777334213257,
+      "y_prob": 0.2831771835563878,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DIGOXIN",
@@ -2653,7 +2653,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.9618673920631409,
+      "y_prob": 0.9618673148842701,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -2663,7 +2663,7 @@
     {
       "index": 4,
       "y_true": 1,
-      "y_prob": 0.5898173451423645,
+      "y_prob": 0.5898172986793452,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_WARFARIN",
@@ -2673,7 +2673,7 @@
     {
       "index": 5,
       "y_true": 1,
-      "y_prob": 0.6729594469070435,
+      "y_prob": 0.6729594101538462,
       "y_pred": 1,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -2683,7 +2683,7 @@
     {
       "index": 6,
       "y_true": 0,
-      "y_prob": 0.7093752026557922,
+      "y_prob": 0.7093751978429145,
       "y_pred": 1,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_ALPRAZOLAM",
@@ -2693,7 +2693,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.4852057695388794,
+      "y_prob": 0.4852056943769122,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -2703,7 +2703,7 @@
     {
       "index": 8,
       "y_true": 1,
-      "y_prob": 0.20105496048927307,
+      "y_prob": 0.20105485702785805,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_METFORMIN",
@@ -2713,7 +2713,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.20105496048927307,
+      "y_prob": 0.20105485702785805,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2723,7 +2723,7 @@
     {
       "index": 10,
       "y_true": 0,
-      "y_prob": 0.20105496048927307,
+      "y_prob": 0.20105485702785805,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2733,7 +2733,7 @@
     {
       "index": 11,
       "y_true": 1,
-      "y_prob": 0.9525105357170105,
+      "y_prob": 0.9525105820303001,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_PACLITAXEL",
@@ -2743,7 +2743,7 @@
     {
       "index": 12,
       "y_true": 0,
-      "y_prob": 0.3349921703338623,
+      "y_prob": 0.33499200870328566,
       "y_pred": 0,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -2753,7 +2753,7 @@
     {
       "index": 13,
       "y_true": 0,
-      "y_prob": 0.2177136242389679,
+      "y_prob": 0.21771348463470033,
       "y_pred": 0,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -2763,7 +2763,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.2177136242389679,
+      "y_prob": 0.21771348463470033,
       "y_pred": 0,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -2773,7 +2773,7 @@
     {
       "index": 15,
       "y_true": 0,
-      "y_prob": 0.2632928192615509,
+      "y_prob": 0.26329268257033345,
       "y_pred": 0,
       "herb_id": "HERB_MILKTHISTLE",
       "drug_id": "DRUG_IRINOTECAN",
@@ -2783,7 +2783,7 @@
     {
       "index": 16,
       "y_true": 0,
-      "y_prob": 0.2177136242389679,
+      "y_prob": 0.21771348463470033,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2793,7 +2793,7 @@
     {
       "index": 17,
       "y_true": 0,
-      "y_prob": 0.20105496048927307,
+      "y_prob": 0.20105485702785805,
       "y_pred": 0,
       "herb_id": "HERB_BLACKCOHOSH",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2803,7 +2803,7 @@
     {
       "index": 18,
       "y_true": 1,
-      "y_prob": 0.32516294717788696,
+      "y_prob": 0.32516272390231826,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_LEVODOPA",
@@ -2813,7 +2813,7 @@
     {
       "index": 19,
       "y_true": 1,
-      "y_prob": 0.2177136242389679,
+      "y_prob": 0.21771348463470033,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_CHLORZOXAZONE",
@@ -2823,7 +2823,7 @@
     {
       "index": 20,
       "y_true": 1,
-      "y_prob": 0.6415167450904846,
+      "y_prob": 0.6415168885309231,
       "y_pred": 1,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -2833,7 +2833,7 @@
     {
       "index": 21,
       "y_true": 1,
-      "y_prob": 0.7925727963447571,
+      "y_prob": 0.7925729574094342,
       "y_pred": 1,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_FELODIPINE",
@@ -2843,7 +2843,7 @@
     {
       "index": 22,
       "y_true": 0,
-      "y_prob": 0.2353459745645523,
+      "y_prob": 0.23534580200218697,
       "y_pred": 0,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -2853,7 +2853,7 @@
     {
       "index": 23,
       "y_true": 0,
-      "y_prob": 0.2353459745645523,
+      "y_prob": 0.23534580200218697,
       "y_pred": 0,
       "herb_id": "HERB_GRAPEFRUIT",
       "drug_id": "DRUG_WARFARIN",
@@ -2863,7 +2863,7 @@
     {
       "index": 24,
       "y_true": 1,
-      "y_prob": 0.8939968943595886,
+      "y_prob": 0.8939969852902758,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -2873,7 +2873,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.4852057695388794,
+      "y_prob": 0.4852056943769122,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -3429,7 +3429,7 @@
     {
       "index": 2,
       "y_true": 0,
-      "y_prob": 0.25066739320755005,
+      "y_prob": 0.2506673038005829,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DIGOXIN",
@@ -3439,7 +3439,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.9434921145439148,
+      "y_prob": 0.9434921741485596,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -3449,7 +3449,7 @@
     {
       "index": 4,
       "y_true": 1,
-      "y_prob": 0.8615468144416809,
+      "y_prob": 0.8615468740463257,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_WARFARIN",
@@ -3469,7 +3469,7 @@
     {
       "index": 6,
       "y_true": 0,
-      "y_prob": 0.3860771059989929,
+      "y_prob": 0.3860771954059601,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_ALPRAZOLAM",
@@ -3479,7 +3479,7 @@
     {
       "index": 7,
       "y_true": 0,
-      "y_prob": 0.38839977979660034,
+      "y_prob": 0.38839974999427795,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -3489,7 +3489,7 @@
     {
       "index": 8,
       "y_true": 1,
-      "y_prob": 0.08168695122003555,
+      "y_prob": 0.08168687671422958,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_METFORMIN",
@@ -3499,7 +3499,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.11735281348228455,
+      "y_prob": 0.11735270917415619,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -3509,7 +3509,7 @@
     {
       "index": 10,
       "y_true": 0,
-      "y_prob": 0.16812960803508759,
+      "y_prob": 0.16812950372695923,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -3519,7 +3519,7 @@
     {
       "index": 11,
       "y_true": 1,
-      "y_prob": 0.9417250752449036,
+      "y_prob": 0.9417251348495483,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_PACLITAXEL",
@@ -3529,7 +3529,7 @@
     {
       "index": 12,
       "y_true": 0,
-      "y_prob": 0.8957870602607727,
+      "y_prob": 0.8957871794700623,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_ROSUVASTATIN",
@@ -3539,7 +3539,7 @@
     {
       "index": 13,
       "y_true": 0,
-      "y_prob": 0.42730045318603516,
+      "y_prob": 0.42730042338371277,
       "y_pred": 0,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -3549,7 +3549,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.5309181809425354,
+      "y_prob": 0.5309181213378906,
       "y_pred": 1,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -3559,7 +3559,7 @@
     {
       "index": 15,
       "y_true": 0,
-      "y_prob": 0.37884095311164856,
+      "y_prob": 0.378840833902359,
       "y_pred": 0,
       "herb_id": "HERB_MILKTHISTLE",
       "drug_id": "DRUG_IRINOTECAN",
@@ -3569,7 +3569,7 @@
     {
       "index": 16,
       "y_true": 0,
-      "y_prob": 0.02076677978038788,
+      "y_prob": 0.02076675556600094,
       "y_pred": 0,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -3579,7 +3579,7 @@
     {
       "index": 17,
       "y_true": 0,
-      "y_prob": 0.03659467399120331,
+      "y_prob": 0.03659465163946152,
       "y_pred": 0,
       "herb_id": "HERB_BLACKCOHOSH",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -3589,7 +3589,7 @@
     {
       "index": 18,
       "y_true": 1,
-      "y_prob": 0.15953552722930908,
+      "y_prob": 0.15953543782234192,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_LEVODOPA",
@@ -3599,7 +3599,7 @@
     {
       "index": 19,
       "y_true": 1,
-      "y_prob": 0.20615418255329132,
+      "y_prob": 0.20615409314632416,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_CHLORZOXAZONE",
@@ -3609,7 +3609,7 @@
     {
       "index": 20,
       "y_true": 1,
-      "y_prob": 0.33894801139831543,
+      "y_prob": 0.33894795179367065,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -3619,7 +3619,7 @@
     {
       "index": 21,
       "y_true": 1,
-      "y_prob": 0.8883277773857117,
+      "y_prob": 0.8883278965950012,
       "y_pred": 1,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_FELODIPINE",
@@ -3639,7 +3639,7 @@
     {
       "index": 23,
       "y_true": 0,
-      "y_prob": 0.8117238879203796,
+      "y_prob": 0.8117239475250244,
       "y_pred": 1,
       "herb_id": "HERB_GRAPEFRUIT",
       "drug_id": "DRUG_WARFARIN",
@@ -3659,7 +3659,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.38839977979660034,
+      "y_prob": 0.38839974999427795,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",
@@ -3671,7 +3671,7 @@
     {
       "index": 0,
       "y_true": 1,
-      "y_prob": 0.753186047077179,
+      "y_prob": 0.7531861066818237,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_DIGOXIN",
@@ -3681,7 +3681,7 @@
     {
       "index": 1,
       "y_true": 1,
-      "y_prob": 0.9134808778762817,
+      "y_prob": 0.9134809374809265,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -3691,7 +3691,7 @@
     {
       "index": 2,
       "y_true": 0,
-      "y_prob": 0.4825572967529297,
+      "y_prob": 0.48255735635757446,
       "y_pred": 0,
       "herb_id": "HERB_GINSENG",
       "drug_id": "DRUG_DIGOXIN",
@@ -3701,7 +3701,7 @@
     {
       "index": 3,
       "y_true": 1,
-      "y_prob": 0.9809333086013794,
+      "y_prob": 0.9809331893920898,
       "y_pred": 1,
       "herb_id": "HERB_CURCUMA",
       "drug_id": "DRUG_TACROLIMUS",
@@ -3731,7 +3731,7 @@
     {
       "index": 6,
       "y_true": 0,
-      "y_prob": 0.589328408241272,
+      "y_prob": 0.5893285274505615,
       "y_pred": 1,
       "herb_id": "HERB_VALERIAN",
       "drug_id": "DRUG_ALPRAZOLAM",
@@ -3761,7 +3761,7 @@
     {
       "index": 9,
       "y_true": 0,
-      "y_prob": 0.2085570991039276,
+      "y_prob": 0.20855708420276642,
       "y_pred": 0,
       "herb_id": "HERB_GINKGO",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -3801,7 +3801,7 @@
     {
       "index": 13,
       "y_true": 0,
-      "y_prob": 0.370991587638855,
+      "y_prob": 0.37099161744117737,
       "y_pred": 0,
       "herb_id": "HERB_GREENTEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -3811,7 +3811,7 @@
     {
       "index": 14,
       "y_true": 0,
-      "y_prob": 0.4390780031681061,
+      "y_prob": 0.43907809257507324,
       "y_pred": 0,
       "herb_id": "HERB_LICORICE",
       "drug_id": "DRUG_WARFARIN",
@@ -3821,7 +3821,7 @@
     {
       "index": 15,
       "y_true": 0,
-      "y_prob": 0.177260622382164,
+      "y_prob": 0.17726066708564758,
       "y_pred": 0,
       "herb_id": "HERB_MILKTHISTLE",
       "drug_id": "DRUG_IRINOTECAN",
@@ -3841,7 +3841,7 @@
     {
       "index": 17,
       "y_true": 0,
-      "y_prob": 0.10892665386199951,
+      "y_prob": 0.1089266762137413,
       "y_pred": 0,
       "herb_id": "HERB_BLACKCOHOSH",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -3851,7 +3851,7 @@
     {
       "index": 18,
       "y_true": 1,
-      "y_prob": 0.16173319518566132,
+      "y_prob": 0.1617332398891449,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_LEVODOPA",
@@ -3861,7 +3861,7 @@
     {
       "index": 19,
       "y_true": 1,
-      "y_prob": 0.15085789561271667,
+      "y_prob": 0.15085791051387787,
       "y_pred": 0,
       "herb_id": "HERB_KAVA",
       "drug_id": "DRUG_CHLORZOXAZONE",
@@ -3871,7 +3871,7 @@
     {
       "index": 20,
       "y_true": 1,
-      "y_prob": 0.29551249742507935,
+      "y_prob": 0.29551252722740173,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_CAFFEINE",
@@ -3891,7 +3891,7 @@
     {
       "index": 22,
       "y_true": 0,
-      "y_prob": 0.2775592505931854,
+      "y_prob": 0.2775592803955078,
       "y_pred": 0,
       "herb_id": "HERB_PEPPERMINT",
       "drug_id": "DRUG_DEXTROMETHORPHAN",
@@ -3901,7 +3901,7 @@
     {
       "index": 23,
       "y_true": 0,
-      "y_prob": 0.3375720679759979,
+      "y_prob": 0.33757224678993225,
       "y_pred": 0,
       "herb_id": "HERB_GRAPEFRUIT",
       "drug_id": "DRUG_WARFARIN",
@@ -3911,7 +3911,7 @@
     {
       "index": 24,
       "y_true": 1,
-      "y_prob": 0.9134808778762817,
+      "y_prob": 0.9134809374809265,
       "y_pred": 1,
       "herb_id": "HERB_HYPERICUM",
       "drug_id": "DRUG_INDINAVIR",
@@ -3921,7 +3921,7 @@
     {
       "index": 25,
       "y_true": 0,
-      "y_prob": 0.2504395842552185,
+      "y_prob": 0.2504396140575409,
       "y_pred": 0,
       "herb_id": "HERB_ECHINACEA",
       "drug_id": "DRUG_DOCETAXEL",

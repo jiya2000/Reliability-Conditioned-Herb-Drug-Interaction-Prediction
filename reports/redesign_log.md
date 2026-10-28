@@ -184,4 +184,12 @@ These changes are logged in accordance with the principle of not fabricating cer
 - **Root Cause:** In `.gitignore`, `*.csv` excluded all CSV files outside `data/benchmark/`, `data/curation/`, and `reports/`. Consequently, `data/audit/dag_audit_samples.csv` and `data/external/napdi_template.csv` were not tracked in git and were missing from clean runner checkouts.
 - **Resolution:** Added `!data/audit/*.csv` and `!data/external/*.csv` to `.gitignore`, tracked and staged both files in git. Verified 0 occurrences of prohibited terms, all 149/149 pytest test suite tests pass cleanly.
 
+## Corrections (October 28, 2026)
 
+- ~~1. **Pharmacokinetic Generalization Confirmed:** 6D biological overlap features maintain an AUC of **$0.840 \pm 0.098$ even on completely unseen botanicals** (`herb-disjoint`), the data are consistent with that pharmacokinetic overlap is not merely a botanical entity shortcut.~~
+- ~~3. **Zero Split Contamination Confirmed:** Herb one-hot identity collapses to exactly $0.500 \pm 0.000$ under `herb-disjoint` splitting, verifying strict partition integrity.~~
+
+**Correction Facts:**
+1. Profiles are hand-coded in one file by the same team after the labels existed, all values UNVERIFIED.
+2. `herb_onehot` `herb-disjoint` was 0.500 in the first run and 0.367 in the repeated run, an artifact of pooling out-of-fold predictions across folds with different intercepts, so the 0.500 claim is withdrawn.
+3. The "Pharmacokinetic Generalization Confirmed" and "Zero Split Contamination Confirmed" findings are withdrawn.

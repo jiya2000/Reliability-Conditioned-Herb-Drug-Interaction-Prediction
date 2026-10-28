@@ -66,6 +66,9 @@ evaluate_50.py
 .DS_Store
 Thumbs.db
 
+# Private benchmark metadata (stratification, not for VCS)
+data/benchmark/private/
+
 # Environment
 .env
 *.log
