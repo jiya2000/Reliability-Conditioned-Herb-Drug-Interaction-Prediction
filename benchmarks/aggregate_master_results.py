@@ -118,6 +118,14 @@ def aggregate_master_results(
     with open(out_file, "w") as f:
         json.dump(master_results, f, indent=2)
 
+    # Mirror to results/ directory if different
+    alt_file = PROJECT_ROOT / "results" / Path(output_path).name
+    if alt_file.resolve() != out_file.resolve():
+        alt_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(alt_file, "w") as f:
+            json.dump(master_results, f, indent=2)
+        logger.info(f"Mirrored master benchmark results to '{alt_file}'.")
+
     logger.info(f"Master benchmark results successfully written to '{out_file}'.")
     return master_results
 

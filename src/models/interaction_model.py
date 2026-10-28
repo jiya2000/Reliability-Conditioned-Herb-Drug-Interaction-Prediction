@@ -74,6 +74,9 @@ class ReliabilityConditionedInteractionModel(nn.Module):
             "reliability_conditioned_quality_only",
             "no_study_dependence",
             "no_context_conflict",
+            "leaky_reference_full_vector",
+            "leaky_no_context_conflict",
+            "leaky_reliability_conditioned",
         }
         if mode not in valid_modes:
             raise ValueError(f"Invalid mode '{mode}'. Choose from {sorted(valid_modes)}")
@@ -88,15 +91,13 @@ class ReliabilityConditionedInteractionModel(nn.Module):
         self.enable_auxiliary_heads = enable_auxiliary_heads
         self.num_severity_classes = num_severity_classes
 
-        # Default feature group: quality_only is headline default following leakage probe confirmation
+        # Default feature group: quality_only is strictly enforced for all main comparison models
         if feature_group is not None:
             self.feature_group = feature_group
-        elif mode == "reliability_conditioned_quality_only":
-            self.feature_group = "quality_only"
-        elif mode == "reliability_conditioned":
-            self.feature_group = "quality_only"
-        else:
+        elif mode.startswith("leaky_"):
             self.feature_group = "full"
+        else:
+            self.feature_group = "quality_only"
 
         # Graph pair representation projection: [h_u; h_v; |h_u - h_v|; h_u * h_v]
         pair_dim = graph_dim * 4
@@ -275,27 +276,50 @@ class ReliabilityConditionedInteractionModel(nn.Module):
 
             if metadata is not None:
                 meta_input = metadata.clone()
-                if self.mode == "no_study_dependence":
-                    # Zero out echo ratio (index 2 in 12D/8D, index 0 in 7D)
-                    if meta_input.size(-1) >= 8:
-                        meta_input[:, 2:3] = 0.0
-                        if meta_input.size(-1) >= 10:
-                            raw_pos = meta_input[:, 8:9]
-                            raw_neg = meta_input[:, 9:10]
-                            meta_input[:, 0:1] = raw_pos
-                            meta_input[:, 1:2] = raw_neg
-                            meta_input[:, 6:7] = raw_pos - raw_neg
-                    elif meta_input.size(-1) == 7:
-                        meta_input[:, 0:1] = 0.0  # echo_ratio
-                elif self.mode == "no_context_conflict":
-                    # Neutralize context to 1.0, zero contradiction
-                    if meta_input.size(-1) >= 8:
-                        meta_input[:, 4:5] = 1.0
-                        meta_input[:, 5:6] = 0.0
-                        meta_input[:, 6:7] = meta_input[:, 0:1]
-                    elif meta_input.size(-1) == 7:
-                        meta_input[:, 2:3] = 1.0  # context_compat
-                        meta_input[:, 3:4] = 0.0  # contradiction
+                d_meta = meta_input.size(-1)
+
+                if not self.mode.startswith("leaky_"):
+                    # Strict leakage prevention: ensure NO polarity columns reach scorer or classifier
+                    if d_meta >= 12:
+                        # 12D input: cols [0, 1, 6, 8, 9] are polarity
+                        if self.mode == "no_context_conflict":
+                            # 5D: drop W_context (col 4) and C_hd (col 5) -> cols [2, 3, 7, 10, 11]
+                            meta_input = meta_input[:, [2, 3, 7, 10, 11]]
+                        elif self.mode == "no_study_dependence":
+                            # 7D: undiscounted echo (col 2 = 0.0) -> cols [2, 3, 4, 5, 7, 10, 11]
+                            meta_input = meta_input[:, [2, 3, 4, 5, 7, 10, 11]]
+                            meta_input[:, 0:1] = 0.0
+                        else:
+                            # 7D quality -> cols [2, 3, 4, 5, 7, 10, 11]
+                            meta_input = meta_input[:, [2, 3, 4, 5, 7, 10, 11]]
+                    elif d_meta == 8:
+                        # Legacy 8D input: cols [0, 1, 6] are polarity
+                        batch_size = meta_input.size(0)
+                        defaults = torch.full((batch_size, 2), 0.5, device=meta_input.device, dtype=torch.float32)
+                        if self.mode == "no_context_conflict":
+                            qual_3d = meta_input[:, [2, 3, 7]]  # echo, qual, missing
+                            meta_input = torch.cat([qual_3d, defaults], dim=-1)
+                        elif self.mode == "no_study_dependence":
+                            qual_5d = meta_input[:, [2, 3, 4, 5, 7]]
+                            qual_5d[:, 0:1] = 0.0
+                            meta_input = torch.cat([qual_5d, defaults], dim=-1)
+                        else:
+                            qual_5d = meta_input[:, [2, 3, 4, 5, 7]]
+                            meta_input = torch.cat([qual_5d, defaults], dim=-1)
+                    elif d_meta == 7:
+                        if self.mode == "no_context_conflict":
+                            # Drop W_context (col 2) and C_hd (col 3) from 7D vector -> 5D remains
+                            meta_input = meta_input[:, [0, 1, 4, 5, 6]]
+                        elif self.mode == "no_study_dependence":
+                            # Replace echo-attenuated quantities with undiscounted ones (alpha=1)
+                            meta_input[:, 0:1] = 0.0
+                else:
+                    # Leaky reference models (retained for demonstration only)
+                    if self.mode == "leaky_no_context_conflict":
+                        if meta_input.size(-1) >= 8:
+                            meta_input[:, 4:5] = 1.0
+                            meta_input[:, 5:6] = 0.0
+                            meta_input[:, 6:7] = meta_input[:, 0:1]
 
                 # Compute reliability and epistemic uncertainty
                 R, uncertainty, breakdown = self.reliability_scorer.forward_with_uncertainty(meta_input)

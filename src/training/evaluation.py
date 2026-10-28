@@ -811,6 +811,21 @@ def compute_comprehensive_metrics(
         roc = 0.5
         pr_auc = float(np.mean(y_true_arr))
 
+    is_leaky_ref = (
+        "leaky" in model_variant.lower()
+        or "reference" in model_variant.lower()
+        or "probe" in model_variant.lower()
+    )
+    if roc > 0.98 and not is_leaky_ref:
+        msg = (
+            f"SUSPICIOUS HIGH PERFORMANCE WARNING: Model variant '{model_variant}' achieved "
+            f"ROC-AUC {roc:.4f} > 0.98 on split '{split_name}'. This strongly suggests potential label "
+            f"leakage or evaluation flaw in non-reference models."
+        )
+        logger.warning(msg)
+        import warnings
+        warnings.warn(msg, UserWarning, stacklevel=2)
+
     acc = float(accuracy_score(y_true_arr, np.where(y_pred_arr >= 0, y_pred_arr, 0)))
     prec, rec, f1, _ = precision_recall_fscore_support(
         y_true_arr, np.where(y_pred_arr >= 0, y_pred_arr, 0), average="binary", zero_division=0
@@ -917,7 +932,14 @@ def compute_comprehensive_metrics(
 
 
 def format_ablation_markdown_table(reports: List[ComprehensiveEvaluationReport]) -> str:
-    """Format multiple ablation reports into an auditable Markdown comparison table."""
+    """Format multiple ablation reports into auditable Markdown comparison tables."""
+    def is_leaky(report: ComprehensiveEvaluationReport) -> bool:
+        v = report.model_variant.lower()
+        return "leaky" in v or "full_vector" in v or "probe" in v
+
+    main_reports = [r for r in reports if not is_leaky(r)]
+    leaky_reports = [r for r in reports if is_leaky(r)]
+
     headers = [
         "Model Variant",
         "Split",
@@ -929,29 +951,55 @@ def format_ablation_markdown_table(reports: List[ComprehensiveEvaluationReport])
         "Coverage",
         "Selective Acc",
     ]
-    lines = [
+
+    def render_rows(reps: List[ComprehensiveEvaluationReport], is_leaky_table: bool = False) -> List[str]:
+        rows = []
+        for r in reps:
+            cov = f"{r.abstention_results.coverage:.3f}" if r.abstention_results else "1.000"
+            sel_acc = f"{r.abstention_results.selective_accuracy:.3f}" if r.abstention_results else f"{r.accuracy:.3f}"
+            roc_str = f"{r.roc_auc:.4f}"
+            if "roc_auc" in r.confidence_intervals:
+                lo, hi = r.confidence_intervals["roc_auc"]
+                roc_str += f" [{lo:.2f}, {hi:.2f}]"
+
+            var_name = f"`{r.model_variant}`"
+            if is_leaky_table:
+                var_name += " **[LEAKY REFERENCE (not a valid model)]**"
+
+            row = [
+                var_name,
+                r.split_name,
+                roc_str,
+                f"{r.pr_auc:.4f}",
+                f"{r.f1:.4f}",
+                f"{r.ece:.4f}",
+                f"{r.brier_score:.4f}",
+                cov,
+                sel_acc,
+            ]
+            rows.append("| " + " | ".join(row) + " |")
+        return rows
+
+    table_header = [
         "| " + " | ".join(headers) + " |",
         "| " + " | ".join(["---"] * len(headers)) + " |",
     ]
-    for r in reports:
-        cov = f"{r.abstention_results.coverage:.3f}" if r.abstention_results else "1.000"
-        sel_acc = f"{r.abstention_results.selective_accuracy:.3f}" if r.abstention_results else f"{r.accuracy:.3f}"
-        roc_str = f"{r.roc_auc:.4f}"
-        if "roc_auc" in r.confidence_intervals:
-            lo, hi = r.confidence_intervals["roc_auc"]
-            roc_str += f" [{lo:.2f}, {hi:.2f}]"
-        row = [
-            f"`{r.model_variant}`",
-            r.split_name,
-            roc_str,
-            f"{r.pr_auc:.4f}",
-            f"{r.f1:.4f}",
-            f"{r.ece:.4f}",
-            f"{r.brier_score:.4f}",
-            cov,
-            sel_acc,
-        ]
-        lines.append("| " + " | ".join(row) + " |")
+
+    lines = table_header + render_rows(main_reports, is_leaky_table=False)
+
+    if leaky_reports:
+        lines.append("")
+        lines.append("### Leaky Reference Baselines (Not Valid Models - Label Leakage Demonstration)")
+        lines.append("")
+        lines.append(
+            "> [!CAUTION]\n"
+            "> **LEAKY REFERENCE (not a valid model)**: The following variants utilize the full 12D lineage vector "
+            "or direct clinical polarity features (S_pos, S_neg, margin, N_raw_pos, N_raw_neg). "
+            "They are retained exclusively as diagnostic controls demonstrating label leakage (~1.00 ROC-AUC) "
+            "and MUST NEVER be compared as valid predictive models."
+        )
+        lines.append("")
+        lines.extend(table_header + render_rows(leaky_reports, is_leaky_table=True))
 
     return "\n".join(lines)
 
@@ -962,9 +1010,12 @@ def prepare_evaluation_tensors(
     bio_extractor: Any,
     text_extractor: Any,
     embedding_dim: int = 16,
+    feature_group: str = "quality_only",
+    mode: Optional[str] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     """
     Constructs PyTorch feature and label tensors for a partition DataFrame.
+    Defaults strictly to quality_only features (5D for no_context_conflict, 7D for other valid models).
     """
     h_tensors, d_tensors, meta_list, labels_list, texts_list = [], [], [], [], []
     for _, row in partition_df.iterrows():
@@ -976,15 +1027,13 @@ def prepare_evaluation_tensors(
 
         summary = summary_map.get((h_id, d_id))
         if summary:
-            meta_vec = summary.to_full_metadata_vector()
-            if meta_vec.shape[0] == 10:
-                meta_vec = np.append(meta_vec, [0.5, 0.5])
-            elif meta_vec.shape[0] < 12:
-                meta_vec = np.pad(meta_vec, (0, 12 - meta_vec.shape[0]), mode='constant', constant_values=(0.5, 0.5))
-            elif meta_vec.shape[0] > 12:
-                meta_vec = meta_vec[:12]
+            if hasattr(summary, "to_feature_vector"):
+                meta_vec = summary.to_feature_vector(mode=mode, feature_group=feature_group)
+            else:
+                meta_vec = summary.to_full_metadata_vector()
         else:
-            meta_vec = np.zeros(12, dtype=np.float32)
+            dim = 5 if mode == "no_context_conflict" else (12 if feature_group in {"full", "leaky_reference"} else 7)
+            meta_vec = np.zeros(dim, dtype=np.float32)
         meta_list.append(meta_vec)
 
         out = str(row.get("outcome", "")).lower()

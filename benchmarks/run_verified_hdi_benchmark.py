@@ -266,8 +266,8 @@ def run_benchmark(
         text_extractor = EvidenceTextFeatureExtractor(embedding_dim=embedding_dim, min_df=1)
         text_extractor.fit(train_texts)
 
-    def prepare_tensors(summary_map: Dict[Any, Any], partition_df: pd.DataFrame):
-        h_tensors, d_tensors, meta_10d_list, labels_list, texts_list = [], [], [], [], []
+    def prepare_base_tensors(partition_df: pd.DataFrame):
+        h_tensors, d_tensors, labels_list, texts_list = [], [], [], []
         herb_ids = partition_df["herb_id"].tolist()
         drug_ids = partition_df["drug_id"].tolist()
 
@@ -283,24 +283,7 @@ def run_benchmark(
                 d_tensors.append(torch.tensor(d_vec, dtype=torch.float32))
 
         for _, row in partition_df.iterrows():
-            h_id = row["herb_id"]
-            d_id = row["drug_id"]
             texts_list.append(str(row.get("original_text", "")))
-
-            summary = summary_map.get((h_id, d_id))
-            if summary:
-                meta_vec = summary.to_full_metadata_vector()
-                # Ensure 12-dimensional metadata vector (new dimensions at end:
-                # index 10: rho_reach, index 11: f_m_CYP)
-                if meta_vec.shape[0] == 10:
-                    # Migrate old 10D metadata to 12D by appending defaults
-                    meta_vec = np.append(meta_vec, [0.5, 0.5])  # rho_reach=0.5, f_m_CYP=0.5
-                elif meta_vec.shape[0] < 12:
-                    # Pad with defaults to reach 12D
-                    meta_vec = np.pad(meta_vec, (0, 12 - meta_vec.shape[0]), mode='constant', constant_values=(0.5, 0.5))
-            else:
-                meta_vec = np.zeros(12, dtype=np.float32)
-            meta_10d_list.append(meta_vec)
 
             # Ground truth: interaction_present / positive = 1.0, no_interaction_observed / negative = 0.0
             out = str(row["outcome"]).lower()
@@ -320,13 +303,26 @@ def run_benchmark(
             torch.stack(h_tensors),
             torch.stack(d_tensors),
             ev_tensors,
-            torch.tensor(np.array(meta_10d_list), dtype=torch.float32),
             torch.tensor(labels_list, dtype=torch.float32).unsqueeze(1),
         )
 
-    tr_h, tr_d, tr_ev, tr_meta, tr_y = prepare_tensors(train_summaries, train_df)
-    val_h, val_d, val_ev, val_meta, val_y = prepare_tensors(val_summaries, val_df)
-    te_h, te_d, te_ev, te_meta, te_y = prepare_tensors(test_summaries, test_df)
+    def prepare_metadata_tensor(summary_map: Dict[Any, Any], partition_df: pd.DataFrame, mode: Optional[str] = None):
+        meta_list = []
+        for _, row in partition_df.iterrows():
+            h_id = row["herb_id"]
+            d_id = row["drug_id"]
+            summary = summary_map.get((h_id, d_id))
+            if summary:
+                meta_vec = summary.to_feature_vector(mode=mode)
+            else:
+                dim = 5 if mode == "no_context_conflict" else (12 if str(mode).startswith("leaky_") else 7)
+                meta_vec = np.zeros(dim, dtype=np.float32)
+            meta_list.append(meta_vec)
+        return torch.tensor(np.array(meta_list), dtype=torch.float32)
+
+    tr_h, tr_d, tr_ev, tr_y = prepare_base_tensors(train_df)
+    val_h, val_d, val_ev, val_y = prepare_base_tensors(val_df)
+    te_h, te_d, te_ev, te_y = prepare_base_tensors(test_df)
 
     # 5. Evaluate Model Variants Across Baselines
     variants = [
@@ -357,6 +353,10 @@ def run_benchmark(
     reports: List[ComprehensiveEvaluationReport] = []
 
     for variant in variants:
+        tr_meta = prepare_metadata_tensor(train_summaries, train_df, mode=variant)
+        val_meta = prepare_metadata_tensor(val_summaries, val_df, mode=variant)
+        te_meta = prepare_metadata_tensor(test_summaries, test_df, mode=variant)
+
         model = ReliabilityConditionedInteractionModel(
             graph_dim=embedding_dim,
             evidence_dim=embedding_dim,
@@ -496,6 +496,83 @@ def run_benchmark(
         if llm_rep:
             reports.append(llm_rep)
 
+    # 10. Leaky Reference Baselines (Diagnostic Demonstration of Label Leakage - Not Valid Models)
+    leaky_nn_variants = [
+        "leaky_reference_full_vector",
+        "leaky_no_context_conflict",
+    ]
+    for leaky_var in leaky_nn_variants:
+        l_tr_meta = prepare_metadata_tensor(train_summaries, train_df, mode=leaky_var)
+        l_val_meta = prepare_metadata_tensor(val_summaries, val_df, mode=leaky_var)
+        l_te_meta = prepare_metadata_tensor(test_summaries, test_df, mode=leaky_var)
+
+        l_model = ReliabilityConditionedInteractionModel(
+            graph_dim=embedding_dim,
+            evidence_dim=embedding_dim,
+            fused_dim=embedding_dim,
+            hidden_dim=embedding_dim,
+            mode=leaky_var,
+            abstain_conflict_threshold=0.5,
+        )
+        l_opt = torch.optim.Adam(l_model.parameters(), lr=0.01)
+        l_crit = torch.nn.BCEWithLogitsLoss()
+        l_model.train()
+        for _ in range(25):
+            l_opt.zero_grad()
+            l_out = l_model(tr_h, tr_d, tr_ev, metadata=l_tr_meta)
+            l_loss = l_crit(l_out["logits"], tr_y)
+            l_loss.backward()
+            l_opt.step()
+
+        l_model.eval()
+        with torch.no_grad():
+            l_v_out = l_model(val_h, val_d, val_ev, metadata=l_val_meta)
+            l_t_out = l_model(te_h, te_d, te_ev, metadata=l_te_meta, return_details=True)
+
+        l_scaler = TemperatureScaler()
+        l_scaler.fit(l_v_out["logits"].cpu().numpy(), val_y.cpu().numpy(), max_iter=25)
+        l_scaled_test = l_scaler(l_t_out["logits"])
+        l_cal_probs = torch.sigmoid(l_scaled_test).detach().cpu().numpy().flatten()
+
+        l_rep = compute_comprehensive_metrics(
+            y_true=test_labels,
+            y_prob=l_cal_probs,
+            split_name="test_study_disjoint",
+            model_variant=leaky_var,
+            compute_bootstrap_ci=True,
+            n_bootstrap=500,
+            sample_metadata=test_metadata,
+        )
+        reports.append(l_rep)
+
+    # Leaky Polarity Probe (Logistic Regression on polarity features alone: S_pos, S_neg, margin, N_raw_pos, N_raw_neg)
+    def extract_polarity_features(part_df: pd.DataFrame, sum_map: Dict[Any, Any]) -> np.ndarray:
+        feats = []
+        for _, r in part_df.iterrows():
+            summary = sum_map.get((r["herb_id"], r["drug_id"]))
+            if summary:
+                pol = summary.to_feature_group("polarity_only")
+            else:
+                pol = np.zeros(5, dtype=np.float32)
+            feats.append(pol)
+        return np.array(feats, dtype=np.float32)
+
+    tr_pol = extract_polarity_features(train_df, train_summaries)
+    te_pol = extract_polarity_features(test_df, test_summaries)
+    probe = LogisticRegression(random_state=seed, max_iter=1000)
+    probe.fit(tr_pol, tr_y_tab)
+    probe_probs = probe.predict_proba(te_pol)[:, 1]
+    probe_rep = compute_comprehensive_metrics(
+        y_true=te_y_tab,
+        y_prob=probe_probs,
+        split_name="test_study_disjoint",
+        model_variant="leaky_polarity_probe",
+        compute_bootstrap_ci=True,
+        n_bootstrap=500,
+        sample_metadata=test_metadata,
+    )
+    reports.append(probe_rep)
+
     ddi_baselines_note = (
         "Note on Published DDI Baselines (DeepDDI, KGNN, CompGCN): "
         "These models were originally engineered for synthetic small-molecule drug-drug interactions (DDIs) "
@@ -548,6 +625,14 @@ def run_benchmark(
         with open(out_j, "w") as f:
             json.dump(res, f, indent=2)
         logger.info(f"Saved benchmark results to '{out_j}'.")
+
+        # Also mirror to results/ if output_json is under reports/
+        alt_j = PROJECT_ROOT / "results" / out_j.name
+        if alt_j.resolve() != out_j.resolve():
+            alt_j.parent.mkdir(parents=True, exist_ok=True)
+            with open(alt_j, "w") as f:
+                json.dump(res, f, indent=2)
+            logger.info(f"Mirrored benchmark results to '{alt_j}'.")
 
     if output_md:
         out_m = Path(output_md)

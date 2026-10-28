@@ -93,6 +93,7 @@ class PairEvidenceSummary:
     # Contradiction / Conflict
     contradiction_strength: float  # High when strong independent positive and negative evidence clash
     net_evidence_margin: float     # S_pos - S_neg
+    undiscounted_contradiction_strength: float = 0.0  # Conflict calculated under alpha=1.0 (undiscounted)
     raw_margin: float = 0.0        # Raw positive count - Raw negative count
 
     # Lineage audit trail
@@ -105,17 +106,42 @@ class PairEvidenceSummary:
     pk_branch_used: str = "hepatic"
     missing_dose_or_mw: bool = False
 
-    def to_feature_group(self, feature_group: str = FEATURE_GROUP_QUALITY_ONLY) -> np.ndarray:
+    def to_feature_group(self, feature_group: str = FEATURE_GROUP_QUALITY_ONLY, mode: Optional[str] = None) -> np.ndarray:
         """
         Extract feature subset based on group for rigorous leakage control:
-        - 'full': 12D [S_pos, S_neg, echo_ratio, q_mean, W_context, C_hd, margin, missingness, N_raw_pos, N_raw_neg, rho_reach, f_m_CYP]
-        - 'quality_only': 7D [echo_ratio, q_mean, W_context, C_hd, missingness, rho_reach, f_m_CYP]
-        - 'polarity_only': 5D [S_pos, S_neg, margin, N_raw_pos, N_raw_neg]
+        - 'quality_only' (default): 7D [echo_ratio, q_mean, W_context, C_hd, missingness, rho_reach, f_m_CYP]
+        - 'quality_5d_no_context_conflict' (or mode='no_context_conflict'): 5D [echo_ratio, q_mean, missingness, rho_reach, f_m_CYP]
+        - 'quality_7d_no_study_dependence' (or mode='no_study_dependence'): 7D [0.0, q_mean, W_context, C_hd_undiscounted, missingness, rho_reach, f_m_CYP]
+        - 'polarity_only': 5D [S_pos, S_neg, margin, N_raw_pos, N_raw_neg] (Probe only)
+        - 'full': 12D [S_pos, S_neg, echo_ratio, q_mean, W_context, C_hd, margin, missingness, N_raw_pos, N_raw_neg, rho_reach, f_m_CYP] (Leaky reference only)
         """
         rho_reach = self.rho_reach
         f_m_CYP = self.f_m_CYP
 
-        if feature_group == FEATURE_GROUP_QUALITY_ONLY or feature_group == "quality_only":
+        if mode == "no_context_conflict" or feature_group == "quality_5d_no_context_conflict":
+            # 5D: Drop W_context and C_hd from 7D vector
+            return np.array([
+                self.citation_echo_ratio,
+                self.mean_source_quality,
+                self.metadata_missingness,
+                rho_reach,
+                f_m_CYP,
+            ], dtype=np.float32)
+
+        elif mode == "no_study_dependence" or feature_group == "quality_7d_no_study_dependence":
+            # 7D: Replace echo-attenuated quantities with undiscounted ones (alpha=1)
+            undisc_conflict = getattr(self, "undiscounted_contradiction_strength", self.contradiction_strength)
+            return np.array([
+                0.0,  # undiscounted echo ratio
+                self.mean_source_quality,
+                self.context_compatibility_score,
+                undisc_conflict,
+                self.metadata_missingness,
+                rho_reach,
+                f_m_CYP,
+            ], dtype=np.float32)
+
+        elif feature_group == FEATURE_GROUP_QUALITY_ONLY or feature_group == "quality_only":
             return np.array([
                 self.citation_echo_ratio,
                 self.mean_source_quality,
@@ -125,6 +151,7 @@ class PairEvidenceSummary:
                 rho_reach,
                 f_m_CYP,
             ], dtype=np.float32)
+
         elif feature_group == FEATURE_GROUP_POLARITY_ONLY or feature_group == "polarity_only":
             return np.array([
                 self.independent_positive_strength,
@@ -133,7 +160,8 @@ class PairEvidenceSummary:
                 float(self.raw_positive_count),
                 float(self.raw_negative_count),
             ], dtype=np.float32)
-        else:  # FEATURE_GROUP_FULL
+
+        else:  # FEATURE_GROUP_FULL / 'leaky_reference'
             return np.array([
                 self.independent_positive_strength,
                 self.independent_negative_strength,
@@ -152,63 +180,29 @@ class PairEvidenceSummary:
     def to_feature_vector(self, mode: Optional[str] = None, feature_group: Optional[str] = None) -> np.ndarray:
         """
         Returns an evidence feature vector with rigorous ablation isolation.
+        No polarity column (S_pos, S_neg, margin, N_raw_pos, N_raw_neg) may reach any model in the main table.
 
         Modes:
-        - 'reliability_conditioned': Full proposed model with lineage clustering, context, and conflict.
-        - 'reliability_conditioned_quality_only': Quality-only features, strictly leakage-free.
-        - 'no_study_dependence': Replaces lineage-clustered strengths with raw counts, zeros echo ratio.
-        - 'no_context_conflict': Neutralizes context to 1.0, zeros conflict, and removes conflict subtraction from margin.
-        - 'graph_plus_naive_evidence': Baseline using solely raw counts and neutral context/conflict.
+        - 'reliability_conditioned': Full proposed model with lineage clustering, context, and conflict (7D quality).
+        - 'reliability_conditioned_quality_only': Quality-only features, strictly leakage-free (7D quality).
+        - 'no_study_dependence': Replaces echo-attenuated quantities with undiscounted ones (alpha=1) within quality features (7D quality).
+        - 'no_context_conflict': Drops W_context and C_hd from 7D quality features (5D quality).
+        - 'standard_fusion', 'graph_plus_naive_evidence', 'naive_concat_mlp', 'evidence_only', 'graph_only': Same quality-only input policy (7D quality).
+        - 'leaky_reference_full_vector': Only for explicit LEAKY REFERENCE baseline demonstration (12D full).
         """
-        if feature_group == FEATURE_GROUP_QUALITY_ONLY or mode == "reliability_conditioned_quality_only":
-            return self.to_feature_group(FEATURE_GROUP_QUALITY_ONLY)
-        elif feature_group == FEATURE_GROUP_POLARITY_ONLY:
+        if mode == "no_context_conflict":
+            return self.to_feature_group(mode="no_context_conflict")
+        elif mode == "no_study_dependence":
+            return self.to_feature_group(mode="no_study_dependence")
+        elif mode in {"leaky_reference_full_vector", "leaky_full_vector", "leaky_no_context_conflict"} or feature_group in {"full", "leaky_reference"}:
+            logger.warning("Extracting full 12D lineage vector: CONTAINS POLARITY LEAKAGE (valid only as LEAKY REFERENCE)")
+            return self.to_feature_group(FEATURE_GROUP_FULL)
+        elif feature_group in {FEATURE_GROUP_POLARITY_ONLY, "polarity_only"}:
             return self.to_feature_group(FEATURE_GROUP_POLARITY_ONLY)
-
-        if mode == "no_study_dependence":
-            # Ablate study dependence: use un-discounted raw counts, ignore citation echo
-            pos = float(self.raw_positive_count)
-            neg = float(self.raw_negative_count)
-            echo = 0.0
-            ctx = self.context_compatibility_score
-            conflict = self.contradiction_strength
-            margin = float(self.raw_positive_count - self.raw_negative_count)
-        elif mode == "no_context_conflict":
-            # Ablate context and conflict: neutralize context, zero contradiction, and remove negative deduction from margin
-            pos = self.independent_positive_strength
-            neg = self.independent_negative_strength
-            echo = self.citation_echo_ratio
-            ctx = 1.0       # neutral context
-            conflict = 0.0  # zero contradiction
-            margin = self.independent_positive_strength  # positive evidence only; no conflict subtraction
-        elif mode in {"graph_plus_naive_evidence", "raw_naive"}:
-            pos = float(self.raw_positive_count)
-            neg = float(self.raw_negative_count)
-            echo = 0.0
-            ctx = 1.0
-            conflict = 0.0
-            margin = float(self.raw_positive_count - self.raw_negative_count)
         else:
-            # Full proposed reliability-conditioned representation
-            pos = self.independent_positive_strength
-            neg = self.independent_negative_strength
-            echo = self.citation_echo_ratio
-            ctx = self.context_compatibility_score
-            conflict = self.contradiction_strength
-            margin = self.net_evidence_margin
+            return self.to_feature_group(FEATURE_GROUP_QUALITY_ONLY)
 
-        return np.array([
-            pos,
-            neg,
-            echo,
-            self.mean_source_quality,
-            ctx,
-            conflict,
-            margin,
-            self.metadata_missingness,
-        ], dtype=np.float32)
-
-    def to_full_metadata_vector(self, feature_group: str = "full") -> np.ndarray:
+    def to_full_metadata_vector(self, feature_group: str = "full", mode: Optional[str] = None) -> np.ndarray:
         """
         Returns a metadata vector containing lineage-adjusted features and PK reachability parameters.
         - 'full': 12D [0: indep_pos, 1: indep_neg, 2: echo_ratio, 3: source_quality,
@@ -216,15 +210,17 @@ class PairEvidenceSummary:
                        8: raw_positive_count, 9: raw_negative_count,
                        10: rho_reach, 11: f_m_CYP]
         - 'quality_only': 7D [echo_ratio, source_quality, context_compat, contradiction,
-                              missingness, rho_reach, f_m_CYP]
+                              missingness, rho_reach, f_m_CYP] (or 5D if mode='no_context_conflict')
         - 'polarity_only': 5D [indep_pos, indep_neg, net_margin, raw_positive_count, raw_negative_count]
         """
         if feature_group in {FEATURE_GROUP_QUALITY_ONLY, "quality_only"}:
-            return self.to_feature_group(FEATURE_GROUP_QUALITY_ONLY)
+            return self.to_feature_vector(mode=mode)
         elif feature_group in {FEATURE_GROUP_POLARITY_ONLY, "polarity_only"}:
             return self.to_feature_group(FEATURE_GROUP_POLARITY_ONLY)
         return self.to_feature_group(FEATURE_GROUP_FULL)
 
+
+LineageSummary = PairEvidenceSummary
 
 
 class EvidenceLineageAnalyzer:
@@ -357,7 +353,7 @@ class EvidenceLineageAnalyzer:
 
         return float(np.clip(score, 0.05, 1.0))
 
-    def evaluate_cluster_strength(self, cluster: List[EvidenceRecord]) -> float:
+    def evaluate_cluster_strength(self, cluster: List[EvidenceRecord], echo_discount: Optional[float] = None) -> float:
         """
         Compute effective independent evidentiary strength for a cluster of dependent records:
         Strength = Primary_Quality + sum(echo_discount_factor * Secondary_Quality).
@@ -377,8 +373,9 @@ class EvidenceLineageAnalyzer:
         primary_score = rec_quality(primary)
 
         # Secondary derivative reports add diminishing returns
+        factor = self.echo_discount_factor if echo_discount is None else echo_discount
         secondary_score = sum(
-            self.echo_discount_factor * rec_quality(r)
+            factor * rec_quality(r)
             for r in sorted_recs[1:]
         )
         return float(primary_score + secondary_score)
@@ -408,6 +405,7 @@ class EvidenceLineageAnalyzer:
                 context_compatibility_score=0.0,
                 metadata_missingness=1.0,
                 contradiction_strength=0.0,
+                undiscounted_contradiction_strength=0.0,
                 net_evidence_margin=0.0,
                 primary_study_clusters=[],
                 audit_sources=[],
@@ -471,6 +469,16 @@ class EvidenceLineageAnalyzer:
         denom = indep_pos_strength + indep_neg_strength + eps
         contradiction_strength = float((2.0 * min(indep_pos_strength, indep_neg_strength)) / denom)
 
+        # Undiscounted contradiction strength under alpha = 1.0 (no study-dependence discounting)
+        undisc_pos = sum(self.evaluate_cluster_strength(c, echo_discount=1.0) for c in pos_clusters)
+        undisc_neg = sum(self.evaluate_cluster_strength(c, echo_discount=1.0) for c in neg_clusters)
+        for r in conf_recs:
+            h_undisc = 0.5 * self.evaluate_cluster_strength([r], echo_discount=1.0)
+            undisc_pos += h_undisc
+            undisc_neg += h_undisc
+        undisc_denom = undisc_pos + undisc_neg + eps
+        undiscounted_contradiction_strength = float((2.0 * min(undisc_pos, undisc_neg)) / undisc_denom)
+
         # Net evidence margin
         net_evidence_margin = float(indep_pos_strength - indep_neg_strength)
 
@@ -498,6 +506,7 @@ class EvidenceLineageAnalyzer:
             context_compatibility_score=float(mean_context),
             metadata_missingness=float(missingness),
             contradiction_strength=float(contradiction_strength),
+            undiscounted_contradiction_strength=float(undiscounted_contradiction_strength),
             net_evidence_margin=float(net_evidence_margin),
             raw_margin=float(len(pos_recs) - len(neg_recs)),
             primary_study_clusters=cluster_study_ids,

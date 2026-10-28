@@ -127,6 +127,13 @@ class ReliabilityScorer(nn.Module):
         )
         self.quality_dim_attention = nn.Linear(total_dim, 7)
 
+        # 1b. Quality-only 5D projection for no_context_conflict: [echo, qual, missing, rho_reach, f_m_CYP]
+        self.quality_5d_proj = nn.Sequential(
+            nn.Linear(5, total_dim),
+            nn.GELU(),
+        )
+        self.quality_5d_dim_attention = nn.Linear(total_dim, 5)
+
         # Initialize quality_proj with positive inductive bias for quality signals (qual, ctx, reach, cyp)
         with torch.no_grad():
             nn.init.xavier_uniform_(self.quality_proj[0].weight)
@@ -135,6 +142,12 @@ class ReliabilityScorer(nn.Module):
             self.quality_proj[0].weight[:, 2] += 0.35  # context_compat
             self.quality_proj[0].weight[:, 0] -= 0.20  # echo_ratio
             self.quality_proj[0].weight[:, 4] -= 0.50  # missingness
+
+            nn.init.xavier_uniform_(self.quality_5d_proj[0].weight)
+            self.quality_5d_proj[0].weight[:, 0] -= 0.20  # echo_ratio
+            self.quality_5d_proj[0].weight[:, 1] += 0.35  # source_quality
+            self.quality_5d_proj[0].weight[:, 2] -= 0.50  # missingness
+            self.quality_5d_proj[0].weight[:, 3] += 0.35  # rho_reach
 
         # 2. Lineage-aware projection for 8D evidence lineage features:
         # [indep_pos, indep_neg, echo_ratio, source_quality, context_compat, contradiction, net_margin, missingness]
@@ -187,6 +200,11 @@ class ReliabilityScorer(nn.Module):
             context_compat = metadata[:, 2:3]
             contradiction = metadata[:, 3:4]
             missingness = metadata[:, 4:5]
+        elif d == 5 and (self.feature_group == "quality_only" or getattr(self, "mode", None) == "no_context_conflict"):
+            source_quality = metadata[:, 1:2]
+            context_compat = None  # W_context dropped in no_context_conflict
+            contradiction = None   # C_hd dropped in no_context_conflict
+            missingness = metadata[:, 2:3]
         else:
             source_quality = None
             context_compat = None
@@ -215,6 +233,10 @@ class ReliabilityScorer(nn.Module):
         if source_quality is not None and context_compat is not None:
             q_factor = 0.35 + 0.65 * (0.5 * source_quality.clamp(0.0, 1.0) + 0.5 * context_compat.clamp(0.0, 1.0))
             R = R * q_factor
+        elif source_quality is not None:
+            # When context_compat is ablated (e.g. no_context_conflict), modulate only by source quality
+            q_factor = 0.35 + 0.65 * source_quality.clamp(0.0, 1.0)
+            R = R * q_factor
 
         # Contradiction damping
         if contradiction is not None:
@@ -228,7 +250,16 @@ class ReliabilityScorer(nn.Module):
         breakdown = None
         if return_breakdown:
             d = metadata.size(-1)
-            if self.feature_group == "quality_only" or d == 7:
+            if d == 5 and (self.feature_group == "quality_only" or getattr(self, "mode", None) == "no_context_conflict"):
+                dim_weights = torch.softmax(self.quality_5d_dim_attention(combined), dim=-1)
+                breakdown = {
+                    "echo_ratio_weight": dim_weights[:, 0],
+                    "source_quality_weight": dim_weights[:, 1],
+                    "missingness_weight": dim_weights[:, 2],
+                    "rho_reach_weight": dim_weights[:, 3],
+                    "f_m_CYP_weight": dim_weights[:, 4],
+                }
+            elif self.feature_group == "quality_only" or d == 7:
                 dim_weights = torch.softmax(self.quality_dim_attention(combined), dim=-1)
                 breakdown = {
                     "echo_ratio_weight": dim_weights[:, 0],
@@ -331,7 +362,9 @@ class ReliabilityScorer(nn.Module):
                 return self.lineage_proj(metadata.float())
 
         if d == 5:
-            if self.feature_group == "polarity_only":
+            if self.feature_group == "quality_only" or getattr(self, "mode", None) == "no_context_conflict":
+                return self.quality_5d_proj(metadata.float())
+            elif self.feature_group == "polarity_only":
                 return self.polarity_proj(metadata.float())
             # Legacy 5D embedding
             return self._embed_legacy_5d(metadata)
