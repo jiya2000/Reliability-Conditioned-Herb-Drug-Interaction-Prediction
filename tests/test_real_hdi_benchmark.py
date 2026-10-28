@@ -16,13 +16,19 @@ from src.data.source_registry import DEFAULT_SOURCE_REGISTRY, AuditableSourceReg
 from benchmarks.run_verified_hdi_benchmark import run_benchmark
 
 
-def test_verified_hdi_benchmark_execution():
+def test_verified_hdi_benchmark_execution(tmp_path, monkeypatch):
     """
     Execute verified benchmark on real clinical/pharmacokinetic botanical literature.
     Verifies that all literature references resolve to real PMIDs/DOIs in the audited registry,
     study-disjoint partitioning has zero study leakage, and all 6 baseline variants run.
     """
-    res = run_benchmark("data/benchmark/verified_botanical_hdi.csv")
+    import benchmarks.run_verified_hdi_benchmark as benchmark
+    monkeypatch.setattr(benchmark, "PROJECT_ROOT", tmp_path)
+    res = run_benchmark(
+        "data/benchmark/verified_botanical_hdi.csv",
+        output_json=str(tmp_path / "benchmark.json"),
+        output_md=str(tmp_path / "benchmark.md"),
+    )
 
     assert res["status"] == "success"
     assert res["num_records"] >= 30

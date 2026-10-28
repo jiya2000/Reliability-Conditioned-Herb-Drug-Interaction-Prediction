@@ -1,14 +1,7 @@
-"""
-Reliability-Conditioned Herb-Drug Interaction (HDI) Prediction Dashboard
-Interactive, Standalone Working Prototype for Professor / Academic & Patent Demonstrations.
+"""HDI research-readiness and evidence-inspection dashboard.
 
-Features:
-- Live biological GAT + evidence lineage inference
-- Dynamic citation echo attenuation (alpha = 0.15)
-- Pharmacokinetic context compatibility scoring (species, preparation, route)
-- Contradiction-aware tri-state abstention with EHR review queue routing
-- Benchmark comparison against re-implemented published baselines (DeepDDI, KGNN, CompGCN)
-- 100% standalone (zero external server dependencies)
+The legacy prototype below is retained for reference but execution stops before
+its imports, startup training, predictions and unsupported clinical claims.
 """
 
 from __future__ import annotations
@@ -24,9 +17,25 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+import streamlit as st
+from app.research_status import render_research_readiness
+
+# ---------- Page Configuration ----------
+st.set_page_config(
+    page_title="HDI Research Readiness",
+    page_icon="🌿",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# The redesigned inference bundle is not available. Stop before legacy imports,
+# startup fitting, synthetic defaults, or unsupported clinical claims below.
+render_research_readiness(st, PROJECT_ROOT)
+st.stop()
+
+# Legacy prototype retained for historical reference; not an active app path.
 import numpy as np
 import pandas as pd
-import streamlit as st
 import torch
 import networkx as nx
 import plotly.graph_objects as go
@@ -50,14 +59,6 @@ from src.models.interaction_model import ReliabilityConditionedInteractionModel
 from src.models.calibration_loss import CalibrationLoss
 from src.training.calibration import TemperatureScaler
 from src.training.evaluation import LeakageSafeSplitter
-
-# ---------- Page Configuration ----------
-st.set_page_config(
-    page_title="HDI Prediction System | Prototype",
-    page_icon="🌿",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
 
 # ---------- Advanced Styling (Modern Dark Glassmorphism) ----------
 st.markdown(

@@ -80,6 +80,47 @@ def validate_curation_dataframe(df: pd.DataFrame) -> None:
     if df["target"].isna().any() or (df["target"].astype(str).str.strip() == "").any():
         raise ValueError("Mechanistic curation table contains rows with missing 'target'")
 
+    # Reject ambiguous or malformed measurements before feature construction.
+    if df.duplicated(["entity", "target"]).any():
+        raise ValueError("Duplicate entity-target rows require explicit curation resolution")
+    numeric = {
+        "value_ic50_uM": (0, None, False), "value_ki_uM": (0, None, False),
+        "value_fold_induction": (1, None, True), "value_fm": (0, 1, True),
+        "value_substrate_flag": (0, 1, True), "exposure_conc_uM": (0, None, True),
+    }
+    for _, row in df.iterrows():
+        if row["status"] not in {"measured", "tested_no_effect", "not_tested"}:
+            raise ValueError("Invalid curation status")
+        values = {}
+        for col, (lower, upper, inclusive) in numeric.items():
+            raw = row[col]
+            if pd.isna(raw) or (isinstance(raw, str) and not raw.strip()):
+                continue
+            try:
+                value = float(raw)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"Invalid numeric value in {col}") from exc
+            if (not np.isfinite(value) or value < lower or
+                    (not inclusive and value == lower) or
+                    (upper is not None and value > upper) or
+                    (col == "value_substrate_flag" and value not in (0, 1))):
+                raise ValueError(f"Out-of-range value in {col}")
+            values[col] = value
+        measurements = set(values) - {"exposure_conc_uM"}
+        if row["status"] != "measured" and measurements:
+            raise ValueError("Only measured rows may contain mechanistic values")
+        inhibition = bool({"value_ic50_uM", "value_ki_uM"} & measurements)
+        if inhibition and values.get("value_fold_induction", 1) > 1:
+            raise ValueError("Conflicting inhibition and induction require curation resolution")
+        ent = str(row["entity"]).strip()
+        if not ent.startswith(("HERB_", "DRUG_")):
+            raise ValueError("Entity must use HERB_ or DRUG_ identifier")
+        if ent.startswith("HERB_") and measurements & {"value_fm", "value_substrate_flag"}:
+            raise ValueError("Drug-only measurements supplied for herb")
+        if ent.startswith("DRUG_") and measurements & {
+                "value_ic50_uM", "value_ki_uM", "value_fold_induction"}:
+            raise ValueError("Herb modulation measurements supplied for drug")
+
 
 def is_curation_verified(df: pd.DataFrame) -> Tuple[bool, int, int]:
     """
@@ -134,7 +175,11 @@ def extract_curated_feature_matrix(
     allow_unverified: bool = False,
 ) -> np.ndarray:
     """
-    Extract pairwise mechanistic interaction feature matrix from the verified curation table.
+    Extract signed target-activity features; see docs/mechanistic_features.md.
+
+    Missing pathways remain NaN. Output uses CANONICAL_TARGETS followed by
+    sum(abs(pathways)), which is NaN if any pathway is unknown.
+    allow_unverified is retained for API compatibility but never bypasses provenance.
     
     Strict Guard:
     Raises UnverifiedCurationError if any rows in curation_df are unverified,
@@ -144,51 +189,55 @@ def extract_curated_feature_matrix(
         curation_df = load_mechanistic_curation()
 
     verified, n_ver, n_unver = is_curation_verified(curation_df)
-    if not verified and not allow_unverified:
+    if not verified:
         raise UnverifiedCurationError(
             f"Cannot extract new mechanistic features: curation table contains {n_unver} UNVERIFIED rows "
             f"and only {n_ver} verified entries. New-feature model evaluation is strictly blocked until "
             f"all entities have human-verified sources and citations."
         )
 
-    # If verified, build entity -> target -> value map
-    entity_map: Dict[str, Dict[str, float]] = {}
-    for _, row in curation_df.iterrows():
-        ent = str(row["entity"]).strip()
-        tgt = str(row["target"]).strip()
-        val = row["value"]
-        if pd.notna(val) and str(val).strip() != "":
-            try:
-                num_val = float(val)
-                if ent not in entity_map:
-                    entity_map[ent] = {}
-                entity_map[ent][tgt] = num_val
-            except ValueError:
-                continue
+    required_pairs = {"herb_id", "drug_id"}
+    if not required_pairs.issubset(df_pairs.columns):
+        raise ValueError("Pair table requires herb_id and drug_id")
+    for col, prefix in (("herb_id", "HERB_"), ("drug_id", "DRUG_")):
+        if not df_pairs[col].map(lambda v: isinstance(v, str) and v.strip().startswith(prefix)).all():
+            raise ValueError(f"Invalid pair identifier in {col}")
 
-    target_to_idx = {t: i for i, t in enumerate(CANONICAL_TARGETS)}
-    n_targets = len(CANONICAL_TARGETS)
+    rows = {(str(r["entity"]).strip(), str(r["target"]).strip()): r
+            for _, r in curation_df.iterrows()}
 
-    # Compute Hadamard product interaction vector for each pair
+    def number(row, column):
+        value = row[column]
+        return np.nan if pd.isna(value) or str(value).strip() == "" else float(value)
+
+    def modulation(row):
+        if row is None or row["status"] == "not_tested":
+            return np.nan
+        if row["status"] == "tested_no_effect":
+            return 0.0
+        if any(np.isfinite(number(row, c)) for c in ("value_ic50_uM", "value_ki_uM")):
+            return -1.0
+        fold = number(row, "value_fold_induction")
+        return np.nan if np.isnan(fold) else float(fold > 1)
+
     features = []
-    for _, row in df_pairs.iterrows():
-        herb = str(row["herb_id"]).strip()
-        drug = str(row["drug_id"]).strip()
-
-        h_vec = np.zeros(n_targets, dtype=np.float32)
-        d_vec = np.zeros(n_targets, dtype=np.float32)
-
-        for tgt, val in entity_map.get(herb, {}).items():
-            if tgt in target_to_idx:
-                h_vec[target_to_idx[tgt]] = val
-        for tgt, val in entity_map.get(drug, {}).items():
-            if tgt in target_to_idx:
-                d_vec[target_to_idx[tgt]] = val
-
-        interaction_vec = h_vec * d_vec
-        overlap_total = float(np.sum(np.abs(interaction_vec)))
-        # Vector: [interaction_vec (9-D), overlap_total (1-D)] -> 10-D
-        feat = np.concatenate([interaction_vec, [overlap_total]])
-        features.append(feat)
-
-    return np.array(features, dtype=np.float32)
+    for _, pair in df_pairs.iterrows():
+        effects = []
+        for target in CANONICAL_TARGETS:
+            herb = rows.get((pair["herb_id"].strip(), target))
+            drug = rows.get((pair["drug_id"].strip(), target))
+            weight = np.nan
+            if drug is not None and drug["status"] == "measured":
+                # Clearance fraction has quantitative meaning; substrate status
+                # is only a binary fallback, never an invented fraction.
+                weight = number(drug, "value_fm")
+                if np.isnan(weight):
+                    weight = number(drug, "value_substrate_flag")
+            elif drug is not None and drug["status"] == "tested_no_effect":
+                weight = 0.0
+            effect = modulation(herb)
+            # A known null factor proves no contribution even if the other is unknown.
+            effects.append(0.0 if effect == 0 or weight == 0 else effect * weight)
+        effects = np.asarray(effects, dtype=np.float32)
+        features.append(np.concatenate([effects, [np.abs(effects).sum()]]))
+    return np.asarray(features, dtype=np.float32).reshape(-1, len(CANONICAL_TARGETS) + 1)

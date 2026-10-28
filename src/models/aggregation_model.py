@@ -203,37 +203,7 @@ class ReliabilityTarget:
 def load_consensus_labels(
     path: str = "data/benchmark/consensus_labels.csv",
 ) -> "pd.DataFrame":
-    """
-    Load validated consensus labels.
+    """Use the shared consensus contract and block unavailable labels."""
+    from src.data.evidence_schema import load_consensus_labels_table
 
-    Raises RuntimeError if the file has no validated rows
-    (i.e., all consensus_label values are empty/NaN).
-    """
-    import pandas as pd
-
-    df = pd.read_csv(path)
-
-    # Check required columns
-    required = {"herb_id", "drug_id", "consensus_label"}
-    missing = required - set(df.columns)
-    if missing:
-        raise ValueError(
-            f"consensus_labels.csv missing required columns: {missing}"
-        )
-
-    # Check for validated rows (non-empty consensus_label)
-    valid_rows = df["consensus_label"].notna() & (
-        df["consensus_label"].astype(str).str.strip() != ""
-    )
-    n_valid = valid_rows.sum()
-
-    if n_valid == 0:
-        raise RuntimeError(
-            "consensus_labels.csv has no validated rows. "
-            "The reliability target and supervised-R training cannot proceed "
-            "until at least one row has a non-empty consensus_label. "
-            "Label pairs using data/benchmark/consensus_labels_pairs_to_label.csv "
-            "following the protocol in data/benchmark/ANNOTATION_PROTOCOL.md."
-        )
-
-    return df[valid_rows].copy()
+    return load_consensus_labels_table(path, require_labels=True)[0]

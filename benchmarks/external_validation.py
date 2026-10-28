@@ -236,7 +236,9 @@ def analyze_abstention_mechanisms(
         "low_reliability_borderline_confidence": 0,
     }
 
-    q_hat = float(abstainer.q_hat) if abstainer.q_hat is not None else 0.8148
+    if not abstainer.is_calibrated or abstainer.q_hat is None:
+        raise ValueError("Abstention diagnostics require a fitted conformal calibrator.")
+    q_hat = float(abstainer.q_hat)
     lower_threshold = 1.0 - q_hat
     upper_threshold = q_hat
 
@@ -244,7 +246,7 @@ def analyze_abstention_mechanisms(
         prob = r["predicted_prob"]
         r_val = r["reliability_R"]
         c_val = r["contradiction_C"]
-        u_val = r.get("epistemic_uncertainty", 0.05)
+        u_val = r.get("epistemic_uncertainty")
 
         conformal_set = []
         if prob <= q_hat:
@@ -257,7 +259,7 @@ def analyze_abstention_mechanisms(
             triggers.append("conformal_set_size_2")
             condition_counts["conformal_set_size_2"] += 1
 
-        if u_val > tau_u:
+        if u_val is not None and u_val > tau_u:
             triggers.append("epistemic_uncertainty_threshold")
             condition_counts["epistemic_uncertainty_threshold"] += 1
 
@@ -286,17 +288,13 @@ def analyze_abstention_mechanisms(
             "all_active_triggers": triggers,
         })
 
+    n = len(records_analysis)
+    both = condition_counts["conformal_set_size_2"]
     clinical_assessment = (
-        "APPROPRIATE PROTECTIVE BEHAVIOR (NOT MISCALIBRATED THRESHOLD): "
-        "All external records abstain because the conformal prediction set contains both classes "
-        "C(X) = {0, 1} under the rigorous 90% confidence requirement (epsilon = 0.10, q_hat = 0.8148). "
-        "Because these external records lack training literature evidence in the lineage DAG (missingness = 1.0), "
-        "literature reliability R strictly collapses to 0.0, forcing the model to rely entirely on metabolic graph priors. "
-        "While the graph priors assign moderate interaction probabilities (0.63 - 0.80), the model correctly recognizes "
-        "that without empirical literature confirmation, declaring an automated positive interaction or safe clearance "
-        "cannot be guaranteed at 90% statistical coverage. Routing these unvetted pairs to clinical pharmacist review "
-        "preserves patient safety and prevents hazardous false negatives (e.g. on Curcuma + Midazolam, which is clinically benign "
-        "despite shared CYP3A4 affinity)."
+        f"{both}/{n} records have two-class conformal sets at fitted q_hat={q_hat:.6g}. "
+        "These diagnostics do not establish clinical appropriateness or external coverage. "
+        "This legacy study-outcome model uses raw text and label-adjacent profiles; "
+        "independent consensus validation remains unavailable."
     )
 
     return {
@@ -454,10 +452,8 @@ This diagnostic audits entity and publication overlap between the external cohor
             summary = summary_map.get((h_id, d_id))
             if summary:
                 meta_vec = summary.to_feature_group("quality_only")
-                if meta_vec.shape[0] < 12:
-                    meta_vec = np.pad(meta_vec, (0, 12 - meta_vec.shape[0]), mode='constant', constant_values=(0.5, 0.5))
             else:
-                meta_vec = np.zeros(12, dtype=np.float32)
+                meta_vec = np.zeros(7, dtype=np.float32)
             meta_list.append(meta_vec)
 
             out = str(row["outcome"]).lower()
@@ -528,7 +524,10 @@ This diagnostic audits entity and publication overlap between the external cohor
     ext_probs = torch.sigmoid(ext_scaled_logits).detach().cpu().numpy().flatten()
     ext_labels = ext_y.cpu().numpy().flatten().astype(int)
     ext_reliabilities = ext_out["reliability"].detach().cpu().numpy().flatten()
-    ext_contradictions = ext_meta[:, 3].numpy() if ext_meta.shape[1] > 3 else np.zeros_like(ext_probs)
+    ext_contradictions = np.array([
+        external_summaries[(row.herb_id, row.drug_id)].contradiction_strength
+        for row in external_df.itertuples()
+    ])
 
     decisions = abstainer.predict_batch(
         probabilities=ext_probs,
@@ -546,10 +545,10 @@ This diagnostic audits entity and publication overlap between the external cohor
             "drug_id": str(row["drug_id"]),
             "true_outcome": str(row["outcome"]),
             "true_label": int(ext_labels[i]),
-            "predicted_prob": round(float(ext_probs[i]), 4),
-            "reliability_R": round(float(ext_reliabilities[i]), 4),
-            "contradiction_C": round(float(ext_contradictions[i]), 4),
-            "epistemic_uncertainty": 0.05,
+            "predicted_prob": float(ext_probs[i]),
+            "reliability_R": float(ext_reliabilities[i]),
+            "contradiction_C": float(ext_contradictions[i]),
+            "epistemic_uncertainty": None,  # Not estimated by this evaluation.
             "conformal_decision": d.decision.value,
             "predicted_label": int(d.predicted_label),
             "abstain": bool(d.abstain),
@@ -596,6 +595,7 @@ This diagnostic audits entity and publication overlap between the external cohor
         "n_samples": len(external_df),
         "source_training_samples": len(train_df),
         "source_validation_samples": len(val_df),
+        "evaluation_status": "legacy exploratory: raw text, study-outcome targets, label-adjacent profiles; not valid Task A/B evaluation",
         "headline_model": "ReliabilityConditionedInteractionModel(mode=reliability_conditioned_quality_only)",
         "zero_refitting_enforced": True,
         "exclude_overlap_requested": bool(exclude_overlap),

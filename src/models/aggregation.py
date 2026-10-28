@@ -1,5 +1,8 @@
 """
-Phase 4: Evidence Aggregation and Reliability Scaffolding (Task B).
+Task B aggregation and supervised training entry point.
+
+Primary path: ResidualEvidenceAggregator plus src.training.task_b.
+The neural learned-delta class below is retained as a legacy scaffold.
 
 Implements:
     logit_fused = logit_prior + sum_i R_i * delta(o_i)
@@ -27,45 +30,17 @@ import torch.nn as nn
 from sklearn.linear_model import LogisticRegression
 
 
-class ConsensusLabelsNotPopulatedError(RuntimeError):
-    """Raised when consensus_labels.csv has no validated rows."""
-    pass
+from src.data.evidence_schema import (
+    ConsensusLabelsNotPopulatedError,
+    load_consensus_labels_table,
+)
 
 
 def load_consensus_labels(
     path: str = "data/benchmark/consensus_labels.csv",
 ) -> pd.DataFrame:
-    """
-    Load validated consensus ground-truth labels.
-    
-    Raises ConsensusLabelsNotPopulatedError if the file has no validated rows
-    (all consensus_label values empty/NaN). R training and Task B evaluation
-    cannot proceed until human consensus curation is populated.
-    """
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"Consensus labels file not found: {path}")
-
-    df = pd.read_csv(path)
-    required = {"herb_id", "drug_id", "consensus_label"}
-    missing = required - set(df.columns)
-    if missing:
-        raise ValueError(f"{path} missing required columns: {missing}")
-
-    # Check for non-empty validated rows
-    valid_mask = df["consensus_label"].notna() & (
-        df["consensus_label"].astype(str).str.strip() != ""
-    )
-    n_valid = int(valid_mask.sum())
-
-    if n_valid == 0:
-        raise ConsensusLabelsNotPopulatedError(
-            f"{path} has 0 validated rows. "
-            "Reliability model training and Task B evaluation are BLOCKED "
-            "until external consensus labels are curated in data/benchmark/consensus_labels.csv. "
-            "Never invent consensus labels or train on legacy labels."
-        )
-
-    return df[valid_mask].copy()
+    """Require structurally validated, nonempty external consensus labels."""
+    return load_consensus_labels_table(path, require_labels=True)[0]
 
 
 class ReliabilityAggregationModel(nn.Module):
@@ -304,12 +279,48 @@ def train_reliability_model_entrypoint(
 ):
     """
     Official training entrypoint for the reliability model R.
-    Must call load_consensus_labels, which raises ConsensusLabelsNotPopulatedError
-    while consensus_labels.csv has no validated rows.
+    Fits the primary Task B path with explicit training/tuning pair partitions.
+    Empty consensus raises before any fit; see src.training.task_b.fit_task_b.
     """
-    # Guard: will block execution while labels are unpopulated
-    validated_df = load_consensus_labels(consensus_path)
-    raise NotImplementedError(
-        f"Consensus labels populated ({len(validated_df)} rows), but Task B training pipeline "
-        "is not yet executed."
-    )
+    # Preserve the consensus guard before checking any other input.
+    load_consensus_labels(consensus_path)
+    from src.training.task_b import fit_task_b
+    return fit_task_b(consensus_path=consensus_path, **kwargs)
+
+
+class ResidualEvidenceAggregator:
+    """Specified Task B mass aggregation; findings never enter reliability X.
+
+    alpha and evidence_scale may be learned on a separate tuning partition.
+    Legacy neural scaffolds above remain exploratory compatibility APIs.
+    """
+
+    def __init__(self, alpha=0.15, evidence_scale=1.0, kappa=1.0):
+        if not (np.isfinite(alpha) and 0 <= alpha <= 1):
+            raise ValueError('alpha must lie in [0, 1]')
+        if not (np.isfinite(evidence_scale) and evidence_scale >= 0):
+            raise ValueError('evidence_scale must be finite and nonnegative')
+        if not (np.isfinite(kappa) and kappa > 0):
+            raise ValueError('kappa must be finite and positive')
+        self.alpha, self.evidence_scale, self.kappa = alpha, evidence_scale, kappa
+
+    def aggregate(self, prior_logit, directions, reliability, is_primary):
+        o, r, primary = (np.asarray(v, dtype=float) for v in
+                         (directions, reliability, is_primary))
+        if not (o.ndim == r.ndim == primary.ndim == 1 and o.shape == r.shape == primary.shape):
+            raise ValueError('Study vectors must be aligned one-dimensional arrays')
+        if (not np.isfinite(prior_logit) or not np.isin(o, [-1, 0, 1]).all()
+                or not np.isfinite(r).all() or ((r < 0) | (r > 1)).any()
+                or not np.isin(primary, [0, 1]).all()):
+            raise ValueError('Invalid prior, findings, reliability or primary flags')
+        weights = r * np.where(primary == 1, 1.0, self.alpha)
+        pos, neg = float(weights[o == 1].sum()), float(weights[o == -1].sum())
+        mass = pos + neg
+        evidence = (pos - neg) / (mass + self.kappa)
+        contradiction = 2 * min(pos, neg) / (mass + 1e-12)
+        # Return the original scalar directly at zero evidence, preserving exact fallback.
+        logit = prior_logit if evidence == 0 else prior_logit + self.evidence_scale * evidence
+        return dict(logit=logit, prior_logit=prior_logit, S_pos=pos, S_neg=neg,
+                    net_evidence=evidence, contradiction=contradiction,
+                    n_studies=len(o), n_inconclusive=int((o == 0).sum()),
+                    no_directional_evidence=mass == 0, conflicting_evidence=pos > 0 and neg > 0)

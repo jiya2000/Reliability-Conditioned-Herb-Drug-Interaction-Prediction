@@ -221,9 +221,18 @@ class ReliabilityScorer(nn.Module):
         Compute reliability score from metadata.
         Guarantees:
         - When missingness = 1.0 (no literature), R collapses to ~0.0 (R <= 0.05).
-        - Explicit contradiction reduces gating weight.
+        - Contradiction damping is confined to outcome-dependent reference features.
         - High-quality human trial evidence yields strictly higher R than in vitro evidence.
         """
+        # Quality-only reliability must be invariant to study findings, including
+        # outcome-derived conflict supplied through legacy tensor layouts.
+        if self.feature_group == "quality_only":
+            metadata = metadata.clone()
+            d = metadata.size(-1)
+            if d in {8, 10} or d >= 12:
+                metadata[:, 5] = 0.0
+            elif d == 7:
+                metadata[:, 3] = 0.0
         combined = self._embed_metadata(metadata)
         R = self.mlp(combined)  # (batch, 1) in [0, 1]
 
@@ -416,6 +425,15 @@ class ReliabilityScorer(nn.Module):
         n = n_samples or self.mc_samples
 
         # Embed once (deterministic part)
+        # Quality-only reliability must be invariant to study findings, including
+        # outcome-derived conflict supplied through legacy tensor layouts.
+        if self.feature_group == "quality_only":
+            metadata = metadata.clone()
+            d = metadata.size(-1)
+            if d in {8, 10} or d >= 12:
+                metadata[:, 5] = 0.0
+            elif d == 7:
+                metadata[:, 3] = 0.0
         combined = self._embed_metadata(metadata)
 
         module_states = {

@@ -240,9 +240,10 @@ def test_synthetic_pipeline_integration_and_validation_exclusive_calibration():
     assert 0.0 <= report.brier_score <= 1.0
 
 
-def test_mc_dropout_epistemic_uncertainty_and_held_out_errors():
+def test_leaky_reference_mc_dropout_conflict_heuristic():
     """
-    Uncertainty Calibration Test:
+    Legacy full-vector heuristic test, not clinical uncertainty validation.
+    Quality-only invariance is covered in test_evaluation_integrity.py.
     1. Deterministic evaluation behavior: model.eval() without MC sampling produces zero variance.
     2. Repeated stochastic passes: forward_with_uncertainty produces non-zero uncertainty.
     3. Epistemic uncertainty is significantly higher on conflicting evidence compared to concordant evidence.
@@ -252,6 +253,7 @@ def test_mc_dropout_epistemic_uncertainty_and_held_out_errors():
         hidden_dim=feat_dim,
         mc_dropout_rate=0.20,
         mc_samples=15,
+        feature_group="full",  # Explicit outcome-dependent reference, not primary R.
     )
     scorer.eval()
 

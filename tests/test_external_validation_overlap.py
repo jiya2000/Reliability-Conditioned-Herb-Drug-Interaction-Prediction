@@ -52,13 +52,24 @@ def test_overlap_diagnostics_computation():
     assert diagnostics["source_level"]["n_overlap"] == 0
 
 
-def test_external_validation_execution_and_artifacts(tmp_path):
+def test_external_validation_execution_and_artifacts(tmp_path, monkeypatch):
     """Test full execution generating overlap files and separate cohort metrics."""
     out_json = tmp_path / "ext_val.json"
     out_md = tmp_path / "ext_val.md"
     overlap_json = tmp_path / "overlap.json"
     overlap_md = tmp_path / "overlap.md"
 
+    from src.models.interaction_model import ReliabilityConditionedInteractionModel
+    original_forward = ReliabilityConditionedInteractionModel.forward
+    observed_widths = []
+
+    def checked_forward(self, *args, **kwargs):
+        width = kwargs["metadata"].shape[-1]
+        observed_widths.append(width)
+        assert width == 7, "Quality metadata must not be padded into the full-vector layout"
+        return original_forward(self, *args, **kwargs)
+
+    monkeypatch.setattr(ReliabilityConditionedInteractionModel, "forward", checked_forward)
     res = run_external_validation(
         benchmark_csv="data/benchmark/verified_botanical_hdi.csv",
         external_csv="data/external/napdi_template.csv",
@@ -71,6 +82,7 @@ def test_external_validation_execution_and_artifacts(tmp_path):
     )
 
     assert res is not None
+    assert observed_widths
     assert "full_cohort_metrics" in res
     assert "overlap_excluded_metrics" in res
     assert "curcuma_excluded_metrics" in res
@@ -85,8 +97,19 @@ def test_external_validation_execution_and_artifacts(tmp_path):
     # Check abstention root cause
     abstention = res["abstention_analysis"]
     trigger_dist = abstention["summary_trigger_distribution"]
-    assert trigger_dist["conformal_set_size_2"] == 5, "All 5 external records must trigger conformal_set_size_2"
-    assert "APPROPRIATE PROTECTIVE BEHAVIOR" in abstention["clinical_assessment"]
+    # Derive every expected set independently from the fitted threshold and full
+    # precision probabilities; neither the cohort count nor q_hat is a constant.
+    q = res["conformal_q_hat"]
+    analyses = abstention["per_record_analysis"]
+    expected_count = 0
+    for record in analyses:
+        p = record["calibrated_probability"]
+        expected = [c for c, score in [(0, p), (1, 1 - p)] if score <= q]
+        assert record["conformal_set"] == expected
+        assert record["conformal_set_size"] == len(expected)
+        expected_count += len(expected) == 2
+    assert trigger_dist["conformal_set_size_2"] == expected_count
+    assert "do not establish clinical appropriateness" in abstention["clinical_assessment"]
 
     # Check file persistence
     assert out_json.exists()

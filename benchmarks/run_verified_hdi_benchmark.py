@@ -607,6 +607,7 @@ def run_benchmark(
 
     res = {
         "status": "success",
+        "evaluation_status": "legacy exploratory: raw text, study-outcome targets, label-adjacent profiles; not valid Task A/B evaluation",
         "num_records": len(df),
         "label_counts": label_counts,
         "effect_counts": effect_counts,

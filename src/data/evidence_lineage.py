@@ -109,9 +109,9 @@ class PairEvidenceSummary:
     def to_feature_group(self, feature_group: str = FEATURE_GROUP_QUALITY_ONLY, mode: Optional[str] = None) -> np.ndarray:
         """
         Extract feature subset based on group for rigorous leakage control:
-        - 'quality_only' (default): 7D [echo_ratio, q_mean, W_context, C_hd, missingness, rho_reach, f_m_CYP]
+        - 'quality_only' (default): 7D [echo_ratio, q_mean, W_context, reserved_zero, missingness, rho_reach, f_m_CYP]
         - 'quality_5d_no_context_conflict' (or mode='no_context_conflict'): 5D [echo_ratio, q_mean, missingness, rho_reach, f_m_CYP]
-        - 'quality_7d_no_study_dependence' (or mode='no_study_dependence'): 7D [0.0, q_mean, W_context, C_hd_undiscounted, missingness, rho_reach, f_m_CYP]
+        - 'quality_7d_no_study_dependence' (or mode='no_study_dependence'): 7D [0.0, q_mean, W_context, reserved_zero, missingness, rho_reach, f_m_CYP]
         - 'polarity_only': 5D [S_pos, S_neg, margin, N_raw_pos, N_raw_neg] (Probe only)
         - 'full': 12D [S_pos, S_neg, echo_ratio, q_mean, W_context, C_hd, margin, missingness, N_raw_pos, N_raw_neg, rho_reach, f_m_CYP] (Leaky reference only)
         """
@@ -130,12 +130,11 @@ class PairEvidenceSummary:
 
         elif mode == "no_study_dependence" or feature_group == "quality_7d_no_study_dependence":
             # 7D: Replace echo-attenuated quantities with undiscounted ones (alpha=1)
-            undisc_conflict = getattr(self, "undiscounted_contradiction_strength", self.contradiction_strength)
             return np.array([
                 0.0,  # undiscounted echo ratio
                 self.mean_source_quality,
                 self.context_compatibility_score,
-                undisc_conflict,
+                0.0,  # Reserved slot: outcome-derived conflict is excluded.
                 self.metadata_missingness,
                 rho_reach,
                 f_m_CYP,
@@ -146,7 +145,7 @@ class PairEvidenceSummary:
                 self.citation_echo_ratio,
                 self.mean_source_quality,
                 self.context_compatibility_score,
-                self.contradiction_strength,
+                0.0,  # Reserved slot: outcome-derived conflict is excluded.
                 self.metadata_missingness,
                 rho_reach,
                 f_m_CYP,
@@ -209,7 +208,7 @@ class PairEvidenceSummary:
                        4: context_compat, 5: contradiction, 6: net_margin, 7: missingness,
                        8: raw_positive_count, 9: raw_negative_count,
                        10: rho_reach, 11: f_m_CYP]
-        - 'quality_only': 7D [echo_ratio, source_quality, context_compat, contradiction,
+        - 'quality_only': 7D [echo_ratio, source_quality, context_compat, reserved_zero,
                               missingness, rho_reach, f_m_CYP] (or 5D if mode='no_context_conflict')
         - 'polarity_only': 5D [indep_pos, indep_neg, net_margin, raw_positive_count, raw_negative_count]
         """
@@ -436,7 +435,7 @@ class EvidenceLineageAnalyzer:
             indep_neg_strength += half_strength
 
         # Citation echo ratio: fraction of reports that are redundant within clusters
-        total_clusters = len(pos_clusters) + len(neg_clusters) + len(conf_recs) + len(unk_recs)
+        total_clusters = len(self.cluster_dependent_studies(records))
         citation_echo_ratio = 0.0
         if len(records) > 1:
             citation_echo_ratio = max(0.0, 1.0 - (total_clusters / float(len(records))))

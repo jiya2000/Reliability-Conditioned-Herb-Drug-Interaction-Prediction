@@ -192,8 +192,7 @@ def test_repeated_nested_cv_execution_and_temperature_variability(real_benchmark
     assert "std" in t_stat
     assert "min" in t_stat
     assert "max" in t_stat
-    assert "pooled_t" in t_stat
-    assert t_stat["pooled_t"] > 0.0
+    assert "pooled_t" not in t_stat  # No fit on pooled outer assessment labels.
 
     # Check paired significance tests against baseline
     assert "standard_fusion" in res_prop.significance_vs_baselines

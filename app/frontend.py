@@ -1,20 +1,22 @@
-"""
-Streamlit Demo Frontend for HDI Prediction
-Interactive UI for querying herb-drug interactions with a premium, pro-level design.
-"""
+"""Read-only HDI research view; the legacy API demo below is inactive."""
 
+import sys
+from pathlib import Path
 import streamlit as st
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+from app.research_status import render_research_readiness
+
+st.set_page_config(page_title="HDI Research Readiness", page_icon="🌿", layout="wide")
+render_research_readiness(st, PROJECT_ROOT)
+st.stop()
+
+# Legacy API demo retained below but never called by this readiness-only UI.
 import requests
 import json
 import time
-
-# Page configuration MUST be the first Streamlit command
-st.set_page_config(
-    page_title="HDI Prediction Dashboard",
-    page_icon="🧬",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
 
 # ---------- Advanced Custom CSS ----------
 st.markdown(

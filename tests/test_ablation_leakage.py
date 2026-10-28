@@ -92,7 +92,7 @@ def test_main_modes_exclude_polarity_features(sentinel_lineage_summary: LineageS
     if mode == "no_study_dependence":
         # echo_ratio replaced with 0.0 (undiscounted) and undiscounted contradiction used
         assert feat_vec[0] == 0.0, "no_study_dependence must zero out echo attenuation"
-        assert np.isclose(feat_vec[3], 0.42), "no_study_dependence must use undiscounted contradiction"
+        assert feat_vec[3] == 0.0, "Outcome-derived contradiction must be excluded"
 
     # Assert none of the polarity sentinel values are present
     for val in feat_vec:

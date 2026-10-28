@@ -63,7 +63,7 @@ def test_feature_group_partitioning():
     v_qual = summary.to_feature_group(FEATURE_GROUP_QUALITY_ONLY)
     assert len(v_qual) == 7
     # Expected: [echo, qual, ctx, conflict, missing, reach, cyp]
-    np.testing.assert_allclose(v_qual, [0.35, 0.85, 0.90, 0.25, 0.0, 0.5, 0.5], rtol=1e-5)
+    np.testing.assert_allclose(v_qual, [0.35, 0.85, 0.90, 0.0, 0.0, 0.5, 0.5], rtol=1e-5)
 
     # CRITICAL CHECK: Neither raw counts nor independent polarity strengths exist in quality-only
     assert 2.3 not in v_qual

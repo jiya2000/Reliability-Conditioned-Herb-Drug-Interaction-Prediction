@@ -15,6 +15,9 @@ from dataclasses import dataclass, field, asdict
 from enum import Enum
 from typing import Any, Dict, List, Optional, Set, Tuple
 import json
+import re
+from datetime import date
+from urllib.parse import urlparse
 import os
 import pandas as pd
 from loguru import logger
@@ -380,9 +383,28 @@ class ConsensusLabel(str, Enum):
 VALID_CONSENSUS_LABELS: Set[str] = {c.value for c in ConsensusLabel}
 
 
+CONSENSUS_REQUIRED_COLUMNS = (
+    "herb_id", "drug_id", "consensus_label", "source_name",
+    "source_url_or_citation", "retrieval_date",
+)
+
+
+class ConsensusLabelsNotPopulatedError(RuntimeError):
+    """Consensus-dependent training/evaluation cannot run without curated labels."""
+
+
+def _consensus_text(value: Any) -> Optional[str]:
+    if not isinstance(value, str):
+        return None
+    text = _clean_str(value)
+    if text is None or text.lower() in {"unverified", "unknown", "n/a", "na", "tbd", "todo"}:
+        return None
+    return text
+
+
 @dataclass
 class ConsensusPairRecord:
-    """Pair-level ground-truth consensus record from authoritative compendia."""
+    """External pair verdict; validation checks structure, not source authenticity."""
     herb_id: str
     drug_id: str
     consensus_label: str
@@ -395,70 +417,92 @@ class ConsensusPairRecord:
 
     def validate(self) -> Tuple[bool, List[str]]:
         errors = []
-        if not self.herb_id or not str(self.herb_id).strip():
-            errors.append("Missing required herb_id")
-        if not self.drug_id or not str(self.drug_id).strip():
-            errors.append("Missing required drug_id")
-        norm_label = str(self.consensus_label).lower().strip()
-        if norm_label not in VALID_CONSENSUS_LABELS:
-            errors.append(f"Invalid consensus_label '{self.consensus_label}'. Must be one of {VALID_CONSENSUS_LABELS}")
-        return len(errors) == 0, errors
+        for field_name, prefix in (("herb_id", "HERB_"), ("drug_id", "DRUG_")):
+            value = _consensus_text(getattr(self, field_name))
+            if value is None or re.fullmatch(prefix + r"[A-Z0-9]+(?:_[A-Z0-9]+)*", value) is None:
+                errors.append(f"Invalid {field_name}: expected {prefix} identifier")
+        label = _consensus_text(self.consensus_label)
+        if label is None or label.lower() not in VALID_CONSENSUS_LABELS:
+            errors.append(f"Invalid consensus_label '{self.consensus_label}'")
+        for field_name in ("source_name", "source_url_or_citation", "retrieval_date"):
+            if _consensus_text(getattr(self, field_name)) is None:
+                errors.append(f"Missing required provenance: {field_name}")
+        citation = _consensus_text(self.source_url_or_citation)
+        if citation and ("://" in citation or citation.lower().startswith(("http:", "https:"))):
+            try:
+                parsed = urlparse(citation)
+                valid_url = (parsed.scheme in {"http", "https"} and parsed.hostname
+                             and not re.search(r"\s", citation))
+                parsed.port  # Reject malformed port numbers as well.
+            except ValueError:
+                valid_url = False
+            if not valid_url:
+                errors.append("Invalid source_url_or_citation URL")
+        elif citation and citation.lower().startswith(("pmid:", "doi:", "10.")):
+            if citation.lower().startswith("pmid:"):
+                valid_reference = re.fullmatch(r"PMID:\s*[1-9][0-9]*", citation, re.IGNORECASE)
+            else:
+                valid_reference = re.fullmatch(r"(?:doi:\s*)?10\.\d{4,9}/\S+", citation, re.IGNORECASE)
+            if not valid_reference:
+                errors.append("Invalid source_url_or_citation identifier")
+        retrieval = _consensus_text(self.retrieval_date)
+        if retrieval:
+            try:
+                if date.fromisoformat(retrieval).isoformat() != retrieval:
+                    raise ValueError
+            except ValueError:
+                errors.append("Invalid retrieval_date: expected YYYY-MM-DD")
+        return not errors, errors
 
 
 def validate_consensus_labels_table(df: pd.DataFrame) -> Tuple[bool, List[str]]:
-    """Validate a pair-level consensus ground-truth DataFrame."""
-    required = ["herb_id", "drug_id", "consensus_label"]
+    """Validate all rows; a schema-bearing empty table is valid, blank labels are not.
+
+    Bibliographic citations are allowed alongside HTTP(S) URLs. Nonempty source
+    metadata does not authenticate a clinical verdict or establish independence.
+    """
+    missing = [c for c in CONSENSUS_REQUIRED_COLUMNS if c not in df.columns]
+    if missing:
+        return False, [f"Missing required columns in consensus table: {missing}"]
+    if df.columns.duplicated().any():
+        return False, ["Duplicate columns in consensus table"]
     errors = []
-    missing_cols = [c for c in required if c not in df.columns]
-    if missing_cols:
-        return False, [f"Missing required columns in consensus table: {missing_cols}"]
-
+    pairs = df[["herb_id", "drug_id"]].apply(lambda col: col.map(_consensus_text))
+    if pairs.duplicated().any():
+        errors.append("Duplicate herb-drug pairs in consensus table")
     for idx, row in df.iterrows():
-        rec = ConsensusPairRecord(
-            herb_id=str(row["herb_id"]).strip(),
-            drug_id=str(row["drug_id"]).strip(),
-            consensus_label=str(row["consensus_label"]).strip().lower(),
-            severity=_clean_str(row.get("severity")),
-            direction=_clean_str(row.get("direction")),
-            source_name=_clean_str(row.get("source_name")),
-            source_url_or_citation=_clean_str(row.get("source_url_or_citation")),
-            retrieval_date=_clean_str(row.get("retrieval_date")),
-            notes=_clean_str(row.get("notes")),
-        )
-        is_val, rec_errs = rec.validate()
-        if not is_val:
-            errors.append(f"Row {idx} ({rec.herb_id}, {rec.drug_id}): {rec_errs}")
-
-    return len(errors) == 0, errors
+        rec = ConsensusPairRecord(**{
+            name: row.get(name) for name in ConsensusPairRecord.__dataclass_fields__
+        })
+        _, row_errors = rec.validate()
+        errors.extend(f"Row {idx}: {error}" for error in row_errors)
+    return not errors, errors
 
 
-def load_consensus_labels_table(path: str = "data/benchmark/consensus_labels.csv") -> Tuple[pd.DataFrame, bool]:
+def load_consensus_labels_table(
+    path: str = "data/benchmark/consensus_labels.csv", *, require_labels: bool = False,
+) -> Tuple[pd.DataFrame, bool]:
+    """Load validated consensus data without synthesizing targets or legacy fallback.
+
+    The second return value indicates labels are unavailable (kept for tuple API
+    compatibility); it never authorizes use of study outcomes as consensus truth.
+    Training/evaluation consumers must pass require_labels=True.
+    Missing files and malformed files raise; only a valid header-only table is empty.
     """
-    Loads pair-level consensus labels.
-    Returns (df, is_legacy_mode).
-    If file is missing, empty, or has 0 rows, logs a prominent banner and returns
-    (empty_df, True) to activate 'legacy label mode'.
-    """
-    if not os.path.exists(path) or os.path.getsize(path) <= 100:
-        logger.warning(
-            "⚠️ [LEGACY LABEL MODE ACTIVE] 'consensus_labels.csv' is empty or missing. "
-            "Pipeline is running with study-level outcome findings as legacy fallback. "
-            "Populate consensus_labels.csv with expert compendium annotations (NaPDI, Stockley's, Natural Medicines) "
-            "to enable supervised evidence aggregation."
-        )
-        return pd.DataFrame(columns=["herb_id", "drug_id", "consensus_label", "source_name"]), True
-
     df = pd.read_csv(path)
-    if len(df) == 0:
-        logger.warning("⚠️ [LEGACY LABEL MODE ACTIVE] 'consensus_labels.csv' has 0 rows. Running in legacy mode.")
-        return df, True
-
-    is_valid, errors = validate_consensus_labels_table(df)
-    if not is_valid:
+    valid, errors = validate_consensus_labels_table(df)
+    if not valid:
         raise ValueError("Consensus table validation failed:\n" + "\n".join(errors[:10]))
-
-    logger.info(f"Loaded {len(df)} expert consensus pair labels from {path}.")
-    return df, False
+    if df.empty and require_labels:
+        raise ConsensusLabelsNotPopulatedError(
+            f"{path} has 0 validated rows. Consensus-dependent training and evaluation "
+            "are BLOCKED until external labels are curated; no legacy fallback is allowed."
+        )
+    df = df.copy()
+    for column in CONSENSUS_REQUIRED_COLUMNS:
+        df[column] = df[column].map(lambda value: value.strip())
+    df["consensus_label"] = df["consensus_label"].str.lower()
+    return df, df.empty
 
 
 class StudyFinding(str, Enum):

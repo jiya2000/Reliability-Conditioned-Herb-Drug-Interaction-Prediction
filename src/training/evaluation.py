@@ -1106,12 +1106,14 @@ def run_repeated_nested_cv(
     run_significance_tests: bool = True,
 ) -> Dict[str, RepeatedNestedCVResult]:
     """
-    Execute repeated, nested, group-disjoint cross-validation.
+    Execute legacy study-outcome cross-validation (not valid Task A/B evaluation).
+    Raw abstracts and label-adjacent profiles remain exploratory inputs.
+    Inner held-out calibration is isolated; pooled inner-OOF fitting is not implemented.
     Guarantees:
     - Preprocessing (TF-IDF) fit strictly on inner training folds
     - Calibration (TemperatureScaler) fit strictly on inner validation folds
     - Metric evaluation conducted on held-out outer test folds
-    - T* variability recorded across CV folds and pooled OOF evaluation computed
+    - Fold-calibrated outer predictions are pooled for scoring without refitting
     - Paired hypothesis testing (DeLong & paired bootstrap) evaluated against baselines
     """
     from src.features.biological_features import BiologicalProfileExtractor, EvidenceTextFeatureExtractor
@@ -1128,7 +1130,6 @@ def run_repeated_nested_cv(
 
     fold_metric_records: Dict[str, List[Dict[str, float]]] = {v: [] for v in model_variants}
     val_temps: Dict[str, List[float]] = {v: [] for v in model_variants}
-    pooled_logits: Dict[str, List[float]] = {v: [] for v in model_variants}
     pooled_probs: Dict[str, List[float]] = {v: [] for v in model_variants}
     pooled_labels: Dict[str, List[int]] = {v: [] for v in model_variants}
     pooled_preds: Dict[str, List[int]] = {v: [] for v in model_variants}
@@ -1207,7 +1208,6 @@ def run_repeated_nested_cv(
                 abstain_flags = test_out.get("abstain", torch.zeros_like(test_out["logits"])).detach().cpu().numpy().flatten().astype(bool)
 
                 # Record predictions
-                pooled_logits[variant].extend(test_out["logits"].detach().cpu().numpy().flatten().tolist())
                 pooled_probs[variant].extend(test_probs.tolist())
                 pooled_labels[variant].extend(test_labels.tolist())
                 pooled_preds[variant].extend(test_preds.tolist())
@@ -1251,17 +1251,10 @@ def run_repeated_nested_cv(
             "median": float(np.median(temps)),
         }
 
-        # Pooled evaluation with pooled T*
+        # Pool probabilities already calibrated inside each outer training partition.
+        # Outer assessment labels are for scoring only, never another calibration fit.
         p_labels = np.array(pooled_labels[variant])
-        p_logits = torch.tensor(pooled_logits[variant], dtype=torch.float32).unsqueeze(1)
-        p_labels_t = torch.tensor(p_labels, dtype=torch.float32).unsqueeze(1)
-
-        pooled_scaler = TemperatureScaler()
-        pooled_t = pooled_scaler.fit(p_logits.numpy(), p_labels_t.numpy(), max_iter=25)
-        t_variability["pooled_t"] = float(pooled_t)
-
-        scaled_pooled_logits = pooled_scaler(p_logits)
-        pooled_cal_probs = torch.sigmoid(scaled_pooled_logits).detach().cpu().numpy().flatten()
+        pooled_cal_probs = np.array(pooled_probs[variant])
         p_preds = np.array(pooled_preds[variant])
         p_abst = np.array(pooled_abstains[variant])
 

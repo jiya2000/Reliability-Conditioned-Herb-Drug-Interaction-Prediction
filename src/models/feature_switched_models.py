@@ -4,7 +4,7 @@ Phase 3 Implementation.
 
 Supports running models on either:
 - 'legacy': Uses legacy label-adjacent profiles (preserved strictly as baseline).
-- 'new': Uses blind-curated mechanistic features from data/curation/mechanistic_features.csv.
+- 'new': Exposes named, allowlisted curated features only; legacy CV fitting is blocked.
   STRICT GUARD: Blocks execution and raises UnverifiedCurationError if any rows are UNVERIFIED.
 """
 
@@ -27,10 +27,10 @@ from src.features.biological_graph_encoder import HeterogeneousBiologicalGraphEn
 from src.data.mechanistic_curation import (
     load_mechanistic_curation,
     is_curation_verified,
-    extract_curated_feature_matrix,
     UnverifiedCurationError,
 )
 from src.training.evaluation import LeakageSafeSplitter
+from src.features.task_a_contract import build_task_a_features
 
 
 class SmallGATClassifier(nn.Module):
@@ -83,7 +83,7 @@ class FeatureSwitchedBenchmark:
         if self.feature_set not in {"legacy", "new"}:
             raise ValueError(f"Unknown feature_set '{feature_set}'. Must be 'legacy' or 'new'.")
 
-    def get_feature_matrix(self, df: pd.DataFrame) -> Tuple[np.ndarray, str]:
+    def get_feature_matrix(self, df: pd.DataFrame) -> Tuple[np.ndarray | pd.DataFrame, str]:
         """
         Extract feature matrix based on the configured feature_set switch.
         
@@ -111,7 +111,7 @@ class FeatureSwitchedBenchmark:
                     f"Per Phase 3 integrity rules, models will not run on new features until "
                     f"all rows have verified external literature citations."
                 )
-            feat_matrix = extract_curated_feature_matrix(df, curation_df)
+            feat_matrix = build_task_a_features(df, curation_df)
             return feat_matrix, "curated_mechanistic"
 
     def run_cv(
@@ -122,9 +122,17 @@ class FeatureSwitchedBenchmark:
         n_repeats: int = 1,
     ) -> Dict[str, Any]:
         """
-        Run LR, GBT, and Small GAT on identical cross-validation splits.
+        Run exploratory legacy comparisons only. Curated primary fitting cannot
+        fall through to publication outcomes or the identity/profile GAT.
         """
         X, feature_label = self.get_feature_matrix(df)
+        if self.feature_set == "new":
+            raise NotImplementedError(
+                "Primary Task A training is blocked: this runner uses publication outcomes "
+                "and a legacy identity/profile GAT. A consensus-supervised pair trainer must "
+                "use the Task A feature contract and guarded LR/HGB preprocessing pipeline; "
+                "there is no legacy-label or GAT fallback."
+            )
         y = df["outcome"].astype(str).str.lower().isin(
             ["interaction_present", "positive", "1", "true"]
         ).values.astype(int)

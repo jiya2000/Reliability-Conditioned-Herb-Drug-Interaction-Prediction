@@ -252,7 +252,7 @@ def test_validate_dataframe_all_invalid():
 
 
 def test_consensus_pair_record_validation():
-    """Verify consensus label validation, legacy mode activation, and design extraction."""
+    """Verify consensus validation, empty-table handling, and design extraction."""
     from src.data.evidence_schema import (
         ConsensusPairRecord,
         validate_consensus_labels_table,
@@ -268,6 +268,7 @@ def test_consensus_pair_record_validation():
         consensus_label="interaction",
         source_name="Stockley's Drug Interactions",
         source_url_or_citation="Stockley 10th Ed.",
+        retrieval_date="2026-10-28",
     )
     is_valid, errors = rec.validate()
     assert is_valid
@@ -283,9 +284,9 @@ def test_consensus_pair_record_validation():
     assert not is_valid
     assert any("Invalid consensus_label" in e for e in errors)
 
-    # 3. Empty template table loading (triggers legacy mode)
-    df_empty, is_legacy = load_consensus_labels_table("data/benchmark/consensus_labels.csv")
-    assert is_legacy
+    # 3. Empty template is valid but has no labels; no legacy targets are created.
+    df_empty, labels_unavailable = load_consensus_labels_table("data/benchmark/consensus_labels.csv")
+    assert labels_unavailable
     assert len(df_empty) == 0
 
     # 4. Study design extractor (must exclude outcome)
