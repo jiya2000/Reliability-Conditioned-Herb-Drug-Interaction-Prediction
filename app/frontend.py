@@ -7,10 +7,10 @@ import streamlit as st
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
-from app.research_status import render_research_readiness
+from app.project_presentation import render_project_site
 
-st.set_page_config(page_title="HDI Research Readiness", page_icon="🌿", layout="wide")
-render_research_readiness(st, PROJECT_ROOT)
+st.set_page_config(page_title="Reliability-Conditioned Herb–Drug Interaction Prediction", page_icon="🌿", layout="wide")
+render_project_site(st, PROJECT_ROOT)
 st.stop()
 
 # Legacy API demo retained below but never called by this readiness-only UI.

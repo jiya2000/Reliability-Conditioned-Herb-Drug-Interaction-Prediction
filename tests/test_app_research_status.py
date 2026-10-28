@@ -166,7 +166,7 @@ def test_streamlit_startup_never_fits_or_calls_legacy_api(entrypoint, monkeypatc
     for name in ['set_page_config', 'title', 'warning', 'caption', 'subheader',
                  'write', 'info', 'error', 'dataframe', 'button']:
         setattr(st, name, lambda *args, _name=name, **kwargs: calls.append((_name, args, kwargs)))
-    st.selectbox = lambda label, options, **kwargs: options[0]
+    st.selectbox = lambda label, options, **kwargs: 'Evidence explorer' if label == 'View' else options[0]
     monkeypatch.setitem(sys.modules, 'streamlit', st)
     for _ in range(2):  # Streamlit reruns must also stop before legacy code.
         with pytest.raises(StopUI):

@@ -1,0 +1,73 @@
+<style>
+:root { --ink:#172b32; --muted:#435b64; --teal:#1c625d; --line:#cfdddb; --paper:#f7faf8; }
+.hdi-project { color:var(--ink); background:var(--paper); font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.65; max-width:1120px; margin:0 auto; padding:clamp(20px,4vw,60px); border:1px solid var(--line); border-radius:16px; }
+.hdi-project * { box-sizing:border-box; }
+.hdi-project a { color:#155b62; text-underline-offset:4px; }
+.hdi-project a:focus-visible { outline:3px solid #9a4d13; outline-offset:5px; border-radius:2px; }
+.hdi-project .skip { display:inline-block; font-size:.85rem; margin-bottom:16px; }
+.hdi-project nav { display:flex; flex-wrap:wrap; gap:12px 24px; border-bottom:1px solid var(--line); padding-bottom:24px; font-size:.9rem; }
+.hdi-project section { padding:38px 0; border-bottom:1px solid var(--line); scroll-margin-top:90px; }
+.hdi-project .eyebrow { font-size:.76rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--teal); margin:0 0 16px; }
+.hdi-project h1 { font-family:Georgia,"Times New Roman",serif; font-size:clamp(2.2rem,5vw,4.25rem); font-weight:500; line-height:1.1; letter-spacing:-.035em; max-width:900px; color:var(--ink); margin:0 0 26px; }
+.hdi-project h2 { font-family:Georgia,"Times New Roman",serif; font-size:clamp(1.6rem,3vw,2.2rem); font-weight:500; line-height:1.2; margin:0 0 18px; color:var(--ink); }
+.hdi-project h3 { color:var(--ink); font-size:1.05rem; margin:0 0 10px; }
+.hdi-project p { margin:0 0 16px; max-width:74ch; }
+.hdi-project .lead { font-size:clamp(1.1rem,2vw,1.35rem); color:var(--muted); max-width:67ch; }
+.hdi-project .notice { background:#fff4e4; border-left:4px solid #965316; padding:18px 22px; border-radius:0 8px 8px 0; color:#573715; margin-top:28px; }
+.hdi-project .notice p:last-child { margin:0; }
+.hdi-project .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; margin-top:22px; }
+.hdi-project .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:24px; }
+.hdi-project .card p:last-child { margin-bottom:0; }
+.hdi-project .tag { color:var(--teal); font-size:.8rem; font-weight:700; margin-bottom:8px; }
+.hdi-project .flow { list-style:none; padding:0; margin:24px 0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; counter-reset:stages; }
+.hdi-project .flow li { padding:20px; border-top:3px solid var(--teal); border-radius:3px; background:#eaf2ee; counter-increment:stages; }
+.hdi-project .flow li::before { content:"0" counter(stages); display:block; font-size:.8rem; letter-spacing:.12em; color:var(--teal); margin-bottom:10px; font-weight:700; }
+.hdi-project .flow strong { display:block; margin-bottom:8px; }
+.hdi-project .flow span { font-size:.9rem; color:var(--muted); }
+.hdi-project .roles { border:1px solid var(--line); padding:20px; border-radius:8px; background:#fff; }
+.hdi-project .roles ol { display:flex; flex-wrap:wrap; gap:14px 36px; padding-left:22px; margin:10px 0; }
+.hdi-project .status { padding:0; list-style:none; }
+.hdi-project .status li { display:grid; grid-template-columns:150px 1fr; gap:20px; padding:16px 0; border-bottom:1px solid var(--line); }
+.hdi-project .status strong { color:var(--teal); }
+.hdi-project details { border-top:1px solid var(--line); padding:16px 0; }
+.hdi-project summary { cursor:pointer; font-weight:600; color:var(--ink); }
+.hdi-project details p { padding-top:12px; color:var(--muted); }
+.hdi-project .fine { color:var(--muted); font-size:.9rem; }
+@media(max-width:680px) { .hdi-project .grid,.hdi-project .flow { grid-template-columns:1fr; } .hdi-project .status li { grid-template-columns:1fr; gap:4px; } .hdi-project section { padding:28px 0; } }
+@media(prefers-reduced-motion:reduce) { .hdi-project *, .hdi-project { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+</style>
+<main class="hdi-project" aria-label="Research project presentation">
+<a class="skip" href="#problem">Skip to the research problem</a>
+<nav aria-label="Project sections"><a href="#overview">Overview</a><a href="#problem">Problem</a><a href="#architecture">Architecture</a><a href="#tasks">Tasks</a><a href="#safeguards">Safeguards</a><a href="#status">Status</a><a href="#next">Next steps</a><a href="#documents">Documents</a></nav>
+<section id="overview">
+<p class="eyebrow">Computational evidence research</p>
+<h1>Reliability-Conditioned Herb–Drug Interaction Prediction</h1>
+<p class="lead">Investigating how mechanistic knowledge and the reliability of published evidence can support more defensible herb–drug interaction prediction.</p>
+<p>The research starts with a distinction: a study’s finding is evidence to assess, not automatically the correct answer. Repeated citations, different experimental settings and conflicting findings make that distinction essential.</p>
+<div class="notice" role="note"><strong>Current release: empirical evaluation is blocked.</strong><p>The independent consensus dataset is empty. Mechanistic records remain unverified. This site presents the research design and tested software safeguards, not validated predictions or clinical advice.</p></div>
+</section>
+<section id="problem"><p class="eyebrow">01 / The problem</p><h2>More publications do not necessarily mean more independent evidence.</h2>
+<div class="grid"><article class="card"><h3>Evidence has a history</h3><p>A review can repeat an earlier finding. Counting both as independent confirmation can exaggerate support. Shared sources and citation chains must remain visible.</p></article><article class="card"><h3>Context changes interpretation</h3><p>Study species, route, preparation and sample size describe different experimental settings. A recorded mechanism or finding alone does not establish a clinical outcome.</p></article></div>
+<p class="fine">Research question: can agreement-supervised reliability and a mechanistic prior improve evidence aggregation under genuinely independent evaluation? That question remains empirically unanswered.</p></section>
+<section id="architecture"><p class="eyebrow">02 / The proposed approach</p><h2>Separate what was reported from what is independently established.</h2>
+<p>The redesigned pipeline separates publication findings, independently curated consensus decisions and sourced mechanistic measurements. Software checks their contracts before any intended evaluation.</p>
+<ol class="flow" aria-label="Architecture data flow, in order">
+<li><strong>Sources &amp; curation</strong><span>Publication records, external consensus decisions and mechanistic source records enter distinct tables.</span></li>
+<li><strong>Validation &amp; snapshots</strong><span>Schema checks, registered references, exact input hashes and recorded release prerequisites.</span></li>
+<li><strong>Approved features</strong><span>Task A uses six fixed pathway effects and their absolute sum. Task B separates study design from study direction.</span></li>
+<li><strong>Model components</strong><span>LR/HGB mechanistic baselines; Task B prior, study reliability and residual aggregation components.</span></li>
+<li><strong>Independent roles</strong><span>Fit, tuning, probability calibration, conformal calibration and assessment stay distinct.</span></li>
+<li><strong>Release control</strong><span>Invalid assignments and unmet eligibility block execution. No public execution grants are currently issued.</span></li>
+</ol><p class="fine">Conceptual data flow, not an active empirical run. Private Task A algorithms are tested synthetically; the Task B snapshot adapter keeps fitting and residual tuning blocked.</p></section>
+<section id="tasks"><p class="eyebrow">03 / Two distinct tasks</p><h2>A mechanistic starting point. A separate evidence question.</h2>
+<div class="grid"><article class="card"><p class="tag">TASK A · MECHANISTIC PREDICTION</p><h3>What can sourced mechanisms tell us about a pair?</h3><p>Inputs: approved enzyme/transporter effects built from curated measurements. Independent consensus supplies the training target.</p><p>Existing logistic regression and histogram gradient boosting families are preserved. Entity names, publication outcomes and raw abstracts are excluded from features.</p><p class="fine">Status: private synthetic algorithm validation. No eligible empirical model or deployed predictor.</p></article><article class="card"><p class="tag">TASK B · EVIDENCE AGGREGATION</p><h3>How should a body of studies adjust the mechanistic prior?</h3><p>Inputs: a mechanistic prior, study findings, study-design descriptors and citation/source relationships. Agreement with independent consensus is the intended reliability target.</p><p>Prior/reliability fitting is distinct from residual tuning. Inconclusive findings contribute no directional mass; disputed consensus is never made negative.</p><p class="fine">Status: component infrastructure exists. Snapshot-based fitting remains blocked pending an approved actual-evidence-release contract.</p></article></div></section>
+<section id="safeguards"><p class="eyebrow">04 / Reliability &amp; leakage safeguards</p><h2>Evaluate the prediction, not a shortcut to its label.</h2>
+<div class="roles"><h3>Five independent roles</h3><ol><li>Fit</li><li>Tune</li><li>Probability calibration</li><li>Conformal calibration</li><li>Assessment</li></ol><p class="fine">The full protocol separates all five. Simpler declared protocols use their required subset; roles are never silently merged.</p></div>
+<details><summary>Provenance and disjointness</summary><p>Identifiers join sourced records; they do not become Task A features. Pair-, herb- or drug-disjoint assignments preserve the requested generalization question. Task B additionally isolates connected citation and shared-source components across roles.</p></details>
+<details><summary>Calibration and abstention</summary><p>Probability calibration adjusts a fixed predictor using a separate role. Conformal calibration then constructs score-based label sets with its own role. A non-singleton set can motivate abstention in a future evaluated workflow. Current coverage certification is blocked: rank arithmetic does not establish exchangeability or clinical safety.</p></details>
+<details><summary>Fail-closed evaluation</summary><p>Missing labels, unverified mechanisms, incomplete evidence validation and unsupported statistical adequacy prevent release. Public production APIs reject fitting, prediction, scoring and calibration. The evidence explorer is read-only; withholding predictions there is a readiness safeguard, not model abstention.</p></details>
+</section>
+<section id="status"><p class="eyebrow">05 / Current status</p><h2>Engineering progress is not predictive performance.</h2>
+<ul class="status"><li><strong>Implemented</strong><span>Feature allowlists, source/schema checks, explicit partition contracts, snapshot integrity checks, predictor fit records and blocked public execution.</span></li><li><strong>Synthetic validation</strong><span>Private fit/tuning, calibration and conformal algorithms; role isolation, mutation rejection and assessment-label independence.</span></li><li><strong>Blocked</strong><span>Independent consensus is empty; mechanistic records remain unverified; Task B evidence approval and statistical support are incomplete. No empirical performance claim is justified.</span></li><li><strong>Future research</strong><span>Independent annotation, verified mechanisms, evidence-release approval, justified inference design and a reviewed authorization issuer before empirical comparison.</span></li></ul></section>
+<section id="next"><p class="eyebrow">06 / Limitations &amp; next steps</p><h2>The next milestone is trustworthy data.</h2><p>Curate independent decisions, verify mechanisms and audit study lineage. Then review sample adequacy, release approvals and the intended inference design. Only an eligible release and an approved execution contract could support future empirical evaluation.</p><p>No clinical readiness, statistical superiority, patent grant or nominal coverage guarantee is claimed. This project cannot recommend or prohibit a combination of herbs and drugs.</p><p class="fine">Use the View selector above to open the existing read-only evidence explorer. The documents below explain the contracts, implementation and outstanding review work.</p></section>
+</main>

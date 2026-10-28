@@ -1,4 +1,4 @@
-"""Phase 3.1 read-only orchestration. No evaluation execution backend exists."""
+"""Read-only production gate; component APIs do not confer release eligibility."""
 from __future__ import annotations
 
 import hashlib
@@ -10,6 +10,19 @@ from src.training.evaluation_protocol import canonical_manifest_json, _REQUIRED
 
 REQUEST_SCHEMA = 'hdi.evaluation-request/v1'
 REPORT_SCHEMA = 'hdi.evaluation-report/v1'
+
+
+def _require_execution_authorization(authorization=None):
+    """Fail closed: this orchestrator currently issues NO execution authority.
+
+    A future issuer must run real Phase 2 preflight on its captured bytes, require
+    literal eligible is True plus all prerequisites, and bind the plan, snapshots
+    and fitted-role provenance. A caller report/context/object is never a grant.
+    Until that reviewed issuance contract exists, even a purported true report
+    cannot enable execution. Private synthetic algorithms are not grant issuers.
+    """
+    raise PermissionError('Production execution blocked: no orchestrator-issued authorization; '
+                          'actual Phase 2 eligible is True and a reviewed issuance contract are required')
 
 
 class EvaluationRequest(TypedDict):
@@ -112,7 +125,9 @@ def evaluate_request(request: EvaluationRequest) -> EvaluationReport:
             checks.append(dict(prerequisite='release_preflight', status='failed',
                                reason='Repair release inputs: ' + str(exc)))
     checks.append(dict(prerequisite='execution_backend', status='blocked',
-                       reason='Phase 3.1 validates only; execution is not implemented'))
+                       reason='Public component execution is disabled; this orchestrator issues no '
+                       'authorization. Require actual Phase 2 eligible is True and a reviewed '
+                       'statistical/evidence-release and authorization issuance contract'))
     return dict(schema=REPORT_SCHEMA, status='blocked', eligible=False,
                 **{k: safe.get(k) for k in ('task', 'protocol', 'regime')},
                 input_sha256={k: hashlib.sha256(v).hexdigest() if v is not None else None

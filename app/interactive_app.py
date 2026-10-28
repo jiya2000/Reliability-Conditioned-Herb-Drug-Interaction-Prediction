@@ -18,11 +18,11 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 import streamlit as st
-from app.research_status import render_research_readiness
+from app.project_presentation import render_project_site
 
 # ---------- Page Configuration ----------
 st.set_page_config(
-    page_title="HDI Research Readiness",
+    page_title="Reliability-Conditioned Herb–Drug Interaction Prediction",
     page_icon="🌿",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -30,7 +30,7 @@ st.set_page_config(
 
 # The redesigned inference bundle is not available. Stop before legacy imports,
 # startup fitting, synthetic defaults, or unsupported clinical claims below.
-render_research_readiness(st, PROJECT_ROOT)
+render_project_site(st, PROJECT_ROOT)
 st.stop()
 
 # Legacy prototype retained for historical reference; not an active app path.

@@ -1220,3 +1220,278 @@ are not migrated. Full Task B evidence-release validation and statistical adequa
 remain outside this phase. No full suite, AUC guard, Colab, staging, commit or push.
 The private annotation directory remains untouched and untracked; its contents
 were not inspected, hashed or packaged. Stopping here for review.
+
+## 2026-10-29 — snapshot research components and strict role boundaries
+
+Implemented `src/training/pipeline_components.py` and 27 synthetic regression
+cases in `tests/test_pipeline_components.py`. Updated the production
+orchestrator's blocker explanation and `docs/evaluation_orchestrator.md`.
+No production execution switch or eligibility override was introduced.
+
+Implemented stages:
+
+- Immutable snapshot adapters with exact manifest hash binding and no path reads;
+  explicit role validation preserves pair/herb/drug and Task B provenance-component
+  constraints through the existing partition validator. Mutation detection binds
+  copied role data and fitted estimator state.
+- Working Task A LR/HGB fit and explicit candidate tuning interfaces use the
+  existing approved feature builder and pipeline. Fit preprocessing sees only
+  fit rows; tuning selects without refitting. Role composition supports all five
+  roles and requests assessment targets only after predictions and sets exist.
+- Strict ordered identity, vocabulary and probability validation; unavailable
+  metrics carry explicit reasons. Average precision and trapezoidal PR-AUC are
+  separate. No interval or significance inference is implemented. The new scorer
+  retains the .98 AUC integrity alert; existing guard code/tests are untouched.
+- Temperature calibration and binary split-conformal score-set interfaces with
+  role provenance, fixed-predictor binding, mutation checks and explicit failed
+  states. Calibration failure never silently becomes identity calibration;
+  failed refits invalidate previous state. Unsupported coverage certification
+  stays blocked, including after successful synthetic score-set construction.
+- Actual Task B study-snapshot validation invokes existing study, registered-source
+  and reliability feature checks and compares exact topology. The Task B snapshot
+  adapter separately exposes prior/reliability fitting and residual tuning, both
+  fail-closed pending an approved actual-evidence-release contract. It does not
+  invoke the old path-based runner. This is an intentional implemented blocker,
+  not a claim that Task B fitting or scientific evidence approval is complete.
+
+Exact focused commands and results (no full suite or Colab):
+
+1. `venv/bin/python -m pytest tests/test_evaluation_orchestrator.py tests/test_release_preflight.py tests/test_evaluation_protocol.py -q -p no:cacheprovider`
+   — **212 passed in 5.48s**, exit 0.
+2. `venv/bin/python -m pytest tests/test_pipeline_components.py -q -p no:cacheprovider`
+   — **21 passed in 3.92s**, exit 0, one joblib physical-core detection warning.
+3. `venv/bin/python -m pytest tests/test_pipeline_components.py tests/test_evaluation_orchestrator.py tests/test_release_preflight.py tests/test_evaluation_protocol.py tests/test_task_a_training.py tests/test_task_b_training.py tests/test_task_a_feature_contract.py -q -p no:cacheprovider`
+   — **350 passed in 9.80s**, exit 0, same warning.
+4. Final after added failure-state, composition, mapping and malformed-column
+   cases: `venv/bin/python -m pytest tests/test_pipeline_components.py tests/test_evaluation_orchestrator.py tests/test_release_preflight.py tests/test_evaluation_protocol.py tests/test_task_a_training.py tests/test_task_b_training.py tests/test_task_a_feature_contract.py tests/test_redesigned_leakage_regression.py -q -p no:cacheprovider`
+   — **366 passed in 11.01s**, exit 0, same warning. Includes existing leakage
+   regression tests unchanged. No test failures occurred in these runs.
+5. `git diff --exit-code 3e25e4e70093e46005d5950d8feb4cef9785c6cf -- data results reports benchmarks src/training/task_a.py src/training/task_b.py tests/test_ablation_leakage.py tests/test_redesigned_leakage_regression.py`
+   — exit 0; historical data/results and existing Task A/B runners and named
+   leakage guards unchanged.
+6. `git diff --check` — exit 0.
+
+Remaining blockers and compatibility limits:
+
+- Phase 2 still returns actual `eligible=False`. Statistical sample adequacy has
+  no approved repository contract. Current empty consensus, unverified mechanisms
+  and incomplete Task B evidence validation remain blockers. No training,
+  performance metrics or empirical evaluation was run on that release.
+- Task B source/topology consistency cannot authenticate evidence, human approval,
+  consensus independence or completeness. The actual study release still needs a
+  reviewed schema/approval contract. Extra intermediate provenance nodes in the
+  study-snapshot adapter are conservatively unsupported, though the existing
+  partition validator still supports intermediate topology nodes.
+- No exchangeability or finite-sample coverage guarantee is established. Binary
+  conformal score calibration excludes disputed decisions; no guarantee is made
+  about the broader disputed/unresolved population. No scientific cutoffs,
+  statistical support thresholds, approvals, labels or citations were invented.
+- Components are separate low-level APIs for direct testing, not production
+  authorization. Snapshot structural validation is not a replacement for release
+  preflight. Production remains blocked even under a synthetic future-eligibility
+  stub. Historical runners are not migrated and retain their existing APIs.
+- Temperature optimizer bounds are numerical limits; boundary optima fail.
+  Fitted identities hash serialized state without deserializing input and depend
+  on software versions. Component reports contain DataFrames rather than the
+  production JSON schema. Snapshot capture remains per-file, not atomic.
+- No known failing component tests; one environment-only joblib core-count warning
+  remains. The full suite was intentionally not run.
+
+Historical artifacts and existing leakage guards remain unchanged. The private
+annotation directory remains untracked and untouched: no contents were inspected,
+read, hashed, discovered, staged or packaged. Only tracked status was queried;
+no staging, commit or push occurred. Stopping for review.
+
+## 2026-10-29 — Phase 3.2 adversarial defect fixes
+
+This entry supersedes the earlier claim that public component execution could be
+kept separate from release authorization by documentation alone. The adversarial
+review correctly reproduced a public eligibility bypass, arbitrary fitted-wrapper
+acceptance, and snapshot rebinding with mismatched cached tables.
+
+Changed files:
+
+- `src/training/pipeline_components.py`: public structural validators plus a
+  fail-closed execution facade. All new public fit/tune/predict/score/calibration/
+  conformal/assessment paths reject execution through the orchestrator, including
+  manually allocated objects and private synthetic predictors passed as inputs.
+  No public synthetic flag, caller approval mapping or contract-only success can
+  authorize execution. A returning gate function still cannot dispatch algorithms.
+- `src/training/evaluation_orchestrator.py`: centralized authorization rejection
+  and explicit blocker diagnostics. The orchestrator issues no execution grants.
+  Actual Phase 2 eligibility remains false. A future grant issuer must originate
+  here after preflighting exact captured bytes, require literal `eligible is True`
+  and every prerequisite, and bind the complete plan/snapshot/fit provenance. No
+  such approved issuance contract exists; the implementation deliberately fails
+  closed instead of inventing one or enabling a positive execution path.
+- New private `src/training/_pipeline_algorithms.py`: existing research algorithms
+  moved behind a private test surface. It cannot issue production authorization.
+  Snapshot binding is read-only and checks object identity, bytes, cached tables
+  and role manifest before use; duck-typed caller table providers are rejected.
+  Arbitrary fitted-estimator construction is rejected. Only successful fit-role
+  fitting registers a private predictor with a frozen fit record: fit-role hash,
+  task, explicit configuration, approved feature contract, canonical plan hash,
+  exact snapshot hashes, derived-table hash and fitted-estimator hash. Registration
+  binds the original data/estimator objects; absent, copied or forged records and
+  changed state fail before prediction or calibration. Returned records are copies.
+  Task B now checks role-data integrity before structural validation. Nonfinite
+  temperature optimizer parameters and malformed binary-loss targets fail closed.
+- `tests/test_pipeline_components.py`: existing algorithm tests now explicitly
+  import the private module. Added public gate denial for caller-created grants,
+  actual false-eligibility reproduction, manual predictor construction and forged
+  records, snapshot/derived-table mutations and rebinding, copied registration,
+  different-predictor calibration/conformal reuse, and nonfinite optimizer state.
+  Informative overlapping synthetic features test unchanged fitted estimator state,
+  selected configuration, calibration temperature, nonconstant probabilities and
+  sets under changed assessment labels. There are now 42 component cases.
+- `docs/evaluation_orchestrator.md`: corrected public/private execution contracts,
+  provenance behavior, compatibility break and remaining blockers.
+
+Exact focused validation (no full suite, Colab or skipped requested files):
+
+1. `PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_pipeline_components.py tests/test_evaluation_orchestrator.py -q -p no:cacheprovider`
+   — initial refactor: **47 passed in 8.00s**, exit 0. After new regression cases:
+   **1 failed, 59 passed in 11.18s**, exit 1. A test-body placement mistake left
+   endpoint-calibration assertions in the wrong function, causing NameError for
+   `monkeypatch`; restored those assertions to their original test. Rerun:
+   **60 passed in 10.85s**, exit 0. Each run had the existing joblib core-count warning.
+2. Final after the defensive provenance-copy and final failure-state cases:
+   `PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_pipeline_components.py tests/test_evaluation_orchestrator.py tests/test_release_preflight.py tests/test_evaluation_protocol.py tests/test_task_a_training.py tests/test_task_b_training.py tests/test_task_a_feature_contract.py tests/test_redesigned_leakage_regression.py tests/test_calibration_audit.py tests/test_conformal_abstention.py tests/test_conformal_overhaul.py tests/test_interaction_model_and_calibration.py tests/test_trainer_conformal.py -q -p no:cacheprovider`
+   — **480 passed in 18.10s**, exit 0, one existing joblib physical-core detection
+   warning (logical-core fallback). All algorithm fitting/scoring in these tests
+   uses synthetic fixtures; no current-release empirical execution occurred.
+3. `git diff --exit-code 3e25e4e70093e46005d5950d8feb4cef9785c6cf -- data results reports benchmarks src/training/task_a.py src/training/task_b.py src/training/evaluation.py src/training/evaluator.py src/training/ablation.py tests/test_ablation_leakage.py tests/test_redesigned_leakage_regression.py`
+   — exit 0. Historical/canonical artifacts, existing runners and named leakage
+   guards remain unchanged. The AUC > .98 guard was retained in private scoring.
+4. `git diff --check` — exit 0. `git diff --cached --quiet` — exit 0.
+
+Remaining blockers/precise limitations:
+
+- All new public production execution is intentionally disabled, even for a caller
+  claiming eligible=true. No reviewed issuance contract or scientific eligibility
+  exists, so a production positive path was not added. Snapshot parsing and static
+  feature construction remain structural/read-only operations, not authorization.
+- Current consensus/mechanistic/statistical support and Task B evidence approval
+  blockers remain. Task B prior/reliability fitting and residual tuning are still
+  separate blocked interfaces. No real-data performance, scientific approval,
+  intervals, significance, exchangeability or coverage guarantees were created.
+- Private fit registrations establish algorithm provenance within this process,
+  not evidence authenticity, source independence or release authorization. Python
+  private modules are not a security sandbox: arbitrary code that imports private
+  internals or rewrites module globals is outside the public API contract. We do
+  not claim interpreter-level isolation. The public backend never dispatches to
+  these test algorithms; private records cannot unlock it.
+- Intentional compatibility break: previous public component execution calls now
+  raise PermissionError. Internal algorithms and version-dependent pickle hashes
+  are not portable production APIs. Existing historical runners are unchanged and
+  not migrated. Snapshot capture remains per-file, not an atomic transaction.
+- No remaining failures in the requested focused tests; the full suite was not run.
+
+The private annotation directory remains untracked and completely untouched. Its
+contents were not read, inspected, discovered, hashed, staged or packaged. Only
+tracked status was queried; no staging, commit or push occurred. Stop for review.
+
+## 2026-10-29 — research presentation, explanation, official-form and paper drafts
+
+Reviewed the current public facade, private fit registration/snapshot checks,
+orchestrator and regression tests. No further Phase 3.2 execution-code change was
+needed: public execution remains unconditionally blocked, private predictors need
+registered immutable fit-role provenance, and snapshot/table mutation is checked.
+Current Phase 2 eligibility remains false. No empirical fitting or performance
+reporting was enabled. Prior uncommitted pipeline changes are retained for review.
+
+Implemented this session:
+
+- Improved the existing Streamlit site rather than adding a duplicate framework.
+  `app/interactive_app.py` and `app/frontend.py` now offer a Project presentation
+  view and retain the existing read-only Evidence explorer. Both still stop
+  before inactive legacy prototype execution. `app/project_presentation.py` and
+  `app/assets/research_presentation.html` add an academic presentation with hero,
+  problem, proposed approach, accessible ordered architecture flow, separate
+  tasks, safeguards, status, limitations/next steps and actual local-document
+  downloads. No external fonts/assets, fake metrics, new dependencies or API calls.
+  Responsive grids, visible focus, native disclosures and reduced-motion styling
+  are included. Real rendering tests cover both views and entry points.
+- `explanation.md`: comprehensive beginner guide to architecture, terminology,
+  task inputs/outputs, feature/data/source contracts, role/disjointness controls,
+  setup, status, failure modes, glossary, future eligible workflow and professor
+  pitches/questions. Established methods are separated from candidate novelty.
+- `docs/IDF-B_draft.md`: review draft following the actual official repository PDF,
+  `docs/Patent_Form_Details.pdf`, Document 02-IPR-R003, issue 2/01.02.2024. Preserves
+  all ten numbered field names and the nine-level TRL structure; no TRL is ticked.
+  Student/advisor information, approvals, timelines/budgets, prior-art verification
+  and institutional declarations are explicitly marked for input. It must be
+  transferred into the official form and reviewed; no signature/date/approval was
+  invented. Older patent Markdown and the source PDF remain unchanged.
+- `docs/research_paper_draft.md`: methodology/engineering draft with prominent empty
+  consensus, unverified mechanisms and blocked evaluation disclosures in abstract,
+  results/status and limitations. Related work explicitly awaits verified sources;
+  no external citation or superiority/clinical/coverage claim was invented.
+- `README.md`: current, accurate entry point replaces superseded clinical/
+  performance headlines, links all deliverables and distinguishes historical work.
+  Historical benchmark artifacts themselves were not modified.
+- `docs/website.md`: launch/navigation/setup/design and verification instructions.
+- `tests/test_project_presentation.py`: three cases check fragment destinations,
+  download targets and actual Streamlit rendering/navigation between both views
+  with fitting/prediction tripwires. `tests/test_app_research_status.py` changes
+  only the fake View selector so existing explorer startup safeguards still run.
+
+Exact checks/results:
+
+1. One combined focused run after code changes:
+   `PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_pipeline_components.py tests/test_evaluation_orchestrator.py tests/test_release_preflight.py tests/test_evaluation_protocol.py tests/test_task_a_training.py tests/test_task_b_training.py tests/test_task_a_feature_contract.py tests/test_redesigned_leakage_regression.py tests/test_calibration_audit.py tests/test_conformal_abstention.py tests/test_conformal_overhaul.py tests/test_interaction_model_and_calibration.py tests/test_trainer_conformal.py tests/test_app_research_status.py tests/test_project_presentation.py -q -p no:cacheprovider`
+   — **499 passed in 19.62s**, exit 0, one existing joblib physical-core detection
+   warning (logical-core fallback). Includes the prior 480 cases, 16 app cases
+   and three presentation cases. No failed/skipped test cases; no full suite,
+   Colab or redundant test rerun. No eligible current-release model was fitted.
+2. Website compilation (no JavaScript/Node build exists):
+
+   ```sh
+   PYTHONDONTWRITEBYTECODE=1 venv/bin/python - <<'PY'
+   import py_compile
+   paths=['app/frontend.py','app/interactive_app.py','app/project_presentation.py','app/research_status.py']
+   for i,p in enumerate(paths):
+       py_compile.compile(p,cfile=f'/private/tmp/hdi-website-{i}.pyc',doraise=True)
+       print('COMPILED',p)
+   PY
+   ```
+
+   — four files compiled successfully, exit 0; compiled outputs are outside the
+   repository. Streamlit 1.62.0 AppTest renders both entry points and view switches
+   without exceptions; download controls match all six fixed local documents.
+3. Local preview:
+   `PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m streamlit run app/interactive_app.py --server.headless true --server.address 127.0.0.1 --server.port 8517 --server.fileWatcherType none --browser.gatherUsageStats false`
+   — first attempt failed with sandbox PermissionError binding the socket.
+   Approved escalation of the same command started Uvicorn/Streamlit successfully
+   on localhost; file watching and usage telemetry were disabled. Native Chrome
+   showed the presentation's accessibility structure and rendered document controls.
+   Section-link URL changes were observed, but scrolling/mobile layout were not
+   conclusively verified before native browser automation reported no windows.
+   Thus browser visual QA is partial, not a full responsive/accessibility audit.
+   No browser extension/IAB surface was available. Server stopped cleanly, exit 0.
+4. Official form inspection: pypdf/pdfplumber and Poppler were unavailable in the
+   active environment. Native Swift PDFKit extracted both source PDFs successfully;
+   AppKit rendered both official-form pages to temporary PNGs, visually reviewed.
+   Source PDF has ten numbered fields and a nine-column TRL matrix. No PDF was
+   edited/generated and no packages installed. CoreGraphics emitted a PDF warning,
+   but both official form pages rendered with readable headings and matrix.
+5. A local Markdown-target check over README, explanation and the three new docs
+   passed; the IDF-B numbered-section check found exactly 1–10 in order, exit 0.
+6. `git diff --exit-code 3e25e4e70093e46005d5950d8feb4cef9785c6cf -- data results reports benchmarks patent src/training/task_a.py src/training/task_b.py src/training/evaluation.py src/training/evaluator.py src/training/ablation.py tests/test_ablation_leakage.py tests/test_redesigned_leakage_regression.py`
+   — exit 0. Historical/canonical artifacts, original patent material, existing
+   runners and named guards unchanged. No weakening of the AUC alert.
+7. `git diff --check` — exit 0. Final tracked differences plus explicitly named new
+   deliverables reviewed without untracked-tree discovery. No staging/commit/push.
+
+Remaining limits: the scientific project is not empirically complete. Independent
+consensus, verified complete mechanisms, actual Task B evidence approval,
+statistical support/inference criteria and a reviewed authorization issuer remain
+blocked. Public APIs stay disabled, not merely conditional on a caller report.
+Private Python algorithms are not an interpreter security sandbox. External
+literature/patent verification, institutional form review/TRL selection and a full
+manual mobile/accessibility review remain pending. Drafts are not an approved
+paper, patent submission or clinical system. No real-data performance claims.
+
+The private annotation directory remains untracked and completely untouched:
+contents were not read, inspected, discovered, hashed, staged or packaged. No full
+repository discovery, packaging or Colab execution occurred. Stop for review.
