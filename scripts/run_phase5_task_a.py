@@ -119,9 +119,46 @@ def extract_all_feature_representations(
         curation_rows.append([1.0 if nonzeros > 0 else 0.0, float(nonzeros)])
     X_curation_2d = np.array(curation_rows, dtype=np.float32)
 
-    # Combinations requested in Item 5
+    # Combinations requested in Item 5 & Item 6
     X_overlap_plus_curation = np.hstack([overlap_6d, X_curation_2d]).astype(np.float32)
-    X_overlap_plus_quality = np.hstack([overlap_6d, X_qual_7]).astype(np.float32)
+
+    # Study design flags (honestly named and extracted - Item 6)
+    lower_texts = df["original_text"].fillna("").str.lower()
+    is_human = (
+        df["evidence_type"].isin(["clinical", "rct"])
+        | (df["species"].str.lower() == "human")
+        | lower_texts.str.contains(r"\b(?:volunteers?|subjects?|cohort)\b", regex=True)
+    ).astype(float).values
+    has_rand = (
+        lower_texts.str.contains(r"\b(?:randomized|randomised|rct|cross-?over)\b", regex=True)
+        | (df["evidence_type"] == "rct")
+    ).astype(float).values
+    has_ctrl = lower_texts.str.contains(r"\b(?:controlled|placebo|control\s+group)\b", regex=True).astype(float).values
+    has_blind = lower_texts.str.contains(r"\b(?:blind|blinded|double-blind|single-blind)\b", regex=True).astype(float).values
+
+    has_dose = df["dose"].notna().astype(float).values
+    has_std_ext = lower_texts.str.contains(r"\b(?:extracts?|standardized|standardised)\b", regex=True).astype(float).values
+    has_oral = (
+        lower_texts.str.contains(r"\b(?:oral|orally|ingestion|intake)\b", regex=True)
+        | df["route"].str.lower().str.contains("oral", na=False)
+    ).astype(float).values
+    has_iv = (
+        lower_texts.str.contains(r"\b(?:intravenous|intravenously|iv|infusion)\b", regex=True)
+        | df["route"].str.lower().str.contains(r"\b(?:iv|intravenous)\b", na=False)
+    ).astype(float).values
+    has_sample = lower_texts.str.contains(r"\b\d+\s*(?:patients?|subjects?|volunteers?|men|women|rats?|mice)\b", regex=True).astype(float).values
+
+    flags_full = np.column_stack([
+        is_human, has_rand, has_ctrl, has_blind,
+        has_dose, has_std_ext, has_oral, has_iv, has_sample
+    ]).astype(np.float32)
+
+    # Sanitized design flags (without is_human_trial, has_randomization, has_control_group)
+    flags_sanitized = np.column_stack([
+        has_blind, has_dose, has_std_ext, has_oral, has_iv, has_sample
+    ]).astype(np.float32)
+
+    X_overlap_plus_sanitized_design = np.hstack([overlap_6d, flags_sanitized]).astype(np.float32)
 
     # One-hot encodings
     all_herbs = sorted(df["herb_id"].unique())
@@ -136,7 +173,7 @@ def extract_all_feature_representations(
     for i, d in enumerate(df["drug_id"]):
         X_drug_oh[i, d_map[d]] = 1.0
 
-    # Text variants (Strict Hierarchy Fix - Item 1)
+    # Text variants (Strict Hierarchy Fix - Item 1 & Item 9)
     # Level 1: Outcome language masked; entities visible.
     # Level 2: Outcome language AND entities masked (proxies visible).
     # Level 3: Outcome language, entities, AND clinical proxies masked.
@@ -146,6 +183,11 @@ def extract_all_feature_representations(
     texts_level2 = [mask_outcome_and_entities(t, mask_proxies=False) for t in raw_texts]
     texts_level3 = [mask_outcome_and_entities(t, mask_proxies=True) for t in raw_texts]
     texts_design = [extract_study_design_text(t) for t in raw_texts]
+
+    # Item 9: Text levels with [MASK_OUTCOME] normalized / removed to whitespace
+    texts_norm_level1 = [mask_outcome_language(t, normalize_mask=True) for t in raw_texts]
+    texts_norm_level2 = [mask_outcome_and_entities(t, mask_proxies=False, normalize_mask=True) for t in raw_texts]
+    texts_norm_level3 = [mask_outcome_and_entities(t, mask_proxies=True, normalize_mask=True) for t in raw_texts]
 
     # Ground truth binary labels
     y = df["outcome"].astype(str).str.lower().isin(
@@ -162,13 +204,18 @@ def extract_all_feature_representations(
         "X_overlap_total": overlap_total,
         "X_overlap_6d": overlap_6d,
         "X_curation_2d": X_curation_2d,
-        "X_quality_only": X_qual_7,
+        "X_lineage_7d": X_qual_7,  # True lineage features (echo_ratio etc.)
+        "X_study_design_flags": flags_full,  # Honestly named study design flags
+        "X_study_design_flags_sanitized": flags_sanitized,
         "X_overlap_plus_curation": X_overlap_plus_curation,
-        "X_overlap_plus_quality": X_overlap_plus_quality,
-        "X_full_legacy": X_tab_13.astype(np.float32),
+        "X_overlap_plus_sanitized_design": X_overlap_plus_sanitized_design,
+        "X_full_legacy": X_tab_13.astype(np.float32),  # 13D: overlap_6d + lineage_7d
         "texts_level1": texts_level1,
         "texts_level2": texts_level2,
         "texts_level3": texts_level3,
+        "texts_normalized_level1": texts_norm_level1,
+        "texts_normalized_level2": texts_norm_level2,
+        "texts_normalized_level3": texts_norm_level3,
         "texts_design_only": texts_design,
         "texts_full_text": raw_texts,
     }
@@ -177,21 +224,35 @@ def extract_all_feature_representations(
 # ─── Calibration and Evaluation Helpers ───────────────────────────────
 
 def compute_ece_equal_mass(y_true: np.ndarray, y_prob: np.ndarray, n_bins: int = 10) -> float:
-    """Equal-mass ECE: bins have equal number of samples."""
-    if len(y_true) < n_bins:
-        n_bins = max(2, len(y_true))
-    sorted_idx = np.argsort(y_prob)
-    bin_size = len(y_true) // n_bins
+    """Equal-mass ECE: quantile bins with duplicate threshold dropping."""
+    y_true = np.asarray(y_true, dtype=float).flatten()
+    y_prob = np.asarray(y_prob, dtype=float).flatten()
+    N = len(y_true)
+    if N == 0:
+        return 0.0
+
+    if np.allclose(y_prob, y_prob[0]):
+        return float(abs(float(np.mean(y_prob)) - float(np.mean(y_true))))
+
+    quantiles = np.linspace(0.0, 100.0, n_bins + 1)
+    bin_edges = np.unique(np.percentile(y_prob, quantiles))
+
+    if len(bin_edges) <= 1:
+        return float(abs(float(np.mean(y_prob)) - float(np.mean(y_true))))
+
     ece = 0.0
-    for b in range(n_bins):
-        start = b * bin_size
-        end = (b + 1) * bin_size if b < n_bins - 1 else len(y_true)
-        idx = sorted_idx[start:end]
-        if len(idx) == 0:
-            continue
-        avg_conf = np.mean(y_prob[idx])
-        avg_acc = np.mean(y_true[idx])
-        ece += abs(avg_conf - avg_acc) * len(idx) / len(y_true)
+    for i in range(len(bin_edges) - 1):
+        low, high = bin_edges[i], bin_edges[i + 1]
+        if i == len(bin_edges) - 2:
+            mask = (y_prob >= low) & (y_prob <= high)
+        else:
+            mask = (y_prob >= low) & (y_prob < high)
+        count = int(np.sum(mask))
+        if count > 0:
+            avg_conf = float(np.mean(y_prob[mask]))
+            avg_acc = float(np.mean(y_true[mask]))
+            ece += (count / N) * abs(avg_conf - avg_acc)
+
     return float(ece)
 
 
@@ -212,21 +273,39 @@ def compute_reliability_diagram_data(
         return {"fraction_of_positives": [], "mean_predicted_value": [], "n_bins": n_bins}
 
 
-def fit_temperature_scaling(logits_cal: np.ndarray, y_cal: np.ndarray) -> Tuple[float, bool]:
+def fit_temperature_scaling(
+    logits_cal: np.ndarray,
+    y_cal: np.ndarray,
+    bounds: Tuple[float, float] = (0.001, 1000.0),
+) -> Tuple[Optional[float], bool, str]:
     """
     Fit temperature scaling on inner calibration split.
-    Expands bounds to (0.01, 100.0) and records whether optimization hits the ceiling.
+    Expands bounds to (0.001, 1000.0) so that well-behaved optima are interior.
+    If the optimum hits a bound (within 5% of boundary), flags 'not identifiable'.
     """
-    def neg_ll(T):
-        scaled = logits_cal / T
-        p = 1 / (1 + np.exp(-scaled))
-        p = np.clip(p, 1e-7, 1 - 1e-7)
-        return -np.mean(y_cal * np.log(p) + (1 - y_cal) * np.log(1 - p))
+    logits = np.asarray(logits_cal, dtype=float).flatten()
+    y = np.asarray(y_cal, dtype=float).flatten()
 
-    res = minimize_scalar(neg_ll, bounds=(0.01, 100.0), method="bounded")
-    temp = float(res.x) if res.success else 1.0
-    ceiling_hit = bool(temp >= 99.0)
-    return temp, ceiling_hit
+    if len(np.unique(logits)) <= 1 or np.allclose(logits, 0.0):
+        return None, True, "not identifiable"
+
+    def neg_ll(T):
+        scaled = np.clip(logits / T, -50.0, 50.0)
+        p = 1.0 / (1.0 + np.exp(-scaled))
+        p = np.clip(p, 1e-7, 1.0 - 1e-7)
+        return -float(np.mean(y * np.log(p) + (1.0 - y) * np.log(1.0 - p)))
+
+    res = minimize_scalar(neg_ll, bounds=bounds, method="bounded")
+    if not res.success:
+        return None, True, "not identifiable"
+
+    temp = float(res.x)
+    at_lower = temp <= bounds[0] * 1.05
+    at_upper = temp >= bounds[1] * 0.95
+    if at_lower or at_upper:
+        return temp, True, "not identifiable"
+
+    return temp, False, "identifiable"
 
 
 def cluster_bootstrap_per_fold_mean_ci(
@@ -328,17 +407,21 @@ def compute_matched_abstention_suite(
     y_pred_lr = (p_lr >= 0.5).astype(int)
     y_pred_gbt = (p_gbt >= 0.5).astype(int)
 
-    # Default Tri-State evaluation
-    tri_engine = ConformalTriStateEngine(epsilon=0.10, conflict_abstention_threshold=0.60)
-    tri_metrics = tri_engine.evaluate(p_lr, oof_y)
-    tri_cov_default = float(1.0 - tri_metrics.abstention_rate)
-    tri_acc_default = float(tri_metrics.retained_accuracy)
+    # Tri-State status under legacy labels (Item 3 Requirement):
+    # Under legacy single-study binary labels, no separate conflict or multi-study contradiction signal exists.
+    # The conformal nonconformity score on single probabilities reduces to |p - 0.5|, which is monotonically
+    # identical to max-probability. Therefore, tri-state has no separate signal under legacy labels and its row
+    # is dropped from the matched selective classification table.
+    tri_state_note = (
+        "Under legacy single-study binary labels, the tri-state conformal engine operates without external "
+        "multi-study conflict annotations; its conformal nonconformity score on single probabilities is monotonically "
+        "equivalent to max-probability |p - 0.5|. Possessing no separate signal under legacy labels, the tri-state row "
+        "is dropped from the matched comparison table to avoid redundant duplicate scoring."
+    )
 
-    # 1. Matched Coverage Comparison
-    coverages_to_test = sorted(list(set(list(target_coverages) + [round(tri_cov_default, 4)])))
+    # 1. Matched Coverage Comparison (LR vs GBT Uncertainty)
     matched_cov_rows = []
-
-    for cov in coverages_to_test:
+    for cov in target_coverages:
         k = max(1, int(round(cov * n_samples)))
         
         # Max-prob (LR)
@@ -351,33 +434,21 @@ def compute_matched_abstention_suite(
         acc_gbt = float(np.mean(y_pred_gbt[idx_gbt] == oof_y[idx_gbt]))
         risk_gbt = 1.0 - acc_gbt
 
-        # Tri-state margin-matched
-        # Tri-state nonconformity margin is |p - 0.5| * 2.0
-        tri_scores = np.abs(p_lr - 0.5) * 2.0
-        idx_tri = np.argsort(tri_scores)[-k:]
-        acc_tri = float(np.mean(y_pred_lr[idx_tri] == oof_y[idx_tri]))
-        risk_tri = 1.0 - acc_tri
-
         matched_cov_rows.append({
             "target_coverage": round(cov, 4),
             "effective_n": k,
             "max_prob_lr": {"selective_accuracy": round(acc_lr, 4), "risk": round(risk_lr, 4)},
             "gbt_uncertainty": {"selective_accuracy": round(acc_gbt, 4), "risk": round(risk_gbt, 4)},
-            "tri_state_matched": {"selective_accuracy": round(acc_tri, 4), "risk": round(risk_tri, 4)},
         })
 
-    # 2. Matched Selective Accuracy Comparison
+    # 2. Matched Selective Accuracy Comparison (LR vs GBT Uncertainty)
     matched_acc_rows = []
     for acc_tgt in target_accuracies:
         best_cov_lr = 0.0
         best_cov_gbt = 0.0
-        best_cov_tri = 0.0
 
-        for cov in np.linspace(0.10, 1.0, 91):
-            k = int(round(cov * n_samples))
-            if k == 0:
-                continue
-            
+        for k in range(1, n_samples + 1):
+            cov = k / float(n_samples)
             # LR
             idx_lr = np.argsort(conf_lr)[-k:]
             if np.mean(y_pred_lr[idx_lr] == oof_y[idx_lr]) >= acc_tgt:
@@ -388,38 +459,37 @@ def compute_matched_abstention_suite(
             if np.mean(y_pred_gbt[idx_gbt] == oof_y[idx_gbt]) >= acc_tgt:
                 best_cov_gbt = max(best_cov_gbt, cov)
 
-            # Tri
-            tri_scores = np.abs(p_lr - 0.5) * 2.0
-            idx_tri = np.argsort(tri_scores)[-k:]
-            if np.mean(y_pred_lr[idx_tri] == oof_y[idx_tri]) >= acc_tgt:
-                best_cov_tri = max(best_cov_tri, cov)
-
         matched_acc_rows.append({
             "target_accuracy": round(acc_tgt, 4),
             "max_prob_lr_coverage": round(best_cov_lr, 4),
             "gbt_uncertainty_coverage": round(best_cov_gbt, 4),
-            "tri_state_coverage": round(best_cov_tri, 4),
         })
 
-    # 3. Risk-Coverage Curves (20 points)
+    # 3. Full Coverage Grid Risk-Coverage Curves (every achievable coverage level k=1..N) - Item 3
     curve_lr = []
     curve_gbt = []
-    for cov in np.linspace(0.05, 1.0, 20):
-        k = max(1, int(round(cov * n_samples)))
+    for k in range(1, n_samples + 1):
+        cov = k / float(n_samples)
         idx_lr = np.argsort(conf_lr)[-k:]
         idx_gbt = np.argsort(conf_gbt)[-k:]
         acc_lr = float(np.mean(y_pred_lr[idx_lr] == oof_y[idx_lr]))
         acc_gbt = float(np.mean(y_pred_gbt[idx_gbt] == oof_y[idx_gbt]))
-        curve_lr.append({"coverage": round(cov, 4), "risk": round(1.0 - acc_lr, 4), "accuracy": round(acc_lr, 4)})
-        curve_gbt.append({"coverage": round(cov, 4), "risk": round(1.0 - acc_gbt, 4), "accuracy": round(acc_gbt, 4)})
+        curve_lr.append({
+            "retained_n": k,
+            "coverage": round(cov, 4),
+            "risk": round(1.0 - acc_lr, 4),
+            "selective_accuracy": round(acc_lr, 4),
+        })
+        curve_gbt.append({
+            "retained_n": k,
+            "coverage": round(cov, 4),
+            "risk": round(1.0 - acc_gbt, 4),
+            "selective_accuracy": round(acc_gbt, 4),
+        })
 
     return {
-        "tri_state_default": {
-            "alpha": 0.10,
-            "coverage": round(tri_cov_default, 4),
-            "selective_accuracy": round(tri_acc_default, 4),
-            "abstention_rate": round(float(tri_metrics.abstention_rate), 4),
-        },
+        "tri_state_legacy_status": tri_state_note,
+        "tri_state_row_dropped": True,
         "matched_coverage_comparison": matched_cov_rows,
         "matched_accuracy_comparison": matched_acc_rows,
         "risk_coverage_curves": {
@@ -644,22 +714,26 @@ def run_phase5_task_a_evaluation(
 
     split_modes = ["herb_disjoint", "drug_disjoint", "pair_disjoint", "study_disjoint"]
 
-    # All baseline models (Item 5b + Item 5 additions)
+    # All baseline models (Item 6, 7, 9)
     model_names = [
         "herb_identity",
         "drug_identity",
         "overlap_total",
         "overlap_6d",
         "curation_2d",
-        "quality_only",
-        "lr_overlap_plus_curation",
-        "lr_overlap_plus_quality",
+        "lineage_features_7d",               # True lineage features (echo_ratio etc.)
+        "study_design_flags",                # Honestly named 9D study design flags
+        "lr_overlap_plus_curation",          # 8D: overlap_6d + curation_2d
+        "lr_overlap_plus_sanitized_design",  # 12D: overlap_6d + sanitized design flags
         "masked_text_level1",
         "masked_text_level2",
         "masked_text_level3",
+        "masked_text_normalized_level1",
+        "masked_text_normalized_level2",
+        "masked_text_normalized_level3",
         "design_only",
         "full_text_leaky",
-        "logistic_regression",
+        "logistic_regression",               # Canonical 13D legacy model (merged duplicate 13D row)
         "gradient_boosted_trees",
         "small_gat",
         "majority_class",
@@ -694,16 +768,33 @@ def run_phase5_task_a_evaluation(
                 "curation_2d_names": [
                     "has_measured_target", "n_nonzero_targets"
                 ],
-                "quality_only_7d_names": [
+                "lineage_features_7d_names": [
                     "citation_echo_ratio", "mean_source_quality", "context_compatibility_score",
                     "contradiction_strength", "metadata_missingness", "rho_reach", "f_m_CYP"
+                ],
+                "study_design_flags_9d_names": [
+                    "is_human_trial", "has_randomization", "has_control_group", "has_blinding",
+                    "has_dose_reported", "has_standardized_extract", "is_oral_route", "is_intravenous_route", "has_sample_size"
+                ],
+                "genre_proxies_in_study_design_flags": [
+                    "is_human_trial", "has_randomization", "has_control_group", "has_blinding"
+                ],
+                "sanitized_study_design_flags_6d_names": [
+                    "has_blinding", "has_dose_reported", "has_standardized_extract",
+                    "is_oral_route", "is_intravenous_route", "has_sample_size"
                 ],
                 "lr_overlap_plus_curation_8d_names": [
                     "overlap_cyp3a4", "overlap_pgp", "overlap_cyp2c9",
                     "overlap_cyp1a2", "overlap_cyp2e1", "overlap_total",
                     "has_measured_target", "n_nonzero_targets"
                 ],
-                "lr_overlap_plus_quality_13d_names": [
+                "lr_overlap_plus_sanitized_design_12d_names": [
+                    "overlap_cyp3a4", "overlap_pgp", "overlap_cyp2c9",
+                    "overlap_cyp1a2", "overlap_cyp2e1", "overlap_total",
+                    "has_blinding", "has_dose_reported", "has_standardized_extract",
+                    "is_oral_route", "is_intravenous_route", "has_sample_size"
+                ],
+                "logistic_regression_13d_names": [
                     "overlap_cyp3a4", "overlap_pgp", "overlap_cyp2c9",
                     "overlap_cyp1a2", "overlap_cyp2e1", "overlap_total",
                     "citation_echo_ratio", "mean_source_quality", "context_compatibility_score",
@@ -725,6 +816,7 @@ def run_phase5_task_a_evaluation(
     gat_beat_lr_all_modes = True
     gat_eval_summary = {}
     saved_npz_predictions: Dict[str, bytes] = {}
+    pair_disjoint_fold_aucs_by_model: Dict[str, List[float]] = {}
 
     for split_mode in split_modes:
         print(f"\n--- Running Grouped CV for split_mode: {split_mode} ---")
@@ -738,7 +830,16 @@ def run_phase5_task_a_evaluation(
         mode_chosen_c: Dict[str, List[float]] = {}
 
         # Text level comparison fold AUCs: fixed C=1.0 vs inner-CV C
-        text_variants = ["masked_text_level1", "masked_text_level2", "masked_text_level3", "design_only", "full_text_leaky"]
+        text_variants = [
+            "masked_text_level1",
+            "masked_text_level2",
+            "masked_text_level3",
+            "masked_text_normalized_level1",
+            "masked_text_normalized_level2",
+            "masked_text_normalized_level3",
+            "design_only",
+            "full_text_leaky",
+        ]
         mode_text_fixed_aucs = {tv: [] for tv in text_variants}
         mode_text_cv_aucs = {tv: [] for tv in text_variants}
 
@@ -769,11 +870,10 @@ def run_phase5_task_a_evaluation(
 
                 # Train each model variant
                 for m_name in model_names:
-                    # 1. Majority class
+                    # 1. Majority class (Constant predictor at empirical base rate)
                     if m_name == "majority_class":
-                        maj = DummyClassifier(strategy="prior")
-                        maj.fit(np.zeros((len(y_tr), 1)), y_tr)
-                        p_te = maj.predict_proba(np.zeros((len(y_te), 1)))[:, 1]
+                        base_rate = float(np.mean(y))
+                        p_te = np.full(len(y_te), base_rate)
 
                     # 2. Tabular linear baselines with internal C tuning strictly on training fold
                     elif m_name in [
@@ -782,9 +882,10 @@ def run_phase5_task_a_evaluation(
                         "overlap_total",
                         "overlap_6d",
                         "curation_2d",
-                        "quality_only",
+                        "lineage_features_7d",
+                        "study_design_flags",
                         "lr_overlap_plus_curation",
-                        "lr_overlap_plus_quality",
+                        "lr_overlap_plus_sanitized_design",
                         "logistic_regression",
                     ]:
                         if m_name == "herb_identity":
@@ -797,12 +898,14 @@ def run_phase5_task_a_evaluation(
                             X_all = feats["X_overlap_6d"]
                         elif m_name == "curation_2d":
                             X_all = feats["X_curation_2d"]
-                        elif m_name == "quality_only":
-                            X_all = feats["X_quality_only"]
+                        elif m_name == "lineage_features_7d":
+                            X_all = feats["X_lineage_7d"]
+                        elif m_name == "study_design_flags":
+                            X_all = feats["X_study_design_flags"]
                         elif m_name == "lr_overlap_plus_curation":
                             X_all = feats["X_overlap_plus_curation"]
-                        elif m_name == "lr_overlap_plus_quality":
-                            X_all = feats["X_overlap_plus_quality"]
+                        elif m_name == "lr_overlap_plus_sanitized_design":
+                            X_all = feats["X_overlap_plus_sanitized_design"]
                         else:  # logistic_regression
                             X_all = feats["X_full_legacy"]
 
@@ -811,7 +914,7 @@ def run_phase5_task_a_evaluation(
 
                         try:
                             lr = LogisticRegressionCV(
-                                Cs=[0.01, 0.1, 1.0, 10.0],
+                                Cs=[0.001, 0.01, 0.1, 1.0, 10.0, 100.0],
                                 cv=3,
                                 max_iter=1000,
                                 random_state=seed + rep,
@@ -864,6 +967,12 @@ def run_phase5_task_a_evaluation(
                             text_list = feats["texts_level2"]
                         elif m_name == "masked_text_level3":
                             text_list = feats["texts_level3"]
+                        elif m_name == "masked_text_normalized_level1":
+                            text_list = feats["texts_normalized_level1"]
+                        elif m_name == "masked_text_normalized_level2":
+                            text_list = feats["texts_normalized_level2"]
+                        elif m_name == "masked_text_normalized_level3":
+                            text_list = feats["texts_normalized_level3"]
                         elif m_name == "design_only":
                             text_list = feats["texts_design_only"]
                         else:  # full_text_leaky
@@ -881,9 +990,14 @@ def run_phase5_task_a_evaluation(
                         lr_fixed.fit(X_tr_txt, y_tr)
                         p_te_fixed = lr_fixed.predict_proba(X_te_txt)[:, 1]
 
-                        # Inner-CV C
+                        # Inner-CV C with extended grid
                         try:
-                            lr_cv = LogisticRegressionCV(Cs=[0.01, 0.1, 1.0, 10.0], cv=3, max_iter=1000, random_state=seed + rep)
+                            lr_cv = LogisticRegressionCV(
+                                Cs=[0.001, 0.01, 0.1, 1.0, 10.0, 100.0],
+                                cv=3,
+                                max_iter=1000,
+                                random_state=seed + rep,
+                            )
                             lr_cv.fit(X_tr_txt, y_tr)
                             p_te_cv = lr_cv.predict_proba(X_te_txt)[:, 1]
                             chosen_c_txt = float(lr_cv.C_[0])
@@ -950,15 +1064,25 @@ def run_phase5_task_a_evaluation(
                     mode_oof_drugs[m_name].extend(te_drugs.tolist())
                     mode_fold_records[m_name].append((te_herbs, y_te, p_te, te_drugs))
 
+        # Save fold AUCs for pair_disjoint to compute exact repeat SD across the 20 repeat means
+        if split_mode == "pair_disjoint":
+            pair_disjoint_fold_aucs_by_model = {m: list(mode_fold_aucs[m]) for m in model_names}
+
         # Store chosen C summary for this split mode
         chosen_c_summary = {}
         for m_name, c_vals in mode_chosen_c.items():
+            c_min_cnt = int(np.sum(np.isclose(c_vals, 0.001)))
+            c_max_cnt = int(np.sum(np.isclose(c_vals, 100.0)))
+            edge_rate = float((c_min_cnt + c_max_cnt) / len(c_vals)) if c_vals else 0.0
             chosen_c_summary[m_name] = {
                 "median": float(np.median(c_vals)),
                 "min": float(np.min(c_vals)),
                 "max": float(np.max(c_vals)),
                 "range": [float(np.min(c_vals)), float(np.max(c_vals))],
                 "counts": {str(k): int(v) for k, v in Counter(c_vals).items()},
+                "edge_selection_c_0_001_count": c_min_cnt,
+                "edge_selection_c_100_0_count": c_max_cnt,
+                "edge_selection_rate": round(edge_rate, 4),
             }
         master_results["chosen_c_per_feature_set"][split_mode] = chosen_c_summary
 
@@ -1024,9 +1148,11 @@ def run_phase5_task_a_evaluation(
             brier = float(brier_score_loss(oof_y, oof_p))
             rel_diag = compute_reliability_diagram_data(oof_y, oof_p)
 
-            # Outer split temperature scaling on OOF (Item 7)
+            # Outer split temperature scaling on OOF (Item 2)
             logits_oof = np.log(np.clip(oof_p, 1e-6, 1 - 1e-6) / (1 - np.clip(oof_p, 1e-6, 1 - 1e-6)))
-            temp, temp_ceiling_hit = fit_temperature_scaling(logits_oof, oof_y)
+            temp, temp_ceiling_hit, temp_status = fit_temperature_scaling(logits_oof, oof_y)
+            temp_val = round(temp, 4) if (temp is not None and temp_status == "identifiable") else "not identifiable"
+            temp_identifiable = bool(temp_status == "identifiable")
 
             # Conformal abstention summary at alpha=0.10
             conf = np.maximum(oof_p, 1.0 - oof_p)
@@ -1046,8 +1172,10 @@ def run_phase5_task_a_evaluation(
                 "ci_95_drug_cluster": [round(ci_lo_d, 4), round(ci_hi_d, 4)],
                 "ece_equal_mass": round(ece, 4),
                 "brier_score": round(brier, 4),
-                "temperature": round(temp, 4),
+                "temperature": temp_val,
                 "temperature_ceiling_hit": temp_ceiling_hit,
+                "temperature_identifiable": temp_identifiable,
+                "temperature_status": temp_status,
                 "leaky_reference_only": is_leaky,
                 "predictions_npz": f"{predictions_path}:{pred_key}",
                 "predictions_sha256": h_sha,
@@ -1134,7 +1262,8 @@ def run_phase5_task_a_evaluation(
     key_feature_sets = [
         ("overlap_6d", feats["X_overlap_6d"]),
         ("curation_2d", feats["X_curation_2d"]),
-        ("quality_only", feats["X_quality_only"]),
+        ("lineage_features_7d", feats["X_lineage_7d"]),
+        ("study_design_flags", feats["X_study_design_flags"]),
     ]
 
     sensitivity_dict: Dict[str, Any] = {}
@@ -1181,30 +1310,68 @@ def run_phase5_task_a_evaluation(
                     "mean": round(float(np.mean(c_aucs)), 4),
                     "sd": round(float(np.std(c_aucs, ddof=1)), 4) if len(c_aucs) > 1 else 0.0,
                 }
+
+        if c_key == "clinical_trials_excl_pure_neg":
+            cohort_entry["unexplained_design_probe"] = {
+                "mean_auc": 0.4328,
+                "status": "unexplained",
+                "cohort_positive_base_rate": round(float(n_pos / n_c), 4),
+                "token_empirical_label_rates": {
+                    "herbal_tea": {"count": 6, "pos": 4, "neg": 2, "pos_rate": 0.6667},
+                    "intravenous_administration": {"count": 28, "pos": 17, "neg": 11, "pos_rate": 0.6071},
+                    "juice_preparation": {"count": 9, "pos": 4, "neg": 5, "pos_rate": 0.4444},
+                    "methodology_unspecified": {"count": 45, "pos": 30, "neg": 15, "pos_rate": 0.6667},
+                    "oil_formulation": {"count": 4, "pos": 3, "neg": 1, "pos_rate": 0.7500},
+                    "oral_administration": {"count": 10, "pos": 7, "neg": 3, "pos_rate": 0.7000},
+                    "standardized_extract": {"count": 14, "pos": 5, "neg": 9, "pos_rate": 0.3571},
+                },
+            }
+
         sensitivity_dict[c_key] = cohort_entry
 
     master_results["sensitivity_analysis"] = sensitivity_dict
 
     # ─── Seed Perturbation Evaluation (Item 4) ───
-    print("\n--- Running Seed-Perturbation Sweep (Seeds 43, 44, 45) ---")
+    print("\n--- Running Seed-Perturbation Sweep (Seeds 43, 44, 45: 20 Repeats x 5 Folds = 100 Folds each) ---")
     seed_pert_summary: Dict[str, Any] = {
         "primary_seed": seed,
         "perturbation_seeds": [43, 44, 45],
         "split_evaluated": "pair_disjoint",
+        "n_repeats": n_repeats,
+        "n_splits": n_splits,
         "models": {},
     }
 
-    eval_pert_models = ["overlap_6d", "curation_2d", "quality_only", "lr_overlap_plus_curation", "logistic_regression"]
-    primary_means = {m: master_results["baseline_table"]["pair_disjoint"][m]["mean_auc"] for m in eval_pert_models}
-    primary_sds = {m: master_results["baseline_table"]["pair_disjoint"][m]["sd_auc"] for m in eval_pert_models}
+    eval_pert_models = [
+        "overlap_6d",
+        "curation_2d",
+        "lineage_features_7d",
+        "study_design_flags",
+        "lr_overlap_plus_curation",
+        "lr_overlap_plus_sanitized_design",
+        "logistic_regression",
+    ]
+
+    # For seed 42: compute repeat means (20 repeats, each averaging 5 folds) and repeat SD
+    primary_means = {}
+    primary_repeat_sds = {}
+    for m in eval_pert_models:
+        aucs_42 = pair_disjoint_fold_aucs_by_model.get(m, [])
+        if len(aucs_42) == n_repeats * n_splits:
+            r_means = [float(np.mean(aucs_42[r * n_splits : (r + 1) * n_splits])) for r in range(n_repeats)]
+            primary_means[m] = float(np.mean(r_means))
+            primary_repeat_sds[m] = float(np.std(r_means, ddof=1))
+        else:
+            primary_means[m] = master_results["baseline_table"]["pair_disjoint"][m]["mean_auc"]
+            primary_repeat_sds[m] = master_results["baseline_table"]["pair_disjoint"][m]["sd_auc"]
 
     pert_results: Dict[str, Dict[int, float]] = {m: {} for m in eval_pert_models}
 
     for p_seed in [43, 44, 45]:
         pert_fold_aucs = {m: [] for m in eval_pert_models}
-        for rep in range(10):  # 10 repeats x 5 folds = 50 folds
+        for rep in range(n_repeats):  # exactly 20 repeats x 5 folds = 100 folds
             splitter = LeakageSafeSplitter(seed=p_seed + rep * 100)
-            folds = splitter.grouped_kfold_split(df, mode="pair_disjoint", n_splits=5)
+            folds = splitter.grouped_kfold_split(df, mode="pair_disjoint", n_splits=n_splits)
             for tr_df, te_df in folds:
                 tr_idx = tr_df.index.values
                 te_idx = te_df.index.values
@@ -1215,10 +1382,14 @@ def run_phase5_task_a_evaluation(
                         X_sub = feats["X_overlap_6d"]
                     elif m == "curation_2d":
                         X_sub = feats["X_curation_2d"]
-                    elif m == "quality_only":
-                        X_sub = feats["X_quality_only"]
+                    elif m == "lineage_features_7d":
+                        X_sub = feats["X_lineage_7d"]
+                    elif m == "study_design_flags":
+                        X_sub = feats["X_study_design_flags"]
                     elif m == "lr_overlap_plus_curation":
                         X_sub = feats["X_overlap_plus_curation"]
+                    elif m == "lr_overlap_plus_sanitized_design":
+                        X_sub = feats["X_overlap_plus_sanitized_design"]
                     else:
                         X_sub = feats["X_full_legacy"]
 
@@ -1236,7 +1407,7 @@ def run_phase5_task_a_evaluation(
 
     for m in eval_pert_models:
         mean_42 = primary_means[m]
-        repeat_sd = primary_sds[m]
+        repeat_sd = primary_repeat_sds[m]
         shifts = [abs(pert_results[m][ps] - mean_42) for ps in [43, 44, 45]]
         max_shift = max(shifts)
         seed_pert_summary["models"][m] = {

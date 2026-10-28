@@ -164,18 +164,28 @@ def compute_calibration_metrics(
             bin_counts.append(int(bin_count))
 
     # 4. Equal-mass Expected Calibration Error (quantile bins)
-    quantiles = np.linspace(0.0, 100.0, num_bins + 1)
-    eq_boundaries = np.percentile(probs, quantiles)
-    eq_ece = 0.0
-    for i in range(num_bins):
-        b_low = eq_boundaries[i]
-        b_high = eq_boundaries[i + 1]
-        in_bin = (probs >= b_low) & (probs < b_high) if i < num_bins - 1 else (probs >= b_low) & (probs <= b_high)
-        cnt = np.sum(in_bin)
-        if cnt > 0:
-            acc = float(np.mean(labels[in_bin]))
-            conf = float(np.mean(probs[in_bin]))
-            eq_ece += (cnt / total_samples) * abs(acc - conf)
+    if np.allclose(probs, probs[0]):
+        eq_ece = float(abs(np.mean(probs) - np.mean(labels)))
+    else:
+        quantiles = np.linspace(0.0, 100.0, num_bins + 1)
+        eq_boundaries = np.unique(np.percentile(probs, quantiles))
+        eq_ece = 0.0
+        if len(eq_boundaries) <= 1:
+            eq_ece = float(abs(np.mean(probs) - np.mean(labels)))
+        else:
+            for i in range(len(eq_boundaries) - 1):
+                b_low = eq_boundaries[i]
+                b_high = eq_boundaries[i + 1]
+                in_bin = (
+                    (probs >= b_low) & (probs <= b_high)
+                    if i == len(eq_boundaries) - 2
+                    else (probs >= b_low) & (probs < b_high)
+                )
+                cnt = np.sum(in_bin)
+                if cnt > 0:
+                    acc = float(np.mean(labels[in_bin]))
+                    conf = float(np.mean(probs[in_bin]))
+                    eq_ece += (cnt / total_samples) * abs(acc - conf)
 
     diagram_data = {
         "bin_accuracies": bin_accs,

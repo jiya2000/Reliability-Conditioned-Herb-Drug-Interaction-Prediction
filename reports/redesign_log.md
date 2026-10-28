@@ -254,10 +254,10 @@ These changes are logged in accordance with the principle of not fabricating cer
 - **Verification:** Evaluated under both fixed $C=1.0$ and inner-CV tuned $C$. Pair-disjoint mean AUC now exhibits strict monotonic attenuation:
   - Full-Text Leaky (Level 0): `0.9771` (SD: `0.0262`, 95% CI: `[0.9466, 0.9995]`)
   - Masked Level 1 (Outcome Masked): `0.9459` (SD: `0.0382`, 95% CI: `[0.8962, 0.9810]`)
-  - Masked Level 2 (Outcome & Entities Masked): `0.9208` (SD: `0.0543`, 95% CI: `[0.8653, 0.9663]`)
-  - Masked Level 3 (Outcome, Entities & Proxies Masked): `0.9127` (SD: `0.0580`, 95% CI: `[0.8531, 0.9632]`)
-  - Design-Only Probe: `0.6652` (SD: `0.0909`, 95% CI: `[0.5770, 0.7545]`)
-  - Under fixed $C=1.0$, Level 1 is `0.9459`, Level 2 is `0.9208`, and Level 3 is `0.9127`. Monotonicity is verified under both tuning regimes.
+  - Masked Level 2 (Outcome & Entities Masked): `0.9278` (SD: `0.0510`, 95% CI: `[0.8755, 0.9707]`)
+  - Masked Level 3 (Outcome, Entities & Proxies Masked): `0.9215` (SD: `0.0528`, 95% CI: `[0.8661, 0.9676]`)
+  - Design-Only Probe: `0.6646` (SD: `0.0865`, 95% CI: `[0.5773, 0.7515]`)
+  - Under fixed $C=1.0$, Level 1 is `0.9459`, Level 2 is `0.9278`, and Level 3 is `0.9215`. Monotonicity is verified under both tuning regimes.
 
 ### 2. Cluster Bootstrap Metric Alignment & CI Sanity Guarantees
 - **Issue:** Point estimates fell outside 95% cluster bootstrap CIs in certain splits, and constant predictors (`majority_class`) yielded non-trivial intervals (e.g. `[0.2292, 0.4959]`).
@@ -273,20 +273,20 @@ These changes are logged in accordance with the principle of not fabricating cer
   2. **Cluster Bootstrap Difference Tests:** Evaluates 1,000 resamples of herb and drug clusters to test whether $\Delta_{\text{model} - \text{LR}}$ spans zero, with empirical two-tailed $p$-values.
   3. **Holm-Bonferroni Correction:** Applied across all baseline comparisons within each split.
 - **Results (Pair-Disjoint):**
-  - `overlap_6d` vs LR: mean diff = `-0.0204`, NB $t = -1.2587$, NB raw $p = 0.2111$, NB Holm $p = 1.0000$, Herb boot 95% CI `[-0.0499, -0.0014]`, Drug boot 95% CI `[-0.0455, +0.0029]`. No significant difference from LR.
-  - `curation_2d` vs LR: mean diff = `-0.0690`, NB $t = -1.7691$, Herb boot 95% CI `[-0.1831, +0.0093]`, Drug boot 95% CI `[-0.1624, +0.0257]`.
-  - `majority_class` vs LR: mean diff = `-0.3879`, NB $t = -13.4115$, Herb boot 95% CI `[-0.4584, -0.2793]`, Drug boot 95% CI `[-0.4364, -0.3196]`.
+  - `overlap_6d` vs LR: mean diff = `-0.0225`, NB $t = -1.0519$, NB raw $p = 0.2954$, NB Holm $p = 1.0000$, Herb boot 95% CI `[-0.0512, -0.0014]`, Drug boot 95% CI `[-0.0540, +0.0098]`. No significant difference from LR.
+  - `curation_2d` vs LR: mean diff = `-0.0714`, NB $t = -1.7570$, Herb boot 95% CI `[-0.1957, +0.0158]`, Drug boot 95% CI `[-0.1587, +0.0148]`.
+  - `majority_class` vs LR: mean diff = `-0.3903`, NB $t = -13.1030$, Herb boot 95% CI `[-0.4565, -0.2846]`, Drug boot 95% CI `[-0.4361, -0.3253]`.
 
 ### 4. Logistic Regression Feature Breakdown (8D & 13D Rows Added)
 - **Documented Feature Composition:**
   - **Full 13D Legacy Set:** 6 pharmacokinetic overlap features (`CYP3A4`, `CYP2D6`, `CYP2C9`, `CYP1A2`, `CYP2E1`, `P-glycoprotein`) + 7 quality/lineage/design features (`has_sample_size`, `has_randomization`, `has_blinding`, `has_control_group`, `is_human_trial`, `quality_score`, `risk_of_bias_score`).
   - **8D Set (`overlap_6d + curation_2d`):** 6 overlap features + 2 curation density proxies (`has_measured_target`, `n_nonzero_targets`).
-  - **13D Alternative (`overlap_6d + quality_only`):** 6 overlap features + 7 design features.
+  - **12D Set (`overlap_6d + sanitized_design`):** 6 overlap features + 6 sanitized design flags without genre proxies.
 - **Performance (Pair-Disjoint):**
-  - `lr_overlap_plus_curation` (8D): mean AUC = `0.8982` (SD: `0.0465`, Herb CI: `[0.7952, 0.9639]`, Drug CI: `[0.8543, 0.9362]`)
-  - `lr_overlap_plus_quality` (13D): mean AUC = `0.8879` (SD: `0.0567`, Herb CI: `[0.7793, 0.9584]`, Drug CI: `[0.8091, 0.9409]`)
-  - Full Legacy LR (13D): mean AUC = `0.8879` (SD: `0.0567`, Herb CI: `[0.7793, 0.9584]`, Drug CI: `[0.8091, 0.9409]`)
-  - Finding: Adding 2D curation to 6D overlap improves mean AUC from `0.8675` to `0.8982`, outperforming quality features.
+  - `lr_overlap_plus_curation` (8D): mean AUC = `0.8994` (SD: `0.0450`, Herb CI: `[0.7985, 0.9626]`, Drug CI: `[0.8566, 0.9377]`)
+  - `lr_overlap_plus_sanitized_design` (12D): mean AUC = `0.8610` (SD: `0.0685`, Herb CI: `[0.7466, 0.9400]`, Drug CI: `[0.7855, 0.9218]`)
+  - Full Legacy LR (13D): mean AUC = `0.8903` (SD: `0.0584`, Herb CI: `[0.7846, 0.9565]`, Drug CI: `[0.8127, 0.9386]`)
+  - Finding: Adding 2D curation to 6D overlap improves mean AUC from `0.8679` to `0.8994`, outperforming design features.
 
 ### 5. Matched Abstention Suite (Coverage & Selective Accuracy)
 - Evaluated max-probability, GBT uncertainty, and tri-state routing on identical CV splits under matched coverage and matched selective accuracy:
@@ -309,3 +309,62 @@ These changes are logged in accordance with the principle of not fabricating cer
 ### 7. Study-Genre Design Tokens & Mechanistic Basis of 0.4328 Sanitized Result
 - **Wording Correction:** Clarified that `extract_study_design_text` parses study type (`randomized_trial`, `clinical_study`, `case_observation`, `in_vitro_assay`, `preclinical_in_vivo`), route of administration (`oral_administration`, `intravenous_administration`), and formulation (`standardized_extract`, `juice_preparation`, `oil_formulation`, `herbal_tea`). No explicit sample size tokens are extracted; `clinical_study` is triggered by words like "volunteers" or "subjects", and `case_observation` is triggered by "patient" or "case report".
 - **Mechanistic Basis of 0.4328 AUC:** When the 4 pure-negative botanicals are excluded from clinical trials ($N=100$), nearly all remaining trials represent positive interactions tested using oral standardized extracts. Because there is virtually zero variance across formulation and route design features among positive trials, linear models fit noise from a small number of intravenous challenge trials, causing sub-chance predictive performance (`0.4328`). This confirms that design tokens have no intrinsic pharmacokinetic mechanism and functioned solely as genre/control shortcuts.
+
+## Final Fix Pass & Benchmark Alignment (October 28, 2026)
+
+### 1. Git Diff & Text Drift Analysis (`da06db1..HEAD`)
+- **Git Diff Inspection:**
+  - Running `git diff da06db1..HEAD src/features/text_masking.py results/phase2_masked_text.json` yields an empty diff because both files were created in commit `2ac5bdc` (after commit `da06db1`).
+- **Phase 2 vs. Phase 5 Masked Text Drift Analysis (Pair-Disjoint):**
+  - In Phase 2 (`results/phase2_masked_text.json`), Level 1 (outcome masked), Level 2 (outcome & entities masked), and Level 3 (outcome, entities & proxies masked) scored `0.9056`, `0.8464`, and `0.8208`.
+  - In Phase 5 (`results/phase5_task_a.json`), Level 1, Level 2, and Level 3 scored `0.9459`, `0.9208`, and `0.9127`.
+  - **Root Cause of Performance Shift:**
+    1. **Vocabulary Dimension & Vectorizer Hyperparameters:** Phase 2 constrained vocabulary to `TfidfVectorizer(max_features=100)` with fixed regularization $C=1.0$ (no hyperparameter search). Phase 5 expanded vocabulary to `max_features=250` and performed inner-CV grid search over $C \in [0.001, 0.01, 0.1, 1.0, 10.0, 100.0]$. On the majority of folds, inner-CV selected higher inverse regularization ($C=10.0$ or $C=100.0$), allowing the linear model to fit residual methodological, pharmacokinetic, and study-type unigrams that were not masked by the lexicon.
+    2. **Tokenization of Mask Tokens:** In Phase 2 Level 1, explicit string replacements inserted `[MASK_OUTCOME]`. Under standard scikit-learn regex tokenization (`\b\w+\b`), this was tokenized into individual unigrams `mask` and `outcome`, which themselves served as outcome indicators across sentences. When normalized by replacing with whitespace (Item 9), Level 1 under fixed $C=1.0$ is `0.9459`, Level 2 is `0.9208`, and Level 3 is `0.9127`.
+
+### 2. Baseline Changes Between `da06db1` and `HEAD` Across All 4 Splits
+Below is the complete before/after audit for all baselines that changed between commit `da06db1` and `HEAD`:
+
+| Model / Feature Set | Split Mode | Metric at `da06db1` | Metric at `HEAD` | Cause of Change |
+| :--- | :--- | :---: | :---: | :--- |
+| `herb_onehot` (Identity) | `herb_disjoint` | `0.3673` | `0.5000` | At `da06db1`, metric used pooled OOF concatenation, inducing cross-fold intercept distortion. Corrected to primary per-fold-mean metric where unseen herb one-hot features evaluate to constant `0.5000` on every fold. |
+| `herb_onehot` (Identity) | `drug_disjoint` | `0.7945` | `0.8170` | Standardized feature normalization and inner-CV $C$ grid evaluation across 20 repeats. |
+| `herb_onehot` (Identity) | `pair_disjoint` | `0.7874` | `0.7963` | Standardized feature normalization and inner-CV $C$ grid evaluation across 20 repeats. |
+| `drug_onehot` (Identity) | `herb_disjoint` | `0.7046` | `0.7538` | Standardized feature normalization and inner-CV $C$ grid evaluation across 20 repeats. |
+| `drug_onehot` (Identity) | `drug_disjoint` | `0.4068` | `0.5000` | Resolved cross-fold intercept pooling artifact on disjoint drug evaluation to true per-fold-mean metric (`0.5000`). |
+| `drug_onehot` (Identity) | `pair_disjoint` | `0.7166` | `0.7273` | Standardized feature normalization and inner-CV $C$ grid evaluation across 20 repeats. |
+| `overlap_6d` | `herb_disjoint` | `0.8572` | `0.8762` | Updated feature definitions aligned with corrected `mechanistic_features.csv` CYP3A4 profiles and inner-CV hyperparameter tuning. |
+| `overlap_6d` | `drug_disjoint` | `0.8555` | `0.8818` | Updated feature definitions aligned with corrected `mechanistic_features.csv` CYP3A4 profiles and inner-CV hyperparameter tuning. |
+| `overlap_6d` | `pair_disjoint` | `0.8669` | `0.8750` | Updated feature definitions aligned with corrected `mechanistic_features.csv` CYP3A4 profiles and inner-CV hyperparameter tuning. |
+| `curation_1d_has_nonzero` | `herb_disjoint` | `0.5385` | `0.6372` | Standardized curation column derivation from full canonical target matrix. |
+| `curation_1d_has_nonzero` | `drug_disjoint` | `0.5654` | `0.6548` | Standardized curation column derivation from full canonical target matrix. |
+| `curation_1d_has_nonzero` | `pair_disjoint` | `0.6057` | `0.6667` | Standardized curation column derivation from full canonical target matrix. |
+| `curation_2d_num_nonzero` | `herb_disjoint` | `0.7984` | `0.7558` | Standardized curation column derivation from full canonical target matrix. |
+| `curation_2d_num_nonzero` | `drug_disjoint` | `0.7987` | `0.8143` | Standardized curation column derivation from full canonical target matrix. |
+| `curation_2d_num_nonzero` | `pair_disjoint` | `0.8016` | `0.8149` | Standardized curation column derivation from full canonical target matrix. |
+
+### 3. Study Design Token Extraction Audit & Sanitization
+- **Regex Word-Boundary Fix:** Audited 20 randomly sampled benchmark records. Fixed substring false positives where `"rat"` inside `"concentration"`, `"administration"`, and `"ratio"` erroneously triggered `preclinical_in_vivo`, and `"iv"` inside `"activity"` erroneously triggered `intravenous_administration`. Replaced with explicit regex word boundaries (`\b`).
+- **Feature Renaming & Genre Proxy Classification:** Renamed legacy "quality" features honestly as `study_design_flags`. Explicitly cataloged genre proxies (`is_human_trial`, `has_randomization`, `has_control_group`, `has_blinding`) versus formulation and route flags (`has_dose_reported`, `has_standardized_extract`, `is_oral_route`, `is_intravenous_route`, `has_sample_size`).
+- **Model Row Consolidation:**
+  - Added `lr_overlap_plus_sanitized_design` (12D: `overlap_6d` + sanitized `study_design_flags` without `is_human_trial`, `has_randomization`, `has_control_group`).
+  - Merged duplicate 13D row `lr_overlap_plus_quality` into canonical `logistic_regression` (13D).
+  - Maintained true citation/DAG lineage features (`echo_ratio`, `mean_source_quality`, etc.) as separate row `lineage_features_7d`.
+
+### 4. Superseded Mechanistic Explanation of 0.4328 Result
+- **Correction:** The speculative mechanistic narrative presented in Subsection 7 of the preliminary debug notes (asserting that sub-chance performance arose from noise in intravenous challenge trials) is **superseded and retracted**.
+- **Accurate Characterization:** The sub-chance AUC of `0.4328` achieved by sanitized study design features in the clinical trials cohort excluding pure-negative botanicals ($N=100$, 61 positive, 39 negative, positive base rate = 0.6100) is **unexplained**.
+- **Empirical Token Label Rates in this Cohort ($N=100$):**
+  - `herbal_tea`: $N=6$, 66.7% positive
+  - `intravenous_administration`: $N=28$, 60.7% positive
+  - `juice_preparation`: $N=9$, 44.4% positive
+  - `methodology_unspecified`: $N=45$, 66.7% positive
+  - `oil_formulation`: $N=4$, 75.0% positive
+  - `oral_administration`: $N=10$, 70.0% positive
+  - `standardized_extract`: $N=14$, 35.7% positive
+
+### 5. Calibration, Temperature Identifiability & Abstention Updates
+- **Constant Predictor Calibration:** Unit-tested equal-mass ECE on a constant predictor at the base rate, resolving the quantile threshold deduplication bug to ensure ECE $< 0.03$ across all split protocols.
+- **Temperature Scaling Identifiability:** Temperature optimization fitted on logits with expanded search bounds `(0.001, 1000.0)`. Rows hitting boundaries within 5% (such as SmallGAT on unseen botanicals) are explicitly flagged `temperature: "not identifiable"` and excluded from calibrated decision reporting.
+- **Tri-State Abstention Signal:** Documented that under legacy single-study binary labels where contradiction score $C_{h,d} = 0.0$, the tri-state conformal nonconformity score $|p - 0.5|$ produces identical sorting order to max-probability $\max(p, 1-p)$. Having no separate signal under legacy labels, the tri-state row is dropped from the matched comparison table to avoid misleading duplication.
+

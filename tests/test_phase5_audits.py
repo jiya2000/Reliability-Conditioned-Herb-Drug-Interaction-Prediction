@@ -91,7 +91,7 @@ def test_nadeau_bengio_and_bootstrap_paired_tests(phase5_results):
     assert "pair_disjoint" in paired
     pair_tests = paired["pair_disjoint"]
 
-    for m_name in ["overlap_6d", "curation_2d", "quality_only", "majority_class"]:
+    for m_name in ["overlap_6d", "curation_2d", "lineage_features_7d", "majority_class"]:
         assert m_name in pair_tests
         t_info = pair_tests[m_name]
         assert "t_stat_nb" in t_info
@@ -105,15 +105,100 @@ def test_nadeau_bengio_and_bootstrap_paired_tests(phase5_results):
 
 def test_lr_feature_breakdown_documented(phase5_results):
     """
-    Item 5 Requirement:
-    Document LR's exact feature list and verify rows for overlap_6d + curation_2d and overlap_6d + quality.
+    Item 6 Requirement:
+    Document LR's exact feature list and verify rows for overlap_6d + curation_2d and overlap_6d + sanitized_design.
     """
     meta = phase5_results["metadata"]
     assert "lr_feature_breakdown" in meta
     fb = meta["lr_feature_breakdown"]
     assert len(fb["lr_overlap_plus_curation_8d_names"]) == 8
-    assert len(fb["lr_overlap_plus_quality_13d_names"]) == 13
+    assert len(fb["lr_overlap_plus_sanitized_design_12d_names"]) == 12
+    assert len(fb["logistic_regression_13d_names"]) == 13
 
     bt_pair = phase5_results["baseline_table"]["pair_disjoint"]
     assert "lr_overlap_plus_curation" in bt_pair
-    assert "lr_overlap_plus_quality" in bt_pair
+    assert "lr_overlap_plus_sanitized_design" in bt_pair
+    assert "logistic_regression" in bt_pair
+
+
+def test_constant_predictor_ece_below_threshold(phase5_results):
+    """
+    Item 2 & 11 Requirement:
+    Constant predictor at base rate must have ECE < 0.03 across all split modes.
+    """
+    bt = phase5_results["baseline_table"]
+    for split_mode, models in bt.items():
+        maj = models["majority_class"]
+        ece = maj["ece_equal_mass"]
+        assert ece < 0.03, f"majority_class ECE in {split_mode} was {ece}, expected < 0.03"
+
+
+def test_no_temperature_at_bound(phase5_results):
+    """
+    Item 2 & 11 Requirement:
+    No model should have a temperature at a bound without being marked 'not identifiable'.
+    """
+    bt = phase5_results["baseline_table"]
+    for split_mode, models in bt.items():
+        for m_name, metrics in models.items():
+            temp = metrics["temperature"]
+            if temp == "not identifiable":
+                assert metrics.get("temperature_identifiable") is False
+            else:
+                assert isinstance(temp, (int, float))
+                # Bounds are (0.001, 1000.0); optimum must be interior (not within 5% of bound)
+                assert temp > 0.001 * 1.05, f"Model {m_name} in {split_mode} hit lower temperature bound: {temp}"
+                assert temp < 1000.0 * 0.95, f"Model {m_name} in {split_mode} hit upper temperature bound: {temp}"
+
+
+def test_tri_state_abstention_signal_distinction(phase5_results):
+    """
+    Item 3 & 11 Requirement:
+    Tri-state engine must not report an identical row to max-probability without a separate signal;
+    under legacy labels where conflict C_{h,d} = 0, the tri-state row is dropped from the matched comparison.
+    """
+    abst = phase5_results.get("abstention_comparison", {})
+    assert "pair_disjoint" in abst
+    ac = abst["pair_disjoint"]
+    assert ac.get("tri_state_row_dropped") is True
+    assert "tri_state_legacy_status" in ac
+
+
+def test_determinism_run_twice_compare_hashes():
+    """
+    Item 10 Requirement:
+    Determinism test: run twice, compare hashes, without updating expected hash.
+    Verifies that running grouped CV splits and model training twice produces
+    100% bitwise identical predictions.
+    """
+    import pandas as pd
+    import hashlib
+    from sklearn.linear_model import LogisticRegression
+    from src.training.evaluation import LeakageSafeSplitter
+    from scripts.run_phase5_task_a import extract_all_feature_representations
+
+    df = pd.read_csv("data/benchmark/verified_botanical_hdi.csv")
+    feats = extract_all_feature_representations(df)
+    y = feats["y"]
+    X = feats["X_overlap_6d"]
+
+    hashes = []
+    for run in range(2):
+        preds = []
+        for rep in range(2):
+            splitter = LeakageSafeSplitter(seed=42 + rep)
+            folds = splitter.grouped_kfold_split(df, mode="pair_disjoint", n_splits=5)
+            for tr_df, te_df in folds:
+                tr_idx = tr_df.index.values
+                te_idx = te_df.index.values
+                clf = LogisticRegression(C=1.0, max_iter=200, random_state=42 + rep)
+                clf.fit(X[tr_idx], y[tr_idx])
+                p_te = clf.predict_proba(X[te_idx])[:, 1]
+                preds.extend(p_te.tolist())
+        h = hashlib.sha256(json.dumps(preds).encode("utf-8")).hexdigest()
+        hashes.append(h)
+
+    assert hashes[0] == hashes[1], f"Non-deterministic execution: hash 1 {hashes[0]} != hash 2 {hashes[1]}"
+
+
+

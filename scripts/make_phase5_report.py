@@ -50,19 +50,23 @@ def generate_phase5_report(
     lines.append(f"- **Task B Status:** Not testable on this panel (only 15 of 120 pairs have $\\ge 2$ studies). Supervised reliability model $R$ is blocked until human consensus labels exist.")
     lines.append("")
 
-    # Model display mapping including Item 5 additions
+    # Model display mapping including Item 6, 7, 9 additions
     model_labels = [
         ("herb_identity", "Herb Identity (One-Hot)", "Identity"),
         ("drug_identity", "Drug Identity (One-Hot)", "Identity"),
         ("overlap_total", "Overlap Total (1D Scalar)", "Overlap"),
         ("overlap_6d", "Overlap 6D (Pharmacokinetic Targets)", "Overlap"),
         ("curation_2d", "Curation 2D (Profile Density Proxy)", "Curation"),
-        ("quality_only", "Quality-Only (7D Lineage/Design)", "Quality"),
+        ("lineage_features_7d", "Lineage Features 7D (Echo/Quality/Compatibility)", "Lineage"),
+        ("study_design_flags", "Study Design Flags (9D Full Methodology)", "Design"),
         ("lr_overlap_plus_curation", "LR (Overlap 6D + Curation 2D, 8D)", "Multivariate"),
-        ("lr_overlap_plus_quality", "LR (Overlap 6D + Quality 7D, 13D)", "Multivariate"),
+        ("lr_overlap_plus_sanitized_design", "LR (Overlap 6D + Sanitized Design, 12D)", "Multivariate"),
         ("masked_text_level1", "Masked-Text Level 1 (Outcome Masked)", "Text"),
         ("masked_text_level2", "Masked-Text Level 2 (Outcome & Entities Masked)", "Text"),
         ("masked_text_level3", "Masked-Text Level 3 (Outcome, Entities & Proxies Masked)", "Text"),
+        ("masked_text_normalized_level1", "Masked-Text Norm Level 1 (Whitespace Replaced)", "Text-Normalized"),
+        ("masked_text_normalized_level2", "Masked-Text Norm Level 2 (Whitespace Replaced)", "Text-Normalized"),
+        ("masked_text_normalized_level3", "Masked-Text Norm Level 3 (Whitespace Replaced)", "Text-Normalized"),
         ("design_only", "Design-Only (Structured Design Tokens)", "Design"),
         ("full_text_leaky", "Full-Text TF-IDF (LEAKY, reference only)", "Text-Leaky"),
         ("logistic_regression", "Logistic Regression (Full 13D Legacy)", "Multivariate"),
@@ -103,11 +107,12 @@ def generate_phase5_report(
             ci_d = f"[{r['ci_95_drug_cluster'][0]:.4f}, {r['ci_95_drug_cluster'][1]:.4f}]"
             ece = f"{r['ece_equal_mass']:.4f}"
             brier = f"{r['brier_score']:.4f}"
-            temp = f"{r['temperature']:.4f}"
+            temp = r.get("temperature", "not identifiable")
+            temp_str = str(temp) if temp == "not identifiable" else f"{float(temp):.4f}"
             status = "LEAKY (Ref)" if r.get("leaky_reference_only") else "EXPLORATORY"
 
             lines.append(
-                f"| **{m_name}** | `{r['label_mode']}` | **{mean_auc}** | {sd_auc} | {ci_h} | {ci_d} | {ece} | {brier} | {temp} | {status} |"
+                f"| **{m_name}** | `{r['label_mode']}` | **{mean_auc}** | {sd_auc} | {ci_h} | {ci_d} | {ece} | {brier} | {temp_str} | {status} |"
             )
         lines.append("")
 
@@ -165,6 +170,9 @@ def generate_phase5_report(
                     ("masked_text_level1", "Masked Level 1 (Outcome Masked)"),
                     ("masked_text_level2", "Masked Level 2 (Outcome & Entities Masked)"),
                     ("masked_text_level3", "Masked Level 3 (Outcome, Entities & Proxies)"),
+                    ("masked_text_normalized_level1", "Masked Norm Level 1 (Whitespace Replaced)"),
+                    ("masked_text_normalized_level2", "Masked Norm Level 2 (Whitespace Replaced)"),
+                    ("masked_text_normalized_level3", "Masked Norm Level 3 (Whitespace Replaced)"),
                     ("design_only", "Design-Only (Structured Design Tokens)"),
                 ]
                 tc_split = txt_comp[s_key]
@@ -189,32 +197,34 @@ def generate_phase5_report(
             if s_key in abst_comp:
                 ac = abst_comp[s_key]
                 lines.append(f"#### Abstention Evaluation ({s_title})")
+                if ac.get("tri_state_row_dropped"):
+                    lines.append(f"> [!NOTE]")
+                    lines.append(f"> **Tri-State Routing Status:** {ac.get('tri_state_legacy_status', 'Dropped due to lack of distinct signal under legacy labels.')}")
+                    lines.append("")
                 
                 # Matched Coverage Table
                 if "matched_coverage_comparison" in ac:
                     lines.append("##### Selective Accuracy at Matched Coverage Levels")
-                    lines.append("| Target Coverage | Effective N | Max-Prob LR Acc (Risk) | GBT Uncertainty Acc (Risk) | Tri-State Matched Acc (Risk) |")
-                    lines.append("| :---: | :---: | :---: | :---: | :---: |")
+                    lines.append("| Target Coverage | Effective N | Max-Prob LR Acc (Risk) | GBT Uncertainty Acc (Risk) |")
+                    lines.append("| :---: | :---: | :---: | :---: |")
                     for row in ac["matched_coverage_comparison"]:
                         cov = f"{row['target_coverage']:.4f}"
                         eff_n = row['effective_n']
                         lr_str = f"{row['max_prob_lr']['selective_accuracy']:.4f} ({row['max_prob_lr']['risk']:.4f})"
                         gbt_str = f"{row['gbt_uncertainty']['selective_accuracy']:.4f} ({row['gbt_uncertainty']['risk']:.4f})"
-                        tri_str = f"{row['tri_state_matched']['selective_accuracy']:.4f} ({row['tri_state_matched']['risk']:.4f})"
-                        lines.append(f"| {cov} | {eff_n} | {lr_str} | {gbt_str} | {tri_str} |")
+                        lines.append(f"| {cov} | {eff_n} | {lr_str} | {gbt_str} |")
                     lines.append("")
 
                 # Matched Selective Accuracy Table
                 if "matched_accuracy_comparison" in ac:
                     lines.append("##### Coverage Achieved at Matched Target Selective Accuracy")
-                    lines.append("| Target Accuracy | Max-Prob LR Coverage | GBT Uncertainty Coverage | Tri-State Coverage |")
-                    lines.append("| :---: | :---: | :---: | :---: |")
+                    lines.append("| Target Accuracy | Max-Prob LR Coverage | GBT Uncertainty Coverage |")
+                    lines.append("| :---: | :---: | :---: |")
                     for row in ac["matched_accuracy_comparison"]:
                         acc_tgt = f"{row['target_accuracy']:.4f}"
                         cov_lr = f"{row['max_prob_lr_coverage']:.4f}"
                         cov_gbt = f"{row['gbt_uncertainty_coverage']:.4f}"
-                        cov_tri = f"{row['tri_state_coverage']:.4f}"
-                        lines.append(f"| {acc_tgt} | {cov_lr} | {cov_gbt} | {cov_tri} |")
+                        lines.append(f"| {acc_tgt} | {cov_lr} | {cov_gbt} |")
                     lines.append("")
 
     # Chosen C per feature set
@@ -225,28 +235,30 @@ def generate_phase5_report(
         for s_key, s_title in split_display[:3]:
             if s_key in chosen_c:
                 lines.append(f"#### {s_title}")
-                lines.append("| Feature Set / Model | Median Chosen $C$ | Range [$C_{\\min}, C_{\\max}$] | Distribution Counts |")
-                lines.append("| :--- | :---: | :---: | :--- |")
+                lines.append("| Feature Set / Model | Median Chosen $C$ | Range [$C_{\\min}, C_{\\max}$] | Edge Rate ($C=0.001$ or $100.0$) | Distribution Counts |")
+                lines.append("| :--- | :---: | :---: | :---: | :--- |")
                 for m_key, m_name, _ in model_labels:
                     if m_key in chosen_c[s_key]:
                         c_info = chosen_c[s_key][m_key]
                         c_med = f"{c_info['median']:.4f}"
-                        c_rng = f"[{c_info['min']:.2f}, {c_info['max']:.2f}]"
+                        c_rng = f"[{c_info['min']:.3f}, {c_info['max']:.1f}]"
+                        edge_str = f"{c_info.get('edge_selection_rate', 0.0):.2%} (min:{c_info.get('edge_selection_c_0_001_count', 0)}, max:{c_info.get('edge_selection_c_100_0_count', 0)})"
                         counts_str = ", ".join(f"C={k}: {v}" for k, v in sorted(c_info['counts'].items(), key=lambda x: float(x[0])))
-                        lines.append(f"| **{m_name}** | {c_med} | {c_rng} | {counts_str} |")
+                        lines.append(f"| **{m_name}** | {c_med} | {c_rng} | {edge_str} | {counts_str} |")
                 lines.append("")
 
     # Seed Perturbation Analysis
     if seed_pert and "models" in seed_pert:
-        lines.append("### 8. Seed Perturbation Stability Analysis (Seeds 43, 44, 45 vs. Repeat SD)")
-        lines.append("Evaluates model sensitivity to random partition seeds (50 folds per seed) compared to repeat standard deviation under primary seed 42:")
+        lines.append("### 8. Seed Perturbation Stability Analysis (Seeds 43, 44, 45 vs. Repeat SD across 20 Repeats)")
+        lines.append("Evaluates model sensitivity to random partition seeds (100 folds per seed) compared to repeat standard deviation (SD across 20 repeat means) under primary seed 42:")
         lines.append("")
-        lines.append("| Model / Feature Set | Seed 42 Mean AUC | Repeat SD | Seed 43 Shift | Seed 44 Shift | Seed 45 Shift | Max Shift | Bounded by SD? |")
-        lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
+        lines.append("| Model / Feature Set | Seed 42 Mean AUC | Repeat SD (20 Repeats) | Seed 43 Shift | Seed 44 Shift | Seed 45 Shift | Max Shift | Max Shift / Repeat SD | Bounded by SD? |")
+        lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
         for m_key, m_info in seed_pert["models"].items():
             bounded = "Yes" if m_info["shift_bounded_by_repeat_sd"] else "No"
+            ratio = f"{m_info.get('max_shift_vs_repeat_sd_ratio', 0.0):.4f}"
             lines.append(
-                f"| `{m_key}` | {m_info['seed_42_mean']:.4f} | {m_info['repeat_sd']:.4f} | {m_info['seed_43_shift']:.4f} | {m_info['seed_44_shift']:.4f} | {m_info['seed_45_shift']:.4f} | {m_info['max_shift']:.4f} | {bounded} |"
+                f"| `{m_key}` | {m_info['seed_42_mean']:.4f} | {m_info['repeat_sd']:.4f} | {m_info['seed_43_shift']:.4f} | {m_info['seed_44_shift']:.4f} | {m_info['seed_45_shift']:.4f} | {m_info['max_shift']:.4f} | {ratio} | {bounded} |"
             )
         lines.append("")
 
@@ -255,15 +267,16 @@ def generate_phase5_report(
         lines.append("### 9. Genre-Stratified and Pure-Negative-Herb Sensitivity Analysis (Herb-Disjoint)")
         lines.append("Evaluates the impact of study genres and the 4 pure-negative botanicals (`HERB_BLACKCOHOSH`, `HERB_MILKTHISTLE`, `HERB_SAWPALMETTO`, `HERB_VALERIAN`) on key feature representations:")
         lines.append("")
-        lines.append("| Cohort Name | $N$ | Pos / Neg | `overlap_6d` AUC (SD) | `curation_2d` AUC (SD) | `quality_only` AUC (SD) |")
-        lines.append("| :--- | :---: | :---: | :---: | :---: | :---: |")
+        lines.append("| Cohort Name | $N$ | Pos / Neg | `overlap_6d` AUC (SD) | `curation_2d` AUC (SD) | `lineage_7d` AUC (SD) | `study_design_flags` AUC (SD) |")
+        lines.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: |")
         for c_key, c_info in sens.items():
             n_tot = c_info["N"]
             pn = f"{c_info['n_pos']} / {c_info['n_neg']}"
-            f_ov = f"{c_info['features']['overlap_6d']['mean']:.4f} ({c_info['features']['overlap_6d']['sd']:.4f})"
-            f_cur = f"{c_info['features']['curation_2d']['mean']:.4f} ({c_info['features']['curation_2d']['sd']:.4f})"
-            f_q = f"{c_info['features']['quality_only']['mean']:.4f} ({c_info['features']['quality_only']['sd']:.4f})"
-            lines.append(f"| {c_info['label']} | {n_tot} | {pn} | {f_ov} | {f_cur} | {f_q} |")
+            f_ov = f"{c_info['features'].get('overlap_6d', {}).get('mean', 0.5):.4f} ({c_info['features'].get('overlap_6d', {}).get('sd', 0.0):.4f})"
+            f_cur = f"{c_info['features'].get('curation_2d', {}).get('mean', 0.5):.4f} ({c_info['features'].get('curation_2d', {}).get('sd', 0.0):.4f})"
+            f_lin = f"{c_info['features'].get('lineage_features_7d', {}).get('mean', 0.5):.4f} ({c_info['features'].get('lineage_features_7d', {}).get('sd', 0.0):.4f})"
+            f_des = f"{c_info['features'].get('study_design_flags', {}).get('mean', 0.5):.4f} ({c_info['features'].get('study_design_flags', {}).get('sd', 0.0):.4f})"
+            lines.append(f"| {c_info['label']} | {n_tot} | {pn} | {f_ov} | {f_cur} | {f_lin} | {f_des} |")
         lines.append("")
 
     lines.append("---")
@@ -272,7 +285,7 @@ def generate_phase5_report(
     lines.append("2. **Curation-Density Parity:** The 2D curation baseline (`has_measured_target`, `n_nonzero_targets`) demonstrates comparable performance, indicating profile curation density is a primary non-mechanistic confound.")
     lines.append("3. **Masking Hierarchy Restored:** The Level 2 masking bug (entity masking without outcome masking) has been corrected. Text representations now exhibit strict monotonic attenuation: Full Text (0.97+) $\\ge$ Level 1 $\\ge$ Level 2 $\\ge$ Level 3 $\\ge$ Design-Only.")
     lines.append("4. **SmallGAT Temperature Ceiling:** SmallGAT's post-hoc calibration temperature hits the optimization upper bound because on unseen botanicals (`herb_disjoint`), GAT predictions lack discriminative generalization (AUC ~ 0.54) while producing overconfident logits. The NLL loss drives $T \\to \\infty$ to collapse probabilities to the uniform prior.")
-    lines.append("5. **Sanitized Design Result (0.4328):** When pure-negative controls are excluded in clinical trials ($N=100$), almost all studies are positive interactions tested with oral standardized extracts. Lacking variation in design features, linear weights fit noise, resulting in near-chance/sub-chance AUC (0.4328), demonstrating that design tokens possess no intrinsic pharmacokinetic mechanism.")
+    lines.append("5. **Sanitized Design Result (0.4328) & Cohort Label Rates:** The sub-chance AUC of 0.4328 achieved by sanitized study design features in the clinical trials cohort excluding pure-negative botanicals ($N=100$, 61 positive, 39 negative, positive base rate = 0.6100) is **unexplained**. Empirical token label rates in this cohort are: herbal_tea (N=6, 66.7% pos), intravenous_administration (N=28, 60.7% pos), juice_preparation (N=9, 44.4% pos), methodology_unspecified (N=45, 66.7% pos), oil_formulation (N=4, 75.0% pos), oral_administration (N=10, 70.0% pos), standardized_extract (N=14, 35.7% pos).")
     lines.append("6. **Task B Non-Testability:** Task B multi-study evidence aggregation remains untestable on this 141-record panel until human consensus labels are curated.")
     lines.append("")
 

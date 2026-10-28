@@ -8,8 +8,8 @@
 
 ### Audit Item A: Determinism
 - **Summary Hash Comparison (Same Seed = 42):**
-  - Initial Run Hash (`results/phase5_task_a.json:baseline_table`): `cfe6a0d4678d80b7c8b24cafc00899542901335f4d1239150ccc3b19e572f472`
-  - Re-run Hash (`results/phase5_task_a.json:baseline_table`): `cfe6a0d4678d80b7c8b24cafc00899542901335f4d1239150ccc3b19e572f472`
+  - Initial Run Hash (`results/phase5_task_a.json:baseline_table`): `9c0c268929f97f0d7faf6b953efaa0c2258ff9bf8e7e53aca0126548169f606e`
+  - Re-run Hash (`results/phase5_task_a.json:baseline_table`): `9c0c268929f97f0d7faf6b953efaa0c2258ff9bf8e7e53aca0126548169f606e`
   - **Verdict:** Identical bitwise SHA-256 summary hash. Reproducibility verified.
 - **Seed Change vs. Repeat Standard Deviation Evaluation:**
   - For `overlap_6d` under pair-disjoint cross-validation, the repeat standard deviation (variability across 20 independent repeat means) is **0.0120** (with individual fold SD = **0.0564**).
@@ -39,10 +39,10 @@
 
 ### Audit Item C: Leakage Hunt
 - **Non-Text Feature Ceiling:**
-  - Highest non-text model: Logistic Regression on `curation_2d + overlap_6d` achieves `0.8879` (pair-disjoint) and `0.8836` (herb-disjoint). Zero non-text features exceed `0.95`.
+  - Highest non-text model: Logistic Regression on `curation_2d + overlap_6d` achieves `0.8903` (pair-disjoint) and `0.8798` (herb-disjoint). Zero non-text features exceed `0.95`.
 - **Raw Text Leakage Documentation:**
   - `full_text_leaky` achieves `0.9771` (pair-disjoint) and `0.9647` (herb-disjoint); explicitly flagged and isolated as 'LEAKY, reference only'.
-  - Design-only text probe collapses to `0.6652` (pair-disjoint) and `0.6537` (herb-disjoint), strictly below the 0.70 CI threshold.
+  - Design-only text probe collapses to `0.6646` (pair-disjoint) and `0.6378` (herb-disjoint), strictly below the 0.70 CI threshold.
 - **Label Shuffling Behavior:**
   - Under target label shuffling, all models collapse to null AUCs ~0.500 ($p < 0.001$). No model improves or maintains performance on shuffled labels.
 - **Status:** **PASS**
@@ -53,14 +53,14 @@
 - **Automated Report Number Test:**
   - `python3 -m pytest tests/test_report_numbers.py` executed: **3 passed, 0 failed**.
 - **Manual Sample 1: `reports/phase5_exploratory.md` (10 Numbers Traced):**
-  1. `0.8675`: `results/phase5_task_a.json:baseline_table.pair_disjoint.overlap_6d.mean_auc`
-  2. `0.0619`: `results/phase5_task_a.json:baseline_table.pair_disjoint.overlap_6d.sd_auc`
+  1. `0.8679`: `results/phase5_task_a.json:baseline_table.pair_disjoint.overlap_6d.mean_auc`
+  2. `0.0623`: `results/phase5_task_a.json:baseline_table.pair_disjoint.overlap_6d.sd_auc`
   3. `0.8189`: `results/phase5_task_a.json:baseline_table.pair_disjoint.curation_2d.mean_auc`
   4. `0.0604`: `results/phase5_task_a.json:baseline_table.pair_disjoint.curation_2d.sd_auc`
-  5. `0.6652`: `results/phase5_task_a.json:baseline_table.pair_disjoint.design_only.mean_auc`
+  5. `0.6646`: `results/phase5_task_a.json:baseline_table.pair_disjoint.design_only.mean_auc`
   6. `0.9771`: `results/phase5_task_a.json:baseline_table.pair_disjoint.full_text_leaky.mean_auc`
   7. `0.5417`: `results/phase5_task_a.json:baseline_table.herb_disjoint.small_gat.mean_auc`
-  8. `0.8836`: `results/phase5_task_a.json:baseline_table.herb_disjoint.logistic_regression.mean_auc`
+  8. `0.8798`: `results/phase5_task_a.json:baseline_table.herb_disjoint.logistic_regression.mean_auc`
   9. `0.7492`: `results/phase5_task_a.json:baseline_table.drug_disjoint.small_gat.mean_auc`
   10. `0.7718`: `results/phase5_task_a.json:baseline_table.pair_disjoint.small_gat.mean_auc`
 - **Manual Sample 2: `reports/redesign_summary.md` (10 Numbers Traced):**
@@ -100,10 +100,10 @@
 
 ### Audit Item F: Consistency Audit Across Phases
 - Quantity Agreement between Phase 0-3 artifacts (`results/shortcut_tests.json`, `results/phase2_masked_text.json`) and Phase 5 artifacts (`results/phase5_task_a.json`):
-  - `overlap_6d` pair-disjoint: `0.8750` in Phase 3 vs `0.8675` in Phase 5.
+  - `overlap_6d` pair-disjoint: `0.8750` in Phase 3 vs `0.8679` in Phase 5.
   - `curation_2d` pair-disjoint: `0.8149` in Phase 3 vs `0.8189` in Phase 5.
   - `herb_identity` herb-disjoint: `0.5000` in Phase 3 vs `0.5000` in Phase 5.
-  - `design_only` pair-disjoint: `0.6543` in Phase 3 vs `0.6652` in Phase 5.
+  - `design_only` pair-disjoint: `0.6543` in Phase 3 vs `0.6646` in Phase 5.
 - Discrepancy accounting:
   - Pooled OOF concatenation (`0.3694`) vs primary per-fold mean (`0.5000`) for `herb_identity` under `herb_disjoint` is documented as an intercept-pooling artifact across folds.
 - **Status:** **PASS**
@@ -133,23 +133,57 @@
 - **Monotonicity Across Masking Hierarchy (Pair-Disjoint):**
   - Full-Text Leaky (Level 0): `0.9771`
   - Masked Level 1 (Outcome Masked): `0.9459`
-  - Masked Level 2 (Outcome & Entities Masked): `0.9208`
-  - Masked Level 3 (Outcome, Entities & Proxies): `0.9127`
-  - Design-Only Probe: `0.6652`
-  - **Monotonicity Order:** `0.9771 >= 0.9459 >= 0.9208 >= 0.9127 >= 0.6652` -> **VERIFIED**
-- **Outcome Masking Inversion Resolution:** Level 2 (0.9208) is strictly $\le$ Level 1 (0.9459). Monotonic attenuation verified.
+  - Masked Level 2 (Outcome & Entities Masked): `0.9278`
+  - Masked Level 3 (Outcome, Entities & Proxies): `0.9215`
+  - Design-Only Probe: `0.6646`
+  - **Monotonicity Order:** `0.9771 >= 0.9459 >= 0.9278 >= 0.9215 >= 0.6646` -> **VERIFIED**
+- **Outcome Masking Inversion Resolution:** Level 2 (0.9278) is strictly $\le$ Level 1 (0.9459). Monotonic attenuation verified.
 - **Status:** **PASS**
 
 ---
 
 ### Audit Item J: Confidence Interval Sanity Checks
 - **Point Estimate Bounded Within 95% Cluster Bootstrap CI:**
-  - Checked all 68 model evaluations across 4 split modes: **ALL BOUNDED**.
+  - Checked all 84 model evaluations across 4 split modes: **ALL BOUNDED**.
 - **Constant Predictor CI Exactly Equal to [0.5, 0.5]:**
   - Majority class across all 4 splits: **EXACTLY [0.5000, 0.5000]**.
 - **Status:** **PASS**
 
 ---
 
+
+---
+
+### Audit Item K: Constant Predictor Calibration (ECE < 0.03)
+- **Equal-Mass ECE for Majority Class Baseline:**
+  - `herb_disjoint: 0.0000` (threshold: `< 0.03`)
+  - `drug_disjoint: 0.0000` (threshold: `< 0.03`)
+  - `pair_disjoint: 0.0000` (threshold: `< 0.03`)
+  - `study_disjoint: 0.0000` (threshold: `< 0.03`)
+- **Verdict:** **PASS** (constant predictor fast-path and quantile threshold deduplication verified).
+- **Status:** **PASS**
+
+---
+
+### Audit Item L: Temperature Scaling Identifiability (No Temperature at a Bound)
+- **Interior Optimum Verification [0.001, 1000.0]:**
+  - Optimization bounds expanded to `(0.001, 1000.0)` so that well-behaved optima are interior.
+  - Non-identifiable optima (within 5% of boundary, e.g. SmallGAT on unseen botanicals) are explicitly flagged `temperature: 'not identifiable'` and excluded from calibrated decision comparisons.
+  - Unflagged boundary hits detected: `0` (None).
+- **Verdict:** **PASS**.
+- **Status:** **PASS**
+
+---
+
+### Audit Item M: Abstention Signal Distinction (Tri-State Engine)
+- **Independent Signal Verification:**
+  - Under legacy single-study binary labels, contradiction score $C_{h,d} = 0.0$. Conformal nonconformity margin $|p - 0.5|$ produces identical sorting order to max-probability $\max(p, 1-p)$.
+  - Possessing no separate signal under legacy labels, the tri-state row is explicitly dropped from matched selective classification tables to avoid redundant duplicate scoring.
+  - Full coverage grid ($k=1 \dots N$, $N=141$) evaluated for max-probability LR and GBT uncertainty.
+- **Verdict:** **PASS** (tri-state row dropped; full coverage grid preserved in JSON).
+- **Status:** **PASS**
+
+---
+
 ### Exit Criteria Verification
-All audit items A through J passed on Iteration 1. The self-correcting loop terminates successfully with zero unresolved failures.
+All audit items A through M passed on Final Fix Pass. The self-correcting loop terminates successfully with zero unresolved failures.

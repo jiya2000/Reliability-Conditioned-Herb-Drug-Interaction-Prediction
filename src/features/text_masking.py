@@ -106,18 +106,21 @@ _RE_OUTCOMES = [re.compile(p, re.IGNORECASE) for p in OUTCOME_PHRASES]
 _RE_PROXIES = [re.compile(p, re.IGNORECASE) for p in OUTCOME_PROXIES]
 
 
-def mask_outcome_language(text: str) -> str:
+def mask_outcome_language(text: str, normalize_mask: bool = False) -> str:
     """
     Mask all explicit outcome, interaction, and directional alteration terms.
     Preserves entity mentions and methodological context.
+    If normalize_mask is True, replaces with whitespace instead of literal [MASK_OUTCOME].
     """
     if not isinstance(text, str) or not text.strip():
         return ""
     t = text
+    replacement = " " if normalize_mask else " [MASK_OUTCOME] "
     for pat in _RE_OUTCOMES:
-        t = pat.sub(" [MASK_OUTCOME] ", t)
+        t = pat.sub(replacement, t)
     t = re.sub(r"\s+", " ", t).strip()
     return t
+
 
 
 def mask_entities(text: str) -> str:
@@ -132,17 +135,21 @@ def mask_entities(text: str) -> str:
     return t
 
 
-def mask_outcome_and_entities(text: str, mask_proxies: bool = False) -> str:
+def mask_outcome_and_entities(
+    text: str, mask_proxies: bool = False, normalize_mask: bool = False
+) -> str:
     """
     Full masking function stripping both outcome conclusions and entity names.
     Optionally masks clinical setting proxy words if mask_proxies is True.
+    If normalize_mask is True, replaces outcome phrases with whitespace instead of [MASK_OUTCOME].
     """
     if not isinstance(text, str) or not text.strip():
         return ""
     t = text
     # 1. Mask outcome terms
+    replacement = " " if normalize_mask else " [MASK_OUTCOME] "
     for pat in _RE_OUTCOMES:
-        t = pat.sub(" ", t)
+        t = pat.sub(replacement, t)
     # 2. Mask entities
     t = _RE_HERBS.sub(" [HERB] ", t)
     t = _RE_DRUGS.sub(" [DRUG] ", t)
@@ -160,7 +167,9 @@ def extract_study_design_text(text: str) -> str:
     """
     Extract strictly methodological and study-design tokens from abstract/text:
     Species, clinical study phase/format, route, administration duration, sample size.
-    Excludes all outcome findings.
+    Excludes all outcome findings. Uses word-boundary regexes to prevent false triggers
+    (e.g., 'concentration' or 'ratio' falsely triggering preclinical_in_vivo via 'rat',
+    or 'activity' falsely triggering intravenous_administration via 'iv').
     """
     if not isinstance(text, str) or not text.strip():
         return ""
@@ -168,31 +177,34 @@ def extract_study_design_text(text: str) -> str:
     lower = text.lower()
 
     # Study type / Assay
-    if "randomized" in lower or "rct" in lower:
+    if re.search(r"\b(?:randomized|randomised|rct|cross-?over)\b", lower):
         design_tokens.append("randomized_trial")
-    elif "clinical" in lower or "subjects" in lower or "volunteers" in lower:
+    elif re.search(r"\b(?:clinical|trials?|subjects?|volunteers?|healthy|cohort)\b", lower):
         design_tokens.append("clinical_study")
-    elif "case report" in lower or "recipient" in lower or "patient" in lower:
+    elif re.search(r"\b(?:case\s*reports?|recipients?|patients?|admitted|intoxication)\b", lower):
         design_tokens.append("case_observation")
-    elif "in vitro" in lower or "microsome" in lower:
+    elif re.search(r"\b(?:in\s*vitro|microsomes?|caco-?2|hepatocytes?|membrane)\b", lower):
         design_tokens.append("in_vitro_assay")
-    elif "animal" in lower or "rat" in lower or "mouse" in lower:
+    elif re.search(r"\b(?:animals?|rats?|mice|mouse|murine|rodents?|canine|porcine)\b", lower) or (
+        re.search(r"\bin\s*vivo\b", lower)
+        and not re.search(r"\b(?:human|humans|clinical|subjects?|volunteers?|patients?)\b", lower)
+    ):
         design_tokens.append("preclinical_in_vivo")
 
     # Route
-    if "oral" in lower or "ingestion" in lower or "intake" in lower:
+    if re.search(r"\b(?:oral|orally|ingestion|intake|ingested)\b", lower):
         design_tokens.append("oral_administration")
-    elif "intravenous" in lower or "iv" in lower:
+    elif re.search(r"\b(?:intravenous|intravenously|iv|infusion)\b", lower):
         design_tokens.append("intravenous_administration")
 
     # Formulation / Preparation
-    if "extract" in lower or "standardized" in lower:
+    if re.search(r"\b(?:extracts?|standardized|standardised)\b", lower):
         design_tokens.append("standardized_extract")
-    elif "juice" in lower:
+    elif re.search(r"\b(?:juice|juices)\b", lower):
         design_tokens.append("juice_preparation")
-    elif "oil" in lower:
+    elif re.search(r"\b(?:oil|oils)\b", lower):
         design_tokens.append("oil_formulation")
-    elif "tea" in lower:
+    elif re.search(r"\b(?:tea|teas|infusion|decoction)\b", lower):
         design_tokens.append("herbal_tea")
 
     return " ".join(design_tokens) if design_tokens else "methodology_unspecified"
