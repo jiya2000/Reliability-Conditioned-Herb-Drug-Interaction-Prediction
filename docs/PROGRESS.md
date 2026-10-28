@@ -798,3 +798,118 @@ before conformal predictions can resume, including when the previous calibration
 was usable or the new threshold had been fitted before metadata validation failed.
 Successful thresholds, quantile rules, return values and decision routing remain
 unchanged.
+
+## 29 October 2026 — Leakage-safe evaluation Phase 1: partition contract
+
+Added `src/training/evaluation_protocol.py` and
+`tests/test_evaluation_protocol.py`. Inspected Task A's grouped split utility,
+Task B's pair/source/citation overlap checks and tests, the evidence schema and
+lineage graph, and the consensus identifier/label contract before implementation.
+No legacy outcome/text-based split construction was reused. The new module is
+stdlib-only and imports no training, feature, consensus-label, or model code.
+
+`validate_partitions` accepts typed record iterables for an explicit pair universe,
+explicit assignments, a pair/herb/drug regime, named partition roles, a protocol,
+task A/B, topology, and an optional provenance seed. Protocols baseline, tuned,
+probability_calibrated, conformal, and full require their documented distinct,
+nonempty roles; full separates fitting, tuning, probability calibration,
+conformal calibration, and assessment. Canonical scientific identifiers use the
+consensus vocabulary without normalization. Disputed and zero-study pairs remain
+in the supplied universe. Task B requires explicit topology (including an explicit
+empty list for zero studies). Unassigned intermediate provenance rows use both
+pair identifiers set to None; other topology pairs must be in the universe.
+
+Shared study/source IDs, transitive citations and absent cited ancestors form
+undirected evidence components. Pair nodes bridge multiple citation components;
+herb/drug constraints join these further for the selected regime. Cross-partition
+components fail explicitly; assignments are never synthesized or repaired.
+Canonical manifests include version, protocol/configuration/seed, roles, stable
+pair IDs, assignments, entities, evidence membership and constraint components.
+Separate SHA-256 topology and assignment hashes cover canonical inputs, including
+citation edges that do not change component connectivity. Input row order and
+non-topology fields do not affect manifests. No file is written by validation.
+
+Exact test commands and results:
+
+- `venv/bin/python -m pytest tests/test_evaluation_protocol.py -q -p no:cacheprovider`
+  — 39 passed, 6 failed in 2.13s, exit 1. Failures were in the new test helper's
+  duplicate keyword handling; fixed the helper.
+- `venv/bin/python -m pytest tests/test_evaluation_protocol.py tests/test_task_a_training.py tests/test_task_b_training.py tests/test_redesigned_leakage_regression.py -q -p no:cacheprovider`
+  — 100 passed, 1 failed, 1 warning in 4.09s, exit 1. The new unknown-partition
+  fixture used a reserved missing-identifier sentinel and expected the later
+  unknown-partition error; changed it to an ordinary unlisted partition name.
+- Same exact four-file command after correction and additional topology/hash and
+  long-chain regressions — **106 passed, 1 warning in 4.13s**, exit 0 (50 new tests).
+  Warning: joblib could not detect physical cores and used logical cores.
+
+Coverage includes pair/herb/drug separation, every pair of the five roles,
+shared study/source/citation ancestry, multiple-component pair bridges, explicit
+infeasibility, malformed/duplicate/missing/extra inputs, all protocol role sets,
+disputed and zero-study pairs, reordering, topology/assignment hash changes,
+label/outcome/text/prediction perturbations, a 1,100-link chain, and fit/calibration
+sentinels. Existing Task A AUC integrity guard tests passed unchanged. Only new
+and directly related split/leakage tests ran; no full suite or benchmarks ran.
+
+Limitations and compatibility risks: this is an additive contract only; no Task A
+or B evaluation runners or integration are implemented. Existing callers must
+explicitly adopt it. DataFrames require `.to_dict('records')`; parsed citation
+lists and strict canonical identifiers are required, with no automatic cleanup.
+Each selected role needs its own nonempty partition; no pooled/OOF role reuse is
+supported. Complete audited topology is the caller's responsibility: omitted or
+unrecorded provenance cannot be inferred. Structural validity does not attest
+source authenticity, class balance, sufficient sample sizes, exchangeability,
+scientific validation, predictive performance or conformal coverage. No source
+registry checks, label filtering, assignment generation, fitting, calibration or
+scoring occurs. Historical benchmarks, the AUC leakage guard, consensus labels,
+and the pre-existing private annotation directory were not modified. No new
+dependencies; no staging, commit or push.
+
+Final `git diff --check` — passed, exit 0. `git status --short` showed only
+these three implementation/documentation files plus the untouched pre-existing
+`annotation_batch_24_seed20261029/` directory.
+
+## 29 October 2026 — Phase 1 confirmed review fixes
+
+Replaced repeated topology-record scans and component-node list membership checks
+with a study-to-pair set index. Component membership now visits each component's
+nodes and indexed associations, preserving sorted deterministic manifests and
+existing connectivity/validation rules. Canonical sorting and hashing remain;
+this does not claim the entire validator is strictly linear.
+
+Topology rows are checked against `Mapping` before dictionary methods are used.
+Unsupported containers raise a documented actionable `ValueError` directing
+callers to dictionary records (or DataFrame `.to_dict('records')`). Valid mapping
+wrappers and missing optional non-topology metadata remain accepted.
+
+Added regressions for shared herbs/drugs within and across partitions under all
+three regimes, a redundant citation edge changing the topology hash while all
+component memberships stay identical, unsupported topology row containers, and
+valid mapping wrappers. Replaced the old mostly unassigned long-chain fixture
+with fully assigned 600/1,200-record cyclic chains. Each chain record belongs to
+the fit pair, uses a distinct publication source, and participates in the evidence
+component. An identifier-equality operation bound detects quadratic list searches
+without wall-clock thresholds; reversed input verifies deterministic termination,
+components and assignments. Existing coverage, role separation, absent ancestor,
+source/citation, pair bridge, outcome/text/finding independence and no-fit
+sentinel regressions remain in the targeted run.
+
+Exact validation:
+
+- `venv/bin/python -m pytest tests/test_evaluation_protocol.py tests/test_task_a_training.py tests/test_task_b_training.py tests/test_redesigned_leakage_regression.py -q -p no:cacheprovider`
+  — **123 passed, 1 warning in 4.53s**, exit 0. Includes 67 partition-contract
+  tests and 56 directly affected Task A/B split/leakage tests. Warning: joblib
+  could not detect physical cores and used logical cores.
+- `git diff --check` — passed, exit 0.
+
+Changed only `src/training/evaluation_protocol.py`,
+`tests/test_evaluation_protocol.py`, and this appended progress entry; preserved
+pre-existing work. No Phase 2, full suite, Colab, staging, commit or push.
+Historical benchmark artifacts, AUC leakage guard and consensus labels were
+unchanged. Private annotation contents were neither inspected nor modified.
+
+Remaining limitations: complete audited topology is still the caller's
+responsibility; omitted relationships cannot be inferred. Structural validation
+provides no scientific/performance or statistical-coverage guarantee. The new
+work bound targets the confirmed component-membership regression, rather than
+all possible graph shapes or total runtime. No runner integration or model
+fitting was added.
