@@ -75,15 +75,17 @@ def load_research_state(root: Path) -> ResearchState:
 def describe_pair(state: ResearchState, herb_id: str, drug_id: str) -> dict:
     rows = state.studies.loc[state.studies.herb_id.eq(herb_id) & state.studies.drug_id.eq(drug_id)].copy()
     labels = state.consensus.loc[state.consensus.herb_id.eq(herb_id) & state.consensus.drug_id.eq(drug_id)]
-    findings = rows.outcome.map(extract_study_finding)
-    positive = int(findings.eq(StudyFinding.POSITIVE).sum())
-    negative = int(findings.eq(StudyFinding.NEGATIVE).sum())
+    # Normalize before pandas infers a string dtype: Enum subclasses compare
+    # differently with the Python and Arrow string-storage backends.
+    findings = rows.outcome.map(lambda value: extract_study_finding(value).value)
+    positive = int(findings.eq(StudyFinding.POSITIVE.value).sum())
+    negative = int(findings.eq(StudyFinding.NEGATIVE.value).sum())
     explicit_conflict = int(rows.outcome.eq('conflicting').sum())
     return dict(studies=rows, consensus=None if labels.empty else labels.iloc[0].to_dict(),
                 mechanisms=state.mechanisms.loc[state.mechanisms.entity.isin([herb_id, drug_id])].copy(),
                 evidence_status=('unavailable' if not state.evidence_available else 'published' if len(rows) else 'no_studies'),
                 positive_findings=positive, negative_findings=negative,
-                inconclusive_findings=int(findings.eq(StudyFinding.NULL).sum()),
+                inconclusive_findings=int(findings.eq(StudyFinding.NULL.value).sum()),
                 explicitly_conflicting_findings=explicit_conflict,
                 conflicting_findings=bool((positive and negative) or explicit_conflict))
 

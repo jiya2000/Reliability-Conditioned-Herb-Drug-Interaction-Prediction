@@ -5,7 +5,7 @@
 ©VIT IPR&TTCELL<br>
 **Document No.** 02-IPR-R003<br>
 **Invention Disclosure Format (IDF)-B**<br>
-**Issue No/Date** 2/01.02.2024<br>
+**Issue No/Date** 2 / 1 February 2024<br>
 **Amd. No/Date** 0/00.00.0000
 
 ## 1. Title of the invention:

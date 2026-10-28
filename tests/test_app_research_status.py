@@ -138,6 +138,19 @@ def test_inconclusive_evidence_is_not_negative(outcome):
     assert pair['conflicting_findings'] == (outcome == 'conflicting')
 
 
+def test_python_string_storage_preserves_all_finding_categories():
+    # CI has no Arrow backend; inferred string arrays must not compare Enums.
+    with pd.option_context('mode.string_storage', 'python'):
+        state = ResearchState(studies=pd.DataFrame([
+            dict(herb_id='HERB_TEST', drug_id='DRUG_TEST', outcome=outcome)
+            for outcome in ['interaction_present', 'no_interaction_observed', 'inconclusive']
+        ]), evidence_available=True)
+        pair = describe_pair(state, 'HERB_TEST', 'DRUG_TEST')
+        assert pair['positive_findings'] == pair['negative_findings'] == pair['inconclusive_findings'] == 1
+        assert pair['conflicting_findings']
+        assert pair['consensus'] is None
+
+
 @pytest.mark.parametrize('entrypoint', ['app/interactive_app.py', 'app/frontend.py'])
 def test_streamlit_startup_never_fits_or_calls_legacy_api(entrypoint, monkeypatch):
     from sklearn.pipeline import Pipeline

@@ -1417,7 +1417,7 @@ Implemented this session:
   setup, status, failure modes, glossary, future eligible workflow and professor
   pitches/questions. Established methods are separated from candidate novelty.
 - `docs/IDF-B_draft.md`: review draft following the actual official repository PDF,
-  `docs/Patent_Form_Details.pdf`, Document 02-IPR-R003, issue 2/01.02.2024. Preserves
+  `docs/Patent_Form_Details.pdf`, Document 02-IPR-R003, issue 2 / 1 February 2024. Preserves
   all ten numbered field names and the nine-level TRL structure; no TRL is ticked.
   Student/advisor information, approvals, timelines/budgets, prior-art verification
   and institutional declarations are explicitly marked for input. It must be
@@ -1495,3 +1495,42 @@ paper, patent submission or clinical system. No real-data performance claims.
 The private annotation directory remains untracked and completely untouched:
 contents were not read, inspected, discovered, hashed, staged or packaged. No full
 repository discovery, packaging or Colab execution occurred. Stop for review.
+
+## CI follow-up for f88f5fa
+
+GitHub Actions run 40782632385, job 123147872166, failed at **Run unit test suite**
+(installation succeeded): seven failures, 835 passes, two skips. Four app failures
+were reproduced with pandas 3.1.0 / NumPy 2.4.6 and Python string storage: Enum
+comparisons differ from Arrow storage. Normalize findings to their string values
+before dtype inference and compare string values; add a Python-backend regression.
+The report-number guard also mistook the official form's dotted issue date for a
+metric; spell out the same date in this log and the IDF-B draft. Tests/guards are
+not relaxed and historical metrics are not changed.
+
+Targeted reproduction: four app cases failed under the CI string backend before
+normalization. The seven CI failure cases locally produced two failures/five
+passes (the genuine ignored metadata exists locally, and Arrow masked the enum
+issue). A temporary clean-directory reproduction of the private-metadata check
+failed as CI does, without reading or transferring that metadata.
+
+Verification, with CI's pandas/NumPy installed only in /private/tmp:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/private/tmp/hdi-ci-pandas31:. venv/bin/python - <<'PY'
+import pandas as pd
+import pytest
+pd.options.mode.string_storage='python'
+raise SystemExit(pytest.main(['tests/test_app_research_status.py','tests/test_report_numbers.py','-q','-p','no:cacheprovider']))
+PY
+```
+
+Result: **20 passed in 2.70s**, 13 existing Pandas4Warning messages from mechanistic
+notes handling. `git diff --check` passed. No full suite or Colab run.
+
+**CI is not yet green:** the unchanged AUC guard correctly rejects historical
+`no_context_conflict` ROC-AUC 1.0; a clean checkout also lacks intentionally ignored
+`data/benchmark/private/pair_strata.csv`. Neither can be honestly solved by changing
+metrics, weakening tests, manufacturing dummy data or publishing private metadata.
+They remain explicit blockers requiring separate scientific/data decisions. The
+workflow, authorization gate and canonical/historical artifacts remain unchanged.
+No staging, commit or push; the private annotation directory remains untouched.
