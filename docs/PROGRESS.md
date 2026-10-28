@@ -1166,3 +1166,57 @@ unresolved; neither that guard nor artifacts were modified or rerun in this fix.
 No full suite, Colab, Phase 3 work, staging, commit or push. Private annotation
 contents were not inspected, read, hashed, staged or packaged; the private
 directory remains untracked.
+
+## 29 October 2026 — Phase 3.1 minimal evaluation orchestrator
+
+Implemented `src/training/evaluation_orchestrator.py` with versioned request and
+report TypedDict schemas, runtime request validation, canonical serialization,
+explicit caller-declared synthetic/empirical provenance, software/schema versions,
+input hashes, plan hash and actionable prerequisite results. Documented the API
+and limits in `docs/evaluation_orchestrator.md`.
+
+Added a snapshot-based Phase 2 entry point sharing the existing contract. The
+orchestrator captures each permitted input once; hashes and parsing consume the
+same immutable bytes even when paths are replaced after capture. The gate
+requires the literal Phase 2 `eligible=True`, a passed contract and passing
+prerequisites. Contract success alone never grants eligibility. Task A retains
+mechanistic requirements; Task B retains its separate actual-evidence-release
+blocker and cannot claim readiness from topology alone. Current statistical
+support remains blocked. Phase 3.1 always blocks because execution is not
+implemented, even if a future preflight grants eligibility. Blocked reports omit
+predictions and metrics, with no estimator/backend hooks or output path accepted.
+
+Exact focused validation:
+
+- `venv/bin/python -m pytest tests/test_evaluation_orchestrator.py tests/test_release_preflight.py -q -p no:cacheprovider`
+  — first attempt: **1 collection error in 2.09s**, exit 2 (fixture import needed
+  the `tests.` package prefix); second attempt: **3 failed, 137 passed in 5.03s**,
+  exit 1 (bound default reader hid monkeypatched readers in existing Phase 2
+  snapshot tests). Corrected the import and resolved the reader dynamically;
+  existing Phase 2 tests were not changed.
+- `venv/bin/python -m pytest tests/test_evaluation_orchestrator.py tests/test_release_preflight.py tests/test_evaluation_protocol.py -q -p no:cacheprovider`
+  — intermediate **207 passed in 5.05s**, exit 0; after five additional edge-case
+  tests, final **212 passed in 5.45s**, exit 0, no warnings. Includes 20 new
+  orchestrator tests, 125 existing release tests and 67 partition tests.
+- Runtime tripwires reject estimator module calls, fitting, calibration,
+  prediction and scoring, plus write modes through builtins/Path open, across
+  blocked Task A/B, invalid/missing/malformed inputs and contract-only success.
+  Further tests cover replacement after capture, canonical deterministic reports,
+  plan binding, inaccessible inputs, invalid request read prevention, missing or
+  nonliteral eligibility flags and a true flag with failed prerequisites. The
+  synthetic future-eligibility stub still cannot execute anything.
+- `git diff --exit-code 999ca9cf385fb5c2024aa748af29b23a1204c097 -- data results reports benchmarks tests/test_ablation_leakage.py tests/test_redesigned_leakage_regression.py`
+  — exit 0. Canonical data, historical artifacts and these guard tests unchanged.
+- `git diff --check` — exit 0.
+
+Limitations: no model adapters, fitting, scoring, calibration, conformal prediction
+or bootstrap inference; no production execution path or bypass. No labels,
+approvals, sample thresholds, metrics or coverage guarantees were invented.
+Provenance is declared, not authenticated. Snapshots are per-file captures rather
+than an atomic multi-file transaction; approved manifest hashes still bind the
+approved versions. Plan hashes preserve supplied record ordering. Determinism
+requires identical request, input bytes and software environment. Existing runners
+are not migrated. Full Task B evidence-release validation and statistical adequacy
+remain outside this phase. No full suite, AUC guard, Colab, staging, commit or push.
+The private annotation directory remains untouched and untracked; its contents
+were not inspected, hashed or packaged. Stopping here for review.

@@ -180,10 +180,35 @@ def _present(value):
             value.strip().lower() not in {'unknown', 'unverified', 'tbd', 'todo', 'n/a', 'nan', 'none'})
 
 
-def preflight_release(manifest_path=None, *, consensus_path='data/benchmark/consensus_labels.csv',
+def preflight_release(manifest_path=None, **kwargs):
+    """Read path inputs once, then run the Phase 2 contract."""
+    return _preflight_release(manifest_path, **kwargs)
+
+
+def preflight_release_snapshots(snapshots, **kwargs):
+    """Run the same contract over immutable bytes; never access input paths.
+
+    Keys are consensus, mechanistic and manifest. None denotes missing input.
+    Hashing and parsing both consume these exact bytes.
+    """
+    captured = dict(snapshots)
+    def load(name):
+        value = captured.get(name)
+        if value is None:
+            raise FileNotFoundError(name)
+        if not isinstance(value, bytes):
+            raise ValueError('Snapshot must be immutable bytes')
+        if len(value) > MAX_INPUT_BYTES:
+            raise ValueError('Input exceeds 32 MiB limit')
+        return value
+    return _preflight_release('manifest', consensus_path='consensus',
+                              mechanistic_path='mechanistic', _load=load, **kwargs)
+
+
+def _preflight_release(manifest_path=None, *, consensus_path='data/benchmark/consensus_labels.csv',
                       mechanistic_path='data/curation/mechanistic_features.csv', task,
                       protocol, regime, assignments=None, partition_roles=None, topology=None,
-                      target_policy=None, metric_policy=None):
+                      target_policy=None, metric_policy=None, _load=None):
     """Return JSON-safe deterministic checks, without writes, fitting or scoring.
 
     Missing prerequisites block; malformed/contradictory supplied records fail.
@@ -261,7 +286,7 @@ def preflight_release(manifest_path=None, *, consensus_path='data/benchmark/cons
             hashes[name] = None
             continue
         try:
-            snapshots[name] = _snapshot(path)
+            snapshots[name] = (_snapshot if _load is None else _load)(path)
             hashes[name] = hashlib.sha256(snapshots[name]).hexdigest()
         except FileNotFoundError:
             hashes[name] = None
