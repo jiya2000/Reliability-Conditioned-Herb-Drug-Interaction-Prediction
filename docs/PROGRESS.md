@@ -913,3 +913,256 @@ provides no scientific/performance or statistical-coverage guarantee. The new
 work bound targets the confirmed component-membership regression, rather than
 all possible graph shapes or total runtime. No runner integration or model
 fitting was added.
+
+## 29 October 2026 — Phase 2 release approval and evaluation preflight
+
+Added `src/training/release_preflight.py`, `docs/dataset_release.md`, and
+`tests/test_release_preflight.py`. Inspected the consensus schema/loader and
+annotation finalize audit, mechanistic verifier/extractor, evidence schema,
+Phase 1 partition validator and their focused tests before implementation.
+Existing annotation exports record attestations/hashes but do not grant release
+approval; the existing mechanistic guard is reused without weakening it.
+
+API: `preflight_release(manifest_path=None, *, consensus_path, mechanistic_path,
+task, protocol, regime, assignments=None, partition_roles=None, topology=None)`.
+Returns deterministic JSON-safe prerequisite statuses/reasons; `report_json`
+serializes canonically without writing files. The versioned release manifest
+binds exact consensus/mechanistic bytes, contract versions, release approval,
+source/provenance registries, two reviewer approvals, separate adjudicator
+approval, and independence attestations. Known source overlap with Task B
+topology contradicts the independence assertion and fails. No production manifest,
+reviewer identity, citation, verification status or approval was invented.
+
+Reports distinguish missing prerequisites (blocked) from invalid/contradictory
+records (failed), retaining every check when overall status is blocked. Include
+release/input/manifest hashes, software/schema versions, request, counts and
+validated structural partition manifest. Preserve all three consensus states;
+unresolved/inconclusive/empty labels cannot enter the approved consensus table.
+Require all three classes per requested role. Reuse the existing mechanistic
+verification and feature extraction contracts to check finite feature coverage;
+unknown evidence is never made a negative consensus label. The existing extractor
+returns zero pathway contribution when either factor is a known null, even if the
+other factor is unknown; otherwise unknown factors remain NaN. Reuse Phase 1 only for structural
+validation. Current repository data return blocked for absent approval manifest,
+empty consensus labels and unverified mechanistic rows, with downstream
+prerequisites explicitly blocked and no performance metrics.
+
+Validation commands and exact results (no full suite or Colab):
+
+- `venv/bin/python -m pytest tests/test_release_preflight.py -q -p no:cacheprovider`
+  — initial **1 failed, 18 passed in 2.59s** (synthetic test fixture attempted a
+  string assignment into a float column); corrected the fixture.
+- `venv/bin/python -m pytest tests/test_release_preflight.py tests/test_evaluation_protocol.py tests/test_consensus_contract.py tests/test_consensus_annotation.py tests/test_evidence_schema.py tests/test_mechanistic_boundary.py tests/test_ablation_leakage.py tests/test_redesigned_leakage_regression.py -q -p no:cacheprovider`
+  — first **2 failed, 281 passed, 3 warnings in 4.38s**. One synthetic missingness
+  fixture still had a known-zero factor, correctly yielding zero; corrected to
+  make both target factors unknown. The other failure was the historical AUC
+  guard described below.
+- Same eight-file command after fixture fixes/additional cases — **1 failed,
+  290 passed, 3 warnings in 4.42s**.
+- `venv/bin/python -m pytest tests/test_release_preflight.py -q -p no:cacheprovider`
+  — **27 passed in 2.59s** after improved per-partition support diagnostics.
+- Final same eight-file command after explicit source overlap regression —
+  **1 failed, 291 passed, 3 warnings in 4.46s**, exit 1. All **28 new preflight
+  tests passed**. Only failure:
+  `tests/test_ablation_leakage.py::test_no_actual_benchmark_model_exceeds_threshold`:
+  historical non-reference `no_context_conflict` ROC-AUC **1.0000 > 0.98**.
+  The guard and historical artifacts remain untouched; this failure is not
+  suppressed, skipped, or repaired. Warnings: two existing suspicious-performance
+  warnings from synthetic metric tests and joblib physical-core detection fallback.
+- `git diff --exit-code fc28fa3 -- data results reports benchmarks tests/test_ablation_leakage.py tests/test_redesigned_leakage_regression.py src/training/evaluation_protocol.py`
+  — exit 0, confirming canonical data, historical artifacts and leakage/Phase 1
+  files unchanged from the starting commit.
+- `git diff --check` — exit 0.
+
+No-fit/no-mutation regression installs fit/calibration/write sentinels, checks
+caller input equality, and hashes only explicitly tracked canonical/historical
+paths plus synthetic input files before/after preflight. Private annotation
+contents are excluded: no directory discovery or packaging occurs, and explicit
+paths into `annotation_batch_24_seed20261029/` (including resolved symlink targets)
+are rejected before reading or hashing. That pre-existing directory remains
+untracked and untouched. No staging, commit or push.
+
+Limitations/compatibility risks: this is an additive gate; existing runners must
+explicitly adopt it before training/reporting. Approval references and source
+metadata are structural human attestations, not authenticated identities or
+scientifically verified evidence. Omitted relationships and aliased source IDs
+cannot be inferred. Registries are explicit inline reference mappings; preflight
+does not fetch institutional approval records. Three-class support in every role
+and complete ten-column mechanistic features for both tasks are conservative v1
+policies, not statistical adequacy guarantees; binary evaluation or partial
+feature policies need separately versioned contracts. Feasibility concerns the
+supplied assignments only; no partition search is attempted. Existing schema
+contracts are explicitly named v1 here without changing legacy schema semantics.
+Software/environment versions are included, so byte-identical reports require
+matching environments. No new dependencies or performance claims. The historical
+AUC failure remains unresolved by design within this Phase 2 scope.
+
+## 29 October 2026 — Phase 2 adversarial-review corrections (v2)
+
+This entry supersedes the initial Phase 2 API/three-class eligibility policy above.
+Changed only `src/training/release_preflight.py`,
+`tests/test_release_preflight.py`, `docs/dataset_release.md`, and this progress
+file. No Phase 3 work, production approval, dependency, canonical data change or
+scientific feature-semantic change was introduced.
+
+The manifest, consensus CSV and mechanistic CSV are captured once as immutable
+bytes. Exact SHA-256 hashes, duplicate-header checks, parsing and the existing
+schema/mechanistic verification functions all use those same snapshots. No parser
+reopens a path. Three synthetic replacement regressions replace each input after
+capture with invalid bytes, require prerequisite success from the original bytes,
+verify original reported hashes and assert one snapshot read per input. Snapshot
+capture does not lock files for later consumers or guarantee multi-file atomic
+publication; approved manifest hashes must match the independently captured CSVs.
+
+Canonical approval/reference/source/entity/partition identifiers now reject all
+whitespace before uniqueness, lookup and overlap checks; records are never
+normalized or repaired. Tests cover exact reviewer duplicates, whitespace reviewer
+aliases, whitespace on either side of consensus/topology source overlap,
+noncanonical adjudicator/provenance references, and consensus IDs. Contradictory
+duplicate JSON keys fail instead of last-key-wins parsing. Attestations require
+exact JSON true, not truthy numbers/strings. References remain human attestations,
+not authenticated proof of reviewer identity, independence or source validity.
+
+Request strings and record/role containers are validated before processing
+identifiers, set membership or coverage. Malformed task/protocol/regime values,
+including lists, dictionaries, booleans and ambiguous NumPy arrays, return
+JSON-serializable deterministic failed diagnostics rather than TypeError.
+Assignment/topology inputs must now be lists/tuples of mappings (not generators
+or DataFrames); nested identifiers and citation lists are checked before use.
+
+Release/preflight schema versions are now 2, with target policy schema 1.
+Both request and approved manifest must explicitly bind `binary_consensus_v1`
+and `binary_discrimination_v1` for Task A/B. Only interaction/no_interaction
+support is required in each requested role. Disputed records remain distinct in
+the unchanged pair universe, partition validation, feature checks and reported
+counts, outside binary targets. No target array is created. Unresolved and
+inconclusive cases remain staging/evidence states and are rejected in approved
+consensus input without coercion or silent dropping. Unsupported, missing and
+manifest-mismatched policies fail closed. This matches existing Task A/B binary
+targets; it does not certify probability calibration/conformal coverage merely
+because a calibration partition exists.
+
+`counts.per_role` now includes pair/herb/drug counts, declared evidence component
+and constraint-group counts, plus per-class pair/group support including disputed.
+Groups come directly from Phase 1's regime/topology components; overlapping
+class-group counts cannot be summed as independent samples. No repository
+contract defines defensible minimum independent sample sizes. Consequently the
+`statistical_support` prerequisite is always blocked and `eligible` remains
+false. `contract_status` separately reports implemented prerequisite
+passed/failed/blocked status; it is explicitly not permission to fit/report.
+Overall `status` retains all blocked gates and individual failures. No thresholds
+or claim of statistically sufficient evaluation support was invented.
+
+Investigated Task B `validate_studies` and `validate_study_sources`: the latter
+requires source URLs/DOIs and registered references through
+`DEFAULT_SOURCE_REGISTRY.verify_reference(..., require_registered=True)`.
+Topology-only records cannot satisfy the actual study-release contract. Chose
+the explicitly permitted narrowed scope: `task_b_evidence_release` is blocked,
+with named missing gates, and report scope is
+`dataset_and_partition_prerequisites_only`. Existing Task B source verification
+was neither bypassed nor claimed to have run. A future actual evidence-release
+contract would need bound evidence bytes and those gates; it is not implemented.
+
+Corrected the earlier missing-evidence wording: the unchanged extractor returns
+zero pathway contribution when either factor is known null, even if its partner
+is unknown; otherwise unknown factors remain NaN. Zero pathway contribution is
+not a no-interaction consensus label. Ten-feature completeness remains the
+conservative preflight feature policy for both tasks.
+
+Exact focused validation (no full suite or Colab):
+
+- `venv/bin/python -m pytest tests/test_release_preflight.py -q -p no:cacheprovider`
+  — **28 passed in 2.68s**, exit 0 after adapting the existing tests to narrowed
+  scope/policies; then **78 passed in 3.97s**, exit 0 after bypass regressions.
+- `venv/bin/python -m pytest tests/test_release_preflight.py tests/test_evaluation_protocol.py tests/test_consensus_contract.py tests/test_consensus_annotation.py tests/test_evidence_schema.py tests/test_mechanistic_boundary.py tests/test_task_a_training.py tests/test_task_b_training.py -q -p no:cacheprovider`
+  — **350 passed, 1 warning in 6.13s**, exit 0; final rerun after additional
+  canonical-reference, exact-true and malformed-input coverage:
+  **360 passed, 1 warning in 6.24s**, exit 0. Includes **91 preflight tests**.
+  Warning: existing joblib physical-core detection fallback. These existing
+  training contract tests use synthetic fitting; preflight itself never fits.
+- `venv/bin/python -m pytest tests/test_ablation_leakage.py::test_no_actual_benchmark_model_exceeds_threshold -q -p no:cacheprovider`
+  — **1 failed in 1.38s**, exit 1: historical `no_context_conflict` ROC-AUC
+  **1.0000 > 0.98**. This is the same unchanged baseline failure established in
+  the prior read-only review, not suppressed or repaired here.
+- `git diff --exit-code fc28fa3 -- data results reports benchmarks tests/test_ablation_leakage.py tests/test_redesigned_leakage_regression.py src/training/evaluation_protocol.py`
+  — exit 0: canonical datasets, historical artifacts, AUC guard/tests and Phase 1
+  remain unchanged from the starting commit.
+- `git diff --check` — exit 0.
+
+Compatibility/remaining limitations: v1 manifests require explicit reviewed v2
+migration; no automatic approval upgrade. Callers must supply explicit target and
+metric policies and adapt to the intentionally narrowed result: prerequisite
+success never grants full eligibility. Statistical adequacy remains unestablished,
+Task B evidence-release validation remains outstanding, source aliases/omitted
+relationships cannot be independently discovered, and no external approval is
+authenticated. The API is additive; existing runners still require adoption.
+Reports are deterministic for the same snapshots, request and software environment.
+No performance metrics or scientific validity claims are generated. Private
+`annotation_batch_24_seed20261029/` contents were not inspected, discovered,
+hashed, modified or packaged, and the directory remains untracked. No staging,
+commit or push.
+
+## 29 October 2026 — Phase 2 final four audit fixes
+
+Changed only `src/training/release_preflight.py`,
+`tests/test_release_preflight.py`, `docs/dataset_release.md`, and this progress
+file, addressing the four remaining findings without changing target policies,
+statistical-support blocking, the Task B topology-only limitation or mechanistic
+semantics. `eligible` remains false; successful implemented prerequisites do not
+establish scientific validity or full evaluation readiness.
+
+Every source-registry entry is now validated before decision approval checks,
+including unused entries. Reject malformed objects, missing fields, noncanonical
+source/approval identifiers, missing metadata, invalid retrieval dates and
+unapproved verification assertions. Reject repeated source IDs or exact citation
+strings across registry entries, including the demonstrated same-citation alias
+that selected a different ID to evade topology overlap. Multiple decisions must
+reuse a single canonical registry entry instead of duplicating aliases. This is
+recorded internal consistency only; different citations/URLs for the same real
+source and fabricated approvals cannot be authenticated by this software.
+
+All input snapshots have a 32 MiB operational limit, read with a limit-plus-one
+bound. Oversize inputs fail the input check and have no hash; accepted snapshots
+retain exact-byte hashing/parsing. CSV header and pandas parser failures are
+converted to stable failed diagnostics. UTF-8 JSON nesting is checked lexically
+before decoding (maximum 64 levels, ignoring escaped/quoted delimiters), with a
+fallback RecursionError diagnostic. Reject NaN, Infinity, -Infinity and floating
+point overflow such as 1e999 anywhere in a manifest, even unused fields. Invalid
+non-string release versions cannot leak into a returned report. Reports from
+these error paths remain canonically serializable and deterministic.
+
+Manifest schema success is emitted after validation, canonical release-version
+checks precede its success result, and the check accumulator guarantees one
+result per prerequisite without replacing a failure with success. The test helper
+now requires exactly one matching check instead of silently taking the first.
+Added regressions for malformed/whitespace manifests and all demonstrated alias,
+parser and serialization failures, plus valid unused sources, quoted JSON
+delimiters and bounded input reads. Synthetic fixture metadata remain explicitly
+synthetic. No scientific records or approvals were created or repaired.
+
+Exact focused validation:
+
+- `venv/bin/python -m pytest tests/test_release_preflight.py -q -p no:cacheprovider`
+  — initial **2 failed, 89 passed in 4.08s**, exit 1: the existing consensus-source
+  whitespace assertions expected failure in `decision_provenance`, whereas the
+  new earlier all-entry `source_registry` gate correctly failed first. Updated
+  those expectations to the earlier gate; no validation was weakened.
+- `venv/bin/python -m pytest tests/test_release_preflight.py tests/test_evaluation_protocol.py tests/test_consensus_contract.py tests/test_mechanistic_boundary.py -q -p no:cacheprovider`
+  — **323 passed in 5.32s**, exit 0, including **125 preflight tests**; no warnings.
+- `git diff --exit-code fc28fa3 -- data results reports benchmarks tests/test_ablation_leakage.py tests/test_redesigned_leakage_regression.py src/training/evaluation_protocol.py`
+  — exit 0, confirming canonical datasets, historical artifacts, leakage guard
+  and its tests, and Phase 1 remain unchanged.
+- `git diff --check` — exit 0.
+
+Remaining limitations/compatibility: the new operational size/depth limits and
+strict all-entry/alias checks can reject formerly accepted manifests and require
+explicit human review/restructuring. Limits are parser/resource constraints, not
+scientific thresholds. Source uniqueness uses exact recorded citation strings,
+not online identity resolution. Statistical adequacy remains unestablished,
+Task B actual evidence-release checks remain outstanding, existing runners still
+require explicit adoption, and report reproducibility requires the same snapshots,
+request and software environment. The known historical AUC guard failure remains
+unresolved; neither that guard nor artifacts were modified or rerun in this fix.
+No full suite, Colab, Phase 3 work, staging, commit or push. Private annotation
+contents were not inspected, read, hashed, staged or packaged; the private
+directory remains untracked.
