@@ -9,6 +9,7 @@ Enforces strict provenance and integrity checks for pharmacokinetic target featu
 """
 
 import os
+import csv
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 import numpy as np
@@ -61,27 +62,45 @@ def load_mechanistic_curation(
     if not path.exists():
         raise FileNotFoundError(f"Mechanistic curation file not found at: {csv_path}")
 
+    # pandas otherwise silently renames duplicate CSV headers (e.g. entity.1).
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        header = next(csv.reader(handle), [])
+    if len(header) != len(set(header)):
+        raise ValueError("Duplicate mechanistic curation columns")
     df = pd.read_csv(csv_path)
     validate_curation_dataframe(df)
     return df
+
+
+def _canonical_identifier(value: Any, *, kind: str) -> str:
+    """Strip boundary whitespace only; never coerce or repair ambiguous IDs."""
+    if not isinstance(value, str):
+        raise ValueError(f"Invalid {kind} identifier: expected a string")
+    identifier = value.strip()
+    if not identifier or any(c.isspace() for c in identifier):
+        raise ValueError(f"Invalid {kind} identifier: empty or internal whitespace")
+    if kind != "target":
+        prefixes = ("HERB_", "DRUG_") if kind == "entity" else (kind,)
+        if not any(identifier.startswith(p) and len(identifier) > len(p) for p in prefixes):
+            raise ValueError(f"Invalid {kind} identifier: requires a role prefix and nonempty suffix")
+    return identifier
 
 
 def validate_curation_dataframe(df: pd.DataFrame) -> None:
     """
     Validate that the curation table contains required columns and conforms to integrity rules.
     """
+    if not df.columns.is_unique:
+        raise ValueError("Duplicate mechanistic curation columns")
     for col in CURATION_COLUMNS:
         if col not in df.columns:
             raise ValueError(f"Mechanistic curation table is missing required column: '{col}'")
 
-    # Check for empty entities or targets
-    if df["entity"].isna().any() or (df["entity"].astype(str).str.strip() == "").any():
-        raise ValueError("Mechanistic curation table contains rows with missing 'entity'")
-    if df["target"].isna().any() or (df["target"].astype(str).str.strip() == "").any():
-        raise ValueError("Mechanistic curation table contains rows with missing 'target'")
-
-    # Reject ambiguous or malformed measurements before feature construction.
-    if df.duplicated(["entity", "target"]).any():
+    keys = pd.DataFrame({
+        "entity": df["entity"].map(lambda v: _canonical_identifier(v, kind="entity")),
+        "target": df["target"].map(lambda v: _canonical_identifier(v, kind="target")),
+    })
+    if keys.duplicated(["entity", "target"]).any():
         raise ValueError("Duplicate entity-target rows require explicit curation resolution")
     numeric = {
         "value_ic50_uM": (0, None, False), "value_ki_uM": (0, None, False),
@@ -112,7 +131,7 @@ def validate_curation_dataframe(df: pd.DataFrame) -> None:
         inhibition = bool({"value_ic50_uM", "value_ki_uM"} & measurements)
         if inhibition and values.get("value_fold_induction", 1) > 1:
             raise ValueError("Conflicting inhibition and induction require curation resolution")
-        ent = str(row["entity"]).strip()
+        ent = _canonical_identifier(row["entity"], kind="entity")
         if not ent.startswith(("HERB_", "DRUG_")):
             raise ValueError("Entity must use HERB_ or DRUG_ identifier")
         if ent.startswith("HERB_") and measurements & {"value_fm", "value_substrate_flag"}:
@@ -196,14 +215,17 @@ def extract_curated_feature_matrix(
             f"all entities have human-verified sources and citations."
         )
 
+    if not df_pairs.columns.is_unique:
+        raise ValueError("Duplicate pair table columns")
     required_pairs = {"herb_id", "drug_id"}
     if not required_pairs.issubset(df_pairs.columns):
         raise ValueError("Pair table requires herb_id and drug_id")
+    pair_keys = df_pairs.loc[:, ["herb_id", "drug_id"]].copy()
     for col, prefix in (("herb_id", "HERB_"), ("drug_id", "DRUG_")):
-        if not df_pairs[col].map(lambda v: isinstance(v, str) and v.strip().startswith(prefix)).all():
-            raise ValueError(f"Invalid pair identifier in {col}")
+        pair_keys[col] = pair_keys[col].map(lambda v: _canonical_identifier(v, kind=prefix))
 
-    rows = {(str(r["entity"]).strip(), str(r["target"]).strip()): r
+    rows = {(_canonical_identifier(r["entity"], kind="entity"),
+             _canonical_identifier(r["target"], kind="target")): r
             for _, r in curation_df.iterrows()}
 
     def number(row, column):
@@ -221,11 +243,11 @@ def extract_curated_feature_matrix(
         return np.nan if np.isnan(fold) else float(fold > 1)
 
     features = []
-    for _, pair in df_pairs.iterrows():
+    for _, pair in pair_keys.iterrows():
         effects = []
         for target in CANONICAL_TARGETS:
-            herb = rows.get((pair["herb_id"].strip(), target))
-            drug = rows.get((pair["drug_id"].strip(), target))
+            herb = rows.get((pair["herb_id"], target))
+            drug = rows.get((pair["drug_id"], target))
             weight = np.nan
             if drug is not None and drug["status"] == "measured":
                 # Clearance fraction has quantitative meaning; substrate status

@@ -96,3 +96,120 @@ def test_conflict_override_abstention():
     assert dec.predicted_label == -1
     assert dec.decision == ClinicalDecision.ABSTAIN_CLINICAL_REVIEW
     assert "contradiction" in dec.abstention_reason
+
+
+@pytest.mark.parametrize('entry', ['single', 'batch', 'evaluate'])
+def test_uncalibrated_engine_fails_closed(entry):
+    engine = ConformalTriStateEngine()
+    with pytest.raises(RuntimeError, match='calibration'):
+        if entry == 'single':
+            engine.predict_single(0.99)
+        elif entry == 'batch':
+            engine.predict_batch([])
+        else:
+            engine.evaluate([], [])
+
+
+@pytest.mark.parametrize('method', ['calibrate', 'calibrate_pooled_oof'])
+@pytest.mark.parametrize('probs,labels', [
+    ([np.nan], [1]), ([np.inf], [1]), ([-0.1], [0]), ([1.1], [1]),
+    ([0.5], [0.5]), ([0.5], [np.nan]), ([0.5], [2]),
+    ([0.5], ['1']), ([0.5, 0.6], [1]), ([0.5], [0, 1]), ([], []),
+])
+def test_invalid_calibration_fails_closed(method, probs, labels):
+    engine = ConformalTriStateEngine()
+    engine.calibrate([0.1, 0.9], [0, 1])
+    with pytest.raises(ValueError):
+        getattr(engine, method)(probs, labels)
+    assert not engine.is_calibrated
+    assert engine.q_hat is None
+    with pytest.raises(RuntimeError):
+        engine.predict_single(0.99)
+
+
+@pytest.mark.parametrize('name', ['epsilon', 'conflict_abstention_threshold', 'min_reliability_threshold'])
+@pytest.mark.parametrize('value', [np.nan, np.inf, -0.1, 1.1, 'bad'])
+def test_invalid_engine_parameters(name, value):
+    with pytest.raises(ValueError, match=name):
+        ConformalTriStateEngine(**{name: value})
+
+
+@pytest.mark.parametrize('epsilon', [0, 1])
+def test_invalid_epsilon_endpoints(epsilon):
+    with pytest.raises(ValueError, match='epsilon'):
+        ConformalTriStateEngine(epsilon=epsilon)
+
+
+@pytest.mark.parametrize('bad', [np.nan, np.inf, -0.1, 1.1])
+def test_invalid_prediction_probabilities(bad):
+    engine = ConformalTriStateEngine()
+    engine.calibrate([0.1, 0.9], [0, 1])
+    for call in [lambda: engine.predict_single(bad),
+                 lambda: engine.predict_batch([0.5, bad]),
+                 lambda: engine.evaluate([bad], [1])]:
+        with pytest.raises(ValueError, match='probabilit'):
+            call()
+
+
+@pytest.mark.parametrize('kwargs', [
+    {'contradictions': []}, {'contradictions': [0, 0]},
+    {'reliabilities': []}, {'reliabilities': [1, 1]},
+    {'contradictions': [np.nan]}, {'reliabilities': [np.inf]},
+])
+def test_invalid_batch_metadata(kwargs):
+    engine = ConformalTriStateEngine()
+    engine.calibrate([0.1, 0.9], [0, 1])
+    with pytest.raises(ValueError):
+        engine.predict_batch([0.5], **kwargs)
+
+
+@pytest.mark.parametrize('labels', [[0.5], [np.nan], [2], ['1'], [], [0, 1]])
+def test_invalid_evaluation_labels(labels):
+    engine = ConformalTriStateEngine()
+    engine.calibrate([0.1, 0.9], [0, 1])
+    with pytest.raises(ValueError):
+        engine.evaluate([0.5], labels)
+
+
+@pytest.mark.parametrize('n', [1, 8, 9, 10, 20])
+def test_shared_quantile_preserves_existing_rule(n):
+    probs = np.linspace(0, 1, n)
+    labels = np.arange(n) % 2
+    scores = np.where(labels == 1, 1 - probs, probs)
+    level = min(1, np.ceil((n + 1) * 0.9) / n)
+    expected = np.quantile(scores, level, method='higher')
+    for method in ['calibrate', 'calibrate_pooled_oof']:
+        engine = ConformalTriStateEngine()
+        assert getattr(engine, method)(torch.tensor(probs), labels) == expected
+        assert 0 in engine.predict_single(0).conformal_set
+        assert 1 in engine.predict_single(1).conformal_set
+
+
+@pytest.mark.parametrize('name', ['contradiction_score', 'reliability_score'])
+def test_single_prediction_rejects_nonfinite_safety_scores(name):
+    engine = ConformalTriStateEngine()
+    engine.calibrate([0.1, 0.9], [0, 1])
+    with pytest.raises(ValueError, match=name):
+        engine.predict_single(0.9, **{name: np.nan})
+
+
+@pytest.mark.parametrize('epsilon', [0, 1, np.nan, np.inf])
+def test_recalibration_rejects_invalid_mutated_epsilon(epsilon):
+    # HDIModel.calibrate_conformal updates this public parameter directly.
+    engine = ConformalTriStateEngine()
+    engine.calibrate([0.1, 0.9], [0, 1])
+    engine.epsilon = epsilon
+    with pytest.raises(ValueError, match='epsilon'):
+        engine.calibrate([0.1, 0.9], [0, 1])
+    assert not engine.is_calibrated
+
+
+@pytest.mark.parametrize('method', ['calibrate', 'calibrate_pooled_oof'])
+def test_finite_sample_quantile_is_not_always_maximum(method):
+    # n=10, epsilon=.3 gives level ceil(11*.7)/10=.8; higher selects
+    # zero-based index ceil(9*.8)=8, whose score is .8 rather than .9.
+    scores = np.arange(10, dtype=float) / 10
+    engine = ConformalTriStateEngine(epsilon=0.3)
+    q_hat = getattr(engine, method)(scores, np.zeros(10))
+    assert q_hat == pytest.approx(0.8)
+    assert q_hat < scores.max()

@@ -1,19 +1,12 @@
 """
 Conformal Tri-State Abstention Engine (CTAE).
 
-NOVELTY CONTRIBUTION 3:
-Implements mathematically calibrated selective prediction using split conformal
-prediction, generating distribution-free finite-sample coverage guarantees at any
-user-specified confidence level (1 - epsilon).
-
-Transforms forced binary predictions into three clinically safe outcomes:
-1. INTERACTION_PRESENT (set = {1}, model confident that interaction exists)
-2. NO_INTERACTION      (set = {0}, model confident that combination is benign)
-3. ABSTAIN             (set = {0,1} or empty, or high conflict -> routes to clinical expert)
-
-Guaranteed Statistical Coverage:
-    P(Y in C(X)) >= 1 - epsilon
-for any exchangeable data distribution without parametric assumptions.
+Uses nonconformity thresholds for tri-state selective prediction. Formal split-
+conformal marginal coverage requires a fixed predictor and exchangeable held-out
+calibration/test scores, and an attainable finite-sample rank. Pooled OOF scores
+from different fitted models provide empirical calibration only; pooling alone
+does not establish a coverage guarantee. The capped small-sample fallback below
+also does not establish the requested nominal coverage.
 """
 
 from __future__ import annotations
@@ -108,6 +101,8 @@ def check_conformal_sample_size(n: int, epsilon: float) -> Tuple[bool, str]:
     Returns:
         (is_valid, message): Boolean check and explanatory diagnosis.
     """
+    if not math.isfinite(epsilon) or not 0 < epsilon < 1:
+        raise ValueError("epsilon must be finite and strictly between 0 and 1.")
     if n <= 0:
         return False, "Calibration sample size must be strictly positive (n > 0)."
 
@@ -117,7 +112,7 @@ def check_conformal_sample_size(n: int, epsilon: float) -> Tuple[bool, str]:
             f"Calibration set size n={n} is less than required minimum n_min={n_min} "
             f"for error rate epsilon={epsilon:.2f}. The nominal finite-sample guarantee "
             f"ceil((n+1)(1-epsilon))/n <= 1 cannot be satisfied strictly; "
-            f"quantile level will default to 1.0 (conservative fallback)."
+            f"quantile level will default to 1.0 (maximum observed score fallback; no nominal coverage guarantee)."
         )
         return False, msg
     return True, f"Calibration set size n={n} satisfies conformal requirement (n_min={n_min} for epsilon={epsilon:.2f})."
@@ -157,8 +152,8 @@ class ConformalTriStateEngine:
     """
     Split Conformal Prediction Engine with Clinical Safety Routing.
 
-    Maintains statistical coverage guarantees while intelligently routing
-    ambiguous, contradictory, or under-evidenced candidate pairs to human specialists.
+    Routes ambiguous or contradictory pairs to human specialists. Coverage is
+    conditional on the calibration design and assumptions described above.
     """
 
     def __init__(
@@ -169,16 +164,18 @@ class ConformalTriStateEngine:
     ):
         """
         Args:
-            epsilon: Significance level. Guarantees coverage >= 1 - epsilon.
-                Default 0.10 gives 90% confidence coverage.
+            epsilon: Target error rate, strictly between 0 and 1. Nominal
+                coverage requires the split-conformal assumptions described above.
             conflict_abstention_threshold: If contradiction strength exceeds this,
                 forces abstention regardless of probability.
             min_reliability_threshold: If evidence reliability R is below this
                 and prediction is near decision boundary, forces abstention.
         """
-        self.epsilon = float(epsilon)
-        self.conflict_threshold = float(conflict_abstention_threshold)
-        self.min_reliability_threshold = float(min_reliability_threshold)
+        self.epsilon = self._unit_scalar(epsilon, "epsilon")
+        if not 0 < self.epsilon < 1:
+            raise ValueError("epsilon must be strictly between 0 and 1.")
+        self.conflict_threshold = self._unit_scalar(conflict_abstention_threshold, "conflict_abstention_threshold")
+        self.min_reliability_threshold = self._unit_scalar(min_reliability_threshold, "min_reliability_threshold")
 
         self.q_hat: Optional[float] = None
         self.is_calibrated: bool = False
@@ -202,77 +199,72 @@ class ConformalTriStateEngine:
         Returns:
             Calibrated quantile threshold q_hat.
         """
-        probs = self._to_numpy(cal_probabilities).flatten()
-        labels = self._to_numpy(cal_labels).flatten().astype(int)
+        return self._calibrate(cal_probabilities, cal_labels, "held-out")
 
+    def calibrate_pooled_oof(self, oof_probabilities, oof_labels) -> float:
+        """Empirically calibrate pooled OOF scores; no formal coverage guarantee.
+
+        Different folds use different predictors. Held-out predictions alone do
+        not establish exchangeability with a future deployed predictor's scores.
+        """
+        return self._calibrate(oof_probabilities, oof_labels, "pooled OOF (empirical)")
+
+    def _calibrate(self, probabilities, labels, design: str) -> float:
+        # Invalidate first: a failed recalibration must not leave stale decisions enabled.
+        self.is_calibrated = False
+        self.q_hat = None
+        self.calibration_scores = None
+        self.sample_size_valid = False
+        self.sample_size_warning = ""
+        check_conformal_sample_size(1, self.epsilon)
+        probs = self._validated_vector(probabilities, "probabilities")
+        labels = self._validated_vector(labels, "labels", labels=True)
+        if len(probs) != len(labels):
+            raise ValueError("probabilities and labels lengths must match.")
         n = len(labels)
         if n == 0:
             raise ValueError("Calibration set cannot be empty.")
-
         is_valid, msg = check_conformal_sample_size(n, self.epsilon)
+        scores = np.where(labels == 1, 1.0 - probs, probs)
+        # Preserve the existing higher-quantile rule and capped small-n fallback.
+        level = min(1.0, math.ceil((n + 1) * (1.0 - self.epsilon)) / float(n))
+        q_hat = float(np.quantile(scores, level, method="higher"))
         self.sample_size_valid = is_valid
         self.sample_size_warning = msg if not is_valid else ""
         if not is_valid:
             logger.warning(f"CTAE sample size warning: {msg}")
-
-        # Compute non-conformity score for true label
-        # If y = 1, score = 1 - p. If y = 0, score = 1 - (1 - p) = p.
-        scores = np.where(labels == 1, 1.0 - probs, probs)
         self.calibration_scores = scores
-
-        # Conformal quantile calculation with finite-sample correction
-        quantile_level = min(1.0, math.ceil((n + 1) * (1.0 - self.epsilon)) / float(n))
-        self.q_hat = float(np.quantile(scores, quantile_level, method="higher"))
+        self.q_hat = q_hat
         self.is_calibrated = True
+        logger.info(f"CTAE calibrated on {design} n={n}, epsilon={self.epsilon}, q_hat={q_hat:.4f}")
+        return q_hat
 
-        logger.info(
-            f"CTAE Calibrated on n={n} samples (epsilon={self.epsilon:.2f}) -> "
-            f"q_hat={self.q_hat:.4f} (coverage guarantee >= {1.0 - self.epsilon:.1%})"
-        )
-        return self.q_hat
+    def _require_calibrated(self):
+        if not self.is_calibrated or self.q_hat is None:
+            raise RuntimeError("Successful calibration is required before conformal prediction.")
 
-    def calibrate_pooled_oof(
-        self,
-        oof_probabilities: Union[np.ndarray, torch.Tensor, List[float]],
-        oof_labels: Union[np.ndarray, torch.Tensor, List[int]],
-    ) -> float:
-        """
-        Calibrates the non-conformity threshold q_hat using pooled out-of-fold (OOF) predictions
-        from cross-validation splits.
+    @staticmethod
+    def _unit_scalar(value, name):
+        array = np.asarray(value)
+        if array.ndim != 0 or array.dtype.kind not in "biuf":
+            raise ValueError(f"{name} must be a finite numeric scalar in [0, 1].")
+        value = float(array)
+        if not math.isfinite(value) or not 0 <= value <= 1:
+            raise ValueError(f"{name} must be finite and in [0, 1].")
+        return value
 
-        Because each prediction is made on a held-out fold, the nonconformity scores
-        are exchangeable with future test samples, while pooling across folds yields
-        an effective calibration set size of N instead of N/K.
-
-        Returns:
-            Calibrated quantile threshold q_hat.
-        """
-        probs = self._to_numpy(oof_probabilities).flatten()
-        labels = self._to_numpy(oof_labels).flatten().astype(int)
-
-        n = len(labels)
-        if n == 0:
-            raise ValueError("Pooled OOF calibration set cannot be empty.")
-
-        is_valid, msg = check_conformal_sample_size(n, self.epsilon)
-        self.sample_size_valid = is_valid
-        self.sample_size_warning = msg if not is_valid else ""
-        if not is_valid:
-            logger.warning(f"CTAE pooled OOF sample size warning: {msg}")
-
-        scores = np.where(labels == 1, 1.0 - probs, probs)
-        self.calibration_scores = scores
-
-        quantile_level = min(1.0, math.ceil((n + 1) * (1.0 - self.epsilon)) / float(n))
-        self.q_hat = float(np.quantile(scores, quantile_level, method="higher"))
-        self.is_calibrated = True
-
-        logger.info(
-            f"CTAE Calibrated on pooled OOF n={n} samples (epsilon={self.epsilon:.2f}) -> "
-            f"q_hat={self.q_hat:.4f} (coverage guarantee >= {1.0 - self.epsilon:.1%})"
-        )
-        return self.q_hat
-
+    @classmethod
+    def _validated_vector(cls, data, name, labels=False):
+        array = cls._to_numpy(data)
+        # Preserve support for flattened tensors and column vectors.
+        if array.dtype.kind not in "biuf":
+            raise ValueError(f"{name} must contain numeric values.")
+        array = array.flatten()
+        if not np.all(np.isfinite(array)) or np.any((array < 0) | (array > 1)):
+            raise ValueError(f"{name} must be finite and in [0, 1].")
+        if labels and not np.all((array == 0) | (array == 1)):
+            raise ValueError("labels must be binary values 0 or 1.")
+        return array
 
     def predict_single(
         self,
@@ -283,13 +275,11 @@ class ConformalTriStateEngine:
         """
         Generates conformal prediction set and clinical decision for a single instance.
         """
-        if not self.is_calibrated or self.q_hat is None:
-            # Conservative default if uncalibrated: 0.90 threshold
-            q_thresh = 0.85
-        else:
-            q_thresh = self.q_hat
-
-        p = float(probability)
+        self._require_calibrated()
+        q_thresh = self.q_hat
+        p = self._unit_scalar(probability, "probability")
+        contradiction_score = self._unit_scalar(contradiction_score, "contradiction_score")
+        reliability_score = self._unit_scalar(reliability_score, "reliability_score")
         # Non-conformity scores for hypothetical labels y in {0, 1}
         # s(0) = 1 - P(Y=0) = P(Y=1) = p
         # s(1) = 1 - P(Y=1) = 1 - p
@@ -369,18 +359,22 @@ class ConformalTriStateEngine:
         reliabilities: Optional[Union[np.ndarray, torch.Tensor, List[float]]] = None,
     ) -> List[ConformalDecision]:
         """Runs conformal prediction across a batch."""
-        probs = self._to_numpy(probabilities).flatten()
+        self._require_calibrated()
+        probs = self._validated_vector(probabilities, "probabilities")
         n = len(probs)
 
         if contradictions is not None:
-            conflicts = self._to_numpy(contradictions).flatten()
+            conflicts = self._validated_vector(contradictions, "contradictions")
         else:
             conflicts = np.zeros(n)
 
         if reliabilities is not None:
-            rel = self._to_numpy(reliabilities).flatten()
+            rel = self._validated_vector(reliabilities, "reliabilities")
         else:
             rel = np.full(n, 0.5)
+
+        if len(conflicts) != n or len(rel) != n:
+            raise ValueError("probabilities, contradictions and reliabilities lengths must match.")
 
         decisions = []
         for i in range(n):
@@ -403,8 +397,11 @@ class ConformalTriStateEngine:
         """
         Evaluates empirical coverage, abstention rate, and retained accuracy.
         """
-        probs = self._to_numpy(test_probabilities).flatten()
-        labels = self._to_numpy(test_labels).flatten().astype(int)
+        self._require_calibrated()
+        probs = self._validated_vector(test_probabilities, "probabilities")
+        labels = self._validated_vector(test_labels, "labels", labels=True)
+        if len(probs) != len(labels):
+            raise ValueError("probabilities and labels lengths must match.")
         decisions = self.predict_batch(probs, contradictions, reliabilities)
 
         n = len(labels)

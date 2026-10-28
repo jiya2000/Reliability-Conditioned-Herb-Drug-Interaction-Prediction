@@ -449,70 +449,88 @@ class HDITrainer:
         Args:
             loader: DataLoader providing candidate batches
             graph_data: Heterogeneous graph structure dictionary
-            epsilon: Significance level (guarantees >= 1 - epsilon coverage)
+            epsilon: Target error rate (1 - epsilon nominal marginal coverage)
+
+        Coverage requires a fixed predictor, exchangeable held-out calibration/test
+        scores, and an attainable finite-sample rank. Pooled OOF calibration and
+        the capped small-sample fallback do not establish nominal coverage.
+        Reported coverage is empirical coverage on the calibration data.
 
         Returns:
             Tuple of (calibrated q_hat threshold, ConformalMetrics summary)
         """
-        self.model.eval()
-        node_features = graph_data["node_features"].to(self.device)
-        edge_index = graph_data["edge_index"].to(self.device)
-        edge_type = graph_data["edge_type"].to(self.device)
+        engine = self.model.conformal_engine
+        succeeded = False
+        # Cover preprocessing, model inference, calibration, and metric validation.
+        # Even a failure after calibration must leave prediction disabled.
+        engine.is_calibrated = False
+        try:
+            self.model.eval()
+            node_features = graph_data["node_features"].to(self.device)
+            edge_index = graph_data["edge_index"].to(self.device)
+            edge_type = graph_data["edge_type"].to(self.device)
 
-        all_probs = []
-        all_labels = []
-        all_conflicts = []
-        all_reliabilities = []
+            all_probs = []
+            all_labels = []
+            all_conflicts = []
+            all_reliabilities = []
 
-        for batch in loader:
-            source_indices = batch["source_indices"].to(self.device)
-            target_indices = batch["target_indices"].to(self.device)
-            labels = batch["labels"].to(self.device)
-            metadata = batch["metadata"].to(self.device)
-            evidence_texts = batch.get("evidence_texts", None)
+            for batch in loader:
+                source_indices = batch["source_indices"].to(self.device)
+                target_indices = batch["target_indices"].to(self.device)
+                labels = batch["labels"].to(self.device)
+                metadata = batch["metadata"].to(self.device)
+                evidence_texts = batch.get("evidence_texts", None)
 
-            output = self.model(
-                node_features=node_features,
-                edge_index=edge_index,
-                edge_type=edge_type,
-                source_indices=source_indices,
-                target_indices=target_indices,
-                metadata=metadata,
-                evidence_texts=evidence_texts,
+                output = self.model(
+                    node_features=node_features,
+                    edge_index=edge_index,
+                    edge_type=edge_type,
+                    source_indices=source_indices,
+                    target_indices=target_indices,
+                    metadata=metadata,
+                    evidence_texts=evidence_texts,
+                )
+
+                p = output["probabilities"].detach().cpu().numpy().flatten()
+                y = labels.detach().cpu().numpy().flatten()
+                all_probs.extend(p)
+                all_labels.extend(y)
+
+                if "reliability_scores" in output:
+                    all_reliabilities.extend(
+                        output["reliability_scores"].detach().cpu().numpy().flatten()
+                    )
+                else:
+                    all_reliabilities.extend([0.5] * len(p))
+
+                if metadata is not None and metadata.size(-1) >= 8:
+                    all_conflicts.extend(metadata[:, 5].detach().cpu().numpy().flatten())
+                else:
+                    all_conflicts.extend([0.0] * len(p))
+
+            probs_arr = np.array(all_probs)
+            labels_arr = np.array(all_labels)
+            conflicts_arr = np.array(all_conflicts)
+            rel_arr = np.array(all_reliabilities)
+
+            q_hat = self.model.calibrate_conformal(probs_arr, labels_arr, epsilon=epsilon)
+            metrics = self.model.conformal_engine.evaluate(
+                probs_arr, labels_arr, contradictions=conflicts_arr, reliabilities=rel_arr
             )
 
-            p = output["probabilities"].detach().cpu().numpy().flatten()
-            y = labels.detach().cpu().numpy().flatten()
-            all_probs.extend(p)
-            all_labels.extend(y)
-
-            if "reliability_scores" in output:
-                all_reliabilities.extend(
-                    output["reliability_scores"].detach().cpu().numpy().flatten()
-                )
-            else:
-                all_reliabilities.extend([0.5] * len(p))
-
-            if metadata is not None and metadata.size(-1) >= 8:
-                all_conflicts.extend(metadata[:, 5].detach().cpu().numpy().flatten())
-            else:
-                all_conflicts.extend([0.0] * len(p))
-
-        probs_arr = np.array(all_probs)
-        labels_arr = np.array(all_labels)
-        conflicts_arr = np.array(all_conflicts)
-        rel_arr = np.array(all_reliabilities)
-
-        q_hat = self.model.calibrate_conformal(probs_arr, labels_arr, epsilon=epsilon)
-        metrics = self.model.conformal_engine.evaluate(
-            probs_arr, labels_arr, contradictions=conflicts_arr, reliabilities=rel_arr
-        )
-
-        logger.info(
-            f"Conformal Calibration complete: q_hat={q_hat:.4f}, "
-            f"Empirical Coverage={metrics.empirical_coverage:.2%}, "
-            f"Abstention Rate={metrics.abstention_rate:.2%}, "
-            f"Retained Accuracy={metrics.retained_accuracy:.2%}"
-        )
-        return q_hat, metrics
-
+            logger.info(
+                f"Conformal Calibration complete: q_hat={q_hat:.4f}, "
+                f"Empirical Coverage={metrics.empirical_coverage:.2%}, "
+                f"Abstention Rate={metrics.abstention_rate:.2%}, "
+                f"Retained Accuracy={metrics.retained_accuracy:.2%}"
+            )
+            succeeded = True
+            return q_hat, metrics
+        finally:
+            if not succeeded:
+                engine.is_calibrated = False
+                engine.q_hat = None
+                engine.calibration_scores = None
+                engine.sample_size_valid = False
+                engine.sample_size_warning = ""

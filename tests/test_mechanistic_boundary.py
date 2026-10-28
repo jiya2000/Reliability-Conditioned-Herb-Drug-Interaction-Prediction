@@ -106,3 +106,70 @@ def test_empty_pair_table_has_stable_shape():
     result = extract_curated_feature_matrix(pairs().iloc[:0], pd.DataFrame([
         record('HERB_FIXTURE', value_ki_uM=2)]))
     assert result.shape == (0, 10)
+
+
+@pytest.mark.parametrize('reverse', [False, True])
+@pytest.mark.parametrize('column', ['entity', 'target'])
+def test_normalized_conflicting_duplicates_rejected(column, reverse):
+    inhibition = record('HERB_FIXTURE', value_ki_uM=2)
+    induction = record('HERB_FIXTURE', value_fold_induction=2)
+    induction[column] = '\t' + induction[column] + ' '
+    drug = record('DRUG_FIXTURE', value_fm=0.5)
+    # Each record alone reproduces the opposing signs formerly selected by order.
+    assert extract(inhibition, drug)[0, 0] == -0.5
+    assert extract(induction, drug)[0, 0] == 0.5
+    rows = [inhibition, induction, drug]
+    with pytest.raises(ValueError, match='Duplicate entity-target'):
+        extract(*(rows[::-1] if reverse else rows))
+
+
+@pytest.mark.parametrize('column,value', [
+    ('entity', 'HERB_'), ('entity', 'HERB_BAD ID'), ('entity', 123),
+    ('entity', None), ('target', ''), ('target', 'CYP 3A4'),
+    ('target', 123), ('target', None),
+])
+def test_malformed_curation_identifiers_rejected(column, value):
+    row = record('HERB_FIXTURE', value_ki_uM=2)
+    row[column] = value
+    with pytest.raises(ValueError, match='identifier'):
+        extract(row)
+
+
+@pytest.mark.parametrize('column,value', [
+    ('herb_id', 'HERB_'), ('herb_id', 'HERB_BAD ID'),
+    ('drug_id', 'DRUG_'), ('drug_id', 123), ('drug_id', None),
+])
+def test_malformed_pair_identifiers_rejected(column, value):
+    frame = pairs()
+    frame[column] = value
+    with pytest.raises(ValueError, match='identifier'):
+        extract_curated_feature_matrix(frame, pd.DataFrame([
+            record('HERB_FIXTURE', value_ki_uM=2)]))
+
+
+def test_boundary_whitespace_is_accepted_without_mutation():
+    frame = pairs().map(lambda v: ' ' + v + '\t')
+    table = pd.DataFrame([record(' HERB_FIXTURE ', target=' CYP3A4\t', value_ki_uM=2),
+                          record('DRUG_FIXTURE', value_fm=0.5)])
+    original = table.copy(deep=True)
+    result = extract_curated_feature_matrix(frame, table)
+    assert result[0, 0] == -0.5
+    assert np.isnan(result[0, 1:]).all()
+    pd.testing.assert_frame_equal(table, original)
+
+
+@pytest.mark.parametrize('kind', ['curation', 'pairs', 'csv'])
+def test_duplicate_input_columns_rejected(kind, tmp_path):
+    table = pd.DataFrame([record('HERB_FIXTURE', value_ki_uM=2)])
+    frame = pairs()
+    if kind in ('curation', 'csv'):
+        table = pd.concat([table, table[['entity']]], axis=1)
+    else:
+        frame = pd.concat([frame, frame[['herb_id']]], axis=1)
+    with pytest.raises(ValueError, match='Duplicate'):
+        if kind == 'csv':
+            path = tmp_path / 'duplicate.csv'
+            table.to_csv(path, index=False)
+            load_mechanistic_curation(path)
+        else:
+            extract_curated_feature_matrix(frame, table)

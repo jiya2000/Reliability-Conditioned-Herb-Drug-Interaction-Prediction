@@ -221,3 +221,19 @@ def test_curated_runner_uses_contract_and_cannot_fall_back_to_study_targets(pair
     # Deliberately omit outcome: the guard must trigger before any legacy target access.
     with pytest.raises(NotImplementedError, match="consensus-supervised"):
         benchmark.run_cv(pairs)
+
+
+@pytest.mark.parametrize('reverse', [False, True])
+def test_builder_rejects_normalized_sign_flip_collision(pairs, curation, reverse):
+    table = curation.copy(deep=True)
+    table.loc[table.entity == 'DRUG_FIXTURE', 'value_fm'] = 0.5
+    conflict = table.iloc[[0]].copy()
+    conflict['entity'] = ' HERB_FIXTURE_A\t'
+    conflict['target'] = ' CYP3A4 '
+    conflict['value_ki_uM'] = ''
+    conflict['value_fold_induction'] = 2
+    table = pd.concat([table, conflict], ignore_index=True)
+    if reverse:
+        table = table.iloc[::-1]
+    with pytest.raises(ValueError, match='Duplicate entity-target'):
+        build_task_a_features(pairs, table)

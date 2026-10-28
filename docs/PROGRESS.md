@@ -690,3 +690,111 @@ Historical AUC alert remains unresolved. No additional small defect fix identifi
 stop rather than repeat audits or expand the project. Single next action: human
 coordinator initializes and distributes blinded consensus-review assignments.
 No full suite, Colab, fabricated evidence or scientific validation claim.
+
+## 29 October 2026 — Mechanistic identifier collision fix
+
+Confirmed defect: validation checked raw entity/target pairs, while extraction
+used string conversion and `.strip()` for dictionary keys. Whitespace-equivalent
+conflicting rows could overwrite each other, selecting +0.5 or -0.5 solely by
+row order. Validation and extraction now share a string-only canonical identifier
+helper that strips surrounding whitespace. Duplicate canonical entity/target
+records fail before matrix construction; neither row is chosen or aggregated.
+Empty identifiers, role prefixes without suffixes, internal whitespace and
+non-string identifiers fail explicitly. Case is preserved and extra target names
+remain permitted. Duplicate curation/pair columns are rejected; CSV duplicate
+headers are checked before pandas can silently rename them.
+
+Inspected `src/features/task_a_contract.py`; its existing unique-column check
+and delegation to the curated extractor require no source change. Added direct
+extractor and Task A builder regressions for both row orders of conflicting
+normalized records, including the reproduced +/-0.5 case. Tests also cover
+malformed IDs, duplicate columns/CSV headers, accepted surrounding whitespace,
+input non-mutation and preserved missing pathways. Numeric missing-value handling,
+feature schemas and training missingness policy are unchanged.
+
+Exact validation:
+`venv/bin/python -m pytest tests/test_mechanistic_boundary.py tests/test_task_a_feature_contract.py tests/test_task_a_training.py tests/test_task_b_training.py tests/test_annotation_training_integration.py -q -p no:cacheprovider`
+— **172 passed, 1 warning in 4.09s**, exit 0. The warning is joblib's physical-core
+count detection falling back to logical cores. `git diff --check` — passed.
+Only these relevant mechanistic, feature-contract and training tests ran; no full
+suite or Colab. Historical benchmark artifacts, AUC leakage guard, consensus
+labels and the pre-existing private annotation batch were not modified.
+
+Compatibility: formerly accepted malformed IDs and whitespace-equivalent duplicate
+records now raise ValueError and require explicit curation resolution. Valid
+surrounding whitespace remains supported; no case folding, alias mapping or
+scientific record repair is introduced.
+
+## 29 October 2026 — Conformal engine fail-closed fix
+
+Inspected the engine, both conformal test modules, HDIModel calibration/prediction
+integration, and external-diagnostics dependent tests before changing behavior.
+Removed the uncalibrated q=0.85 fallback: single, batch (including empty batches)
+and evaluation calls now require calibration. Calibration validates finite [0,1]
+probabilities, binary numeric labels without integer truncation, equal lengths,
+nonempty calibration data and valid epsilon. Constructor thresholds and prediction
+safety scores are also validated. Batch metadata lengths and evaluation labels
+are checked explicitly. Failed recalibration invalidates stale fitted state.
+
+Shared the identical calibration quantile implementation without changing its
+capped finite-sample level or NumPy `method="higher"` behavior. Regression checks
+cover both calibration methods across small and attainable sample sizes. Corrected
+module/class documentation and logging: pooled OOF is empirical calibration, not
+a formal coverage guarantee; split-conformal coverage requires the stated fixed
+predictor/exchangeability assumptions, and the maximum-score small-sample fallback
+does not establish nominal coverage. Existing decision routing remains unchanged.
+
+Exact final validation:
+`venv/bin/python -m pytest tests/test_conformal_abstention.py tests/test_conformal_overhaul.py tests/test_integrated_novelty.py tests/test_evaluation_integrity.py::test_external_diagnostics_use_fitted_sets_and_do_not_invent_uncertainty -q -p no:cacheprovider`
+— **80 passed in 1.98s**, exit 0. Earlier targeted runs: **73 passed, 1 failed
+in 2.06s** (new test incorrectly expected a singleton when q=1; corrected the
+assertion), then **74 passed in 2.00s**, exit 0, before additional regressions.
+`git diff --check` — passed. No full suite or Colab. The artifact-writing novelty
+ablation experiment was not run; the HDIModel integration test covers its conformal
+calibration/prediction path without writing benchmark artifacts.
+
+Changed for this fix: `src/models/conformal_abstention.py`,
+`tests/test_conformal_abstention.py`, and this appended progress entry. Preserved
+all pre-existing workspace edits. Historical benchmark artifacts, AUC leakage guard,
+consensus labels and private annotation batch were not modified.
+Compatibility: callers relying on uncalibrated decisions now receive RuntimeError;
+malformed inputs now receive ValueError; failed recalibration requires successful
+calibration before reuse. Valid calibration thresholds and routing are preserved.
+
+
+## 29 October 2026 — Trainer recalibration review follow-up
+
+Inspected the full HDITrainer -> HDIModel -> ConformalTriStateEngine calibration
+path and subsequent engine evaluation. The trainer now disables calibration at
+entry and clears fitted state in a finally block on any unsuccessful attempt,
+including graph/batch preparation, loader iteration, inference, engine calibration,
+and post-calibration metadata validation. Successful calibration remains usable.
+Added focused trainer regressions for all seven failure stages, each starting
+with usable calibration and verifying a successful retry afterward.
+
+Added an explicit nonmaximum finite-sample quantile regression for both held-out
+and pooled OOF methods: n=10, epsilon=0.3, scores 0.0 through 0.9 yield q_hat=0.8,
+strictly below the maximum. The quantile formula is unchanged. Trainer documentation
+now qualifies nominal marginal coverage by the fixed predictor, exchangeability,
+and attainable-rank assumptions, and identifies reported coverage as empirical
+on calibration data. It disclaims nominal guarantees for pooled OOF and the
+capped small-sample fallback.
+
+Exact validation:
+`venv/bin/python -m pytest tests/test_trainer_conformal.py tests/test_conformal_abstention.py tests/test_conformal_overhaul.py tests/test_evaluation_integrity.py -q -p no:cacheprovider`
+— **94 passed in 4.22s**, exit 0. `git diff --check` — passed after removing
+trailing whitespace introduced while wrapping the trainer method. Only relevant
+trainer, conformal-abstention and evaluation-integrity tests ran; no full suite
+or Colab.
+
+Changed for this follow-up: `src/training/trainer.py`,
+`tests/test_trainer_conformal.py`, `tests/test_conformal_abstention.py`, and this
+appended progress entry. Preserved pre-existing workspace edits. Historical
+benchmark artifacts, the AUC leakage guard, consensus labels, and the private
+annotation batch were not modified.
+
+Compatibility: a failed trainer recalibration now requires a successful retry
+before conformal predictions can resume, including when the previous calibration
+was usable or the new threshold had been fitted before metadata validation failed.
+Successful thresholds, quantile rules, return values and decision routing remain
+unchanged.
