@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "purpose": "human_review_preparation_only",
+  "pair_count": 3,
+  "mechanism_candidates": 3,
+  "protected_sha256": {
+    "coordinator_snapshots/pairs.csv": "4c7d2e2835d4ffe4294bc4457de3c0cb42c49f27bedc6c5b9a975a4417802c6f",
+    "coordinator_snapshots/mechanisms.csv": "ea28b0a5e6429fade9e6bb9c62fd80ab953256ec87fc224efb1b1335b58eff06",
+    "assignment_pairs.csv": "79f73fb36e762a8df046f6ebbda52d303094c7b2fd41351c8f8c0247de2b25e8"
+  },
+  "limitations": "Hashes detect accidental changes, not malicious manifest replacement. Pending workbooks and source records are not verified evidence. This packet cannot authorize training or certify reviewer independence."
+}

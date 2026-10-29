@@ -1,0 +1,12 @@
+{
+  "workflow_version": 1,
+  "pair_count": 3,
+  "pairs_sha256": "79f73fb36e762a8df046f6ebbda52d303094c7b2fd41351c8f8c0247de2b25e8",
+  "inputs": [
+    {
+      "path": "docs/review_batches/public_pilot_20261030/packet/assignment_pairs.csv",
+      "sha256": "79f73fb36e762a8df046f6ebbda52d303094c7b2fd41351c8f8c0247de2b25e8"
+    }
+  ],
+  "policy": "All pairs assigned to two independent reviewers; explicit adjudication required."
+}

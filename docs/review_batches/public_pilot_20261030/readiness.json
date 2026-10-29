@@ -1,0 +1,37 @@
+{
+  "scope": "necessary_structural_conditions_only",
+  "eligible": false,
+  "protocol": "full",
+  "candidate_pairs": 3,
+  "binary_reference_pairs": 0,
+  "missing_reference_pairs": 3,
+  "disputed_reference_pairs": 0,
+  "class_counts": {},
+  "capacity": {
+    "pair": {
+      "independent_group_upper_bound": 0,
+      "required_nonempty_roles": 5,
+      "necessary_group_count_met": false
+    },
+    "herb": {
+      "independent_group_upper_bound": 0,
+      "required_nonempty_roles": 5,
+      "necessary_group_count_met": false
+    },
+    "drug": {
+      "independent_group_upper_bound": 0,
+      "required_nonempty_roles": 5,
+      "necessary_group_count_met": false
+    }
+  },
+  "input_sha256": {
+    "pairs": "4c7d2e2835d4ffe4294bc4457de3c0cb42c49f27bedc6c5b9a975a4417802c6f",
+    "consensus": "0ec376263a0258546fd9e598ca58f65b41cd26fc9d9fcbe43a74be719bbac832"
+  },
+  "blocked": [
+    "No release authorization is issued by this planning diagnostic.",
+    "Group counts cannot establish class support or statistical adequacy.",
+    "Task B needs verified evidence, complete provenance topology and component isolation.",
+    "Scientific review, mechanism verification and release preflight remain mandatory."
+  ]
+}

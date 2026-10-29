@@ -1534,3 +1534,83 @@ metrics, weakening tests, manufacturing dummy data or publishing private metadat
 They remain explicit blockers requiring separate scientific/data decisions. The
 workflow, authorization gate and canonical/historical artifacts remain unchanged.
 No staging, commit or push; the private annotation directory remains untouched.
+
+## Independent evidence-review preparation — 30 October 2026
+
+Implemented `src/data/review_packet.py` to prepare, not scientifically approve,
+explicitly supplied candidate inputs. Each original CSV is read once and its exact
+bytes saved in coordinator snapshots; protected-input hashes detect accidental
+replacement. Identifier-only consensus assignments reuse the existing independent
+review/adjudication workflow. Mechanism review rows start pending with blank source,
+interpretation and reviewer fields. No label, verification, eligibility or model
+prediction is generated. Output directories cannot overwrite existing work.
+
+Added `docs/evidence_review_protocol.md` and a README entry explaining the CLI,
+reviewer blinding, evidence/circularity checks, mechanism interpretation checklist,
+and handoff to existing scientific release requirements. Coordinator snapshots
+can contain labels/predictions and must not be distributed to blinded reviewers.
+Hashes are not proof against manifest replacement or scientific authentication.
+Mechanism worksheets cannot be promoted automatically to verified evidence.
+
+Exact focused validation:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_review_packet.py tests/test_consensus_annotation.py tests/test_annotation_batch.py tests/test_release_preflight.py tests/test_pipeline_components.py -q -p no:cacheprovider
+```
+
+Result: **201 passed in 14.77s**, one existing joblib physical-core detection
+warning. Eight new synthetic tests cover unresolved/blinded preparation, exact
+snapshots, original-file replacement, frozen-input mutation, malformed manifests,
+duplicate headers/keys and missing schema columns. No real review packet or real
+labels were produced. No full suite, network literature retrieval or empirical
+training/evaluation was run.
+
+Remaining prerequisites: advisor-approved outcome/inclusion rules; explicitly
+selected permitted evidence inputs; independent qualified reviewers and adjudicator;
+source-level mechanism verification; feasible disjoint roles; remaining Task B
+scientific contracts and reviewed production authorization. Current eligibility
+and disabled public execution are unchanged. Existing guards, canonical data,
+historical artifacts and training runners were not edited. The excluded private
+annotation directory was not inspected, read, discovered, hashed or modified.
+
+## Public primary-source pilot and readiness diagnostics — 30 October 2026
+
+Collected four actual primary-publication candidates through PubMed/PMC searches
+for St John's wort pharmacokinetics and PXR activation. Added the public pilot at
+`docs/review_batches/public_pilot_20261030/`, with three existing canonical pair
+identities, three existing mechanism candidate rows, frozen preparation snapshots,
+unresolved blinded workbooks, pending mechanism review and source summaries.
+PubMed abstracts were inspected; indexed PMC mechanism Results/Figure 3 excerpts
+were available, but direct PMC access challenged the browser. Full-text review,
+independent human adjudication and scientific mechanism verification are not
+claimed. Citation links, access limitations, retrieval date, pending status and
+exact-string overlap counts are recorded in `source_candidates.json`.
+
+Added `src/data/review_readiness.py` and five synthetic regression tests. The CLI
+reads explicitly supplied snapshots, validates consensus structure, preserves
+disputed cases, and reports necessary group-count conditions for the existing
+protocol roles. It cannot issue eligibility, establish statistical support,
+authenticate reference independence, or construct Task B components without
+verified topology. The current pilot report has zero binary reference pairs;
+canonical consensus remains empty. Even fully labeling this pilot would not
+supply five disjoint nonempty roles. No partitions or scientific thresholds were
+invented, and no fitting or performance reporting occurred.
+
+Exact focused command:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_review_readiness.py tests/test_review_packet.py tests/test_consensus_annotation.py tests/test_evaluation_protocol.py tests/test_evaluation_orchestrator.py tests/test_pipeline_components.py -q -p no:cacheprovider
+```
+
+Result: **162 passed in 11.08s**, one existing joblib core-detection warning.
+An additional explicit-path integrity check verified packet hashes, regeneration
+of the stored readiness report, pending source statuses and membership of all
+pilot pair identities in the canonical evidence table. No full suite or Colab.
+
+Remaining work cannot be replaced by software assertions: independent reference
+review, source-level biological interpretation and quantitative feature mapping,
+expanded evidence coverage, Task B scientific contracts, statistical adequacy
+criteria, and a reviewed production authorization issuer. The public APIs and
+Phase 2 gate remain blocked. Canonical data, historical results, existing runners
+and leakage guards are unchanged. Private annotation contents were never accessed
+or discovered. No staging, commit or push.

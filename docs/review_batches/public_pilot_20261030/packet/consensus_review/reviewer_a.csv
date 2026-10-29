@@ -1,0 +1,4 @@
+herb_id,drug_id,consensus_label,source_name,source_url_or_citation,retrieval_date,reviewer_id,rationale,blinded_to_predictions,external_consensus_only,circularity_notes
+HERB_ECHINACEA,DRUG_DIGOXIN,unresolved,,,,,,,,
+HERB_HYPERICUM,DRUG_CYCLOSPORINE,unresolved,,,,,,,,
+HERB_HYPERICUM,DRUG_DIGOXIN,unresolved,,,,,,,,

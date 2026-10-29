@@ -1,0 +1,4 @@
+entity,target,status,value_ic50_uM,value_ki_uM,value_fold_induction,value_fm,value_substrate_flag,exposure_conc_uM,exposure_source,assay_or_unit,source,citation,retrieval_date,notes
+HERB_HYPERICUM,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature

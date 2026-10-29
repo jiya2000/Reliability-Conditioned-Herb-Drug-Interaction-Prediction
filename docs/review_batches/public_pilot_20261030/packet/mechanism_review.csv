@@ -1,0 +1,4 @@
+entity,target,review_status,reviewer_id,source_identifier,supporting_passage_location,experimental_context,units_checked,direction_checked,exposure_relevance,rationale,review_date
+HERB_HYPERICUM,CYP3A4,pending,,,,,,,,,
+HERB_HYPERICUM,ABCB1,pending,,,,,,,,,
+HERB_HYPERICUM,NR1I2,pending,,,,,,,,,

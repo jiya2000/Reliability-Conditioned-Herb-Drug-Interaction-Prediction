@@ -12,6 +12,12 @@ An auditable research pipeline for studying how sourced mechanisms and the relia
 - [IDF-B technical draft](docs/IDF-B_draft.md) — follows the official repository form; institutional fields require review
 - [Exact verification commands, results and limitations](docs/PROGRESS.md)
 
+## Prepare independent evidence review
+
+[Evidence review protocol and packet commands](docs/evidence_review_protocol.md) connect the existing blinded consensus workflow to frozen candidate inputs and a pending mechanism-review worksheet. This preparation does not assign labels, verify biological claims, or authorize evaluation.
+
+[Public literature pilot and readiness report](docs/review_batches/public_pilot_20261030/README.md) provide actual primary-source candidates with unresolved review workbooks. They are preparation artifacts, not an independently labeled dataset.
+
 ## Research approach
 
 **Task A** studies mechanism-only prediction using the approved six pathway effects and their absolute sum, with existing logistic regression and histogram gradient boosting families. Publication findings, raw text and entity encodings are excluded from its features. Independent consensus supplies the intended target.
