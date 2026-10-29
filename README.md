@@ -20,6 +20,8 @@ An auditable research pipeline for studying how sourced mechanisms and the relia
 
 [Expanded biological curation panel](docs/mechanistic_panel_expansion.md) explains the current five-enzyme/one-transporter baseline and prepares a broader 16-target evidence-collection scope without claiming predictive improvement.
 
+[Task B source inventory and discussion-signal intake](docs/task_b_sources_and_discussions.md) explains the current paper candidates and the separate quarantined metadata workflow for potential discussion signals.
+
 ## Research approach
 
 **Task A** studies mechanism-only prediction using the approved six pathway effects and their absolute sum, with existing logistic regression and histogram gradient boosting families. Publication findings, raw text and entity encodings are excluded from its features. Independent consensus supplies the intended target.

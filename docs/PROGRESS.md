@@ -1663,3 +1663,50 @@ Broader model execution remains unimplemented pending verified measurements,
 reviewed feature semantics/missingness policy and scientific eligibility. More
 candidate targets do not demonstrate increased accuracy; an eligible independent
 comparison of fixed panels remains future empirical work.
+
+## Discussion signals and cross-component integration — 30 October 2026
+
+Inspected explicit canonical evidence, pilot candidates and Task B source/design
+interfaces. Inventory: 141 evidence rows, 140 source IDs, 141 study IDs, 120 pairs;
+design labels are 121 clinical, 16 case_report and four rct. These are identifiers
+and recorded classifications, not independently authenticated publication counts.
+The four-source public pilot remains separate, as does the expanded 16-target
+curation queue. Neither is automatically eligible training evidence.
+
+Added `src/data/discussion_signals.py`, 17 tests in
+`tests/test_discussion_signals.py`, `docs/task_b_sources_and_discussions.md` and
+an empty `docs/templates/discussion_signals.json` template; linked from README.
+The new interface accepts only explicit minimal metadata, rejects raw/user fields
+and forged labels/weights, requires permission/privacy references, validates URLs,
+IDs and dates, and groups same-thread/URL/repost provenance. Every output is
+quarantined, with unsupported scientific evidence type `social_signal`, null
+consensus and Task B eligibility false. No network scraper, real social posts,
+reliability score or automatic promotion is included. Permission references and
+metadata correctness require external review; privacy and authenticity cannot be
+certified by schema validation. Unlinked reposts remain undetectable.
+
+Reviewed official ENCePP digital-media methodology and FDA spontaneous-report
+limitations (links in the new source guide). Discussion frequency is not proof of
+causality, independence or earlier useful detection. Source completeness and
+human-reviewed clinical interpretation remain required.
+
+Exact focused integration command:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_discussion_signals.py tests/test_review_packet.py tests/test_review_readiness.py tests/test_mechanistic_panel.py tests/test_consensus_annotation.py tests/test_pipeline_components.py tests/test_evaluation_orchestrator.py tests/test_release_preflight.py tests/test_evaluation_protocol.py tests/test_task_a_training.py tests/test_task_b_training.py tests/test_task_a_feature_contract.py tests/test_redesigned_leakage_regression.py tests/test_calibration_audit.py tests/test_conformal_abstention.py tests/test_conformal_overhaul.py tests/test_interaction_model_and_calibration.py tests/test_trainer_conformal.py tests/test_app_research_status.py tests/test_project_presentation.py -q -p no:cacheprovider
+```
+
+Result: **552 passed in 18.95s**, one existing joblib physical-core warning.
+This includes explicit integration checks of previous pilot snapshot hashes and
+stored readiness, expanded candidate provenance/coverage snapshot consistency,
+Task B rejection of discussion rows, public execution blocking, Task A/B,
+calibration/conformal, leakage and frontend rendering. This demonstrates supported
+preparation compatibility, not an eligible empirical end-to-end run. No full suite,
+real-data training, empirical performance claims or social-post collection.
+
+`git diff --check` passed. Canonical evidence/curation, historical outputs, primary
+allowlist, existing training runners and leakage guards remain unchanged. The
+excluded annotation directory was not accessed or discovered. No commit/push.
+Scientific review, reference labels, mechanism verification, Task B contracts,
+statistical adequacy and production authorization remain unresolved. Existing
+unrelated historical CI blockers are not claimed fixed by this integration run.
