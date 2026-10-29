@@ -18,6 +18,8 @@ An auditable research pipeline for studying how sourced mechanisms and the relia
 
 [Public literature pilot and readiness report](docs/review_batches/public_pilot_20261030/README.md) provide actual primary-source candidates with unresolved review workbooks. They are preparation artifacts, not an independently labeled dataset.
 
+[Expanded biological curation panel](docs/mechanistic_panel_expansion.md) explains the current five-enzyme/one-transporter baseline and prepares a broader 16-target evidence-collection scope without claiming predictive improvement.
+
 ## Research approach
 
 **Task A** studies mechanism-only prediction using the approved six pathway effects and their absolute sum, with existing logistic regression and histogram gradient boosting families. Publication findings, raw text and entity encodings are excluded from its features. Independent consensus supplies the intended target.

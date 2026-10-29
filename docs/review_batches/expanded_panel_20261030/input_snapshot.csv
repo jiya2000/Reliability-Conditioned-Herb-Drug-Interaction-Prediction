@@ -1,0 +1,723 @@
+entity,target,status,value_ic50_uM,value_ki_uM,value_fold_induction,value_fm,value_substrate_flag,exposure_conc_uM,exposure_source,assay_or_unit,source,citation,retrieval_date,notes
+HERB_BLACKCOHOSH,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_BLACKCOHOSH,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_BLACKCOHOSH,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_BLACKCOHOSH,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_BLACKCOHOSH,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_BLACKCOHOSH,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_BLACKCOHOSH,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_BLACKCOHOSH,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_BLACKCOHOSH,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CHAMOMILE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CHAMOMILE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CHAMOMILE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CHAMOMILE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CHAMOMILE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CHAMOMILE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CHAMOMILE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CHAMOMILE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CHAMOMILE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CRANBERRY,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CRANBERRY,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CRANBERRY,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CRANBERRY,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CRANBERRY,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CRANBERRY,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CRANBERRY,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CRANBERRY,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CRANBERRY,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CURCUMA,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CURCUMA,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CURCUMA,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CURCUMA,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CURCUMA,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CURCUMA,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CURCUMA,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CURCUMA,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_CURCUMA,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_ECHINACEA,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_ECHINACEA,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_ECHINACEA,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_ECHINACEA,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_ECHINACEA,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_ECHINACEA,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_ECHINACEA,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_ECHINACEA,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_ECHINACEA,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GARLIC,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GARLIC,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GARLIC,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GARLIC,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GARLIC,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GARLIC,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GARLIC,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GARLIC,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GARLIC,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINKGO,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINKGO,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINKGO,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINKGO,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINKGO,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINKGO,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINKGO,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINKGO,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINKGO,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINSENG,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINSENG,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINSENG,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINSENG,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINSENG,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINSENG,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINSENG,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINSENG,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GINSENG,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GOLDENSEAL,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GOLDENSEAL,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GOLDENSEAL,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GOLDENSEAL,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GOLDENSEAL,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GOLDENSEAL,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GOLDENSEAL,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GOLDENSEAL,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GOLDENSEAL,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GRAPEFRUIT,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GRAPEFRUIT,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GRAPEFRUIT,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GRAPEFRUIT,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GRAPEFRUIT,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GRAPEFRUIT,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GRAPEFRUIT,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GRAPEFRUIT,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GRAPEFRUIT,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GREENTEA,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GREENTEA,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GREENTEA,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GREENTEA,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GREENTEA,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GREENTEA,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GREENTEA,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GREENTEA,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_GREENTEA,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_HYPERICUM,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_KAVA,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_KAVA,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_KAVA,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_KAVA,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_KAVA,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_KAVA,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_KAVA,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_KAVA,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_KAVA,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_LICORICE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_LICORICE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_LICORICE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_LICORICE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_LICORICE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_LICORICE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_LICORICE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_LICORICE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_LICORICE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_MILKTHISTLE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_MILKTHISTLE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_MILKTHISTLE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_MILKTHISTLE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_MILKTHISTLE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_MILKTHISTLE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_MILKTHISTLE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_MILKTHISTLE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_MILKTHISTLE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_PEPPERMINT,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_PEPPERMINT,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_PEPPERMINT,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_PEPPERMINT,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_PEPPERMINT,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_PEPPERMINT,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_PEPPERMINT,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_PEPPERMINT,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_PEPPERMINT,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_SAWPALMETTO,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_SAWPALMETTO,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_SAWPALMETTO,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_SAWPALMETTO,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_SAWPALMETTO,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_SAWPALMETTO,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_SAWPALMETTO,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_SAWPALMETTO,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_SAWPALMETTO,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_VALERIAN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_VALERIAN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_VALERIAN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_VALERIAN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_VALERIAN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_VALERIAN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_VALERIAN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_VALERIAN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+HERB_VALERIAN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from NaPDI / NPASS / primary in vitro & in vivo literature
+DRUG_ACETAMINOPHEN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ACETAMINOPHEN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ACETAMINOPHEN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ACETAMINOPHEN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ACETAMINOPHEN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ACETAMINOPHEN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ACETAMINOPHEN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ACETAMINOPHEN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ACETAMINOPHEN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ALPRAZOLAM,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ALPRAZOLAM,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ALPRAZOLAM,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ALPRAZOLAM,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ALPRAZOLAM,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ALPRAZOLAM,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ALPRAZOLAM,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ALPRAZOLAM,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ALPRAZOLAM,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ASPIRIN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ASPIRIN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ASPIRIN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ASPIRIN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ASPIRIN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ASPIRIN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ASPIRIN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ASPIRIN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ASPIRIN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ATORVASTATIN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ATORVASTATIN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ATORVASTATIN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ATORVASTATIN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ATORVASTATIN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ATORVASTATIN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ATORVASTATIN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ATORVASTATIN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ATORVASTATIN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_BORTEZOMIB,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_BORTEZOMIB,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_BORTEZOMIB,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_BORTEZOMIB,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_BORTEZOMIB,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_BORTEZOMIB,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_BORTEZOMIB,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_BORTEZOMIB,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_BORTEZOMIB,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CAFFEINE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CAFFEINE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CAFFEINE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CAFFEINE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CAFFEINE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CAFFEINE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CAFFEINE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CAFFEINE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CAFFEINE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CHLORZOXAZONE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CHLORZOXAZONE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CHLORZOXAZONE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CHLORZOXAZONE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CHLORZOXAZONE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CHLORZOXAZONE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CHLORZOXAZONE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CHLORZOXAZONE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CHLORZOXAZONE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CYCLOSPORINE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CYCLOSPORINE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CYCLOSPORINE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CYCLOSPORINE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CYCLOSPORINE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CYCLOSPORINE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CYCLOSPORINE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CYCLOSPORINE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_CYCLOSPORINE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DEXTROMETHORPHAN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DEXTROMETHORPHAN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DEXTROMETHORPHAN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DEXTROMETHORPHAN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DEXTROMETHORPHAN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DEXTROMETHORPHAN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DEXTROMETHORPHAN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DEXTROMETHORPHAN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DEXTROMETHORPHAN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DIGOXIN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DIGOXIN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DIGOXIN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DIGOXIN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DIGOXIN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DIGOXIN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DIGOXIN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DIGOXIN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DIGOXIN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DOCETAXEL,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DOCETAXEL,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DOCETAXEL,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DOCETAXEL,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DOCETAXEL,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DOCETAXEL,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DOCETAXEL,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DOCETAXEL,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_DOCETAXEL,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ETHINYLESTRADIOL,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ETHINYLESTRADIOL,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ETHINYLESTRADIOL,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ETHINYLESTRADIOL,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ETHINYLESTRADIOL,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ETHINYLESTRADIOL,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ETHINYLESTRADIOL,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ETHINYLESTRADIOL,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ETHINYLESTRADIOL,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FELODIPINE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FELODIPINE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FELODIPINE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FELODIPINE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FELODIPINE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FELODIPINE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FELODIPINE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FELODIPINE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FELODIPINE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FEXOFENADINE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FEXOFENADINE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FEXOFENADINE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FEXOFENADINE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FEXOFENADINE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FEXOFENADINE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FEXOFENADINE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FEXOFENADINE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FEXOFENADINE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FINASTERIDE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FINASTERIDE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FINASTERIDE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FINASTERIDE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FINASTERIDE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FINASTERIDE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FINASTERIDE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FINASTERIDE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_FINASTERIDE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_HYDROCHLOROTHIAZIDE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_HYDROCHLOROTHIAZIDE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_HYDROCHLOROTHIAZIDE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_HYDROCHLOROTHIAZIDE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_HYDROCHLOROTHIAZIDE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_HYDROCHLOROTHIAZIDE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_HYDROCHLOROTHIAZIDE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_HYDROCHLOROTHIAZIDE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_HYDROCHLOROTHIAZIDE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_INDINAVIR,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_INDINAVIR,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_INDINAVIR,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_INDINAVIR,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_INDINAVIR,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_INDINAVIR,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_INDINAVIR,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_INDINAVIR,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_INDINAVIR,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_IRINOTECAN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_IRINOTECAN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_IRINOTECAN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_IRINOTECAN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_IRINOTECAN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_IRINOTECAN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_IRINOTECAN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_IRINOTECAN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_IRINOTECAN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_LEVODOPA,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_LEVODOPA,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_LEVODOPA,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_LEVODOPA,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_LEVODOPA,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_LEVODOPA,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_LEVODOPA,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_LEVODOPA,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_LEVODOPA,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METFORMIN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METFORMIN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METFORMIN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METFORMIN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METFORMIN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METFORMIN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METFORMIN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METFORMIN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METFORMIN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METHADONE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METHADONE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METHADONE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METHADONE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METHADONE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METHADONE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METHADONE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METHADONE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_METHADONE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_MIDAZOLAM,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_MIDAZOLAM,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_MIDAZOLAM,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_MIDAZOLAM,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_MIDAZOLAM,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_MIDAZOLAM,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_MIDAZOLAM,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_MIDAZOLAM,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_MIDAZOLAM,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NADOLOL,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NADOLOL,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NADOLOL,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NADOLOL,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NADOLOL,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NADOLOL,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NADOLOL,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NADOLOL,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NADOLOL,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NIFEDIPINE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NIFEDIPINE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NIFEDIPINE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NIFEDIPINE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NIFEDIPINE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NIFEDIPINE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NIFEDIPINE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NIFEDIPINE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_NIFEDIPINE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OMEPRAZOLE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OMEPRAZOLE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OMEPRAZOLE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OMEPRAZOLE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OMEPRAZOLE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OMEPRAZOLE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OMEPRAZOLE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OMEPRAZOLE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OMEPRAZOLE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OXYCODONE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OXYCODONE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OXYCODONE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OXYCODONE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OXYCODONE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OXYCODONE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OXYCODONE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OXYCODONE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_OXYCODONE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PACLITAXEL,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PACLITAXEL,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PACLITAXEL,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PACLITAXEL,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PACLITAXEL,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PACLITAXEL,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PACLITAXEL,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PACLITAXEL,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PACLITAXEL,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PHENELZINE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PHENELZINE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PHENELZINE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PHENELZINE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PHENELZINE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PHENELZINE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PHENELZINE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PHENELZINE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PHENELZINE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PREDNISOLONE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PREDNISOLONE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PREDNISOLONE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PREDNISOLONE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PREDNISOLONE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PREDNISOLONE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PREDNISOLONE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PREDNISOLONE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_PREDNISOLONE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_RITONAVIR,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_RITONAVIR,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_RITONAVIR,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_RITONAVIR,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_RITONAVIR,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_RITONAVIR,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_RITONAVIR,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_RITONAVIR,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_RITONAVIR,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ROSUVASTATIN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ROSUVASTATIN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ROSUVASTATIN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ROSUVASTATIN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ROSUVASTATIN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ROSUVASTATIN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ROSUVASTATIN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ROSUVASTATIN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ROSUVASTATIN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SAQUINAVIR,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SAQUINAVIR,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SAQUINAVIR,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SAQUINAVIR,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SAQUINAVIR,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SAQUINAVIR,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SAQUINAVIR,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SAQUINAVIR,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SAQUINAVIR,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SIMVASTATIN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SIMVASTATIN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SIMVASTATIN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SIMVASTATIN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SIMVASTATIN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SIMVASTATIN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SIMVASTATIN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SIMVASTATIN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SIMVASTATIN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SPIRONOLACTONE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SPIRONOLACTONE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SPIRONOLACTONE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SPIRONOLACTONE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SPIRONOLACTONE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SPIRONOLACTONE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SPIRONOLACTONE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SPIRONOLACTONE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_SPIRONOLACTONE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TACROLIMUS,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TACROLIMUS,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TACROLIMUS,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TACROLIMUS,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TACROLIMUS,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TACROLIMUS,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TACROLIMUS,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TACROLIMUS,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TACROLIMUS,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TALINOLOL,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TALINOLOL,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TALINOLOL,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TALINOLOL,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TALINOLOL,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TALINOLOL,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TALINOLOL,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TALINOLOL,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TALINOLOL,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_THEOPHYLLINE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_THEOPHYLLINE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_THEOPHYLLINE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_THEOPHYLLINE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_THEOPHYLLINE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_THEOPHYLLINE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_THEOPHYLLINE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_THEOPHYLLINE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_THEOPHYLLINE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TOLBUTAMIDE,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TOLBUTAMIDE,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TOLBUTAMIDE,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TOLBUTAMIDE,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TOLBUTAMIDE,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TOLBUTAMIDE,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TOLBUTAMIDE,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TOLBUTAMIDE,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_TOLBUTAMIDE,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_VERAPAMIL,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_VERAPAMIL,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_VERAPAMIL,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_VERAPAMIL,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_VERAPAMIL,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_VERAPAMIL,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_VERAPAMIL,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_VERAPAMIL,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_VERAPAMIL,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_WARFARIN,CYP3A4,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_WARFARIN,CYP2D6,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_WARFARIN,CYP2C9,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_WARFARIN,CYP2C19,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_WARFARIN,CYP1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_WARFARIN,CYP2E1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_WARFARIN,ABCB1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_WARFARIN,SLCO1B1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_WARFARIN,NR1I2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,Awaiting human curation from FDA DDI Guidance / Flockhart Table / DrugBank
+DRUG_ACETAMINOPHEN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ACETAMINOPHEN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ACETAMINOPHEN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ACETAMINOPHEN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ACETAMINOPHEN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ALPRAZOLAM,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ALPRAZOLAM,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ALPRAZOLAM,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ALPRAZOLAM,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ALPRAZOLAM,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ASPIRIN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ASPIRIN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ASPIRIN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ASPIRIN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ASPIRIN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ATORVASTATIN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ATORVASTATIN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ATORVASTATIN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ATORVASTATIN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ATORVASTATIN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_BORTEZOMIB,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_BORTEZOMIB,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_BORTEZOMIB,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_BORTEZOMIB,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_BORTEZOMIB,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CAFFEINE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CAFFEINE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CAFFEINE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CAFFEINE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CAFFEINE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CHLORZOXAZONE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CHLORZOXAZONE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CHLORZOXAZONE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CHLORZOXAZONE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CHLORZOXAZONE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CYCLOSPORINE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CYCLOSPORINE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CYCLOSPORINE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CYCLOSPORINE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_CYCLOSPORINE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DEXTROMETHORPHAN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DEXTROMETHORPHAN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DEXTROMETHORPHAN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DEXTROMETHORPHAN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DEXTROMETHORPHAN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DIGOXIN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DIGOXIN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DIGOXIN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DIGOXIN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DIGOXIN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DOCETAXEL,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DOCETAXEL,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DOCETAXEL,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DOCETAXEL,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_DOCETAXEL,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ETHINYLESTRADIOL,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ETHINYLESTRADIOL,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ETHINYLESTRADIOL,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ETHINYLESTRADIOL,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ETHINYLESTRADIOL,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FELODIPINE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FELODIPINE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FELODIPINE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FELODIPINE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FELODIPINE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FEXOFENADINE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FEXOFENADINE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FEXOFENADINE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FEXOFENADINE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FEXOFENADINE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FINASTERIDE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FINASTERIDE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FINASTERIDE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FINASTERIDE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_FINASTERIDE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_HYDROCHLOROTHIAZIDE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_HYDROCHLOROTHIAZIDE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_HYDROCHLOROTHIAZIDE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_HYDROCHLOROTHIAZIDE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_HYDROCHLOROTHIAZIDE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_INDINAVIR,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_INDINAVIR,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_INDINAVIR,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_INDINAVIR,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_INDINAVIR,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_IRINOTECAN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_IRINOTECAN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_IRINOTECAN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_IRINOTECAN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_IRINOTECAN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_LEVODOPA,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_LEVODOPA,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_LEVODOPA,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_LEVODOPA,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_LEVODOPA,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METFORMIN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METFORMIN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METFORMIN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METFORMIN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METFORMIN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METHADONE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METHADONE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METHADONE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METHADONE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_METHADONE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_MIDAZOLAM,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_MIDAZOLAM,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_MIDAZOLAM,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_MIDAZOLAM,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_MIDAZOLAM,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NADOLOL,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NADOLOL,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NADOLOL,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NADOLOL,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NADOLOL,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NIFEDIPINE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NIFEDIPINE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NIFEDIPINE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NIFEDIPINE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_NIFEDIPINE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OMEPRAZOLE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OMEPRAZOLE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OMEPRAZOLE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OMEPRAZOLE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OMEPRAZOLE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OXYCODONE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OXYCODONE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OXYCODONE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OXYCODONE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_OXYCODONE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PACLITAXEL,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PACLITAXEL,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PACLITAXEL,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PACLITAXEL,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PACLITAXEL,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PHENELZINE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PHENELZINE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PHENELZINE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PHENELZINE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PHENELZINE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PREDNISOLONE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PREDNISOLONE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PREDNISOLONE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PREDNISOLONE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_PREDNISOLONE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_RITONAVIR,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_RITONAVIR,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_RITONAVIR,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_RITONAVIR,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_RITONAVIR,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ROSUVASTATIN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ROSUVASTATIN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ROSUVASTATIN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ROSUVASTATIN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_ROSUVASTATIN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SAQUINAVIR,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SAQUINAVIR,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SAQUINAVIR,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SAQUINAVIR,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SAQUINAVIR,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SIMVASTATIN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SIMVASTATIN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SIMVASTATIN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SIMVASTATIN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SIMVASTATIN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SPIRONOLACTONE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SPIRONOLACTONE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SPIRONOLACTONE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SPIRONOLACTONE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_SPIRONOLACTONE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TACROLIMUS,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TACROLIMUS,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TACROLIMUS,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TACROLIMUS,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TACROLIMUS,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TALINOLOL,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TALINOLOL,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TALINOLOL,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TALINOLOL,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TALINOLOL,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_THEOPHYLLINE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_THEOPHYLLINE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_THEOPHYLLINE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_THEOPHYLLINE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_THEOPHYLLINE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TOLBUTAMIDE,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TOLBUTAMIDE,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TOLBUTAMIDE,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TOLBUTAMIDE,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_TOLBUTAMIDE,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_VERAPAMIL,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_VERAPAMIL,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_VERAPAMIL,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_VERAPAMIL,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_VERAPAMIL,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_WARFARIN,VKORC1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_WARFARIN,PTGS1,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_WARFARIN,PTGS2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_WARFARIN,HSD11B2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.
+DRUG_WARFARIN,SLCO1A2,not_tested,,,,,,,,,UNVERIFIED,UNVERIFIED,,PD block: optional pharmacodynamic target. To be curated for PK+PD task mode.

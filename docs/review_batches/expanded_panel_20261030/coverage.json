@@ -1,0 +1,138 @@
+{
+  "panel_version": "expanded_curation_v1",
+  "source_url": "https://www.fda.gov/drugs/drug-interactions-labeling/drug-development-and-drug-interactions-table-substrates-inhibitors-and-inducers",
+  "source_scope": "General CYP/transporter relevance, not herb-specific evidence or model approval.",
+  "input_sha256": "b79e14858ba64d4d486c886bcf94c367bc010093405fe1f32d574aa69f16d3d8",
+  "entities": 58,
+  "new_unverified_rows": 522,
+  "coverage": [
+    {
+      "target": "CYP1A2",
+      "kind": "enzyme",
+      "alias": "CYP1A2",
+      "existing_status_counts": {
+        "not_tested": 58
+      },
+      "missing_entity_rows": 0
+    },
+    {
+      "target": "CYP2B6",
+      "kind": "enzyme",
+      "alias": "CYP2B6",
+      "existing_status_counts": {},
+      "missing_entity_rows": 58
+    },
+    {
+      "target": "CYP2C8",
+      "kind": "enzyme",
+      "alias": "CYP2C8",
+      "existing_status_counts": {},
+      "missing_entity_rows": 58
+    },
+    {
+      "target": "CYP2C9",
+      "kind": "enzyme",
+      "alias": "CYP2C9",
+      "existing_status_counts": {
+        "not_tested": 58
+      },
+      "missing_entity_rows": 0
+    },
+    {
+      "target": "CYP2C19",
+      "kind": "enzyme",
+      "alias": "CYP2C19",
+      "existing_status_counts": {
+        "not_tested": 58
+      },
+      "missing_entity_rows": 0
+    },
+    {
+      "target": "CYP2D6",
+      "kind": "enzyme",
+      "alias": "CYP2D6",
+      "existing_status_counts": {
+        "not_tested": 58
+      },
+      "missing_entity_rows": 0
+    },
+    {
+      "target": "CYP3A4",
+      "kind": "enzyme",
+      "alias": "CYP3A4",
+      "existing_status_counts": {
+        "not_tested": 58
+      },
+      "missing_entity_rows": 0
+    },
+    {
+      "target": "ABCB1",
+      "kind": "transporter",
+      "alias": "P-gp",
+      "existing_status_counts": {
+        "not_tested": 58
+      },
+      "missing_entity_rows": 0
+    },
+    {
+      "target": "ABCG2",
+      "kind": "transporter",
+      "alias": "BCRP",
+      "existing_status_counts": {},
+      "missing_entity_rows": 58
+    },
+    {
+      "target": "SLCO1B1",
+      "kind": "transporter",
+      "alias": "OATP1B1",
+      "existing_status_counts": {
+        "not_tested": 58
+      },
+      "missing_entity_rows": 0
+    },
+    {
+      "target": "SLCO1B3",
+      "kind": "transporter",
+      "alias": "OATP1B3",
+      "existing_status_counts": {},
+      "missing_entity_rows": 58
+    },
+    {
+      "target": "SLC22A6",
+      "kind": "transporter",
+      "alias": "OAT1",
+      "existing_status_counts": {},
+      "missing_entity_rows": 58
+    },
+    {
+      "target": "SLC22A8",
+      "kind": "transporter",
+      "alias": "OAT3",
+      "existing_status_counts": {},
+      "missing_entity_rows": 58
+    },
+    {
+      "target": "SLC22A2",
+      "kind": "transporter",
+      "alias": "OCT2",
+      "existing_status_counts": {},
+      "missing_entity_rows": 58
+    },
+    {
+      "target": "SLC47A1",
+      "kind": "transporter",
+      "alias": "MATE1",
+      "existing_status_counts": {},
+      "missing_entity_rows": 58
+    },
+    {
+      "target": "SLC47A2",
+      "kind": "transporter",
+      "alias": "MATE2-K",
+      "existing_status_counts": {},
+      "missing_entity_rows": 58
+    }
+  ],
+  "training_eligible": false,
+  "limitations": "Presence/status counts do not verify sources. Unknown is not no effect. Renal/uptake/efflux effects need compartment-specific interpretation; no feature expansion or clinical exposure conversion is authorized."
+}

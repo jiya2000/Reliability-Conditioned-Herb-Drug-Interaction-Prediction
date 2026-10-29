@@ -1614,3 +1614,52 @@ criteria, and a reviewed production authorization issuer. The public APIs and
 Phase 2 gate remain blocked. Canonical data, historical results, existing runners
 and leakage guards are unchanged. Private annotation contents were never accessed
 or discovered. No staging, commit or push.
+
+## Expanded mechanistic curation panel — 30 October 2026
+
+Corrected the presentation: the primary baseline has five CYP enzymes plus one
+transporter, not six enzymes plus a transporter. Mechanistic evidence still comes
+from scientific sources; publication outcomes/text are excluded as predictors.
+Added `src/data/mechanistic_panel.py`, `tests/test_mechanistic_panel.py` and
+`docs/mechanistic_panel_expansion.md`; updated README and explanation. The versioned
+curation scope covers seven enzymes and nine transporters, grounded in FDA Table
+1-1 and Table 3-1 (links and scope limits in the new documentation). FDA relevance
+is not herb-specific evidence or approval of model features.
+
+Generated `docs/review_batches/expanded_panel_20261030/` using:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m src.data.mechanistic_panel --curation data/curation/mechanistic_features.csv --output docs/review_batches/expanded_panel_20261030
+```
+
+The generator captured exact input bytes and prepared 522 additional unverified,
+not-tested entity-target candidates for 58 existing entities. Numeric fields are
+blank, not zero. These are a curation queue, not measured data or model inputs.
+The primary allowlist and general extractor remain unchanged. Receptor-mediated
+regulation and transporter compartments require separate feature-design review.
+
+Validation:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_mechanistic_panel.py tests/test_task_a_feature_contract.py tests/test_pipeline_components.py -q -p no:cacheprovider
+```
+
+Initial result: 114 passed, one failed, one existing joblib warning, in 10.94s.
+The new test incorrectly treated the existing verification tuple as a Boolean;
+fixed it to assert the exact `(False, 0, 15)` result. All 113 unchanged feature/
+component tests passed in that run. Focused regression after correcting the test
+and changing presentation copy:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_mechanistic_panel.py tests/test_project_presentation.py -q -p no:cacheprovider
+```
+
+Result: **5 passed in 2.24s**. `git diff --check` passed. Explicit diff checks confirm
+canonical data, historical results, training modules, primary feature contract
+and named leakage guards unchanged. No full suite or real-data fitting. Private
+annotation contents remain untouched. No staging, commit or push.
+
+Broader model execution remains unimplemented pending verified measurements,
+reviewed feature semantics/missingness policy and scientific eligibility. More
+candidate targets do not demonstrate increased accuracy; an eligible independent
+comparison of fixed panels remains future empirical work.

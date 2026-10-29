@@ -64,7 +64,7 @@ A **snapshot** is the exact captured file bytes. Hashing and parsing must consum
 
 **Purpose:** study what can be predicted about a pair from approved mechanism information, without feeding the model that pair's publication outcomes.
 
-**Inputs:** herb/drug join keys and curated mechanism records. The approved builder constructs six signed pathway effects: CYP3A4, CYP2C9, CYP2C19, CYP2D6, CYP1A2 and ABCB1. Its seventh feature is the sum of their absolute values. The sign describes target modulation; it must not be casually translated into a universal increase/decrease in human drug exposure.
+**Inputs:** herb/drug join keys and curated mechanism records. Mechanistic measurements themselves come from scientific sources; “biology only” excludes publication outcomes and raw text as predictive features, rather than meaning no papers were consulted. The approved builder constructs six signed pathway effects: CYP3A4, CYP2C9, CYP2C19, CYP2D6, CYP1A2 and ABCB1. Its seventh feature is the sum of their absolute values. The sign describes target modulation; it must not be casually translated into a universal increase/decrease in human drug exposure.
 
 The current extractor combines herb modulation with a drug pathway weight, using sourced metabolism fraction where available or a substrate flag fallback defined by the extractor. Missing mechanisms remain missing and fitting rejects them. A cited, explicitly tested null is different from “we do not know.” Future PK/exposure or other pathway features cannot enter by adding arbitrary columns.
 
@@ -247,3 +247,7 @@ This is an intended workflow requiring new approvals and engineering, **not a co
 ## 16. Quick glossary
 
 **LR:** logistic regression, a binary probability model. **HGB:** histogram gradient boosting, a tree-based model family. **CYP:** an enzyme family involved in drug metabolism. **ABCB1/P-gp:** a transporter represented in the approved pathways. **Prior:** the mechanism-based starting score before evidence adjustment. **Residual:** the evidence-driven change to that score. **Echo:** a derivative report repeating underlying evidence. **Topology:** the represented citation/source connections. **Provenance:** where a record or fitted result came from. **Hash:** a fingerprint of exact bytes/state, not proof of truth. **BCE/log loss:** a probability-sensitive binary prediction loss. **ROC-AUC:** a ranking metric requiring both classes under this scoring policy. **Average precision / PR-AUC:** different summaries of precision–recall behavior; the implementation keeps them distinct. **Exchangeability:** a sampling symmetry assumption relevant to conformal guarantees, not something proved by a split validator. **Fail closed:** stop rather than invent missing evidence or silently relax a contract.
+
+## Expanded biological scope
+
+The current primary model has five CYP enzymes and one transporter, not six enzymes plus a transporter. An expanded 16-target curation panel and its scientific limits are documented in [the panel extension](docs/mechanistic_panel_expansion.md). It prepares additional evidence collection; it does not establish greater predictive accuracy or change the approved feature allowlist.
