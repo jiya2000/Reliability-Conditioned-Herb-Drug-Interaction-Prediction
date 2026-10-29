@@ -10,6 +10,8 @@ An auditable research pipeline for studying how sourced mechanisms and the relia
 
 ## Start here
 
+- [Official ChEMBL API dataset: filters, local files and usage](docs/chembl_api_dataset.md)
+
 - [Dataset-by-dataset source audit, official links and actual usage](docs/DATASET_SOURCE_AUDIT.md)
 
 - [Beginner-friendly explanation, architecture and professor pitches](explanation.md)

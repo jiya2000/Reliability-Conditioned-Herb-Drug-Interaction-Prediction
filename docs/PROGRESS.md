@@ -1837,3 +1837,75 @@ empirical metrics, automatic label conversion or production authorization. Curre
 release remains ineligible; all tables cannot honestly be certified as official
 or scientifically verified. Private annotation workspace remained untouched.
 No staging, commit or push.
+
+## Official API dataset populated — ChEMBL_37, 30 October 2026
+
+Implemented `src/data/chembl_dataset.py`, eight synthetic importer/integrity tests
+in `tests/test_chembl_dataset.py`, `docs/chembl_api_dataset.md`, README navigation
+and `docs/source_audits/chembl_assay_dataset_20261030.json`. Downloaded actual
+source data to the separate ignored local directory
+`data/external/chembl_assays_20261030/`, preserving original canonical tables.
+
+Exact download command (network permission authorized):
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m src.data.chembl_dataset --output data/external/chembl_assays_20261030
+```
+
+Resolved human SINGLE PROTEIN targets by UniProt accession; fetched every page
+for the six declared target-specific queries and all referenced document records.
+Filters: exact IC50, nM, human target, non-null pChEMBL and declared API assay
+confidence score 9. Complete capture: **18,833 records**, **10,554 compounds**,
+**2,036 source documents**, **16,018 structurally screened candidate rows**.
+Counts: CYP3A4 6,642; CYP2D6 3,349; CYP2C9 3,107; CYP2C19 1,737; CYP1A2 1,764;
+ABCB1 2,234. These are experimental record counts, not independent samples.
+
+Raw JSON, structures, assay descriptions, document DOI/PMID/title, source quantities
+and flags are retained. All records remain pending assay review and ineligible
+for original Task A/B; no whole-herb mappings, induction/fm values, clinical labels,
+scientific approvals or empirical results were invented. A final manifest is
+written only after pagination, document joins and source status checks complete.
+Incomplete downloads have no manifest. Resume is not implemented. Raw/CSV output
+hash verification is provided; hashes are not scientific authentication.
+
+Focused commands/results:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_chembl_dataset.py tests/test_chembl_assay_review.py -q -p no:cacheprovider
+```
+
+Initial seven importer plus ten adapter tests: **17 passed in 0.88s**. After adding
+capture verification and its regression:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_chembl_dataset.py tests/test_chembl_assay_review.py tests/test_pipeline_components.py tests/test_evaluation_orchestrator.py -q -p no:cacheprovider
+```
+
+**80 passed in 11.06s**, one existing joblib warning. Actual-data read-only checks
+also passed: all captured/output hashes, complete counts, unique activity IDs,
+source-to-CSV ID alignment, target counts, compound/document counts, IC50/units,
+finite positive screened values, structures and false production eligibility.
+No fitting or full suite. `git diff --check` passed. Existing primary contracts,
+production safeguards, original datasets, historical artifacts and leakage guards
+are unchanged; private annotation contents were not accessed. No commit/push.
+
+This completes real assay-data population, not a trained assay predictor. Next
+engineering/scientific work for retrospective assay prediction includes a separate
+reviewed target definition, duplicate/conflict policy, compound/source-disjoint
+partition design and assay-specific evaluation. Original clinical herb–drug
+accuracy still cannot be assessed without appropriate independent reference data.
+
+The first ad hoc actual-data validation attempt raised TypeError because it
+mistook the status endpoint's integer `activities` count for a page's activities
+list. Corrected that validation script to collect list-valued activity pages only;
+the rerun completed all stated checks successfully. Downloaded data/importer code
+were unaffected. No failed validation attempt is represented as a passing run.
+
+## Publication of populated source snapshot
+
+User explicitly requested pushing all current work, including the new populated
+ChEMBL source dataset. Selected only the new importer/tests/docs and the exact
+`data/external/chembl_assays_20261030/` directory: 49 dataset files, 45,639,352
+bytes total; largest file 13,825,891 bytes. Includes both CSVs, final manifest and
+46 raw source responses. Original canonical tables and private annotation workspace
+remain excluded from staging. Source attribution and publication scope updated.
