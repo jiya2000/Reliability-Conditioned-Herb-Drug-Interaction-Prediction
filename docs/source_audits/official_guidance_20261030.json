@@ -1,0 +1,23 @@
+{
+  "retrieved_at": "2026-10-29T22:20:30.448267+00:00",
+  "sources": [
+    {
+      "name": "nccih_science",
+      "url": "https://www.nccih.nih.gov/health/providers/digest/herb-drug-interactions-science",
+      "final_url": "https://www.nccih.nih.gov/health/providers/digest/herb-drug-interactions-science",
+      "bytes": 543902,
+      "sha256": "9a3287a1ef1c060d725b5274c7adf97d872b422b6b39716f06dfcc5e81dbe021",
+      "status": "downloaded_reference_page_not_consensus_dataset"
+    },
+    {
+      "name": "nci_pdq",
+      "url": "https://www.cancer.gov/about-cancer/treatment/cam/hp/dietary-interactions-pdq",
+      "final_url": "https://www.cancer.gov/about-cancer/treatment/cam/hp/dietary-interactions-pdq",
+      "bytes": 237836,
+      "sha256": "2d7594bcf3b33643d4524d580bed26b90764ec498c40989728df0c0cd16e0724",
+      "status": "downloaded_reference_page_not_consensus_dataset"
+    }
+  ],
+  "eligible": false,
+  "consensus_labels_created": 0
+}

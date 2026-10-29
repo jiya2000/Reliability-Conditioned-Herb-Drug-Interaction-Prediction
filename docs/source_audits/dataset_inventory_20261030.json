@@ -1,0 +1,78 @@
+{
+  "scope": "Explicit tracked dataset files only; no private-workspace discovery",
+  "datasets": [
+    {
+      "path": "data/benchmark/verified_botanical_hdi.csv",
+      "role": "publication_evidence",
+      "status": "critical_identifier_mismatches",
+      "rows": 141,
+      "sha256": "980d8f727bd8f2cf382db0ccb99b3023230bb606c25d6f3d5664ffa4751b6e54",
+      "eligible_for_current_empirical_release": false
+    },
+    {
+      "path": "data/curation/mechanistic_features.csv",
+      "role": "mechanism_curation",
+      "status": "unverified_placeholders",
+      "rows": 722,
+      "sha256": "b79e14858ba64d4d486c886bcf94c367bc010093405fe1f32d574aa69f16d3d8",
+      "eligible_for_current_empirical_release": false
+    },
+    {
+      "path": "data/benchmark/consensus_labels.csv",
+      "role": "reference_labels",
+      "status": "empty_no_panel_decisions",
+      "rows": 0,
+      "sha256": "0ec376263a0258546fd9e598ca58f65b41cd26fc9d9fcbe43a74be719bbac832",
+      "eligible_for_current_empirical_release": false
+    },
+    {
+      "path": "data/benchmark/consensus_labels_pairs_to_label.csv",
+      "role": "annotation_assignment",
+      "status": "not_reference_labels",
+      "rows": 120,
+      "sha256": "95260ff7ccefe8e51b0aea0d148b067e49be325e3dbf0e7ca12df16e731210fa",
+      "eligible_for_current_empirical_release": false
+    },
+    {
+      "path": "data/benchmark/consensus_labels_pairs_shuffled.csv",
+      "role": "annotation_assignment",
+      "status": "identifiers_only",
+      "rows": 120,
+      "sha256": "df1e0f7377416bb8a7df277f92a936e3fcdae6791a98c65bd852c7d641e6a31a",
+      "eligible_for_current_empirical_release": false
+    },
+    {
+      "path": "data/benchmark/consensus_labels_random_unstudied.csv",
+      "role": "annotation_assignment",
+      "status": "not_negative_labels",
+      "rows": 100,
+      "sha256": "81b8231bbf7805854b259531041b0b30b359d0aed4372566d1bdb8a39e1194cc",
+      "eligible_for_current_empirical_release": false
+    },
+    {
+      "path": "data/external/napdi_template.csv",
+      "role": "external_template",
+      "status": "not_verified_napdi_export",
+      "rows": 5,
+      "sha256": "c505305df8c7e21a4aa1dd4c4c1e12b115b71304b078b148d53d19bd57da46b7",
+      "eligible_for_current_empirical_release": false
+    },
+    {
+      "path": "data/audit/dag_audit_samples.csv",
+      "role": "derived_audit",
+      "status": "inherits_input_provenance_limits",
+      "rows": 146,
+      "sha256": "e78e1fa9d4ec3d2619e0e92878884abfca387ab19d41e473ddd0b7bd33da705e",
+      "eligible_for_current_empirical_release": false
+    },
+    {
+      "path": "data/processed/drugbank_parsed.json",
+      "role": "legacy_auxiliary",
+      "status": "origin_release_license_not_authenticated",
+      "rows": 6821,
+      "sha256": "e165c2466983ae43480d496aa164b8fbbf81b88c9a6568fd6b4fed5d47d3753f",
+      "eligible_for_current_empirical_release": false
+    }
+  ],
+  "limitations": "Hashes/inventory are not source authentication or release approval."
+}

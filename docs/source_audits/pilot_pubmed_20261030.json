@@ -1,0 +1,56 @@
+{
+  "retrieved_at": "2026-10-29T22:12:54.228374+00:00",
+  "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi",
+  "input_sha256": "b4782c9a0a9b783ade52fd83260f386776b7033325fa5b7b592f25ae9d1e75f5",
+  "xml_sha256": "9120e67202984bf6d2e3f25d7b044516611a7bbbf7d3540db79e4ed9715862ca",
+  "requested_pmids": 4,
+  "returned_pmids": 4,
+  "missing_pmids": [],
+  "findings": [
+    {
+      "row": 1,
+      "source_id": "PUBMED_10546917",
+      "record_status": "doi_matches_metadata_only",
+      "retrieved_title": "Pharmacokinetic interaction of digoxin with an herbal extract from St John's wort (Hypericum perforatum).",
+      "input_reference": "https://doi.org/10.1053/cp.1999.v66.a101944",
+      "retrieved_dois": [
+        "10.1053/cp.1999.v66.a101944"
+      ]
+    },
+    {
+      "row": 2,
+      "source_id": "PUBMED_12580993",
+      "record_status": "doi_matches_metadata_only",
+      "retrieved_title": "Alterations in cyclosporin A pharmacokinetics and metabolism during treatment with St John's wort in renal transplant patients.",
+      "input_reference": "https://doi.org/10.1046/j.1365-2125.2003.01759.x",
+      "retrieved_dois": [
+        "10.1046/j.1365-2125.2003.01759.x"
+      ]
+    },
+    {
+      "row": 3,
+      "source_id": "PUBMED_18214850",
+      "record_status": "doi_matches_metadata_only",
+      "retrieved_title": "Gauging the clinical significance of P-glycoprotein-mediated herb-drug interactions: comparative effects of St. John's wort, Echinacea, clarithromycin, and rifampin on digoxin pharmacokinetics.",
+      "input_reference": "https://doi.org/10.1002/mnfr.200700081",
+      "retrieved_dois": [
+        "10.1002/mnfr.200700081"
+      ]
+    },
+    {
+      "row": 4,
+      "source_id": "PUBMED_10852961",
+      "record_status": "doi_matches_metadata_only",
+      "retrieved_title": "St. John's wort induces hepatic drug metabolism through activation of the pregnane X receptor.",
+      "input_reference": "https://doi.org/10.1073/pnas.130155097",
+      "retrieved_dois": [
+        "10.1073/pnas.130155097"
+      ]
+    }
+  ],
+  "eligible": false,
+  "limitations": "Metadata retrieval is not scientific claim validation. DOI matching does not verify herb/drug mapping, outcome, study design or independence.",
+  "status_counts": {
+    "doi_matches_metadata_only": 4
+  }
+}

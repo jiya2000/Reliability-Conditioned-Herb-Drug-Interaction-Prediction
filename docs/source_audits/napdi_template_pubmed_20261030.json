@@ -1,0 +1,64 @@
+{
+  "retrieved_at": "2026-10-29T22:20:49.156850+00:00",
+  "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi",
+  "input_sha256": "c505305df8c7e21a4aa1dd4c4c1e12b115b71304b078b148d53d19bd57da46b7",
+  "xml_sha256": "2691dc5864db0fa08af2e77904d313b5386e45e3900cef9e3e790cb2a4983e61",
+  "requested_pmids": 5,
+  "returned_pmids": 5,
+  "missing_pmids": [],
+  "findings": [
+    {
+      "row": 1,
+      "source_id": "PUBMED_29774652",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "NonScarring Diffuse Hair Loss in Women: a Clinico-Etiological Study from tertiary care center in North-West India.",
+      "input_reference": "https://doi.org/10.1002/jcph.1218",
+      "retrieved_dois": [
+        "10.1111/jocd.12559"
+      ]
+    },
+    {
+      "row": 2,
+      "source_id": "PUBMED_32749033",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Strain and elasticity imaging in compression optical coherence elastography: The two-decade perspective and recent advances.",
+      "input_reference": "https://doi.org/10.1002/cpt.1994",
+      "retrieved_dois": [
+        "10.1002/jbio.202000257"
+      ]
+    },
+    {
+      "row": 3,
+      "source_id": "PUBMED_32168541",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "In Vitro Evaluation of Physical and Mechanical Properties of Light-Curing Resin Cement: A Comparative Study.",
+      "input_reference": "https://doi.org/10.1002/cpt.1824",
+      "retrieved_dois": [
+        "10.1055/s-0040-1705075"
+      ]
+    },
+    {
+      "row": 4,
+      "source_id": "PUBMED_14631289",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "[Visceral traumatology: a necessity in France].",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2003.08.006",
+      "retrieved_dois": []
+    },
+    {
+      "row": 5,
+      "source_id": "PUBMED_17563541",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Forearm haemodynamics, arterial stiffness and microcirculatory reactivity in rheumatoid arthritis.",
+      "input_reference": "https://doi.org/10.1002/pds.1423",
+      "retrieved_dois": [
+        "10.1097/HJH.0b013e3280b0157e"
+      ]
+    }
+  ],
+  "eligible": false,
+  "limitations": "Metadata retrieval is not scientific claim validation. DOI matching does not verify herb/drug mapping, outcome, study design or independence.",
+  "status_counts": {
+    "doi_mismatch_or_uncomparable_requires_review": 5
+  }
+}

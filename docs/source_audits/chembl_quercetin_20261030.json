@@ -1,0 +1,17 @@
+{
+  "retrieved_at": "2026-10-29T22:17:53.301123+00:00",
+  "source": "EMBL-EBI ChEMBL",
+  "request_url": "https://www.ebi.ac.uk/chembl/api/data/activity.json?molecule_chembl_id=CHEMBL50&target_organism=Homo+sapiens&standard_type__in=IC50%2CKi&limit=1000",
+  "molecule": "CHEMBL50 / QUERCETIN",
+  "complete_for_query": true,
+  "records": 361,
+  "scope": "Human-target IC50/Ki records for one compound, not all herb pharmacology",
+  "exact_review_candidates": 270,
+  "sha256": {
+    "molecule_search.json": "d0027a1519cb01cff83cded0379851bb53c75a01339a78152f8fb411b6c9d1e2",
+    "activities_page_0.json": "699ba12a071227f9722caef0490ada5e30c4ceb0575d2e1e5211010bc3a73e0d",
+    "assay_review.csv": "1ca4153adc7778dc8b62ff780ec7e535cb8792af735cb9b99b649a40ecee26e1"
+  },
+  "training_eligible": false,
+  "canonical_measurement_rows_updated": 0
+}

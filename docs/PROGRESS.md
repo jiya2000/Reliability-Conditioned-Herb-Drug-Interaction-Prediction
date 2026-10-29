@@ -1744,3 +1744,96 @@ guards relaxed or metadata manufactured simply to pass. Current scope therefore
 records verified blockers without claiming CI fixed. No workflow/code/test/data
 changes, no full suite, no commit/push. `git diff --check` passed. The excluded
 annotation directory remains untouched.
+
+## Official NCBI retrieval and critical source discrepancies — 30 October 2026
+
+Added `src/data/pubmed_download.py` and four synthetic parser regressions. Official
+NCBI EFetch requests fetched current canonical PMIDs and separately the four pilot
+PMIDs. Sandbox DNS access failed; the authorized network retry succeeded. No API
+key, personal information or private annotation input was used.
+
+Canonical audit: 139 unique PMIDs requested, 131 returned, eight unique IDs missing
+(nine evidence rows). Across 141 input rows: one DOI match, 130 DOI mismatches or
+uncomparable cases, nine absent-PMID rows and one non-PubMed row. Some returned
+titles are unrelated to the claimed herb–drug context. The old registry does not
+establish source truth. Pilot: all four identifiers returned and all four DOIs
+matched; scientific extraction/consensus verification remains pending.
+
+Saved metadata audit reports under `docs/source_audits/`, with endpoint, timestamp,
+input/raw-response hashes and per-row discrepancies. Raw XML and abstracts remain
+in `/private/tmp/hdi_pubmed_official_20261030/` and
+`/private/tmp/hdi_pubmed_pilot_official_20261030/`, with temporary-storage and
+redistribution limitations documented. README now prominently flags source
+integrity. Neither original canonical records nor historical artifacts were edited.
+
+Command:
+`PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_pubmed_download.py -q -p no:cacheprovider`
+Result: **4 passed in 0.64s**. `git diff --check` passed. No full suite, fitting,
+label invention or source auto-promotion. Bibliographic DOI agreement is not
+scientific validation. Private annotation contents remain untouched. No commit/push.
+
+## Mechanistic origin correction and official ChEMBL assay batch
+
+Confirmed the 722-row canonical mechanism table is an unverified curation grid,
+not measured data: 58 entities, 14 target identifiers, all statuses not_tested,
+all quantitative fields empty and all source/citation entries UNVERIFIED. Git
+creation/redesign commits are c85753f and 6ab6542. README and a new source-audit
+guide now explicitly correct the earlier inaccurate measurement description.
+
+Downloaded official EMBL-EBI ChEMBL compound metadata and the complete returned
+human-target IC50/Ki query for quercetin/CHEMBL50: 361 records, no next page.
+Raw snapshots, a pending-review CSV and a hash manifest are in
+`/private/tmp/hdi_chembl_official_20261030/`. The tracked summary is
+`docs/source_audits/chembl_quercetin_20261030.json`. This is one compound's assay
+batch, not a whole-herb table or an eligible replacement release. IUPHAR download
+access redirected to login; no restrictions were bypassed.
+
+Added `src/data/chembl_assay_review.py` and ten focused synthetic tests. Exact
+finite positive nM/uM human-target IC50/Ki records with adequate identifiers and
+without source flags receive only a unit conversion; censored/unsupported or
+flagged cases remain explicitly flagged, preserving raw fields. Of the real
+records, 270 meet these structural conversion criteria, not scientific approval.
+No compound-to-herb inference, dose conversion or substrate-fraction fabrication.
+
+Command:
+`PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_chembl_assay_review.py tests/test_mechanistic_panel.py tests/test_task_a_feature_contract.py -q -p no:cacheprovider`
+Result: **83 passed in 1.79s**, one existing joblib warning. No full suite or fitting.
+Canonical data, existing primary features, historical outputs and leakage guards
+remain unchanged. Source batches remain pending review and production blocked.
+Private annotation contents were not accessed. No staging, commit or push.
+
+## Consensus-source search and explicit dataset inventory
+
+Confirmed the independent consensus table has zero rows and no clinical-panel
+annotations. Searched official NIH NCCIH, NCI and NaPDI sources and research
+providers for reference resources; did not identify and verify an official
+pair-matched independent consensus benchmark that can simply replace this file.
+Downloaded NIH NCCIH science guidance and NCI PDQ reference pages into
+`/private/tmp/hdi_official_reference_guidance_20261030/`; hashes/URLs are saved in
+`docs/source_audits/official_guidance_20261030.json`. These are reference pages,
+not generated labels. No external expert approval or release was invented.
+
+Added `docs/DATASET_SOURCE_AUDIT.md` covering every explicitly tracked dataset
+category, actual role and known limitations, official/research-provider links,
+optional HERB/Dryad/InterPAD declarations versus missing physical files, DrugBank
+provenance ambiguity, and the separately downloaded PubMed/ChEMBL evidence.
+Machine inventory at `docs/source_audits/dataset_inventory_20261030.json` records
+counts and hashes for nine explicit tracked tables; no private-directory discovery.
+The source manifest's historical license-verification booleans are declarations,
+not newly authenticated terms. Dryad's actual filenames differ from loader
+expectations. Biological graph edges are not quantitative assay measurements.
+
+Also fetched official PubMed records for all five NaPDI-template PMIDs using:
+`PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m src.data.pubmed_download --input data/external/napdi_template.csv --output /private/tmp/hdi_napdi_template_pubmed_20261030`
+All five identifiers returned, but all five supplied DOI values mismatch the
+returned metadata. The audit is saved as
+`docs/source_audits/napdi_template_pubmed_20261030.json`. The template must not be
+claimed an authenticated NaPDI export. Canonical/template data was not modified.
+
+Validation:
+`PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_pubmed_download.py tests/test_chembl_assay_review.py tests/test_consensus_annotation.py tests/test_review_readiness.py tests/test_release_preflight.py -q -p no:cacheprovider`
+Result: **164 passed in 4.87s**. `git diff --check` passed. No full suite, training,
+empirical metrics, automatic label conversion or production authorization. Current
+release remains ineligible; all tables cannot honestly be certified as official
+or scientifically verified. Private annotation workspace remained untouched.
+No staging, commit or push.

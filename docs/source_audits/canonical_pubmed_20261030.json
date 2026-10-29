@@ -1,0 +1,1390 @@
+{
+  "retrieved_at": "2026-10-29T22:12:22.419123+00:00",
+  "endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi",
+  "input_sha256": "980d8f727bd8f2cf382db0ccb99b3023230bb606c25d6f3d5664ffa4751b6e54",
+  "xml_sha256": "453e48b3d60ffa07149155a42b921d04dea119233b3b3754f8471b4e72934e27",
+  "requested_pmids": 139,
+  "returned_pmids": 131,
+  "missing_pmids": [
+    "15044561",
+    "15044563",
+    "15087343",
+    "15087345",
+    "15087346",
+    "15087347",
+    "15961976",
+    "17570742"
+  ],
+  "findings": [
+    {
+      "row": 1,
+      "source_id": "PUBMED_10534248",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Safety and efficacy of NeuroBloc (botulinum toxin type B) in type A-responsive cervical dystonia.",
+      "input_reference": "https://doi.org/10.1016/s0140-6736(99)05018-9",
+      "retrieved_dois": [
+        "10.1212/wnl.53.7.1439"
+      ]
+    },
+    {
+      "row": 2,
+      "source_id": "PUBMED_11061584",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Paroxetine decreases platelet serotonin storage and platelet function in human beings.",
+      "input_reference": "https://doi.org/10.1046/j.1365-2796.2000.00762.x",
+      "retrieved_dois": [
+        "10.1067/mcp.2000.110456"
+      ]
+    },
+    {
+      "row": 3,
+      "source_id": "PUBMED_10405234",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Sulpiride versus metoclopramide in nononcologic patients with vomiting or nausea.",
+      "input_reference": "https://doi.org/10.1016/s0009-9236(99)70094-7",
+      "retrieved_dois": [
+        "10.1097/00004836-199907000-00015"
+      ]
+    },
+    {
+      "row": 4,
+      "source_id": "PUBMED_10675971",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Effects of mental task on heart rate variability during graded head-up tilt.",
+      "input_reference": "https://doi.org/10.1016/s0140-6736(99)12028-4",
+      "retrieved_dois": [
+        "10.2114/jpa.18.225"
+      ]
+    },
+    {
+      "row": 5,
+      "source_id": "PUBMED_15087342",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Treatment of anxiety and depressive disorders in patients with cardiovascular disease.",
+      "input_reference": "https://doi.org/10.1007/s00228-004-0750-6",
+      "retrieved_dois": [
+        "10.1136/bmj.328.7445.939"
+      ]
+    },
+    {
+      "row": 6,
+      "source_id": "PUBMED_10793616",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Acoustic monitoring for neuromuscular block.",
+      "input_reference": "https://doi.org/10.1067/mcp.2000.106462",
+      "retrieved_dois": [
+        "10.1093/oxfordjournals.bja.a013459"
+      ]
+    },
+    {
+      "row": 7,
+      "source_id": "PUBMED_15175556",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Sustaining excessive nitric oxide upregulates protein expression of nitric oxide synthase via soluble guanylyl cyclase: an in vivo study in rats.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.02.007",
+      "retrieved_dois": [
+        "10.1097/00005344-200407000-00006"
+      ]
+    },
+    {
+      "row": 8,
+      "source_id": "PUBMED_11270535",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Treating complex nervous system vascular disorders through a \"needle stick\": origins, evolution, and future of neuroendovascular therapy.",
+      "input_reference": "https://doi.org/10.1097/00004714-200104000-00007",
+      "retrieved_dois": [
+        "10.1097/00006123-200103000-00001"
+      ]
+    },
+    {
+      "row": 9,
+      "source_id": "PUBMED_11340118",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "In vitro inhibition of proliferation of estrogen-dependent and estrogen-independent human breast cancer cells treated with carotenoids or retinoids.",
+      "input_reference": "https://doi.org/10.1001/archinte.161.9.1121",
+      "retrieved_dois": [
+        "10.1093/jn/131.5.1574"
+      ]
+    },
+    {
+      "row": 10,
+      "source_id": "PUBMED_15785367",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "The World Health Organization resolution on human organ transplantation: will it result in action?",
+      "input_reference": "https://doi.org/10.1111/j.1365-2125.2005.02322.x",
+      "retrieved_dois": [
+        "10.1097/01.tp.0000157354.58667.7a"
+      ]
+    },
+    {
+      "row": 11,
+      "source_id": "PUBMED_12702237",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Fear of bioterrorism and implications for public health preparedness.",
+      "input_reference": "https://doi.org/10.1056/nejm199704103361518",
+      "retrieved_dois": [
+        "10.3201/eid0904.020593"
+      ]
+    },
+    {
+      "row": 12,
+      "source_id": "PUBMED_15876900",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Inhibition of CYP2D6 activity by bupropion.",
+      "input_reference": "https://doi.org/10.1111/j.1365-2257.2005.00684.x",
+      "retrieved_dois": [
+        "10.1097/01.jcp.0000162805.46453.e3"
+      ]
+    },
+    {
+      "row": 13,
+      "source_id": "PUBMED_15961976",
+      "record_status": "pmid_not_returned",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.006",
+      "retrieved_dois": []
+    },
+    {
+      "row": 14,
+      "source_id": "PUBMED_15247353",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Preoperative PSA velocity and the risk of death from prostate cancer after radical prostatectomy.",
+      "input_reference": "https://doi.org/10.7326/0003-4819-141-1-200407060-00008",
+      "retrieved_dois": [
+        "10.1056/NEJMoa032975"
+      ]
+    },
+    {
+      "row": 15,
+      "source_id": "PUBMED_15647648",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Helicobacter pylori eradication as the sole treatment for gastric and duodenal ulcers.",
+      "input_reference": "https://doi.org/10.1111/j.1365-2125.2004.02235.x",
+      "retrieved_dois": [
+        "10.1097/00042737-200501000-00018"
+      ]
+    },
+    {
+      "row": 16,
+      "source_id": "PUBMED_12891223",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Celecoxib inhibits metabolism of cytochrome P450 2D6 substrate metoprolol in humans.",
+      "input_reference": "https://doi.org/10.1345/aph.1c385",
+      "retrieved_dois": [
+        "10.1016/S0009-9236(03)00120-6"
+      ]
+    },
+    {
+      "row": 17,
+      "source_id": "PUBMED_11752968",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Radiologic-pathologic correlation of unusual lingual masses: Part II: benign and malignant tumors.",
+      "input_reference": "https://doi.org/10.1097/00002030-200201250-00008",
+      "retrieved_dois": [
+        "10.3348/kjr.2001.2.1.42"
+      ]
+    },
+    {
+      "row": 18,
+      "source_id": "PUBMED_12538965",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Transesophageal atrial pacing in the management of re-entry supraventricular tachyarrhythmias occurring during general anesthesia.",
+      "input_reference": "https://doi.org/10.2165/00003088-200342020-00006",
+      "retrieved_dois": []
+    },
+    {
+      "row": 19,
+      "source_id": "PUBMED_9443839",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Central amino acids mediate cardiovascular response to angiotensin II in the rat.",
+      "input_reference": "https://doi.org/10.1097/00006534-199511000-00037",
+      "retrieved_dois": [
+        "10.1016/s0361-9230(97)00338-9"
+      ]
+    },
+    {
+      "row": 20,
+      "source_id": "PUBMED_17178263",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "The cyclooxygenase 2 genetic variant -765G>C does not modulate the effects of celecoxib on prostaglandin E2 production.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100014",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2006.08.021"
+      ]
+    },
+    {
+      "row": 21,
+      "source_id": "PUBMED_15961981",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Insulin-mediated venodilation is impaired in young, healthy carriers of the 825T allele of the G-protein beta3 subunit gene (GNB3).",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2005.01.009",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2005.03.002"
+      ]
+    },
+    {
+      "row": 22,
+      "source_id": "PUBMED_31548658",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Constraints on the superconducting order parameter in Sr2RuO4 from oxygen-17 nuclear magnetic resonance.",
+      "input_reference": "https://doi.org/10.1007/s00228-019-02758-6",
+      "retrieved_dois": [
+        "10.1038/s41586-019-1596-2"
+      ]
+    },
+    {
+      "row": 23,
+      "source_id": "PUBMED_28726116",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "A computationally efficient method for hand-eye calibration.",
+      "input_reference": "https://doi.org/10.1248/bpb.b17-00216",
+      "retrieved_dois": [
+        "10.1007/s11548-017-1646-x"
+      ]
+    },
+    {
+      "row": 24,
+      "source_id": "PUBMED_24419284",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Mass and number size distributions of particulate matter components: comparison of an industrial site and an urban background site.",
+      "input_reference": "https://doi.org/10.1038/clpt.2013.241",
+      "retrieved_dois": [
+        "10.1016/j.scitotenv.2013.12.076"
+      ]
+    },
+    {
+      "row": 25,
+      "source_id": "PUBMED_27448332",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Diseases of the circulatory system among adult people diagnosed with infantile autism as children: A longitudinal case control study.",
+      "input_reference": "https://doi.org/10.1002/cpt.441",
+      "retrieved_dois": [
+        "10.1016/j.ridd.2016.07.002"
+      ]
+    },
+    {
+      "row": 26,
+      "source_id": "PUBMED_1729241",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Overproduction of beta-ketoacyl-acyl carrier protein synthase I imparts thiolactomycin resistance to Escherichia coli K-12.",
+      "input_reference": "https://doi.org/10.1016/0014-2999(92)90708-u",
+      "retrieved_dois": [
+        "10.1128/jb.174.2.508-513.1992"
+      ]
+    },
+    {
+      "row": 27,
+      "source_id": "PUBMED_12559345",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Intraoperative radioguided sentinel lymph node biopsy in non-small cell lung cancer.",
+      "input_reference": "https://doi.org/10.1177/0091270002239822",
+      "retrieved_dois": [
+        "10.1016/s1010-7940(02)00763-7"
+      ]
+    },
+    {
+      "row": 28,
+      "source_id": "PUBMED_11877487",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Specificity of tissue transglutaminase explains cereal toxicity in celiac disease.",
+      "input_reference": "https://doi.org/10.1097/00002030-200203080-00018",
+      "retrieved_dois": [
+        "10.1084/jem.20012028"
+      ]
+    },
+    {
+      "row": 29,
+      "source_id": "PUBMED_15087343",
+      "record_status": "pmid_not_returned",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.007",
+      "retrieved_dois": []
+    },
+    {
+      "row": 30,
+      "source_id": "PUBMED_17698501",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Translational control of the interferon regulatory factor 2 mRNA by IRES element.",
+      "input_reference": "https://doi.org/10.1124/dmd.107.016337",
+      "retrieved_dois": [
+        "10.1093/nar/gkm524"
+      ]
+    },
+    {
+      "row": 31,
+      "source_id": "PUBMED_15044558",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "UDP-glucuronosyltransferase (UGT) 2B15 pharmacogenetics: UGT2B15 D85Y genotype and gender are major determinants of oxazepam glucuronidation by human liver.",
+      "input_reference": "https://doi.org/10.1097/01.jcp.0000104910.87114.39",
+      "retrieved_dois": [
+        "10.1124/jpet.104.067660"
+      ]
+    },
+    {
+      "row": 32,
+      "source_id": "PUBMED_17178264",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Beta2-adrenergic receptor polymorphisms and treatment-induced regression of left ventricular hypertrophy in hypertension.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100015",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2006.09.006"
+      ]
+    },
+    {
+      "row": 33,
+      "source_id": "PUBMED_15044559",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Effects of opioids in morphine-treated pigeons trained to discriminate among morphine, the low-efficacy agonist nalbuphine, and saline.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2003.11.008",
+      "retrieved_dois": [
+        "10.1124/jpet.103.058503"
+      ]
+    },
+    {
+      "row": 34,
+      "source_id": "PUBMED_15876901",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Efficacy of buspirone in the treatment of opioid withdrawal.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.11.004",
+      "retrieved_dois": [
+        "10.1097/01.jcp.0000162804.38829.97"
+      ]
+    },
+    {
+      "row": 35,
+      "source_id": "PUBMED_17178265",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Effect of CYP3A5*3 genotype on the pharmacokinetics and pharmacodynamics of amlodipine in healthy Korean subjects.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100016",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2006.09.009"
+      ]
+    },
+    {
+      "row": 36,
+      "source_id": "PUBMED_15961982",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Imaging P-glycoprotein transport activity at the human blood-brain barrier with positron emission tomography.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2005.01.010",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2005.01.022"
+      ]
+    },
+    {
+      "row": 37,
+      "source_id": "PUBMED_12140632",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Endoscopic diagnosis and management of complications following surgery for gallstones.",
+      "input_reference": "https://doi.org/10.1124/dmd.30.11.1153",
+      "retrieved_dois": [
+        "10.1007/s00464-002-9048-7"
+      ]
+    },
+    {
+      "row": 38,
+      "source_id": "PUBMED_15087344",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "A 66 year old woman with breathlessness: case outcome.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.008",
+      "retrieved_dois": [
+        "10.1136/bmj.328.7445.944"
+      ]
+    },
+    {
+      "row": 39,
+      "source_id": "PUBMED_15175557",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Intrapericardial delivery enhances cardiac effects of sotalol and atenolol.",
+      "input_reference": "https://doi.org/10.1038/bjc.2013.78",
+      "retrieved_dois": [
+        "10.1097/00005344-200407000-00007"
+      ]
+    },
+    {
+      "row": 40,
+      "source_id": "PUBMED_12441070",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Phylogenetic analysis of 49 newly derived HIV-1 group O strains: high viral diversity but no group M-like subtype structure.",
+      "input_reference": "https://doi.org/10.1067/mcp.2002.129320",
+      "retrieved_dois": [
+        "10.1006/viro.2002.1430"
+      ]
+    },
+    {
+      "row": 41,
+      "source_id": "PUBMED_15264383",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Radiology for the surgeon: musculoskeletal case 32. Divot fracture of the tibia.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100140",
+      "retrieved_dois": []
+    },
+    {
+      "row": 42,
+      "source_id": "PUBMED_10997939",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "The role of conjugation in hepatotoxicity of troglitazone in human and porcine hepatocyte cultures.",
+      "input_reference": "https://doi.org/10.1067/mcp.2000.109154",
+      "retrieved_dois": []
+    },
+    {
+      "row": 43,
+      "source_id": "PUBMED_12756210",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Interaction of buprenorphine and its metabolite norbuprenorphine with cytochromes p450 in vitro.",
+      "input_reference": "https://doi.org/10.1016/s0009-9236(03)00021-9",
+      "retrieved_dois": [
+        "10.1124/dmd.31.6.768"
+      ]
+    },
+    {
+      "row": 44,
+      "source_id": "PUBMED_15616538",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Reality is wilder.",
+      "input_reference": "https://doi.org/10.1007/s00228-004-0863-y",
+      "retrieved_dois": [
+        "10.1038/432955a"
+      ]
+    },
+    {
+      "row": 45,
+      "source_id": "PUBMED_15100676",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Role of nasal nitric oxide in the resolution of experimental rhinovirus infection.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.011",
+      "retrieved_dois": [
+        "10.1016/j.jaci.2004.01.755"
+      ]
+    },
+    {
+      "row": 46,
+      "source_id": "PUBMED_20562753",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Comorbid chronic diseases in depressed and non-depressed patients in family practice.",
+      "input_reference": "https://doi.org/10.1007/s00228-010-0853-x",
+      "retrieved_dois": []
+    },
+    {
+      "row": 47,
+      "source_id": "PUBMED_14749692",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Abciximab pharmacodynamic model with neural networks used to integrate sources of patient variability.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2003.11.002",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2003.09.008"
+      ]
+    },
+    {
+      "row": 48,
+      "source_id": "PUBMED_17618234",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Comparative proteomic analysis of virulent Korean Mycobacterium tuberculosis K-strain with other mycobacteria strain following infection of U-937 macrophage.",
+      "input_reference": "https://doi.org/10.1097/JCP.0b013e3180ca89f6",
+      "retrieved_dois": []
+    },
+    {
+      "row": 49,
+      "source_id": "PUBMED_11302568",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Atypical antipsychotics in bipolar and schizoaffective disorders.",
+      "input_reference": "https://doi.org/10.1016/s0009-9236(01)55246-3",
+      "retrieved_dois": [
+        "10.1055/s-2001-15179"
+      ]
+    },
+    {
+      "row": 50,
+      "source_id": "PUBMED_14693994",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Infections in diabetic burn patients.",
+      "input_reference": "https://doi.org/10.1016/s0009-9236(03)00244-9",
+      "retrieved_dois": [
+        "10.2337/diacare.27.1.229"
+      ]
+    },
+    {
+      "row": 51,
+      "source_id": "PUBMED_15152202",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Dimerization of retroviral RNA genomes: an inseparable pair.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.005",
+      "retrieved_dois": [
+        "10.1038/nrmicro903"
+      ]
+    },
+    {
+      "row": 52,
+      "source_id": "PUBMED_16415119",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Interactions of two major metabolites of prasugrel, a thienopyridine antiplatelet agent, with the cytochromes P450.",
+      "input_reference": "https://doi.org/10.1016/j.bcp.2005.11.026",
+      "retrieved_dois": [
+        "10.1124/dmd.105.007989"
+      ]
+    },
+    {
+      "row": 53,
+      "source_id": "PUBMED_11579737",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "[Respiratory impairments and aerobic physical activity in low-cervical spinal cord injuries].",
+      "input_reference": "https://doi.org/10.1046/j.1365-2125.2001.01428.x",
+      "retrieved_dois": []
+    },
+    {
+      "row": 54,
+      "source_id": "PUBMED_18491225",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Models of case mix adjustment for Ohio Mental Health Consumer Outcomes among children and adolescents.",
+      "input_reference": "https://doi.org/10.1002/jcph.1234",
+      "retrieved_dois": [
+        "10.1007/s10488-008-0171-1"
+      ]
+    },
+    {
+      "row": 55,
+      "source_id": "PUBMED_19225381",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Accidental methadone ingestion in an infant: case report and review of the literature.",
+      "input_reference": "https://doi.org/10.1097/ftd.0b013e318195655d",
+      "retrieved_dois": [
+        "10.1097/PEC.0b013e318196faff"
+      ]
+    },
+    {
+      "row": 56,
+      "source_id": "PUBMED_21703666",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Effects of genistein on gonadotropic cells in immature female rats.",
+      "input_reference": "https://doi.org/10.1002/ptr.3546",
+      "retrieved_dois": [
+        "10.1016/j.acthis.2011.06.003"
+      ]
+    },
+    {
+      "row": 57,
+      "source_id": "PUBMED_2650059",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "The legacy of Sir Peter Medawar.",
+      "input_reference": "https://doi.org/10.1097/00004714-198904000-00018",
+      "retrieved_dois": []
+    },
+    {
+      "row": 58,
+      "source_id": "PUBMED_15087343",
+      "record_status": "pmid_not_returned",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.007",
+      "retrieved_dois": []
+    },
+    {
+      "row": 59,
+      "source_id": "PUBMED_17570742",
+      "record_status": "pmid_not_returned",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1111/j.1365-2125.2007.02901.x",
+      "retrieved_dois": []
+    },
+    {
+      "row": 60,
+      "source_id": "PUBMED_10228394",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "[Relationship between the prevalence of proteinuria and obesity in Japanese men].",
+      "input_reference": "https://doi.org/10.1016/s0002-9343(99)00067-1",
+      "retrieved_dois": []
+    },
+    {
+      "row": 61,
+      "source_id": "PUBMED_17698502",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Autosomal-dominant distal myopathy with a myotilin S55F mutation: sorting out the phenotype.",
+      "input_reference": "https://doi.org/10.1124/dmd.107.016338",
+      "retrieved_dois": [
+        "10.1136/jnnp.2007.125435"
+      ]
+    },
+    {
+      "row": 62,
+      "source_id": "PUBMED_15175558",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Effect of a synthetic matrix metalloproteinase inhibitor (ONO-4817) on neointima formation in hypercholesterolemic hamsters.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100089",
+      "retrieved_dois": [
+        "10.1097/00005344-200407000-00008"
+      ]
+    },
+    {
+      "row": 63,
+      "source_id": "PUBMED_11499724",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Prevalence, characteristics and clinical implications of regular atrial tachyarrhythmias in patients with atrial fibrillation: insights from a study using a new implantable device.",
+      "input_reference": "https://doi.org/10.1067/mcp.2001.117282",
+      "retrieved_dois": [
+        "10.1016/s0735-1097(01)01351-1"
+      ]
+    },
+    {
+      "row": 64,
+      "source_id": "PUBMED_11499725",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Long-term follow-up of right ventricular monomorphic extrasystoles.",
+      "input_reference": "https://doi.org/10.1067/mcp.2001.117283",
+      "retrieved_dois": [
+        "10.1016/s0735-1097(01)01403-6"
+      ]
+    },
+    {
+      "row": 65,
+      "source_id": "PUBMED_17298634",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Lateral cutaneous nerve injury during laparoscopic-assisted sigmoid colectomy.",
+      "input_reference": "https://doi.org/10.1111/j.1365-2125.2006.02787.x",
+      "retrieved_dois": [
+        "10.1111/j.1463-1318.2006.01124.x"
+      ]
+    },
+    {
+      "row": 66,
+      "source_id": "PUBMED_15087345",
+      "record_status": "pmid_not_returned",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.009",
+      "retrieved_dois": []
+    },
+    {
+      "row": 67,
+      "source_id": "PUBMED_15087346",
+      "record_status": "pmid_not_returned",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.010",
+      "retrieved_dois": []
+    },
+    {
+      "row": 68,
+      "source_id": "PUBMED_18491226",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "'Weighing in' on screening mammography.",
+      "input_reference": "https://doi.org/10.1002/cpt.112",
+      "retrieved_dois": [
+        "10.1007/s10549-008-0037-y"
+      ]
+    },
+    {
+      "row": 69,
+      "source_id": "PUBMED_28956976",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Parastomal hernia and physical activity. Are patients getting the right advice?",
+      "input_reference": "https://doi.org/10.1002/cpt.871",
+      "retrieved_dois": [
+        "10.12968/bjon.2017.26.17.S12"
+      ]
+    },
+    {
+      "row": 70,
+      "source_id": "PUBMED_15961981b",
+      "record_status": "non_pubmed_source_requires_separate_audit",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1016/j.clpt.2005.01.009b",
+      "retrieved_dois": []
+    },
+    {
+      "row": 71,
+      "source_id": "PUBMED_17178267",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "ABCB1 and cytochrome P450 genotypes and phenotypes: influence on methadone plasma levels and response to treatment.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100017",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2006.09.012"
+      ]
+    },
+    {
+      "row": 72,
+      "source_id": "PUBMED_23838706",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Tension pneumothorax and widespread pneumatosis after endoscopic retrograde cholangiopancreatography.",
+      "input_reference": "https://doi.org/10.1007/s00228-013-1549-y",
+      "retrieved_dois": [
+        "10.1097/ALN.0b013e31827bcdba"
+      ]
+    },
+    {
+      "row": 73,
+      "source_id": "PUBMED_21677335",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Novel cytochrome P450-2D6 promoter sequence variations in hepatitis C positive and negative subjects.",
+      "input_reference": "https://doi.org/10.1007/s00280-011-1662-8",
+      "retrieved_dois": []
+    },
+    {
+      "row": 74,
+      "source_id": "PUBMED_29339345",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Optimizing critical source control of five priority-regulatory trace elements from industrial wastewater in China: Implications for health management.",
+      "input_reference": "https://doi.org/10.1007/s00228-018-2415-0",
+      "retrieved_dois": [
+        "10.1016/j.envpol.2018.01.005"
+      ]
+    },
+    {
+      "row": 75,
+      "source_id": "PUBMED_22414704",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Effect of dietary fibre of barley variety 'Rihane' on azoxymethane-induced aberrant crypt foci development and on colonic microbiota diversity in rats.",
+      "input_reference": "https://doi.org/10.1007/s11239-012-0720-6",
+      "retrieved_dois": [
+        "10.1017/S0007114512000219"
+      ]
+    },
+    {
+      "row": 76,
+      "source_id": "PUBMED_31548659",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Context is everything: aneuploidy in cancer.",
+      "input_reference": "https://doi.org/10.1007/s00228-019-02759-7",
+      "retrieved_dois": [
+        "10.1038/s41576-019-0171-x"
+      ]
+    },
+    {
+      "row": 77,
+      "source_id": "PUBMED_27448333",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Response to: Comment on \"Hepatitis C and the Sex Trade\".",
+      "input_reference": "https://doi.org/10.1002/cpt.442",
+      "retrieved_dois": [
+        "10.1155/2016/5474217"
+      ]
+    },
+    {
+      "row": 78,
+      "source_id": "PUBMED_25881091",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Visual circuits in flies: beginning to see the whole picture.",
+      "input_reference": "https://doi.org/10.1002/cpt.118",
+      "retrieved_dois": [
+        "10.1016/j.conb.2015.03.010"
+      ]
+    },
+    {
+      "row": 79,
+      "source_id": "PUBMED_24652285",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Effect of thrombin on human amnion mesenchymal cells, mouse fetal membranes, and preterm birth.",
+      "input_reference": "https://doi.org/10.1007/s00280-014-2432-8",
+      "retrieved_dois": [
+        "10.1074/jbc.M114.550541"
+      ]
+    },
+    {
+      "row": 80,
+      "source_id": "PUBMED_23414438",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Targeting TLR3 with no RIG-I/MDA5 activation is effective in immunotherapy for cancer.",
+      "input_reference": "https://doi.org/10.1007/s00228-013-1492-9",
+      "retrieved_dois": [
+        "10.1517/14728222.2013.765407"
+      ]
+    },
+    {
+      "row": 81,
+      "source_id": "PUBMED_19190249",
+      "record_status": "doi_matches_metadata_only",
+      "retrieved_title": "Green tea polyphenols block the anticancer effects of bortezomib and other boronic acid-based proteasome inhibitors.",
+      "input_reference": "https://doi.org/10.1182/blood-2008-07-171389",
+      "retrieved_dois": [
+        "10.1182/blood-2008-07-171389"
+      ]
+    },
+    {
+      "row": 82,
+      "source_id": "PUBMED_10584789",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Diffuse cerebral vasculitis with normal results on brain MR imaging.",
+      "input_reference": "https://doi.org/10.1046/j.1525-1497.1999.11218.x",
+      "retrieved_dois": [
+        "10.2214/ajr.173.6.10584789"
+      ]
+    },
+    {
+      "row": 83,
+      "source_id": "PUBMED_15961983",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Population pharmacokinetics and exposure-response relationship of enfuvirtide in treatment-experienced human immunodeficiency virus type 1-infected patients.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2005.01.011",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2005.02.005"
+      ]
+    },
+    {
+      "row": 84,
+      "source_id": "PUBMED_15961984",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Pharmacokinetics of levetiracetam in patients with moderate to severe liver cirrhosis (Child-Pugh classes A, B, and C): characterization by dynamic liver function tests.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2005.01.012",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2005.02.003"
+      ]
+    },
+    {
+      "row": 85,
+      "source_id": "PUBMED_8314115",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Ginkgo biloba extract EGb 761 or trolox C prevent the ascorbic acid/Fe2+ induced decrease in synaptosomal membrane fluidity.",
+      "input_reference": "https://doi.org/10.1056/nejm199310143291605",
+      "retrieved_dois": [
+        "10.3109/10715769309056523"
+      ]
+    },
+    {
+      "row": 86,
+      "source_id": "PUBMED_15087347",
+      "record_status": "pmid_not_returned",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.013",
+      "retrieved_dois": []
+    },
+    {
+      "row": 87,
+      "source_id": "PUBMED_12559346",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Prognostic prediction of the immunohistochemical expression of p53 and p16 in resected non-small cell lung cancer.",
+      "input_reference": "https://doi.org/10.1177/0091270002239823",
+      "retrieved_dois": [
+        "10.1016/s1010-7940(02)00749-2"
+      ]
+    },
+    {
+      "row": 88,
+      "source_id": "PUBMED_15876902",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "The effect of citalopram adjunctive treatment added to atypical antipsychotic medications for cognitive performance in patients with schizophrenia.",
+      "input_reference": "https://doi.org/10.1111/j.1365-2125.2005.02324.x",
+      "retrieved_dois": [
+        "10.1097/01.jcp.0000161499.58266.51"
+      ]
+    },
+    {
+      "row": 89,
+      "source_id": "PUBMED_16043826",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "A teachable moment for oncologists: cancer survivors, 10 million strong and growing!",
+      "input_reference": "https://doi.org/10.1200/jco.2005.07.018",
+      "retrieved_dois": [
+        "10.1200/JCO.2005.04.916"
+      ]
+    },
+    {
+      "row": 90,
+      "source_id": "PUBMED_22434327",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Using the interactive systems framework in understanding the relation between general program capacity and implementation in afterschool settings.",
+      "input_reference": "https://doi.org/10.1007/s00228-012-1262-6",
+      "retrieved_dois": [
+        "10.1007/s10464-012-9500-3"
+      ]
+    },
+    {
+      "row": 91,
+      "source_id": "PUBMED_15044560",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Induction of small intestinal damage in rats following combined treatment with cyclooxygenase-2 and nitric-oxide synthase inhibitors.",
+      "input_reference": "https://doi.org/10.1097/01.jcp.0000104911.87114.40",
+      "retrieved_dois": [
+        "10.1124/jpet.104.065961"
+      ]
+    },
+    {
+      "row": 92,
+      "source_id": "PUBMED_15044561",
+      "record_status": "pmid_not_returned",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1097/01.jcp.0000104912.87114.41",
+      "retrieved_dois": []
+    },
+    {
+      "row": 93,
+      "source_id": "PUBMED_15876903",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Hyperforin plasma level as a marker of treatment adherence in the National Institutes of Health Hypericum Depression Trial.",
+      "input_reference": "https://doi.org/10.1111/j.1365-2125.2005.02325.x",
+      "retrieved_dois": [
+        "10.1097/01.jcp.0000162801.72002.85"
+      ]
+    },
+    {
+      "row": 94,
+      "source_id": "PUBMED_15044562",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Situational awareness in public health.",
+      "input_reference": "https://doi.org/10.1097/01.jcp.0000104913.87114.42",
+      "retrieved_dois": [
+        "10.1093/pubmed/fdh121"
+      ]
+    },
+    {
+      "row": 95,
+      "source_id": "PUBMED_15044563",
+      "record_status": "pmid_not_returned",
+      "retrieved_title": null,
+      "input_reference": "https://doi.org/10.1097/01.jcp.0000104914.87114.43",
+      "retrieved_dois": []
+    },
+    {
+      "row": 96,
+      "source_id": "PUBMED_15961985",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Dosing strategy in patients with renal failure receiving enoxaparin for the treatment of non-ST-segment elevation acute coronary syndrome.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2005.01.013",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2005.02.012"
+      ]
+    },
+    {
+      "row": 97,
+      "source_id": "PUBMED_17178268",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "ABCB1 genetic variability and methadone dosage requirements in opioid-dependent individuals.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100018",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2006.09.011"
+      ]
+    },
+    {
+      "row": 98,
+      "source_id": "PUBMED_15044564",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Artefact or reality? Increases in persons notified to the Regional Drug Misuse Database in the South West of England, 1996-2001.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2003.11.009",
+      "retrieved_dois": [
+        "10.1093/pubmed/fdh106"
+      ]
+    },
+    {
+      "row": 99,
+      "source_id": "PUBMED_15876904",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "The association of weight gain and olanzapine plasma concentrations.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.11.005",
+      "retrieved_dois": [
+        "10.1097/01.jcp.0000162800.64378.82"
+      ]
+    },
+    {
+      "row": 100,
+      "source_id": "PUBMED_12698305",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Pharmacokinetic interaction between retigabine and lamotrigine in healthy subjects.",
+      "input_reference": "https://doi.org/10.1016/s0022-5347(05)63943-4",
+      "retrieved_dois": [
+        "10.1007/s00228-003-0558-6"
+      ]
+    },
+    {
+      "row": 101,
+      "source_id": "PUBMED_15961986",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Effect of clopidogrel and ticlopidine on cytochrome P450 2B6 activity as measured by bupropion hydroxylation.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2005.01.014",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2005.02.010"
+      ]
+    },
+    {
+      "row": 102,
+      "source_id": "PUBMED_17178269",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Direct and rapid inhibition of factor Xa by otamixaban: a pharmacokinetic and pharmacodynamic investigation in patients with coronary artery disease.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100019",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2006.09.002"
+      ]
+    },
+    {
+      "row": 103,
+      "source_id": "PUBMED_15044565",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Unintentional injury in Ireland: a comparison of mortality and morbidity data.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2003.11.010",
+      "retrieved_dois": [
+        "10.1093/pubmed/fdh107"
+      ]
+    },
+    {
+      "row": 104,
+      "source_id": "PUBMED_11758978",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Interleukin-18 in patients with congestive heart failure: induction of atrial natriuretic peptide gene expression.",
+      "input_reference": "https://doi.org/10.1007/s004150170068",
+      "retrieved_dois": []
+    },
+    {
+      "row": 105,
+      "source_id": "PUBMED_11525493",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Survival and molting of the pea crab larvae Tunicotheres moseri Rathbun 1918 (Brachyura, Pinnotheridae) exposed to copper.",
+      "input_reference": "https://doi.org/10.1016/s0378-8741(01)00277-2",
+      "retrieved_dois": [
+        "10.1007/s002440010203"
+      ]
+    },
+    {
+      "row": 106,
+      "source_id": "PUBMED_12140633",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Laser laparoscopy for endometriosis and endometriotic cysts.",
+      "input_reference": "https://doi.org/10.1124/dmd.30.11.1154",
+      "retrieved_dois": [
+        "10.1007/s00464-002-9060-y"
+      ]
+    },
+    {
+      "row": 107,
+      "source_id": "PUBMED_19809371",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Role of Broca's area in encoding sequential human actions: a virtual lesion study.",
+      "input_reference": "https://doi.org/10.1128/aac.00647-09",
+      "retrieved_dois": [
+        "10.1097/WNR.0b013e3283329be8"
+      ]
+    },
+    {
+      "row": 108,
+      "source_id": "PUBMED_15087348",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Economics of smoking cessation.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.014",
+      "retrieved_dois": [
+        "10.1136/bmj.328.7445.947"
+      ]
+    },
+    {
+      "row": 109,
+      "source_id": "PUBMED_15647649",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Long-term results of endoscopic drainage of common bile duct strictures in chronic pancreatitis.",
+      "input_reference": "https://doi.org/10.1111/j.1365-2125.2004.02236.x",
+      "retrieved_dois": [
+        "10.1097/00042737-200501000-00019"
+      ]
+    },
+    {
+      "row": 110,
+      "source_id": "PUBMED_15961987",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Short-term metabolic and hemodynamic effects of ephedra and guarana combinations.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2005.01.015",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2005.01.023"
+      ]
+    },
+    {
+      "row": 111,
+      "source_id": "PUBMED_12217992",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Socioeconomic and ethnic group differences in self reported health status and use of health services by children and young people in England: cross sectional study.",
+      "input_reference": "https://doi.org/10.1067/mcp.2002.127111",
+      "retrieved_dois": [
+        "10.1136/bmj.325.7363.520"
+      ]
+    },
+    {
+      "row": 112,
+      "source_id": "PUBMED_16738980",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Preoperative assessment in patients with postintubation tracheal stenosis : Rigid and flexible bronchoscopy versus spiral CT scan with multiplanar reconstructions.",
+      "input_reference": "https://doi.org/10.1007/s00228-006-0150-1",
+      "retrieved_dois": [
+        "10.1007/s00464-005-0475-0"
+      ]
+    },
+    {
+      "row": 113,
+      "source_id": "PUBMED_17178270",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Nicotine intake and dose response when smoking reduced-nicotine content cigarettes.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100020",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2006.09.007"
+      ]
+    },
+    {
+      "row": 114,
+      "source_id": "PUBMED_15153549",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Signaling at the slit diaphragm.",
+      "input_reference": "https://doi.org/10.1136/bmj.327.7429.1454",
+      "retrieved_dois": [
+        "10.1097/01.asn.0000130167.30769.55"
+      ]
+    },
+    {
+      "row": 115,
+      "source_id": "PUBMED_20838183",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Environmental health-do no harm: technology creates \"green\" opportunity for nursing.",
+      "input_reference": "https://doi.org/10.1111/j.1538-7836.2010.04060.x",
+      "retrieved_dois": [
+        "10.1097/NAQ.0b013e3181f60e29"
+      ]
+    },
+    {
+      "row": 116,
+      "source_id": "PUBMED_19225382",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Cerebrospinal fluid pleocytosis in children in the era of bacterial conjugate vaccines: distinguishing the child with bacterial and aseptic meningitis.",
+      "input_reference": "https://doi.org/10.1097/ftd.0b013e318195655e",
+      "retrieved_dois": [
+        "10.1097/PEC.0b013e318196faeb"
+      ]
+    },
+    {
+      "row": 117,
+      "source_id": "PUBMED_18491227",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Unglycosylation at Asn-633 made extracellular domain of E-cadherin folded incorrectly and arrested in endoplasmic reticulum, then sequentially degraded by ERAD.",
+      "input_reference": "https://doi.org/10.1002/jcph.1235",
+      "retrieved_dois": [
+        "10.1007/s10719-008-9133-9"
+      ]
+    },
+    {
+      "row": 118,
+      "source_id": "PUBMED_16672722",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Vascular endothelial growth factor and kinase domain region receptor are involved in both seminiferous cord formation and vascular development during testis morphogenesis in the rat.",
+      "input_reference": "https://doi.org/10.1592/phco.26.4.576",
+      "retrieved_dois": [
+        "10.1095/biolreprod.105.047225"
+      ]
+    },
+    {
+      "row": 119,
+      "source_id": "PUBMED_20562754",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Differences in quality of life after stroke and myocardial infarction.",
+      "input_reference": "https://doi.org/10.1007/s00228-010-0854-y",
+      "retrieved_dois": []
+    },
+    {
+      "row": 120,
+      "source_id": "PUBMED_17178271",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Comment on severe arrhythmia as a result of the interaction of cetirizine and pilsicainide in a patient with renal insufficiency.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100021",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2006.08.018"
+      ]
+    },
+    {
+      "row": 121,
+      "source_id": "PUBMED_1999397",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "The cholinesterases.",
+      "input_reference": "https://doi.org/10.1016/0140-6736(91)91159-4",
+      "retrieved_dois": []
+    },
+    {
+      "row": 122,
+      "source_id": "PUBMED_9625603",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Peroxisome-proliferating effects of fenoprofen in mice.",
+      "input_reference": "https://doi.org/10.1016/s0009-9236(98)90176-x",
+      "retrieved_dois": []
+    },
+    {
+      "row": 123,
+      "source_id": "PUBMED_9854452",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Anti-inflammatory actions of glucocorticoids: molecular mechanisms.",
+      "input_reference": "https://doi.org/10.1016/s0009-9236(98)90045-5",
+      "retrieved_dois": [
+        "10.1042/cs0940557"
+      ]
+    },
+    {
+      "row": 124,
+      "source_id": "PUBMED_11302569",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Moclobemide in pregnancy.",
+      "input_reference": "https://doi.org/10.1016/s0009-9236(01)55247-5",
+      "retrieved_dois": [
+        "10.1055/s-2001-15185"
+      ]
+    },
+    {
+      "row": 125,
+      "source_id": "PUBMED_15264384",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Surgical Education and Self-assessment Program (SESAP). Malocclusion.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100141",
+      "retrieved_dois": []
+    },
+    {
+      "row": 126,
+      "source_id": "PUBMED_15616539",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Early Solar System: shock fronts in Hawaii.",
+      "input_reference": "https://doi.org/10.1007/s00228-004-0864-z",
+      "retrieved_dois": [
+        "10.1038/432957a"
+      ]
+    },
+    {
+      "row": 127,
+      "source_id": "PUBMED_11061585",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Hypotensive effect of calcium channel blockers is parallel with carbonic anhydrase I inhibition.",
+      "input_reference": "https://doi.org/10.1046/j.1365-2796.2000.00763.x",
+      "retrieved_dois": [
+        "10.1067/mcp.2000.110559"
+      ]
+    },
+    {
+      "row": 128,
+      "source_id": "PUBMED_11061586",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Immunomodulatory effects of IL-12 in relation to the pineal endocrine function in metastatic cancer patients.",
+      "input_reference": "https://doi.org/10.1046/j.1365-2796.2000.00764.x",
+      "retrieved_dois": [
+        "10.1159/000069444"
+      ]
+    },
+    {
+      "row": 129,
+      "source_id": "PUBMED_10675972",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Cardiovascular regulation during water immersion.",
+      "input_reference": "https://doi.org/10.1016/s0140-6736(99)12029-6",
+      "retrieved_dois": [
+        "10.2114/jpa.18.233"
+      ]
+    },
+    {
+      "row": 130,
+      "source_id": "PUBMED_15785368",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Regulatory T cells in transplantation: natural or induced?",
+      "input_reference": "https://doi.org/10.1111/j.1365-2125.2005.02323.x",
+      "retrieved_dois": [
+        "10.1097/01.tp.0000155178.20481.77"
+      ]
+    },
+    {
+      "row": 131,
+      "source_id": "PUBMED_11340119",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Stability of vitamin B-6-dependent aminotransferase activity in frozen packed erythrocytes is dependent on storage temperature.",
+      "input_reference": "https://doi.org/10.1001/archinte.161.9.1122",
+      "retrieved_dois": [
+        "10.1093/jn/131.5.1581"
+      ]
+    },
+    {
+      "row": 132,
+      "source_id": "PUBMED_12702238",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Cicero and Burkholderia cepacia: what's in a name?",
+      "input_reference": "https://doi.org/10.1056/nejm199704103361519",
+      "retrieved_dois": [
+        "10.3201/eid0904.AD0904"
+      ]
+    },
+    {
+      "row": 133,
+      "source_id": "PUBMED_15247354",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "The effect of dexrazoxane on myocardial injury in doxorubicin-treated children with acute lymphoblastic leukemia.",
+      "input_reference": "https://doi.org/10.7326/0003-4819-141-1-200407060-00009",
+      "retrieved_dois": [
+        "10.1056/NEJMoa035153"
+      ]
+    },
+    {
+      "row": 134,
+      "source_id": "PUBMED_11752969",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Treatment of internal carotid artery dissections with endovascular stent placement: report of two cases.",
+      "input_reference": "https://doi.org/10.1097/00002030-200201250-00009",
+      "retrieved_dois": [
+        "10.3348/kjr.2001.2.1.52"
+      ]
+    },
+    {
+      "row": 135,
+      "source_id": "PUBMED_17178266",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Pharmacokinetics and pharmacodynamics of rosiglitazone in relation to CYP2C8 genotype.",
+      "input_reference": "https://doi.org/10.1038/sj.clpt.6100015b",
+      "retrieved_dois": [
+        "10.1016/j.clpt.2006.09.008"
+      ]
+    },
+    {
+      "row": 136,
+      "source_id": "PUBMED_24419285",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Isolation of technogenic magnetic particles.",
+      "input_reference": "https://doi.org/10.1038/clpt.2013.242",
+      "retrieved_dois": [
+        "10.1016/j.scitotenv.2013.12.083"
+      ]
+    },
+    {
+      "row": 137,
+      "source_id": "PUBMED_1729242",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Characterization of amino acid aminotransferases of Methanococcus aeolicus.",
+      "input_reference": "https://doi.org/10.1016/0014-2999(92)90709-v",
+      "retrieved_dois": [
+        "10.1128/jb.174.2.541-548.1992"
+      ]
+    },
+    {
+      "row": 138,
+      "source_id": "PUBMED_11877488",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Rapid cytotoxic T lymphocyte activation occurs in the draining lymph nodes after cutaneous herpes simplex virus infection as a result of early antigen presentation and not the presence of virus.",
+      "input_reference": "https://doi.org/10.1097/00002030-200203080-00019",
+      "retrieved_dois": [
+        "10.1084/jem.20012023"
+      ]
+    },
+    {
+      "row": 139,
+      "source_id": "PUBMED_12140634",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Laparoscopic gastric bypass in the treatment of morbid obesity. Preliminary results of a new technique.",
+      "input_reference": "https://doi.org/10.1124/dmd.30.11.1155",
+      "retrieved_dois": [
+        "10.1007/s00464-002-9035-z"
+      ]
+    },
+    {
+      "row": 140,
+      "source_id": "PUBMED_15087349",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Development of clinical ethics committees.",
+      "input_reference": "https://doi.org/10.1016/j.clpt.2004.01.015",
+      "retrieved_dois": [
+        "10.1136/bmj.328.7445.950"
+      ]
+    },
+    {
+      "row": 141,
+      "source_id": "PUBMED_15175559",
+      "record_status": "doi_mismatch_or_uncomparable_requires_review",
+      "retrieved_title": "Postprandial increase in plasma concentrations of remnant-like particles: an independent risk factor for restenosis after percutaneous coronary intervention.",
+      "input_reference": "https://doi.org/10.1038/bjc.2013.79",
+      "retrieved_dois": [
+        "10.1097/00005344-200407000-00009"
+      ]
+    }
+  ],
+  "eligible": false,
+  "limitations": "Metadata retrieval is not scientific claim validation. DOI matching does not verify herb/drug mapping, outcome, study design or independence.",
+  "status_counts": {
+    "doi_mismatch_or_uncomparable_requires_review": 130,
+    "pmid_not_returned": 9,
+    "non_pubmed_source_requires_separate_audit": 1,
+    "doi_matches_metadata_only": 1
+  }
+}

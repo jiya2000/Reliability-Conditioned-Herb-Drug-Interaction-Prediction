@@ -4,7 +4,13 @@ An auditable research pipeline for studying how sourced mechanisms and the relia
 
 > **Current release: empirical evaluation is blocked.** Independent consensus labels are empty, mechanistic records remain unverified, and Task B evidence approval/statistical support are incomplete. Public production APIs issue no execution authority. No clinical readiness, predictive superiority or nominal coverage guarantee is claimed.
 
+> **Source-integrity warning:** a direct NCBI audit found extensive PMID/DOI mismatches in the historical canonical evidence table. Do not treat that table or its registry as verified scientific evidence. See the [source audit](docs/source_audits/README.md).
+
+> **Mechanistic-data correction:** the 722-row curation table contains placeholders, not laboratory measurements. A separate official ChEMBL assay batch is now available for review; see [origin and download details](docs/source_audits/mechanistic_data_origin.md).
+
 ## Start here
+
+- [Dataset-by-dataset source audit, official links and actual usage](docs/DATASET_SOURCE_AUDIT.md)
 
 - [Beginner-friendly explanation, architecture and professor pitches](explanation.md)
 - [Research-project website: launch and navigation](docs/website.md)
