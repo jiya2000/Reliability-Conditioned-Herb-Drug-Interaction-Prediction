@@ -1710,3 +1710,37 @@ excluded annotation directory was not accessed or discovered. No commit/push.
 Scientific review, reference labels, mechanism verification, Task B contracts,
 statistical adequacy and production authorization remain unresolved. Existing
 unrelated historical CI blockers are not claimed fixed by this integration run.
+
+## CI #29 diagnosis — e3cb602
+
+Read Actions run 40962153576 / job 123757451641 logs directly. Installation
+succeeded; `Run unit test suite` failed: **873 passed, two failed, two skipped,
+797 warnings in 153.69s**. The discussion-signal tests passed remotely. Both
+failures are the same historical blockers documented for CI #25:
+
+- `tests/test_ablation_leakage.py:201`: historical `no_context_conflict` has
+  ROC-AUC 1.0, exceeding the unchanged 0.98 leakage guard.
+- `tests/test_phase4_scaffolding.py:348`: a clean checkout lacks intentionally
+  ignored `data/benchmark/private/pair_strata.csv` and its containing directory.
+
+Targeted local reproduction:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 venv/bin/python -m pytest tests/test_discussion_signals.py tests/test_ablation_leakage.py::test_no_actual_benchmark_model_exceeds_threshold -q -p no:cacheprovider
+```
+
+Result: **17 passed, one failed in 2.03s**; failure matches the AUC guard exactly.
+The private-metadata test was run separately with its absolute test path from a
+new `/private/tmp` temporary working directory containing only the tracked
+`.gitignore`, with repository PYTHONPATH and bytecode/cache disabled. Result:
+**one failed in 1.39s**, matching the missing-directory CI failure. No private
+metadata was read, copied, discovered or uploaded.
+
+No safe software regression fix is indicated by these logs. Making this run green
+would require resolving historical-result validity and provisioning genuine private
+metadata through an approved private mechanism, or a separately reviewed change
+to test responsibilities. Historical scores cannot be rewritten, tests skipped,
+guards relaxed or metadata manufactured simply to pass. Current scope therefore
+records verified blockers without claiming CI fixed. No workflow/code/test/data
+changes, no full suite, no commit/push. `git diff --check` passed. The excluded
+annotation directory remains untouched.
