@@ -1,0 +1,133 @@
+{
+  "schema": "hdi.demonstration-evidence/v1",
+  "scope": "Small public-source demonstration; not a clinical benchmark or consensus release",
+  "studies": [
+    {
+      "pmid": "10546917",
+      "herb": "St John's wort",
+      "drug": "Digoxin",
+      "kind": "human_pk",
+      "direction": "decreased_exposure",
+      "design": "Single-blind placebo-controlled parallel study",
+      "participants": 25,
+      "context": "LI160 extract 900 mg/day for 10 days; digoxin 0.25 mg/day; healthy volunteers",
+      "summary": "Repeated dosing reduced digoxin exposure. The first-dose comparison did not show a statistically significant change.",
+      "endpoint": "AUC0\u201324",
+      "ratio": 0.75,
+      "ratio_basis": "Day-15 hypericum/placebo group means: 12.9 / 17.2; parallel-group comparison, not an individual baseline ratio",
+      "ratio_ci": null,
+      "doi": "10.1053/cp.1999.v66.a101944",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10546917/",
+      "extraction_level": "abstract",
+      "review_status": "source-checked demonstration extraction; independent dual review pending",
+      "accessed": "2026-10-30"
+    },
+    {
+      "pmid": "12580993",
+      "herb": "St John's wort",
+      "drug": "Cyclosporine",
+      "kind": "human_pk",
+      "direction": "decreased_exposure",
+      "design": "Open-label study",
+      "participants": 11,
+      "context": "Extract 600 mg/day for 14 days; renal transplant patients; cyclosporine doses adjusted",
+      "summary": "Dose-corrected cyclosporine exposure fell during supplementation; dose adjustments were required.",
+      "endpoint": "Dose-corrected AUC0\u201312",
+      "ratio": 0.5464480874316939,
+      "ratio_basis": "Reciprocal of reported baseline/coadministration geometric mean ratio 1.83",
+      "ratio_ci": [
+        0.48780487804878053,
+        0.6134969325153374
+      ],
+      "doi": "10.1046/j.1365-2125.2003.01759.x",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12580993/",
+      "extraction_level": "abstract",
+      "review_status": "source-checked demonstration extraction; independent dual review pending",
+      "accessed": "2026-10-30"
+    },
+    {
+      "pmid": "18214850",
+      "herb": "St John's wort",
+      "drug": "Digoxin",
+      "kind": "human_pk",
+      "direction": "decreased_exposure",
+      "design": "Randomized supplementation sequence with washout and positive controls",
+      "participants": 18,
+      "context": "St John's wort 300 mg three times daily for 14 days; healthy volunteers",
+      "summary": "Digoxin exposure decreased following supplementation. No numeric ratio was extracted from the abstract.",
+      "endpoint": "AUC0\u201324",
+      "ratio": null,
+      "ratio_basis": null,
+      "ratio_ci": null,
+      "doi": "10.1002/mnfr.200700081",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18214850/",
+      "extraction_level": "abstract",
+      "review_status": "source-checked demonstration extraction; independent dual review pending",
+      "accessed": "2026-10-30"
+    },
+    {
+      "pmid": "18214850",
+      "herb": "Echinacea",
+      "drug": "Digoxin",
+      "kind": "human_pk",
+      "direction": "no_change_reported",
+      "design": "Randomized supplementation sequence with washout and positive controls",
+      "participants": 18,
+      "context": "Echinacea 267 mg three times daily for 14 days; healthy volunteers",
+      "summary": "The study reported no effect on digoxin pharmacokinetics for the tested preparation. This does not establish equivalence or safety for all preparations.",
+      "endpoint": "AUC0\u201324",
+      "ratio": null,
+      "ratio_basis": null,
+      "ratio_ci": null,
+      "doi": "10.1002/mnfr.200700081",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18214850/",
+      "extraction_level": "abstract",
+      "review_status": "source-checked demonstration extraction; independent dual review pending",
+      "accessed": "2026-10-30"
+    }
+  ],
+  "herbs": {
+    "St John's wort": {
+      "constituent": "Hyperforin",
+      "smiles": "CC(=CCCC1(C)C(CC=C(C)C)CC2(C(=O)C1(C(=O)C(C)C)C(=C(C2=O)CC=C(C)C)O)CC=C(C)C)C",
+      "structure_source": "https://www.guidetopharmacology.org/GRAC/LigandDisplayForward?ligandId=2764",
+      "mapping_source": "https://pubmed.ncbi.nlm.nih.gov/10852961/",
+      "mechanism": "induction",
+      "mechanism_note": "Hyperforin activates PXR and can induce CYP3A4 expression. The inhibition model cannot predict this induction.",
+      "structure_note": "GtoPdb canonical tautomer; source notes tautomer differences across databases."
+    },
+    "Turmeric": {
+      "constituent": "Curcumin",
+      "smiles": "COc1cc(/C=C/C(=O)CC(=O)/C=C/c2ccc(O)c(OC)c2)ccc1O",
+      "structure_source": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL140",
+      "mapping_source": "https://www.nccih.nih.gov/health/turmeric",
+      "mechanism": "not_established_for_pair",
+      "mechanism_note": "One constituent is modeled; its estimate does not represent the whole preparation.",
+      "structure_note": "Structure from the locally captured ChEMBL140 record."
+    },
+    "Echinacea": {
+      "constituent": null,
+      "smiles": null,
+      "structure_source": null,
+      "mapping_source": "https://pubmed.ncbi.nlm.nih.gov/18214850/",
+      "mechanism": "not_established_for_pair",
+      "mechanism_note": "No single constituent selected for this preparation. Assay prediction is unavailable.",
+      "structure_note": null
+    }
+  },
+  "drugs": {
+    "Digoxin": {
+      "targets": [
+        "ABCB1"
+      ],
+      "source": "https://pubmed.ncbi.nlm.nih.gov/18214850/"
+    },
+    "Cyclosporine": {
+      "targets": [
+        "CYP3A4",
+        "ABCB1"
+      ],
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=64ec430a-e930-145c-e766-13fb49b64644"
+    }
+  }
+}

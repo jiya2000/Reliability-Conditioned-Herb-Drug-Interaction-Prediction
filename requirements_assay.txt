@@ -1,0 +1,7 @@
+# Standalone retrospective ChEMBL assay workflow; no torch/transformers required.
+numpy>=1.26
+pandas>=2.1
+scikit-learn>=1.3
+rdkit>=2023.9
+joblib>=1.3
+streamlit>=1.29

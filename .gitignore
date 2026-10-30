@@ -73,3 +73,6 @@ data/benchmark/private/
 .env
 *.log
 
+# Locally fitted assay bundles and row-level experiment artifacts
+artifacts/assay/
+

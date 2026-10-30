@@ -31,8 +31,14 @@ def render_project_presentation(st, root: Path):
 
 
 def render_project_site(st, root: Path):
-    view = st.selectbox('View', ['Project presentation', 'Evidence explorer'], key='research_view')
-    if view == 'Evidence explorer':
+    view = st.selectbox('View', ['Project presentation', 'Evidence explorer', 'Compound assay experiment', 'Herb–drug screening'], key='research_view')
+    if view == 'Herb–drug screening':
+        from app.screening_demo import render_screening_demo
+        render_screening_demo(root)
+    elif view == 'Compound assay experiment':
+        from app.assay_dashboard import render_assay_dashboard
+        render_assay_dashboard(st, root)
+    elif view == 'Evidence explorer':
         from app.research_status import render_research_readiness
         render_research_readiness(st, root)
     else:

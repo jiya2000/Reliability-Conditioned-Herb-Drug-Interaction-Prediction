@@ -40,6 +40,24 @@ Fit, tuning, probability calibration, conformal calibration and assessment have 
 
 ## Run the existing Streamlit website
 
+For the integrated herb–drug research demonstration, run:
+
+```sh
+venv/bin/python -m streamlit run app/demo.py --server.address 127.0.0.1 --server.port 8501
+```
+
+See the [presentation walkthrough](docs/presentation_demo.md). This interface
+combines live constituent assay estimates, source-linked human findings,
+duplicate handling and mechanism/context checks. Human findings are retrieved
+evidence, not model-predicted clinical outcomes.
+
+The official ChEMBL dataset now has a separate executable **compound-assay**
+training, evaluation and inference workflow. See [assay workflow](docs/assay_workflow.md)
+for setup, scaffold/source holdouts, baseline comparisons and uncertainty limits.
+Run `venv/bin/python -m src.assay.experiment --output artifacts/assay/scaffold`
+and select **Compound assay experiment** in the website. This workflow does not
+supply clinical herb–drug labels or unlock Task A/B.
+
 From the repository root, use the existing environment:
 
 ```sh

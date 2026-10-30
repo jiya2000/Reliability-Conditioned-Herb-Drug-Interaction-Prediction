@@ -1,0 +1,562 @@
+{
+  "schema": "hdi.assay-results/v1",
+  "complete": true,
+  "created_at": "2026-10-29T23:44:29.615310+00:00",
+  "clinical_task_a_eligible": false,
+  "clinical_task_b_eligible": false,
+  "config": {
+    "schema": "hdi.assay-experiment/v1",
+    "protocol": {
+      "version": "assay-pic50/v1",
+      "endpoint": "pIC50 = 9 - log10(IC50 in nM); larger means greater assay potency",
+      "features": "RDKit Morgan radius 2, 2048 bits, chirality disabled",
+      "roles": {
+        "train": 0.6,
+        "validation": 0.15,
+        "calibration": 0.1,
+        "test": 0.15
+      },
+      "aggregation": "median within document, then median across documents per structure-target",
+      "dispersion": "median absolute deviation of all retained log-potencies per structure-target",
+      "weight": "1 / (1 + training-pair MAD); repeat consistency, not clinical reliability",
+      "screen": "exact human IC50 nM; A/B assays; inhibition wording; exclude named nonhuman species",
+      "clinical_task_a_eligible": false,
+      "clinical_task_b_eligible": false
+    },
+    "split": "source",
+    "seed": 20261030,
+    "alpha": 0.1,
+    "models": [
+      "median",
+      "ridge",
+      "extra_trees",
+      "consistency_weighted_extra_trees"
+    ],
+    "selection": "minimum validation MAE per target; fixed model order breaks ties",
+    "hyperparameters": {
+      "ridge_alpha": 100.0,
+      "trees": 128,
+      "min_samples_leaf": 2,
+      "max_features": 0.5
+    },
+    "minimum_role_samples": {
+      "train": 40,
+      "validation": 10,
+      "calibration": 10,
+      "test": 10
+    },
+    "source_manifest_sha256": "ab18f6e6f5f43254dd4003760bb96096900f42b296b8679bb86af1fe58edf622",
+    "source_outputs": {
+      "assay_records.csv": "9f704f0959174c5389166b816d27f28ded395057b5d22f648b6ddbc6f94b6cb6",
+      "assay_research_candidates.csv": "407a6a968729d8715c82af71a9bc23b66760e3c852e21f4edf0ec31ef8f7dead"
+    }
+  },
+  "source_version": "ChEMBL_37",
+  "counts": {
+    "source_candidates": 16018,
+    "retained_records": 15213,
+    "excluded_records": 805,
+    "purged_records": 558,
+    "aggregated_samples": 13149,
+    "distinct_structures": 8724
+  },
+  "targets": {
+    "ABCB1": {
+      "role_counts": {
+        "train": 534,
+        "test": 166,
+        "calibration": 140,
+        "validation": 124
+      },
+      "selected_model": "median",
+      "validation": {
+        "median": {
+          "n": 124,
+          "mae": 0.7465450859495789,
+          "rmse": 0.8710706362791478,
+          "r2": -0.0542447392915284
+        },
+        "ridge": {
+          "n": 124,
+          "mae": 0.7662309079264579,
+          "rmse": 0.9095545354661778,
+          "r2": -0.1494555518134153
+        },
+        "extra_trees": {
+          "n": 124,
+          "mae": 0.8495534094395655,
+          "rmse": 1.0785040406573234,
+          "r2": -0.6161372774919027
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 124,
+          "mae": 0.8549019391773556,
+          "rmse": 1.0865513724883376,
+          "r2": -0.6403450941083029
+        }
+      },
+      "test": {
+        "median": {
+          "n": 166,
+          "mae": 0.586618992230853,
+          "rmse": 0.7727088295964111,
+          "r2": -0.05126405223133035
+        },
+        "ridge": {
+          "n": 166,
+          "mae": 0.5990100166143923,
+          "rmse": 0.7739166904895943,
+          "r2": -0.0545531906964245
+        },
+        "extra_trees": {
+          "n": 166,
+          "mae": 0.5639638950968912,
+          "rmse": 0.7572690820769628,
+          "r2": -0.009672472174672597
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 166,
+          "mae": 0.5726641668459103,
+          "rmse": 0.7621210604505935,
+          "r2": -0.02265227888613497
+        }
+      },
+      "interval": {
+        "alpha": 0.1,
+        "radius_pic50": 1.56164310770163,
+        "test_coverage": 0.9578313253012049,
+        "mean_width_pic50": 3.12328621540326,
+        "calibration_n": 140
+      },
+      "train_conflict_pairs_spread_gt_1_log_unit": 7,
+      "selected_test_mae_ci95": {
+        "lower": 0.5152276697690549,
+        "upper": 0.6565914479272009,
+        "resamples": 200,
+        "unit": "canonical structure",
+        "conditional_on": "single fitted split"
+      }
+    },
+    "CYP1A2": {
+      "role_counts": {
+        "train": 861,
+        "validation": 277,
+        "test": 180,
+        "calibration": 137
+      },
+      "selected_model": "consistency_weighted_extra_trees",
+      "validation": {
+        "median": {
+          "n": 277,
+          "mae": 0.9094389031862883,
+          "rmse": 1.1223937079898638,
+          "r2": -0.1939184418215203
+        },
+        "ridge": {
+          "n": 277,
+          "mae": 0.706601772202169,
+          "rmse": 0.8539882137665402,
+          "r2": 0.3088250855593374
+        },
+        "extra_trees": {
+          "n": 277,
+          "mae": 0.6526561902569401,
+          "rmse": 0.7960899862334562,
+          "r2": 0.3993679039647787
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 277,
+          "mae": 0.6493267225049192,
+          "rmse": 0.7985085947005313,
+          "r2": 0.39571278803648036
+        }
+      },
+      "test": {
+        "median": {
+          "n": 180,
+          "mae": 0.913468899871195,
+          "rmse": 1.1883260549417451,
+          "r2": -0.2573829495569786
+        },
+        "ridge": {
+          "n": 180,
+          "mae": 0.7632385391463258,
+          "rmse": 0.9970954408315138,
+          "r2": 0.11474214514000602
+        },
+        "extra_trees": {
+          "n": 180,
+          "mae": 0.7535484717851757,
+          "rmse": 0.9934765958889545,
+          "r2": 0.12115637031552273
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 180,
+          "mae": 0.7509320493017201,
+          "rmse": 0.9923043001001562,
+          "r2": 0.12322920592656095
+        }
+      },
+      "interval": {
+        "alpha": 0.1,
+        "radius_pic50": 1.2410910827150579,
+        "test_coverage": 0.7944444444444444,
+        "mean_width_pic50": 2.4821821654301157,
+        "calibration_n": 137
+      },
+      "train_conflict_pairs_spread_gt_1_log_unit": 0,
+      "selected_test_mae_ci95": {
+        "lower": 0.6560653312942786,
+        "upper": 0.8320248645421431,
+        "resamples": 200,
+        "unit": "canonical structure",
+        "conditional_on": "single fitted split"
+      }
+    },
+    "CYP2C19": {
+      "role_counts": {
+        "train": 822,
+        "validation": 205,
+        "test": 158,
+        "calibration": 135
+      },
+      "selected_model": "ridge",
+      "validation": {
+        "median": {
+          "n": 205,
+          "mae": 0.500429193638249,
+          "rmse": 0.6251360916010141,
+          "r2": -0.001669277824649873
+        },
+        "ridge": {
+          "n": 205,
+          "mae": 0.4924824770373168,
+          "rmse": 0.6215868502741085,
+          "r2": 0.009672488322849726
+        },
+        "extra_trees": {
+          "n": 205,
+          "mae": 0.49674490855777315,
+          "rmse": 0.6315861245105379,
+          "r2": -0.022445971197967873
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 205,
+          "mae": 0.5152615209103989,
+          "rmse": 0.6496357605374417,
+          "r2": -0.08172048556581846
+        }
+      },
+      "test": {
+        "median": {
+          "n": 158,
+          "mae": 0.6022782478192237,
+          "rmse": 0.8211245709750714,
+          "r2": -0.005293870720146421
+        },
+        "ridge": {
+          "n": 158,
+          "mae": 0.6438834493637073,
+          "rmse": 0.8432075393454418,
+          "r2": -0.06009283892527528
+        },
+        "extra_trees": {
+          "n": 158,
+          "mae": 0.6284347813321473,
+          "rmse": 0.8526214177777716,
+          "r2": -0.08389550320364147
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 158,
+          "mae": 0.6231493666061982,
+          "rmse": 0.8501809358196513,
+          "r2": -0.07769945508419673
+        }
+      },
+      "interval": {
+        "alpha": 0.1,
+        "radius_pic50": 1.4256928759580774,
+        "test_coverage": 0.9493670886075949,
+        "mean_width_pic50": 2.8513857519161547,
+        "calibration_n": 135
+      },
+      "train_conflict_pairs_spread_gt_1_log_unit": 2,
+      "selected_test_mae_ci95": {
+        "lower": 0.5699109901099434,
+        "upper": 0.7345168981516326,
+        "resamples": 200,
+        "unit": "canonical structure",
+        "conditional_on": "single fitted split"
+      }
+    },
+    "CYP2C9": {
+      "role_counts": {
+        "train": 1502,
+        "test": 347,
+        "validation": 341,
+        "calibration": 280
+      },
+      "selected_model": "consistency_weighted_extra_trees",
+      "validation": {
+        "median": {
+          "n": 341,
+          "mae": 0.4877503701595324,
+          "rmse": 0.6222475654350806,
+          "r2": -0.003530174675225206
+        },
+        "ridge": {
+          "n": 341,
+          "mae": 0.49925211746653025,
+          "rmse": 0.6301433250215992,
+          "r2": -0.029159539297969772
+        },
+        "extra_trees": {
+          "n": 341,
+          "mae": 0.4712707639974468,
+          "rmse": 0.6090590706278334,
+          "r2": 0.0385585218708967
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 341,
+          "mae": 0.47009840130133007,
+          "rmse": 0.6096310023007755,
+          "r2": 0.03675200739949869
+        }
+      },
+      "test": {
+        "median": {
+          "n": 347,
+          "mae": 0.5132529474218077,
+          "rmse": 0.7115259828476911,
+          "r2": -0.0005355400512572217
+        },
+        "ridge": {
+          "n": 347,
+          "mae": 0.517558514027627,
+          "rmse": 0.6949863924741224,
+          "r2": 0.045439201785495986
+        },
+        "extra_trees": {
+          "n": 347,
+          "mae": 0.5176534303517291,
+          "rmse": 0.7259878608968042,
+          "r2": -0.04162095928575482
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 347,
+          "mae": 0.5144177214410329,
+          "rmse": 0.7204505292076533,
+          "r2": -0.025792032483212823
+        }
+      },
+      "interval": {
+        "alpha": 0.1,
+        "radius_pic50": 1.2157458559985566,
+        "test_coverage": 0.9394812680115274,
+        "mean_width_pic50": 2.431491711997113,
+        "calibration_n": 280
+      },
+      "train_conflict_pairs_spread_gt_1_log_unit": 2,
+      "selected_test_mae_ci95": {
+        "lower": 0.4627632656573834,
+        "upper": 0.5745006766073911,
+        "resamples": 200,
+        "unit": "canonical structure",
+        "conditional_on": "single fitted split"
+      }
+    },
+    "CYP2D6": {
+      "role_counts": {
+        "train": 1330,
+        "test": 378,
+        "validation": 371,
+        "calibration": 356
+      },
+      "selected_model": "extra_trees",
+      "validation": {
+        "median": {
+          "n": 371,
+          "mae": 0.5783634298766547,
+          "rmse": 0.7335076344115202,
+          "r2": -0.029070764288778417
+        },
+        "ridge": {
+          "n": 371,
+          "mae": 0.5350406390720397,
+          "rmse": 0.6714206975356836,
+          "r2": 0.1377654658993932
+        },
+        "extra_trees": {
+          "n": 371,
+          "mae": 0.5224707619946687,
+          "rmse": 0.6634566384564454,
+          "r2": 0.15809894978936723
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 371,
+          "mae": 0.5253538198719212,
+          "rmse": 0.6716538563791686,
+          "r2": 0.1371665194746704
+        }
+      },
+      "test": {
+        "median": {
+          "n": 378,
+          "mae": 0.7233066228947377,
+          "rmse": 0.9652697345558936,
+          "r2": -0.15279744341841273
+        },
+        "ridge": {
+          "n": 378,
+          "mae": 0.6429229363541448,
+          "rmse": 0.8480312212665514,
+          "r2": 0.11022682352813407
+        },
+        "extra_trees": {
+          "n": 378,
+          "mae": 0.6372271392001693,
+          "rmse": 0.8412217400328114,
+          "r2": 0.12445877132922611
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 378,
+          "mae": 0.6509160657944262,
+          "rmse": 0.8510515786013401,
+          "r2": 0.10387748480636338
+        }
+      },
+      "interval": {
+        "alpha": 0.1,
+        "radius_pic50": 1.4349340587776922,
+        "test_coverage": 0.9259259259259259,
+        "mean_width_pic50": 2.8698681175553844,
+        "calibration_n": 356
+      },
+      "train_conflict_pairs_spread_gt_1_log_unit": 15,
+      "selected_test_mae_ci95": {
+        "lower": 0.581670341231962,
+        "upper": 0.6840527604223595,
+        "resamples": 200,
+        "unit": "canonical structure",
+        "conditional_on": "single fitted split"
+      }
+    },
+    "CYP3A4": {
+      "role_counts": {
+        "train": 2428,
+        "test": 847,
+        "validation": 675,
+        "calibration": 555
+      },
+      "selected_model": "consistency_weighted_extra_trees",
+      "validation": {
+        "median": {
+          "n": 675,
+          "mae": 0.6536458538463099,
+          "rmse": 0.8495160149157198,
+          "r2": -0.03223338993857672
+        },
+        "ridge": {
+          "n": 675,
+          "mae": 0.6067045753495692,
+          "rmse": 0.7942972114090229,
+          "r2": 0.09759636121971926
+        },
+        "extra_trees": {
+          "n": 675,
+          "mae": 0.5983946566476985,
+          "rmse": 0.7974921736261135,
+          "r2": 0.09032214689040619
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 675,
+          "mae": 0.5975506081059292,
+          "rmse": 0.7982902036772229,
+          "r2": 0.08850065319410527
+        }
+      },
+      "test": {
+        "median": {
+          "n": 847,
+          "mae": 0.7306623755540241,
+          "rmse": 0.9966905622318577,
+          "r2": -0.11331415289095537
+        },
+        "ridge": {
+          "n": 847,
+          "mae": 0.6695147814081933,
+          "rmse": 0.9305231187383491,
+          "r2": 0.029598691603578198
+        },
+        "extra_trees": {
+          "n": 847,
+          "mae": 0.7319653478365614,
+          "rmse": 1.0347657050336305,
+          "r2": -0.19999957263339208
+        },
+        "consistency_weighted_extra_trees": {
+          "n": 847,
+          "mae": 0.730976813930829,
+          "rmse": 1.0443431284902882,
+          "r2": -0.22231591171493914
+        }
+      },
+      "interval": {
+        "alpha": 0.1,
+        "radius_pic50": 1.15852213473248,
+        "test_coverage": 0.8394332939787486,
+        "mean_width_pic50": 2.31704426946496,
+        "calibration_n": 555
+      },
+      "train_conflict_pairs_spread_gt_1_log_unit": 54,
+      "selected_test_mae_ci95": {
+        "lower": 0.6808945179666188,
+        "upper": 0.7865077488879335,
+        "resamples": 200,
+        "unit": "canonical structure",
+        "conditional_on": "single fitted split"
+      }
+    }
+  },
+  "skipped_targets": {},
+  "selected_micro_test": {
+    "n": 2076,
+    "mae": 0.6612679556556895,
+    "rmse": 0.920772661338828,
+    "r2": -0.024292235425349196
+  },
+  "selected_micro_mae_ci95": {
+    "lower": 0.6355016610492974,
+    "upper": 0.6932826542915239,
+    "resamples": 200,
+    "unit": "canonical structure",
+    "conditional_on": "single fitted split"
+  },
+  "limitations": [
+    "Compound-target assay potency only; no whole-herb or clinical interaction prediction.",
+    "Text screening is conservative and incomplete; assay protocols and substrates remain heterogeneous.",
+    "Repeat consistency weights measure dispersion, not study truthfulness or clinical reliability.",
+    "Scaffold/compound holdouts may share publications; consult the explicit overlap audit.",
+    "Source holdouts purge cross-role structures; purging changes the evaluated population.",
+    "Conformal intervals assume exchangeable calibration/test errors; grouped distribution shift can violate coverage.",
+    "Bootstrap intervals describe held-out compounds conditional on this fitted split, not split-to-split uncertainty.",
+    "No tautomer normalization, external validation, induction, exposure or drug-clearance inference."
+  ],
+  "versions": {
+    "python": "3.11.16",
+    "rdkit": "2026.03.5",
+    "sklearn": "1.9.0",
+    "numpy": "1.26.4",
+    "pandas": "3.0.5"
+  },
+  "artifacts": {
+    "config.json": "e76aad7ffe2a0b6e74ae32323651475eaa1a02ec2a59b476b0c9768c05a4e0e9",
+    "excluded_records.csv": "465d523aaccddabebb62298d75030afa8e618fffe4a64bb9715f4c8485a3d555",
+    "model.joblib": "24ee67b9fa60cf9cc777fafdd47f61e3264afed949d7d6e1944cfe257354844a",
+    "purged_records.csv": "b05d6860ba4439e7c66161cf3eca91ef5cc453942698927f569a9fc069bf0c3d",
+    "record_roles.csv": "0bb426041b7d8317446f9f9d15cacae5df8285522d025d2e29f4c9fbe13b7e80",
+    "samples.csv": "bbcc82cd145a8f768c081b4b71e97bfa3f0767f076fd2cb5fbd717ad9593ddad",
+    "split_audit.json": "0bb2106742425d18fba5895df1ff749254fe54418da1b2ee442a5de1f7d3ce71",
+    "test_predictions.csv": "037d74a5c5983d2d4c9f9c601703be96af284c20640e87c83600cd0081bf861e"
+  }
+}

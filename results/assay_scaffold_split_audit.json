@@ -1,0 +1,44 @@
+{
+  "mode": "scaffold",
+  "seed": 20261030,
+  "group_column": "scaffold",
+  "purged_activity_ids": [],
+  "overlaps": {
+    "train:validation": {
+      "structure": 0,
+      "scaffold": 0,
+      "document_chembl_id": 408,
+      "assay_chembl_id": 618
+    },
+    "train:calibration": {
+      "structure": 0,
+      "scaffold": 0,
+      "document_chembl_id": 289,
+      "assay_chembl_id": 493
+    },
+    "train:test": {
+      "structure": 0,
+      "scaffold": 0,
+      "document_chembl_id": 391,
+      "assay_chembl_id": 618
+    },
+    "validation:calibration": {
+      "structure": 0,
+      "scaffold": 0,
+      "document_chembl_id": 176,
+      "assay_chembl_id": 245
+    },
+    "validation:test": {
+      "structure": 0,
+      "scaffold": 0,
+      "document_chembl_id": 215,
+      "assay_chembl_id": 270
+    },
+    "calibration:test": {
+      "structure": 0,
+      "scaffold": 0,
+      "document_chembl_id": 170,
+      "assay_chembl_id": 248
+    }
+  }
+}
