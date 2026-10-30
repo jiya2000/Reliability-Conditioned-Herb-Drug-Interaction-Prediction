@@ -23,7 +23,6 @@ from app.project_presentation import render_project_site
 # ---------- Page Configuration ----------
 st.set_page_config(
     page_title="Reliability-Conditioned Herb–Drug Interaction Prediction",
-    page_icon="🌿",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -549,7 +548,7 @@ st.markdown(
         and scientific contradictions via heterogeneous biological graph attention and calibrated tri-state abstention.
     </p>
     <div style="background: rgba(245, 158, 11, 0.12); border-left: 4px solid #f59e0b; padding: 10px 14px; border-radius: 6px; margin-top: 10px; margin-bottom: 16px; font-size: 0.84rem; color: #fbbf24; line-height: 1.4;">
-        <b>⚠️ CLINICAL LIMITATIONS & RESEARCH PROTOTYPE DISCLAIMER:</b> This platform is an academic research prototype intended solely for investigational and clinical pharmacology decision support. It is <b>NOT an FDA-cleared or CE-marked medical device</b>, has not been prospectively validated in randomized clinical trials, and does not provide definitive medical diagnoses or automated prescription locks. Evaluated on a research benchmark (141 literature studies). All outputs must be reviewed and adjudicated by licensed clinical pharmacists and healthcare providers before clinical decision-making.
+        <b>[SYSTEM SAFEGUARD] CLINICAL LIMITATIONS & RESEARCH PROTOTYPE DISCLAIMER:</b> This platform is an academic research prototype intended solely for investigational and clinical pharmacology decision support. It is <b>NOT an FDA-cleared or CE-marked medical device</b>, has not been prospectively validated in randomized clinical trials, and does not provide definitive medical diagnoses or automated prescription locks. Evaluated on a research benchmark (141 literature studies). All outputs must be reviewed and adjudicated by licensed clinical pharmacists and healthcare providers before clinical decision-making.
     </div>
     """,
     unsafe_allow_html=True,
@@ -659,7 +658,7 @@ with tab_interactive:
         st.markdown(
             f"""
             <div class="alert-interaction">
-                <h3 style="margin: 0 0 6px 0; color: #ef4444; font-size: 1.3rem;">⚠️ ADVISORY CLINICAL ALERT: INTERACTION LIKELY (DECISION SUPPORT)</h3>
+                <h3 style="margin: 0 0 6px 0; color: #ef4444; font-size: 1.3rem;">[ADVISORY CLINICAL ALERT] INTERACTION LIKELY (DECISION SUPPORT)</h3>
                 <p style="margin: 0; font-size: 0.95rem;">
                     Concomitant administration of <b>{HERB_DISPLAY_NAMES.get(selected_herb, selected_herb)}</b> with 
                     <b>{DRUG_DISPLAY_NAMES.get(selected_drug, selected_drug)}</b> is predicted to induce significant pharmacokinetic alteration.
@@ -676,7 +675,7 @@ with tab_interactive:
         st.markdown(
             f"""
             <div class="alert-safe">
-                <h3 style="margin: 0 0 6px 0; color: #10b981; font-size: 1.3rem;">✅ NO INTERACTION OBSERVED: ADVISORY CLEARANCE</h3>
+                <h3 style="margin: 0 0 6px 0; color: #10b981; font-size: 1.3rem;">[ADVISORY CLEARANCE] NO INTERACTION OBSERVED</h3>
                 <p style="margin: 0; font-size: 0.95rem;">
                     Controlled clinical/pharmacokinetic evidence indicates <b>{HERB_DISPLAY_NAMES.get(selected_herb, selected_herb)}</b> does not 
                     significantly alter systemic exposure or clearance of <b>{DRUG_DISPLAY_NAMES.get(selected_drug, selected_drug)}</b>.

@@ -1,0 +1,12 @@
+{
+  "workflow_version": 1,
+  "pair_count": 24,
+  "pairs_sha256": "f241b7912224f25444e667cb7543f1cc221b44742153ff345681f5d10d491e99",
+  "inputs": [
+    {
+      "path": "annotation_batch_24_seed20261029/selected_pairs.csv",
+      "sha256": "cee90deac117a0d3e49e1820978587253ae668f5e6faba8d4466915b14b5b3a2"
+    }
+  ],
+  "policy": "All pairs assigned to two independent reviewers; explicit adjudication required."
+}

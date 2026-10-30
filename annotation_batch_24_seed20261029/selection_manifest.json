@@ -1,0 +1,162 @@
+{
+  "method_version": 1,
+  "seed": 20261029,
+  "batch_size": 24,
+  "method": "Greedy lexicographic: unseen herb first, unseen drug second, lowest combined selected herb/drug counts third; SHA256(JSON([seed, herb_id, drug_id])) tie-break; identifier normalization, deduplication and sorting before selection.",
+  "limitations": "Coverage pilot, not proportional random sampling or globally optimal joint coverage; no outcome/class quotas.",
+  "selection_inputs": [
+    "herb_id",
+    "drug_id"
+  ],
+  "source_path": "data/benchmark/consensus_labels_pairs_to_label.csv",
+  "candidate_identifier_sha256": "0464c9c16db2a756a4b190268ecccfd7d8a720e371d9edc1ba82a8fec3d8aad9",
+  "candidate_pair_count": 120,
+  "candidate_herb_count": 18,
+  "candidate_drug_count": 40,
+  "selected_herb_count": 18,
+  "selected_drug_count": 23,
+  "herb_counts": {
+    "HERB_BLACKCOHOSH": 1,
+    "HERB_CHAMOMILE": 1,
+    "HERB_CRANBERRY": 1,
+    "HERB_CURCUMA": 1,
+    "HERB_ECHINACEA": 2,
+    "HERB_GARLIC": 1,
+    "HERB_GINKGO": 1,
+    "HERB_GINSENG": 1,
+    "HERB_GOLDENSEAL": 1,
+    "HERB_GRAPEFRUIT": 2,
+    "HERB_GREENTEA": 2,
+    "HERB_HYPERICUM": 2,
+    "HERB_KAVA": 1,
+    "HERB_LICORICE": 2,
+    "HERB_MILKTHISTLE": 1,
+    "HERB_PEPPERMINT": 1,
+    "HERB_SAWPALMETTO": 1,
+    "HERB_VALERIAN": 2
+  },
+  "drug_counts": {
+    "DRUG_ALPRAZOLAM": 1,
+    "DRUG_BORTEZOMIB": 1,
+    "DRUG_CAFFEINE": 1,
+    "DRUG_CHLORZOXAZONE": 1,
+    "DRUG_CYCLOSPORINE": 1,
+    "DRUG_DEXTROMETHORPHAN": 2,
+    "DRUG_DIGOXIN": 1,
+    "DRUG_FELODIPINE": 1,
+    "DRUG_FINASTERIDE": 1,
+    "DRUG_INDINAVIR": 1,
+    "DRUG_METFORMIN": 1,
+    "DRUG_METHADONE": 1,
+    "DRUG_MIDAZOLAM": 1,
+    "DRUG_NADOLOL": 1,
+    "DRUG_NIFEDIPINE": 1,
+    "DRUG_PACLITAXEL": 1,
+    "DRUG_PREDNISOLONE": 1,
+    "DRUG_RITONAVIR": 1,
+    "DRUG_ROSUVASTATIN": 1,
+    "DRUG_SAQUINAVIR": 1,
+    "DRUG_SIMVASTATIN": 1,
+    "DRUG_THEOPHYLLINE": 1,
+    "DRUG_WARFARIN": 1
+  },
+  "selected_identifiers": [
+    {
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_CYCLOSPORINE"
+    },
+    {
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_MIDAZOLAM"
+    },
+    {
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_CAFFEINE"
+    },
+    {
+      "herb_id": "HERB_GOLDENSEAL",
+      "drug_id": "DRUG_INDINAVIR"
+    },
+    {
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_DEXTROMETHORPHAN"
+    },
+    {
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_NADOLOL"
+    },
+    {
+      "herb_id": "HERB_MILKTHISTLE",
+      "drug_id": "DRUG_ROSUVASTATIN"
+    },
+    {
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_FELODIPINE"
+    },
+    {
+      "herb_id": "HERB_SAWPALMETTO",
+      "drug_id": "DRUG_FINASTERIDE"
+    },
+    {
+      "herb_id": "HERB_GINKGO",
+      "drug_id": "DRUG_METFORMIN"
+    },
+    {
+      "herb_id": "HERB_BLACKCOHOSH",
+      "drug_id": "DRUG_THEOPHYLLINE"
+    },
+    {
+      "herb_id": "HERB_GARLIC",
+      "drug_id": "DRUG_SAQUINAVIR"
+    },
+    {
+      "herb_id": "HERB_CHAMOMILE",
+      "drug_id": "DRUG_WARFARIN"
+    },
+    {
+      "herb_id": "HERB_CRANBERRY",
+      "drug_id": "DRUG_DIGOXIN"
+    },
+    {
+      "herb_id": "HERB_KAVA",
+      "drug_id": "DRUG_ALPRAZOLAM"
+    },
+    {
+      "herb_id": "HERB_GINSENG",
+      "drug_id": "DRUG_NIFEDIPINE"
+    },
+    {
+      "herb_id": "HERB_CURCUMA",
+      "drug_id": "DRUG_PACLITAXEL"
+    },
+    {
+      "herb_id": "HERB_PEPPERMINT",
+      "drug_id": "DRUG_DEXTROMETHORPHAN"
+    },
+    {
+      "herb_id": "HERB_HYPERICUM",
+      "drug_id": "DRUG_METHADONE"
+    },
+    {
+      "herb_id": "HERB_VALERIAN",
+      "drug_id": "DRUG_CHLORZOXAZONE"
+    },
+    {
+      "herb_id": "HERB_GRAPEFRUIT",
+      "drug_id": "DRUG_SIMVASTATIN"
+    },
+    {
+      "herb_id": "HERB_ECHINACEA",
+      "drug_id": "DRUG_RITONAVIR"
+    },
+    {
+      "herb_id": "HERB_LICORICE",
+      "drug_id": "DRUG_PREDNISOLONE"
+    },
+    {
+      "herb_id": "HERB_GREENTEA",
+      "drug_id": "DRUG_BORTEZOMIB"
+    }
+  ],
+  "selected_pairs_sha256": "cee90deac117a0d3e49e1820978587253ae668f5e6faba8d4466915b14b5b3a2"
+}
