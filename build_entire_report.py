@@ -306,11 +306,12 @@ def build_report():
     figs_meta = [
         ("Figure 1", "Three-tier dataset architecture separating clinical literature, in-vitro assays, and consensus ground truth", "15"),
         ("Figure 2", "Evidence-linked herb–drug interaction research system architecture across offline and online workflows", "19"),
-        ("Figure 3", "Table 2 biological mechanism and molecular assay engine across 6 FDA metabolic pathways", "23"),
-        ("Figure 4", "Four-way grouped Bemis–Murcko scaffold data partitioning and split-conformal uncertainty calibration workflow", "28"),
-        ("Figure 5", "Selected model Mean Absolute Error (MAE) by target across scaffold and publication holdout splits", "37"),
-        ("Figure 6", "Empirical split-conformal prediction interval coverage across targets compared to 90% nominal level", "39"),
-        ("Figure 7", "Model selection architecture and comparative benchmark across baseline and ensemble families", "41"),
+        ("Figure 3", "Target identification and data mapping process across FDA regulatory guidance, drug monographs, and runtime filtering", "21"),
+        ("Figure 4", "Table 2 biological mechanism and molecular assay engine across 6 FDA metabolic pathways", "24"),
+        ("Figure 5", "Four-way grouped Bemis–Murcko scaffold data partitioning and split-conformal uncertainty calibration workflow", "29"),
+        ("Figure 6", "Selected model Mean Absolute Error (MAE) by target across scaffold and publication holdout splits", "38"),
+        ("Figure 7", "Empirical split-conformal prediction interval coverage across targets compared to 90% nominal level", "40"),
+        ("Figure 8", "Model selection architecture and comparative benchmark across baseline and ensemble families", "42"),
     ]
     for f_id, f_cap, f_pg in figs_meta:
         p_f = doc.add_paragraph()
@@ -491,12 +492,18 @@ def build_report():
     p("1. Workflow 1 — Offline Model Development: Operating strictly on the ChEMBL 37 bioactivity dataset, this workflow executes nine sequential stages: (a) Source integrity verification using SHA-256 manifests; (b) Assay screening and parent structure standardization using RDKit; (c) Document-balanced sample aggregation to handle repeated laboratory measurements; (d) Grouped data partitioning into scaffold-disjoint and publication-disjoint splits; (e) 2048-bit Morgan molecular fingerprint extraction; (f) Target-specific regression model training across baseline, linear, and ensemble architectures; (g) Validation-based model selection; (h) Split-conformal prediction interval calibration; and (i) Model serialization into auditable joblib bundles.")
     p("2. Workflow 2 — Online Research Screening: When a user selects a botanical product, pharmaceutical drug, and clinical preparation context, the online system splits execution into three parallel, asynchronous branches: (a) Branch A (Constituent Assay Inference) queries the pre-trained molecular models using the herb's sourced constituent SMILES to estimate pIC50 potencies and conformal uncertainty bounds; (b) Branch B (Drug Pathway Mapping) identifies the drug's metabolic clearance pathways and filters the constituent estimates to clinically relevant targets; and (c) Branch C (Human Evidence Retrieval) queries the human pharmacokinetic catalog, executing Citation DAG deduplication to collapse redundant review citations.")
     p("3. Shared Explanation and Output Layer: The three branches converge at an automated Mechanism and Context Check Layer. This module cross-references the in-vitro molecular estimates against human clinical findings, explicitly flagging biological contradictions (such as PXR induction versus competitive inhibition) and context discrepancies (such as unstudied preparations). The system renders an interactive web dashboard, exports a cryptographically verifiable JSON audit trace, and enforces fail-closed clinical prediction abstention.")
+    
+    p("Figure 3 illustrates the three-step scientific process for target identification and metabolic pathway mapping: (1) Selecting the 6 primary regulatory targets based on FDA and ICH M12 guidelines; (2) Connecting prescription medications to their specific clearance routes using official FDA Drug Package Inserts, DailyMed monographs, and peer-reviewed PubMed literature (e.g., Digoxin linked to ABCB1; Cyclosporine linked to CYP3A4 and ABCB1); and (3) Dynamic runtime execution filtering upon user selection in the screening interface.")
+
+    fig("docs/figures/target_identification_and_data_mapping.png", 
+        "Figure 3: Three-step scientific process for target identification and metabolic clearance mapping: (1) Regulatory target selection based on FDA and ICH M12 guidelines; (2) Curating prescription clearance pathways from FDA drug labels, DailyMed monographs, and PubMed literature; and (3) Dynamic runtime filtering of in-vitro potency predictions upon query selection.", 
+        width_in=6.0)
 
     h2("3.4 Algorithms and implementation strategy")
-    p("The system implements four novel mathematical and cheminformatics algorithms that ensure rigorous learning, uncertainty calibration, and evidence integrity. Figure 3 illustrates the detailed molecular assay and biological mechanism engine.")
+    p("The system implements four novel mathematical and cheminformatics algorithms that ensure rigorous learning, uncertainty calibration, and evidence integrity. Figure 4 illustrates the detailed molecular assay and biological mechanism engine.")
     
     fig("docs/figures/table2_detailed_mechanisms_assay_engine.jpg", 
-        "Figure 3: Table 2 biological mechanism and molecular assay architecture, mapping 18,833 ChEMBL in-vitro assays across the 5 human CYP enzymes and ABCB1 transporter to formulate the Task A biological risk baseline.", 
+        "Figure 4: Table 2 biological mechanism and molecular assay architecture, mapping 18,833 ChEMBL in-vitro assays across the 5 human CYP enzymes and ABCB1 transporter to formulate the Task A biological risk baseline.", 
         width_in=5.8)
 
     p("1. Molecular Structure Standardization and Fingerprinting: For each compound, raw SMILES strings are parsed using RDKit. Salts, counter-ions, and solvent adducts are stripped using canonical parent fragmentation. Molecules are sanitized, stereochemical parity checked, and converted into 2048-bit circular Morgan molecular fingerprints with radius 2 (equivalent to ECFP4):")
@@ -512,10 +519,10 @@ def build_report():
     p("    C(x_new) = [mu_model(x_new) - q_conformal, mu_model(x_new) + q_conformal]")
     p("guaranteeing finite-sample marginal coverage P(Y in C(X)) >= 1 - alpha under exchangeability.")
     p("4. Citation DAG Deduplication and Echo Discounting: To eliminate citation echo bias in medical literature, we model published papers as a Directed Acyclic Graph G = (V, E), where vertices V represent published study records and directed edges (u, v) in E denote that publication u directly cites earlier publication v. The algorithm traverses the graph topologically, identifying root empirical clinical trials (out-degree = 0) and flagging descendant review articles as derivative echoes. When computing cumulative evidentiary weight, derivative review edges are collapsed, preventing citation echo chambers from artificially inflating evidence counts.")
-    p("5. Four-Way Grouped Scaffold Partitioning and Conformal Calibration: In standard machine learning, random train-test splitting allows chemical analogues (molecules differing by only a minor substituent) to leak across partitions, resulting in artificial memorization. To enforce strict generalization to novel chemotypes, our system partitions data strictly by Bemis–Murcko scaffold clusters into four disjoint partitions: Training (60%) for model fitting, Validation (15%) for hyperparameter selection, Calibration (10%) for distribution-free non-conformity threshold estimation, and Test (15%) for final unbiased evaluation. Crucially, conformal prediction theory strictly mandates an independent calibration partition isolated from model selection to avoid winner's curse and empirical coverage degradation. Figure 4 illustrates the four-way partitioning and conformal calibration workflow.")
+    p("5. Four-Way Grouped Scaffold Partitioning and Conformal Calibration: In standard machine learning, random train-test splitting allows chemical analogues (molecules differing by only a minor substituent) to leak across partitions, resulting in artificial memorization. To enforce strict generalization to novel chemotypes, our system partitions data strictly by Bemis–Murcko scaffold clusters into four disjoint partitions: Training (60%) for model fitting, Validation (15%) for hyperparameter selection, Calibration (10%) for distribution-free non-conformity threshold estimation, and Test (15%) for final unbiased evaluation. Crucially, conformal prediction theory strictly mandates an independent calibration partition isolated from model selection to avoid winner's curse and empirical coverage degradation. Figure 5 illustrates the four-way partitioning and conformal calibration workflow.")
 
     fig("docs/figures/four_way_partitioning_and_conformal_calibration.png", 
-        "Figure 4: Four-way grouped Bemis–Murcko scaffold data partitioning (Train 60%, Validation 15%, Calibration 10%, Test 15%) and split-conformal calibration workflow with non-conformity score quantile thresholding.", 
+        "Figure 5: Four-way grouped Bemis–Murcko scaffold data partitioning (Train 60%, Validation 15%, Calibration 10%, Test 15%) and split-conformal calibration workflow with non-conformity score quantile thresholding.", 
         width_in=6.0)
 
     h2("3.5 Evaluation metrics")
@@ -624,17 +631,17 @@ def build_report():
             ["CYP3A4", "847", "0.731", "1.044", "-0.222", "0.839"],
         ])
 
-    p("Figure 5 illustrates the target-by-target Mean Absolute Error (MAE) comparisons between the scaffold holdout and publication holdout.")
+    p("Figure 6 illustrates the target-by-target Mean Absolute Error (MAE) comparisons between the scaffold holdout and publication holdout.")
     
     fig("docs/figures/image3.png", 
-        "Figure 5: Selected model Mean Absolute Error (MAE in pIC50) across the six target endpoints, comparing the molecular scaffold-disjoint evaluation against the cross-laboratory publication-disjoint evaluation.", 
+        "Figure 6: Selected model Mean Absolute Error (MAE in pIC50) across the six target endpoints, comparing the molecular scaffold-disjoint evaluation against the cross-laboratory publication-disjoint evaluation.", 
         width_in=5.8)
 
-    p("As demonstrated in Table 5 and Figure 5, the scaffold-held-out models demonstrate robust predictive capability. Across the 2,116 held-out molecular samples, the pooled MAE is 0.4974 pIC50 with a bootstrap 95% confidence interval of [0.4754, 0.5183], an RMSE of 0.6521, and an overall R² of 0.3440. Because pIC50 represents a logarithmic scale, an MAE of ~0.50 corresponds to predicting the actual inhibitory IC50 concentration within approximately a 3.1-fold error margin (~ 10^{0.4974}), which is well within standard inter-laboratory assay experimental variance in bioactivity literature. Strongest performance is achieved on ABCB1 (R² = 0.507, MAE = 0.495), CYP3A4 (R² = 0.350, MAE = 0.482), and CYP2D6 (R² = 0.322, MAE = 0.513).")
-    p("Figure 6 visualizes the empirical test-set coverage achieved by the split-conformal prediction intervals across all targets.")
+    p("As demonstrated in Table 5 and Figure 6, the scaffold-held-out models demonstrate robust predictive capability. Across the 2,116 held-out molecular samples, the pooled MAE is 0.4974 pIC50 with a bootstrap 95% confidence interval of [0.4754, 0.5183], an RMSE of 0.6521, and an overall R² of 0.3440. Because pIC50 represents a logarithmic scale, an MAE of ~0.50 corresponds to predicting the actual inhibitory IC50 concentration within approximately a 3.1-fold error margin (~ 10^{0.4974}), which is well within standard inter-laboratory assay experimental variance in bioactivity literature. Strongest performance is achieved on ABCB1 (R² = 0.507, MAE = 0.495), CYP3A4 (R² = 0.350, MAE = 0.482), and CYP2D6 (R² = 0.322, MAE = 0.513).")
+    p("Figure 7 visualizes the empirical test-set coverage achieved by the split-conformal prediction intervals across all targets.")
 
     fig("docs/figures/image4.png", 
-        "Figure 6: Empirical test-set prediction interval coverage across targets under scaffold and publication holdouts, benchmarked against the nominal 90% confidence level (dashed horizontal line).", 
+        "Figure 7: Empirical test-set prediction interval coverage across targets under scaffold and publication holdouts, benchmarked against the nominal 90% confidence level (dashed horizontal line).", 
         width_in=5.8)
 
     p("The split-conformal calibration yields robust empirical coverage, ranging between 87.4% and 95.8% across targets on the scaffold test set, tightly bounding the nominal 90% confidence level. On the publication split, ABCB1 achieves 95.8% coverage, CYP2C19 achieves 94.9%, and CYP2C9 achieves 93.9%, validating that conformal intervals adapt dynamically to target uncertainty.")
@@ -651,13 +658,13 @@ def build_report():
             ["Consistency weighted trees", "0.4995", "0.6611"],
         ])
 
-    p("Figure 7 illustrates the overall model selection architecture and pooled comparative benchmarks across the four evaluated model families on both scaffold and publication holdout splits.")
+    p("Figure 8 illustrates the overall model selection architecture and pooled comparative benchmarks across the four evaluated model families on both scaffold and publication holdout splits.")
 
     fig("docs/figures/model_selection_and_comparative_benchmark.png", 
-        "Figure 7: Model selection architecture and comparative benchmark across model families, illustrating the target-level validation selection rule and pooled test MAE across scaffold and publication holdouts.", 
+        "Figure 8: Model selection architecture and comparative benchmark across model families, illustrating the target-level validation selection rule and pooled test MAE across scaffold and publication holdouts.", 
         width_in=6.0)
 
-    p("The comparative results in Table 7 and Figure 7 demonstrate that non-linear ensemble methods significantly outperform both the naive training median baseline (reducing error from 0.6212 to 0.4981 MAE on scaffold holdout) and the linear Ridge model (0.5235 MAE). The target-selected ensemble achieves the optimal pooled test MAE of 0.4974 (translating to a ~3.1-fold potency margin). The ExtraTrees architecture successfully captures complex, non-linear pharmacophoric feature combinations that linear models cannot resolve. While the Repeat-Consistency Weighted ExtraTrees model achieved an MAE of 0.4995 (very close to standard ExtraTrees 0.4981), it provided superior robustness in down-weighting conflicting assay reports during training. As illustrated in Panel D of Figure 7, publication-holdout errors (hatched bars) are consistently higher across all architectures (0.6613 vs 0.4974), reflecting the realistic inter-laboratory assay variability observed when evaluating across independent research institutions.")
+    p("The comparative results in Table 7 and Figure 8 demonstrate that non-linear ensemble methods significantly outperform both the naive training median baseline (reducing error from 0.6212 to 0.4981 MAE on scaffold holdout) and the linear Ridge model (0.5235 MAE). The target-selected ensemble achieves the optimal pooled test MAE of 0.4974 (translating to a ~3.1-fold potency margin). The ExtraTrees architecture successfully captures complex, non-linear pharmacophoric feature combinations that linear models cannot resolve. While the Repeat-Consistency Weighted ExtraTrees model achieved an MAE of 0.4995 (very close to standard ExtraTrees 0.4981), it provided superior robustness in down-weighting conflicting assay reports during training. As illustrated in Panel D of Figure 8, publication-holdout errors (hatched bars) are consistently higher across all architectures (0.6613 vs 0.4974), reflecting the realistic inter-laboratory assay variability observed when evaluating across independent research institutions.")
 
     h2("5.3 Discussion and limitations")
     p("A critical scientific contribution of this project is the transparent, honest exposure of generalization boundaries. While the scaffold holdout demonstrates strong predictive accuracy (R² up to 0.507), performance under the publication-disjoint holdout exhibits noticeable degradation, yielding a pooled MAE of 0.6611 pIC50 and negative R² values across several targets (e.g., CYP3A4 R² = -0.222). This divergence exposes the profound challenge of cross-laboratory distribution shifts: different academic and pharmaceutical research groups utilize varying incubation times, substrate probe concentrations, microsomal protein batches, and optical detection methods when performing in-vitro assays. While scaffold splitting isolates chemical structure, publication splitting exposes experimental protocol heterogeneity—a vital scientific reality that conventional overfitted models completely obscure.")
