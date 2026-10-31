@@ -307,8 +307,10 @@ def build_report():
         ("Figure 1", "Three-tier dataset architecture separating clinical literature, in-vitro assays, and consensus ground truth", "15"),
         ("Figure 2", "Evidence-linked herb–drug interaction research system architecture across offline and online workflows", "19"),
         ("Figure 3", "Table 2 biological mechanism and molecular assay engine across 6 FDA metabolic pathways", "23"),
-        ("Figure 4", "Selected model Mean Absolute Error (MAE) by target across scaffold and publication holdout splits", "36"),
-        ("Figure 5", "Empirical split-conformal prediction interval coverage across targets compared to 90% nominal level", "38"),
+        ("Figure 4", "Four-way grouped Bemis–Murcko scaffold data partitioning and split-conformal uncertainty calibration workflow", "28"),
+        ("Figure 5", "Selected model Mean Absolute Error (MAE) by target across scaffold and publication holdout splits", "37"),
+        ("Figure 6", "Empirical split-conformal prediction interval coverage across targets compared to 90% nominal level", "39"),
+        ("Figure 7", "Model selection architecture and comparative benchmark across baseline and ensemble families", "41"),
     ]
     for f_id, f_cap, f_pg in figs_meta:
         p_f = doc.add_paragraph()
@@ -510,6 +512,11 @@ def build_report():
     p("    C(x_new) = [mu_model(x_new) - q_conformal, mu_model(x_new) + q_conformal]")
     p("guaranteeing finite-sample marginal coverage P(Y in C(X)) >= 1 - alpha under exchangeability.")
     p("4. Citation DAG Deduplication and Echo Discounting: To eliminate citation echo bias in medical literature, we model published papers as a Directed Acyclic Graph G = (V, E), where vertices V represent published study records and directed edges (u, v) in E denote that publication u directly cites earlier publication v. The algorithm traverses the graph topologically, identifying root empirical clinical trials (out-degree = 0) and flagging descendant review articles as derivative echoes. When computing cumulative evidentiary weight, derivative review edges are collapsed, preventing citation echo chambers from artificially inflating evidence counts.")
+    p("5. Four-Way Grouped Scaffold Partitioning and Conformal Calibration: In standard machine learning, random train-test splitting allows chemical analogues (molecules differing by only a minor substituent) to leak across partitions, resulting in artificial memorization. To enforce strict generalization to novel chemotypes, our system partitions data strictly by Bemis–Murcko scaffold clusters into four disjoint partitions: Training (60%) for model fitting, Validation (15%) for hyperparameter selection, Calibration (10%) for distribution-free non-conformity threshold estimation, and Test (15%) for final unbiased evaluation. Crucially, conformal prediction theory strictly mandates an independent calibration partition isolated from model selection to avoid winner's curse and empirical coverage degradation. Figure 4 illustrates the four-way partitioning and conformal calibration workflow.")
+
+    fig("docs/figures/four_way_partitioning_and_conformal_calibration.png", 
+        "Figure 4: Four-way grouped Bemis–Murcko scaffold data partitioning (Train 60%, Validation 15%, Calibration 10%, Test 15%) and split-conformal calibration workflow with non-conformity score quantile thresholding.", 
+        width_in=6.0)
 
     h2("3.5 Evaluation metrics")
     p("Model performance is evaluated using standard quantitative regression and uncertainty metrics:")
@@ -617,17 +624,17 @@ def build_report():
             ["CYP3A4", "847", "0.731", "1.044", "-0.222", "0.839"],
         ])
 
-    p("Figure 4 illustrates the target-by-target Mean Absolute Error (MAE) comparisons between the scaffold holdout and publication holdout.")
+    p("Figure 5 illustrates the target-by-target Mean Absolute Error (MAE) comparisons between the scaffold holdout and publication holdout.")
     
     fig("docs/figures/image3.png", 
-        "Figure 4: Selected model Mean Absolute Error (MAE in pIC50) across the six target endpoints, comparing the molecular scaffold-disjoint evaluation against the cross-laboratory publication-disjoint evaluation.", 
+        "Figure 5: Selected model Mean Absolute Error (MAE in pIC50) across the six target endpoints, comparing the molecular scaffold-disjoint evaluation against the cross-laboratory publication-disjoint evaluation.", 
         width_in=5.8)
 
-    p("As demonstrated in Table 5 and Figure 4, the scaffold-held-out models demonstrate robust predictive capability. Across the 2,116 held-out molecular samples, the pooled MAE is 0.4974 pIC50 with a bootstrap 95% confidence interval of [0.4754, 0.5183], an RMSE of 0.6521, and an overall R² of 0.3440. Because pIC50 represents a logarithmic scale, an MAE of ~0.50 corresponds to predicting the actual inhibitory IC50 concentration within approximately a 3.1-fold error margin (~ 10^{0.4974}), which is well within standard inter-laboratory assay experimental variance in bioactivity literature. Strongest performance is achieved on ABCB1 (R² = 0.507, MAE = 0.495), CYP3A4 (R² = 0.350, MAE = 0.482), and CYP2D6 (R² = 0.322, MAE = 0.513).")
-    p("Figure 5 visualizes the empirical test-set coverage achieved by the split-conformal prediction intervals across all targets.")
+    p("As demonstrated in Table 5 and Figure 5, the scaffold-held-out models demonstrate robust predictive capability. Across the 2,116 held-out molecular samples, the pooled MAE is 0.4974 pIC50 with a bootstrap 95% confidence interval of [0.4754, 0.5183], an RMSE of 0.6521, and an overall R² of 0.3440. Because pIC50 represents a logarithmic scale, an MAE of ~0.50 corresponds to predicting the actual inhibitory IC50 concentration within approximately a 3.1-fold error margin (~ 10^{0.4974}), which is well within standard inter-laboratory assay experimental variance in bioactivity literature. Strongest performance is achieved on ABCB1 (R² = 0.507, MAE = 0.495), CYP3A4 (R² = 0.350, MAE = 0.482), and CYP2D6 (R² = 0.322, MAE = 0.513).")
+    p("Figure 6 visualizes the empirical test-set coverage achieved by the split-conformal prediction intervals across all targets.")
 
     fig("docs/figures/image4.png", 
-        "Figure 5: Empirical test-set prediction interval coverage across targets under scaffold and publication holdouts, benchmarked against the nominal 90% confidence level (dashed horizontal line).", 
+        "Figure 6: Empirical test-set prediction interval coverage across targets under scaffold and publication holdouts, benchmarked against the nominal 90% confidence level (dashed horizontal line).", 
         width_in=5.8)
 
     p("The split-conformal calibration yields robust empirical coverage, ranging between 87.4% and 95.8% across targets on the scaffold test set, tightly bounding the nominal 90% confidence level. On the publication split, ABCB1 achieves 95.8% coverage, CYP2C19 achieves 94.9%, and CYP2C9 achieves 93.9%, validating that conformal intervals adapt dynamically to target uncertainty.")
@@ -644,7 +651,13 @@ def build_report():
             ["Consistency weighted trees", "0.4995", "0.6611"],
         ])
 
-    p("The comparative results demonstrate that non-linear ensemble methods significantly outperform both the naive training median baseline (reducing error from 0.6212 to 0.4981 MAE on scaffold holdout) and the linear Ridge model (0.5235 MAE). The ExtraTrees architecture successfully captures complex, non-linear pharmacophoric feature combinations that linear models cannot resolve. While the Repeat-Consistency Weighted ExtraTrees model achieved an MAE of 0.4995 (very close to standard ExtraTrees 0.4981), it provided superior robustness in down-weighting conflicting assay reports during training.")
+    p("Figure 7 illustrates the overall model selection architecture and pooled comparative benchmarks across the four evaluated model families on both scaffold and publication holdout splits.")
+
+    fig("docs/figures/model_selection_and_comparative_benchmark.png", 
+        "Figure 7: Model selection architecture and comparative benchmark across model families, illustrating the target-level validation selection rule and pooled test MAE across scaffold and publication holdouts.", 
+        width_in=6.0)
+
+    p("The comparative results in Table 7 and Figure 7 demonstrate that non-linear ensemble methods significantly outperform both the naive training median baseline (reducing error from 0.6212 to 0.4981 MAE on scaffold holdout) and the linear Ridge model (0.5235 MAE). The target-selected ensemble achieves the optimal pooled test MAE of 0.4974 (translating to a ~3.1-fold potency margin). The ExtraTrees architecture successfully captures complex, non-linear pharmacophoric feature combinations that linear models cannot resolve. While the Repeat-Consistency Weighted ExtraTrees model achieved an MAE of 0.4995 (very close to standard ExtraTrees 0.4981), it provided superior robustness in down-weighting conflicting assay reports during training. As illustrated in Panel D of Figure 7, publication-holdout errors (hatched bars) are consistently higher across all architectures (0.6613 vs 0.4974), reflecting the realistic inter-laboratory assay variability observed when evaluating across independent research institutions.")
 
     h2("5.3 Discussion and limitations")
     p("A critical scientific contribution of this project is the transparent, honest exposure of generalization boundaries. While the scaffold holdout demonstrates strong predictive accuracy (R² up to 0.507), performance under the publication-disjoint holdout exhibits noticeable degradation, yielding a pooled MAE of 0.6611 pIC50 and negative R² values across several targets (e.g., CYP3A4 R² = -0.222). This divergence exposes the profound challenge of cross-laboratory distribution shifts: different academic and pharmaceutical research groups utilize varying incubation times, substrate probe concentrations, microsomal protein batches, and optical detection methods when performing in-vitro assays. While scaffold splitting isolates chemical structure, publication splitting exposes experimental protocol heterogeneity—a vital scientific reality that conventional overfitted models completely obscure.")
