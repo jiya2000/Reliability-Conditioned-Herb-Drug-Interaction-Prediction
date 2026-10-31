@@ -768,7 +768,7 @@ def build_report():
     p("All team members contributed collaboratively to literature review, mathematical formulation, experimental analysis, and final report documentation under the continuous guidance of the project guide.")
 
     # Save to final document
-    out_path = "VIT_SCOPE_Project_Report_Completed.docx"
+    out_path = "VIT_SCOPE_Project_Report_Submission.docx"
     doc.save(out_path)
     print(f"Master report saved successfully to {out_path}!")
     print(f"File size: {os.path.getsize(out_path)} bytes")
